@@ -1,5 +1,7 @@
 set processors 2
 
+* Modificado para GIT
+
 *For my laptop
 global gral_dir "C:\Users\Rosa_V\Dropbox\WIDE"
 global data_raw_dhs "C:\Users\Rosa_V\Dropbox\WIDE\Data\DHS"
