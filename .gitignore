@@ -8,6 +8,8 @@ data/
 notes/
 tables/
 unicef_docs/
+temp/
 *.csv
 *.docx
 *.xlsx
+output/edu_indicators/WIDE_All_2019-03-22 (1).dta
