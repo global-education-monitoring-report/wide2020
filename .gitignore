@@ -1,10 +1,10 @@
 raw_data/
 data_created/
 microdata_bilal/
-WIDE_DHS/charts/
-WIDE_DHS/data/
-WIDE_DHS/notes/
-WIDE_MICS/data/
-WIDE_MICS/notes/
-WIDE_MICS/tables/
-WIDE_MICS/unicef_docs/
+charts/
+data/
+notes/
+data/
+notes/
+tables/
+unicef_docs/
