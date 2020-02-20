@@ -8,3 +8,7 @@ data/
 notes/
 tables/
 unicef_docs/
+*.csv
+*.dta
+*.docx
+*.xlsx
