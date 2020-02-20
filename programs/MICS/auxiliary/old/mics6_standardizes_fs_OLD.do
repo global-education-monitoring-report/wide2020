@@ -1,11 +1,9 @@
  ren *, lower
- for X in any region psu strata caretakerdis ed5a ed5b hh52 fs12: cap gen X=.
- keep hh1 hh2 ln fs7y fcf* hh6 region hl4 ed5a ed5b *age f*disability caretakerdis *weight windex5 psu strata hh52 cb3 cb4 cb5* cb7 cb8* fs17 fs12
- cap decode fs12, gen(fs12_st)
- for X in any cb4 cb7 cb8a cb8b: decode X, gen(X_string)
+ for X in any region psu strata caretakerdis ed5a ed5b hh52: cap gen X=.
+ keep hh1 hh2 ln fs7y fcf* hh6 region hl4 ed5a ed5b *age f*disability caretakerdis *weight windex5 psu strata hh52 cb3 cb4 cb5* cb7 cb8* fs17
  
- lookfor fcf
- codebook fcf*, tab(100)
+ *lookfor fcf
+ *codebook fcf*, tab(100)
  
  gen id=string(hh1)+" "+string(hh2)+" "+string(ln)
  
@@ -31,12 +29,11 @@
  recode fcf25 (1=1) (2/5=0) (9=.), gen(anxiety)
  recode fcf26 (1=1) (2/5=0) (9=.), gen(depression)
  
- gen GEM_disability=0
- for X in any $list1: replace GEM_disability=1 if X==1
- replace GEM_disability=. if seeing==. & hearing==. & walking==. & selfcare==. & communication==. & learning==. & remembering==. ///
+ gen dis2=0
+ for X in any $list1: replace dis2=1 if X==1
+ replace dis2=. if seeing==. & hearing==. & walking==. & selfcare==. & communication==. & remembering==. ///
  & concentrating==. & acceptingchange==. & controlbehavior==. & makingfriends==. & anxiety==. & depression==.
  
- gen low_prevalence=0
- for X in any seeing hearing walking selfcare communication learning remembering concentrating : replace low_prevalence=1 if X==1
- replace low_prevalence=. if seeing==. & hearing==. & walking==. & selfcare==. & communication==. & learning==. & remembering==. ///
- & concentrating==.
+ for X in any cb4 cb7 cb8a cb8b: decode X, gen(X_string)
+ 
+ 
