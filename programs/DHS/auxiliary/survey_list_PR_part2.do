@@ -51,7 +51,6 @@ Nigeria\1999\NGPR41FL.dta
 Nigeria\2003\NGPR4CFL.dta
 Nigeria\2008\NGPR52FL.dta
 Nigeria\2013\NGPR6AFL.dta
-Nigeria\2018\NGPR7AFL.dta
 
 Pakistan\2006\PKPR53FL.dta
 Pakistan\2012\PKPR61FL.dta

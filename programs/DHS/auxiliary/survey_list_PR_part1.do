@@ -19,7 +19,6 @@ Bangladesh\2014\BDPR72FL.dta
 Benin\2001\BJPR41FL.dta
 Benin\2006\BJPR51FL.dta
 Benin\2011\BJPR61FL.dta
-Benin\2017\BJPR71FL.dta
 BoliviaPS\2003\BOPR41FL.dta
 BoliviaPS\2008\BOPR51FL.dta
 BurkinaFaso\2003\BFPR44FL.dta

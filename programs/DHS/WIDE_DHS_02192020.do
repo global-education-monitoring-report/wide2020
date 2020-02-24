@@ -1,5 +1,3 @@
-set processors 2
-
 * Modificado para GIT
 
 *For my laptop
@@ -39,10 +37,10 @@ global extra_vars cluster
 *----------------------------------------------------------------------------------------------------
 
 cap mkdir "$data_dhs\PR\\countries"
-for X in any 1 2: cap mkdir "$data_dhs\PR\countries\\partX"
+for X in any 1 2 3: cap mkdir "$data_dhs\PR\countries\\partX"
 
-foreach part in part1 part2 {
-*foreach part in part2 {
+foreach part in part1 part2 part3 {
+*foreach part in part3 {
 set more off
 include "$programs_dhs_aux\survey_list_PR_`part'"
 
@@ -72,8 +70,8 @@ save "$data_dhs\PR\countries\\`part'\\`1'`3'", replace
 *---------------------------------------------------------------------------------------------------------
 
 
-foreach part in part1 part2 {
-*foreach part in part2 {
+foreach part in part1 part2 part3 {
+*foreach part in part3 {
 cd "$data_dhs\PR\countries\\`part'"
 local allfiles : dir . files "*.dta"
 
@@ -94,8 +92,8 @@ save "$data_dhs\PR\dhs_PR_append_`part'.dta" , replace
 
 *Translate: I tried with encoding "ISO-8859-1" and it didn't work
 set more off
-foreach part in part1 part2 {
-*foreach part in part2 {
+foreach part in part1 part2 part 3{
+*foreach part in part3 {
 clear
 cd "$data_dhs\PR"
 set more off
@@ -108,10 +106,10 @@ unicode translate "dhs_PR_append_`part'.dta"
 **************************************************************************
 *			Fixing categories and creating variables
 **************************************************************************
-set more off
 foreach part in part1 part2 {
 use "$data_dhs\PR\dhs_PR_append_`part'.dta" , clear
-*use "$data_dhs\PR\dhs_PR_append_part2.dta" , clear
+*use "$data_dhs\PR\dhs_PR_append_part3.dta" , clear
+set more off
 
 * ID for each country year: Variable country_year. Year of survey can be different from the year in the name of the folder
 gen country_year=country+ "_"+string(year_folder)
@@ -222,6 +220,8 @@ ren hv001 cluster
 	bys country_year: egen year=median(hv007)
 	drop if year<=1999 // drop the countries that have the median year of 1999
 
+	bys country: tab hv016 hv006 
+	
 
 *-----------------------------------------------------------------------------------------------
 * Merge with Duration in years, start age and names of countries (codes_dhs, mics_dhs, iso_code, WIDE names)
@@ -242,7 +242,7 @@ ren year_original year
 	ren prim_age_uis prim_age0
 	
 compress 
-*save "$data_dhs\PR\Step0_part2.dta", replace
+*save "$data_dhs\PR\Step0_part3.dta", replace
 save "$data_dhs\PR\Step0_`part'.dta", replace
 }
 
@@ -254,10 +254,11 @@ save "$data_dhs\PR\Step0_`part'.dta", replace
 *************************************************************
 *	AGE ADJUSTMENT
 *************************************************************
-set more off
-foreach part in part1 part2 {
+
+foreach part in part1 part2 part3 {
 use "$data_dhs\PR\Step0_`part'.dta", clear
-*use "$data_dhs\PR\Step0_part2.dta", clear
+*use "$data_dhs\PR\Step0_part3.dta", clear
+set more off
 
 keep hv006 hv007 hv016 country year country_year iso_code3
 
@@ -283,7 +284,7 @@ gen missing_current_school_year=1 if current_school_year==.
 replace current_school_year=hv007 if current_school_year==.
 
 
-tab hv007 if country_year=="PapuaNewGuinea_2016"
+tab hv007 if country_year=="PapuaNewGuinea_2016" // span of 3 years... affects adjustment?
 
 *-------------------------------------------------------------------------------------
 * Adjustment VERSION 1: Difference in number of days 
@@ -325,6 +326,8 @@ foreach X in 1 2 {
 
 sort country_year
 collapse diff* adj* flag_month, by(country_year)		
+
+*save "$data_dhs\PR\dhs_adjustment_part3.dta", replace
 	
 save "$data_dhs\PR\dhs_adjustment_`part'.dta", replace
 }
@@ -332,9 +335,10 @@ save "$data_dhs\PR\dhs_adjustment_`part'.dta", replace
 
 use "$data_dhs\PR\dhs_adjustment_part1.dta", clear
 append using "$data_dhs\PR\dhs_adjustment_part2.dta"
+append using "$data_dhs\PR\dhs_adjustment_part3.dta"
 compress
 save "$data_dhs\PR\dhs_adjustment.dta", replace
-*for X in any 1 2: erase "$data_dhs\PR\dhs_adjustment_partX.dta"
+*for X in any 1 2 3: erase "$data_dhs\PR\dhs_adjustment_partX.dta"
 
 */
 
@@ -344,10 +348,11 @@ save "$data_dhs\PR\dhs_adjustment.dta", replace
 *	CREATING EDUC VARIABLES AND CATEGORIES
 *-------------------------------------------------------------------------------
 
-foreach part in part1 part2 {
+foreach part in part1 part2 part3{
+
+*use "$data_dhs\PR\Step0_`part'.dta", clear
+use "$data_dhs\PR\Step0_part3.dta", clear
 set more off
-use "$data_dhs\PR\Step0_`part'.dta", clear
-*use "$data_dhs\PR\Step0_part2.dta", clear
 
 *Creating the variables for EDUOUT indicators
 	for X in any prim_dur lowsec_dur upsec_dur: gen X_eduout=X 
@@ -376,14 +381,15 @@ replace lowsec_dur=4 if country_year=="PapuaNewGuinea_2016"
 replace upsec_dur=2 if country_year=="PapuaNewGuinea_2016"
 
 
+
 *Questions to UIS
 *- Burkina Faso 2010 (DHS) should use age 6 or 7 as start age? The start age changes from 7 to 6 in 2010, the school year starts in October.
 *- Egypt 2005 DHS: prim dur changes from 5 to 6 in 2005. Should we use 5 or 6 for year 2005 considering that school years starts in September.
 *- Armenia 2010 DHS: All the interviews were in 2010, but UIS says it is year 2011 and has put duration and ages of that year. We put duration and age for 2010 and our results match UNICEF'S
 *Education: hv107, hv108, hv109, hv121
 compress 
+*save "$data_dhs\PR\Step1_part3.dta", replace
 save "$data_dhs\PR\Step1_`part'.dta", replace
-*save "$data_dhs\PR\Step1_part2.dta", replace
 }
 
 
