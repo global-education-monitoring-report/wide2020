@@ -350,8 +350,8 @@ save "$data_dhs\PR\dhs_adjustment.dta", replace
 
 foreach part in part1 part2 part3{
 
-*use "$data_dhs\PR\Step0_`part'.dta", clear
-use "$data_dhs\PR\Step0_part3.dta", clear
+use "$data_dhs\PR\Step0_`part'.dta", clear
+*use "$data_dhs\PR\Step0_part3.dta", clear
 set more off
 
 *Creating the variables for EDUOUT indicators
@@ -381,7 +381,6 @@ replace lowsec_dur=4 if country_year=="PapuaNewGuinea_2016"
 replace upsec_dur=2 if country_year=="PapuaNewGuinea_2016"
 
 
-
 *Questions to UIS
 *- Burkina Faso 2010 (DHS) should use age 6 or 7 as start age? The start age changes from 7 to 6 in 2010, the school year starts in October.
 *- Egypt 2005 DHS: prim dur changes from 5 to 6 in 2005. Should we use 5 or 6 for year 2005 considering that school years starts in September.
@@ -395,12 +394,11 @@ save "$data_dhs\PR\Step1_`part'.dta", replace
 
 ***************************************************************
 
-foreach part in part1 part2 {
+foreach part in part1 part2 part3 {
+
+*use "$data_dhs\PR\Step1_`part'.dta", clear
+use "$data_dhs\PR\Step1_part3.dta", clear
 set more off
-use "$data_dhs\PR\Step1_`part'.dta", clear
-
-use "$data_dhs\PR\Step1_part2.dta", clear
-
 *------------------------------------------------------------------------------------------
 * Creates education variables
 *------------------------------------------------------------------------------------------
@@ -515,10 +513,17 @@ replace hv108=hv107 if hv106==1 & country_year=="Zimbabwe_2005" // "primary"
 replace hv108=hv107+7 if hv106==2 & country_year=="Zimbabwe_2005" // "secondary"
 replace hv108=hv107+13 if hv106==3 & country_year=="Zimbabwe_2005" //"higher"	
 	
-*tab hv108 if country_year=="PapuaNewGuinea_2016"
-*tab hv109 if country_year=="PapuaNewGuinea_2016"
-*tab hv108 hv109 if country_year=="PapuaNewGuinea_2016"
+*Tabs to check edu variables
+bys country_year: tab hv108, m
+bys country_year: tab hv109, m
+bys country_year: tab hv108 hv109, m
 	
+*Hv108: 
+*Albania 2017: doesn't have hv108==10, 11
+*Mali 2018: doesn't have hv108==11
+*Haiti 2017, Pakistan 2018, South Africa 2016: only goes until 16 years
+*Indonesia 2017, Maldives 2017, Mali 2018: only goes until 17 years
+
 *Creating "B" variables
 foreach X in prim lowsec upsec {
 	cap gen comp_`X'_B=0
@@ -531,8 +536,8 @@ foreach X in prim lowsec upsec {
 replace comp_upsec_B=comp_upsec_A if country_year=="Egypt_2005" // I don't know why if goes to 28.93 if I don't do this... Check difference between A & B later
 compress
 
-save "$data_dhs\PR\Step2_part2.dta", replace
-*save "$data_dhs\PR\Step2_`part'.dta", replace
+*save "$data_dhs\PR\Step2_part3.dta", replace
+save "$data_dhs\PR\Step2_`part'.dta", replace
 }
 ****************************************************
 
@@ -748,9 +753,9 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 
 */
 
-foreach part in part1 part2 {
-use "$data_dhs\PR\Step2_`part'.dta", clear
-*use "$data_dhs\PR\Step2_part2.dta", clear
+foreach part in part1 part2 part3 {
+*use "$data_dhs\PR\Step2_`part'.dta", clear
+use "$data_dhs\PR\Step2_part3.dta", clear
 set more off
 
 *Age
