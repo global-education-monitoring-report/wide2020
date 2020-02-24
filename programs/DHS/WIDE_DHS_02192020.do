@@ -4,10 +4,10 @@ set processors 2
 
 *For my laptop
 global gral_dir "C:\Users\Rosa_V\Dropbox\WIDE"
-global data_raw_dhs "C:\Users\Rosa_V\Dropbox\WIDE\Data\DHS"
-global programs_dhs "$gral_dir\WIDE\WIDE_DHS\programs"
+global data_raw_dhs "$gral_dir\Data\DHS"
+global programs_dhs "$gral_dir\WIDE\programs\DHS"
 global programs_dhs_aux "$programs_dhs\auxiliary"
-global aux_data "$gral_dir\WIDE\data_created\auxiliary_data"
+global aux_data "$gral_dir\WIDE\auxiliary_data"
 global data_dhs "$gral_dir\WIDE\WIDE_DHS\data"
 global temp "$data_dhs\temp"
 
@@ -38,10 +38,11 @@ global extra_vars cluster
 *	CREATING INDIVIDUAL DATABASES AND APPENDING THEM ALL 
 *----------------------------------------------------------------------------------------------------
 
+cap mkdir "$data_dhs\PR\\countries"
 for X in any 1 2: cap mkdir "$data_dhs\PR\countries\\partX"
 
-*foreach part in part1 part2 {
-foreach part in part2 {
+foreach part in part1 part2 {
+*foreach part in part2 {
 set more off
 include "$programs_dhs_aux\survey_list_PR_`part'"
 
@@ -72,11 +73,12 @@ save "$data_dhs\PR\countries\\`part'\\`1'`3'", replace
 
 
 foreach part in part1 part2 {
+*foreach part in part2 {
 cd "$data_dhs\PR\countries\\`part'"
 local allfiles : dir . files "*.dta"
 
 cap use "Albania2008.dta", clear
-cap use "Jordan2012.dta", clear
+cap use "SouthAfrica2016.dta", clear
 gen id_c=1
 foreach f of local allfiles {
    qui append using `f'
@@ -93,8 +95,10 @@ save "$data_dhs\PR\dhs_PR_append_`part'.dta" , replace
 *Translate: I tried with encoding "ISO-8859-1" and it didn't work
 set more off
 foreach part in part1 part2 {
+*foreach part in part2 {
 clear
 cd "$data_dhs\PR"
+set more off
 unicode analyze "dhs_PR_append_`part'.dta"
 unicode encoding set ibm-912_P100-1995
 unicode translate "dhs_PR_append_`part'.dta"
@@ -107,7 +111,6 @@ unicode translate "dhs_PR_append_`part'.dta"
 set more off
 foreach part in part1 part2 {
 use "$data_dhs\PR\dhs_PR_append_`part'.dta" , clear
-
 *use "$data_dhs\PR\dhs_PR_append_part2.dta" , clear
 
 * ID for each country year: Variable country_year. Year of survey can be different from the year in the name of the folder
@@ -223,7 +226,6 @@ ren hv001 cluster
 *-----------------------------------------------------------------------------------------------
 * Merge with Duration in years, start age and names of countries (codes_dhs, mics_dhs, iso_code, WIDE names)
 merge m:m country_code_dhs using "$aux_data\country_iso_codes_names.dta", keepusing(iso_code3)  // to obtain the iso_code3
-replace iso_code3="PNG" if country=="PapuaNewGuinea"
 drop if _merge==2
 drop _merge
 *Now we have year 2018, but the database of duration only has until 2017
@@ -373,6 +375,7 @@ replace prim_dur=6 if country_year=="PapuaNewGuinea_2016"
 replace lowsec_dur=4 if country_year=="PapuaNewGuinea_2016"
 replace upsec_dur=2 if country_year=="PapuaNewGuinea_2016"
 
+
 *Questions to UIS
 *- Burkina Faso 2010 (DHS) should use age 6 or 7 as start age? The start age changes from 7 to 6 in 2010, the school year starts in October.
 *- Egypt 2005 DHS: prim dur changes from 5 to 6 in 2005. Should we use 5 or 6 for year 2005 considering that school years starts in September.
@@ -390,7 +393,7 @@ foreach part in part1 part2 {
 set more off
 use "$data_dhs\PR\Step1_`part'.dta", clear
 
-*use "$data_dhs\PR\Step1_part2.dta", clear
+use "$data_dhs\PR\Step1_part2.dta", clear
 
 *------------------------------------------------------------------------------------------
 * Creates education variables
@@ -439,13 +442,23 @@ replace comp_higher_A=. if (hv109==.|hv109==8|hv109==9)
 	gen upsec_age0=lowsec_age0+lowsec_dur
 	for X in any prim lowsec upsec: gen X_age1=X_age0+X_dur-1
 	
-	
 bys country_year: egen count_hv108=count(hv108)
 tab country_year if count_hv108==0
 drop count_hv108 // need to check info sh17_a sh17_b for Yemen 2013
 
+label define hv109 0 "no education" 1 "incomplete primary" 2 "complete primary" 3 "incomplete secondary" 4 "complete secondary" 5 "higher"
+label values hv109 hv109
 
-*CHANGES IN HV108
+*To analyze structure/duration of the education variables:
+*bys country_year: tab hv107 hv106, m
+*bys country_year: tab hv108, m
+*bys country_year: tab hv108 hv109, m
+
+
+*************************
+***** CHANGES IN HV108
+***************************
+
 
 *Republic of Moldova doesn't have info on eduyears
 replace hv108=hv107 if (hv106==0|hv106==1) & country_year=="RepublicofMoldova_2005"
@@ -512,8 +525,8 @@ foreach X in prim lowsec upsec {
 replace comp_upsec_B=comp_upsec_A if country_year=="Egypt_2005" // I don't know why if goes to 28.93 if I don't do this... Check difference between A & B later
 compress
 
-*save "$data_dhs\PR\Step2_part2.dta", replace
-save "$data_dhs\PR\Step2_`part'.dta", replace
+save "$data_dhs\PR\Step2_part2.dta", replace
+*save "$data_dhs\PR\Step2_`part'.dta", replace
 }
 ****************************************************
 
@@ -729,7 +742,6 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 
 */
 
-
 foreach part in part1 part2 {
 use "$data_dhs\PR\Step2_`part'.dta", clear
 *use "$data_dhs\PR\Step2_part2.dta", clear
@@ -825,6 +837,7 @@ gen comp_lowsec_aux=comp_lowsec if agestandard>=upsec_age1+3 & agestandard<=upse
 gen eduyears=hv108
 replace eduyears=30 if hv108>=30 // I put the max of years as 30
 replace eduyears=. if hv108>=90
+
 
 *With age limits
 gen eduyears_2024=eduyears if agestandard>=20 & agestandard<=24
@@ -1003,10 +1016,11 @@ foreach i of numlist 0/6 12/18 20/21 31 41 {
 
 * Appending the results
 cd "$data_dhs\PR\collapse"
-use "result0_part1.dta", clear
+cap use "result0_part1.dta", clear
+cap use "result0_part2.dta", clear
 gen t_0=1
 foreach i of numlist 0/6 12/18 20/21 31 41 {
- 	append using "result`i'_part1"
+ 	*append using "result`i'_part1"
 	append using "result`i'_part2"
 }
 drop if t_0==1
@@ -1057,9 +1071,12 @@ foreach var of varlist $varlist_m  {
 		replace `var'=. if `var'_no<30
 }
 
-save "$data_dhs\PR\dhs_collapse_by_categories_v9.dta", replace
+save "$data_dhs\PR\dhs_collapse_by_categories_FEB2020.dta", replace
+export delimited "$data_dhs\PR\dhs_collapse_by_categories_FEB2020.csv", replace
 
-export delimited "$data_dhs\PR\dhs_collapse_by_categories_v9.csv", replace
+*save "$data_dhs\PR\dhs_collapse_by_categories_v9.dta", replace
+*export delimited "$data_dhs\PR\dhs_collapse_by_categories_v9.csv", replace
+
 
 ************* END *********************************************
 
