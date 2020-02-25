@@ -102,11 +102,11 @@ unicode encoding set ibm-912_P100-1995
 unicode translate "dhs_PR_append_`part'.dta"
 }
 
-
+*/
 **************************************************************************
 *			Fixing categories and creating variables
 **************************************************************************
-foreach part in part1 part2 {
+foreach part in part1 part2 part3 {
 use "$data_dhs\PR\dhs_PR_append_`part'.dta" , clear
 *use "$data_dhs\PR\dhs_PR_append_part3.dta" , clear
 set more off
@@ -328,7 +328,6 @@ sort country_year
 collapse diff* adj* flag_month, by(country_year)		
 
 *save "$data_dhs\PR\dhs_adjustment_part3.dta", replace
-	
 save "$data_dhs\PR\dhs_adjustment_`part'.dta", replace
 }
 
@@ -336,11 +335,9 @@ save "$data_dhs\PR\dhs_adjustment_`part'.dta", replace
 use "$data_dhs\PR\dhs_adjustment_part1.dta", clear
 append using "$data_dhs\PR\dhs_adjustment_part2.dta"
 append using "$data_dhs\PR\dhs_adjustment_part3.dta"
-compress
 save "$data_dhs\PR\dhs_adjustment.dta", replace
 *for X in any 1 2 3: erase "$data_dhs\PR\dhs_adjustment_partX.dta"
 
-*/
 
 **************************************************************************************************************************
 **************************************************************************************************************************
@@ -349,7 +346,6 @@ save "$data_dhs\PR\dhs_adjustment.dta", replace
 *-------------------------------------------------------------------------------
 
 foreach part in part1 part2 part3{
-
 use "$data_dhs\PR\Step0_`part'.dta", clear
 *use "$data_dhs\PR\Step0_part3.dta", clear
 set more off
@@ -395,9 +391,8 @@ save "$data_dhs\PR\Step1_`part'.dta", replace
 ***************************************************************
 
 foreach part in part1 part2 part3 {
-
-*use "$data_dhs\PR\Step1_`part'.dta", clear
-use "$data_dhs\PR\Step1_part3.dta", clear
+use "$data_dhs\PR\Step1_`part'.dta", clear
+*use "$data_dhs\PR\Step1_part3.dta", clear
 set more off
 *------------------------------------------------------------------------------------------
 * Creates education variables
@@ -754,8 +749,8 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 */
 
 foreach part in part1 part2 part3 {
-*use "$data_dhs\PR\Step2_`part'.dta", clear
-use "$data_dhs\PR\Step2_part3.dta", clear
+use "$data_dhs\PR\Step2_`part'.dta", clear
+*use "$data_dhs\PR\Step2_part3.dta", clear
 set more off
 
 *Age
@@ -945,7 +940,7 @@ ren ageU age
 
 order country_year iso_code3 year hhweight age* hv007 $categories_collapse comp_* eduout* edu* attend* $extra_vars round adjustment
 compress
-*save "$data_dhs\PR\Step3_part2.dta", replace
+*save "$data_dhs\PR\Step3_part3.dta", replace
 save "$data_dhs\PR\Step3_`part'.dta", replace
 }
 
@@ -953,6 +948,7 @@ save "$data_dhs\PR\Step3_`part'.dta", replace
 set more off
 use "$data_dhs\PR\Step3_part1.dta", clear
 append using  "$data_dhs\PR\Step3_part2.dta"
+append using  "$data_dhs\PR\Step3_part3.dta"
 drop year
 bys country_year: egen year=median(hv007)
 keep hhweight *age* hv007 year ///
@@ -978,9 +974,9 @@ global varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_l
 global varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no
 
 
-foreach part in part1 part2 {
+foreach part in part1 part2 part3 {
 use "$data_dhs\PR\Step3_`part'.dta", clear
-*use "$data_dhs\PR\Step3_part2.dta", clear
+*use "$data_dhs\PR\Step3_part3.dta", clear
 set more off
 
 *Dropping variables
@@ -997,7 +993,7 @@ foreach var of varlist $varlist_m  {
 
 keep country_year iso_code3 year $categories_collapse hhweight $varlist_m $varlist_no comp_prim_aux comp_lowsec_aux
 compress
-*save "$data_dhs\PR\Step4_part2.dta", replace
+*save "$data_dhs\PR\Step4_part3.dta", replace
 save "$data_dhs\PR\Step4_`part'.dta", replace
 }
 
@@ -1006,8 +1002,8 @@ save "$data_dhs\PR\Step4_`part'.dta", replace
 
 cap mkdir "$data_dhs\PR\collapse"
 cd "$data_dhs\PR\collapse"
-*foreach part in part1 part2 {
-foreach part in part2 {
+*foreach part in part1 part2 part3 {
+foreach part in part3 {
 use "$data_dhs\PR\Step4_`part'.dta", clear
 set more off
 tuples $categories_collapse, display
@@ -1015,7 +1011,8 @@ foreach i of numlist 0/6 12/18 20/21 31 41 {
 	preserve
 	collapse (mean) $varlist_m (count) $varlist_no [weight=hhweight], by(country_year iso_code3 year `tuple`i'')
 	*collapse (mean) $varlist_m comp_prim_aux comp_lowsec_aux (count) $varlist_no [weight=hhweight], by(country_year iso_code3 year `tuple`i'')
-	gen category="`tuple`i''"	
+	gen category="`tuple`i''"
+	cap gen part="`part'"
 	save "result`i'_`part'.dta", replace
 	restore
 }
@@ -1024,22 +1021,25 @@ foreach i of numlist 0/6 12/18 20/21 31 41 {
 *****************************************************************************************
 *****************************************************************************************
 
-
 * Appending the results
 cd "$data_dhs\PR\collapse"
 cap use "result0_part1.dta", clear
-cap use "result0_part2.dta", clear
 gen t_0=1
+foreach part in part1 part2 part3 {
 foreach i of numlist 0/6 12/18 20/21 31 41 {
- 	*append using "result`i'_part1"
-	append using "result`i'_part2"
+ 	append using "result`i'_`part'"
+}
 }
 drop if t_0==1
 drop t_0
 
-gen survey="DHS"
 replace category="total" if category==""
 tab category
+gen survey="DHS"
+
+**************************
+*** FROM HERE IS STANDARD
+**************************
 
 *-- Fixing for missing values in categories
 foreach X in $categories_collapse {
@@ -1082,27 +1082,16 @@ foreach var of varlist $varlist_m  {
 		replace `var'=. if `var'_no<30
 }
 
+merge m:1 iso_code3 using "$aux_data\country_iso_codes_names.dta", keepusing(country)
+drop if _m==2
+drop _merge
+order survey iso country year
+drop country_year 
 save "$data_dhs\PR\dhs_collapse_by_categories_FEB2020.dta", replace
 export delimited "$data_dhs\PR\dhs_collapse_by_categories_FEB2020.csv", replace
 
 *save "$data_dhs\PR\dhs_collapse_by_categories_v9.dta", replace
 *export delimited "$data_dhs\PR\dhs_collapse_by_categories_v9.csv", replace
-
-
-************* END *********************************************
-
-use "$data_dhs\PR\dhs_collapse_by_categories_v8.dta", clear
-drop *no
-for X in any prim lowsec upsec: ren comp_X_v2 comp_X_new
-merge 1:1 country year $categories_collapse using  "O:\ED\ProgrammeExecution\GlobalEducationMonitoringReport_GEMR\1.ReportDevelopment\WIDE\WIDE\WIDE_DHS_MICS\data\dhs\PR\old\dhs_collapse_by_categories_v6.dta"
-keep if category=="Total"
-tab _merge
-br if _merge==1 // Burundi 2017, India
-for X in any prim lowsec upsec: gen diff_X=abs(comp_X_v2-comp_X_new)
-br if diff_prim==.
-br if diff_upsec>=5 & diff_upsec!=.
-gen changed=1 if iso=="ALB"|iso=="ARM"|iso=="EGY"|iso=="MDG"|iso=="ZWE"
-br country year comp_*_v2 comp_*_new diff* if changed==1
 
 
 

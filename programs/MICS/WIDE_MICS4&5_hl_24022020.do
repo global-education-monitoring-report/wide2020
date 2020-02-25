@@ -1341,7 +1341,6 @@ save "$data_mics\hl\MICS5_Step_5.dta", replace
 use "$data_mics\hl\MICS5_Step_5.dta", clear
 drop *no
 collapse (mean) comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 eduout_prim eduout_lowsec eduout_upsec [weight=hhweight], by(country_year iso_code3 year adjustment prim_age0_comp prim_dur_comp lowsec_dur_comp upsec_dur_comp prim_age0_eduout prim_dur_eduout lowsec_dur_eduout upsec_dur_eduout )
-
 foreach var of varlist comp* eduout*{
 		replace `var'=`var'*100
 }
@@ -1421,14 +1420,14 @@ foreach i of numlist 0/6 12/18 20/21 31 41 {
 }
 drop if t_0==1
 drop t_0
+replace category="total" if category==""
+tab category
 gen survey="MICS"
+
 
 **************************
 *** FROM HERE IS STANDARD
 **************************
-
-replace category="total" if category==""
-tab category
 
 *-- Fixing for missing values in categories
 foreach X in $categories_collapse {
@@ -1449,7 +1448,7 @@ replace category=c1+" & "+c2 if c1!="" & c2!="" & c3==""
 replace category=c1+" & "+c2+" & "+c3 if c1!="" & c2!="" & c3!=""
 drop c1 c2 c3
 
-*tab category category_orig
+tab category category_orig
 drop category_orig
 compress
 
@@ -1465,6 +1464,14 @@ foreach var of varlist $vars_comp $vars_eduout comp_prim_aux comp_lowsec_aux{
 merge m:1 iso_code3 survey year using "$aux_data/gem/country_survey_year_uis.dta", keepusing(year_uis)
 drop if _merge==2
 drop _merge
+compress
+
+foreach var of varlist $varlist_m {
+	replace `var'=. if `var'_no<30
+}	
+	
+
+	
 
 sort iso_code category $categories_collapse
 order iso_code category country_year year survey location sex wealth region ethnicity religion comp_prim_aux comp_lowsec_aux
@@ -1542,9 +1549,6 @@ global vars_eduout edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
 global varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
 global varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no
 
-
-
-*HERE I ELIMINATE THOSE <30
 use "$data_mics\hl\mics_AllRounds_collapse_categories_v5.dta", clear
 append using "C:\Users\Rosa_V\Desktop\WIDE\WIDE\WIDE_DHS\data\PR\dhs_collapse_by_categories_v8.dta"
 
@@ -1586,10 +1590,7 @@ foreach var of varlist $varlist_no {
 	br if row_keep==0
 	drop if row_keep==0 & eduout_prim_uis==.
 	
-foreach var of varlist $varlist_m {
-	replace `var'=. if `var'_no<30
-}	
-	
+
 for X in any prim lowsec upsec: gen diff_comp_X=abs(comp_X_v2-comp_X_uis)
 
 gen flag_comp=0 // Both in UIS & GEM. No problem

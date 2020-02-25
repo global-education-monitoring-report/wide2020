@@ -54,7 +54,6 @@ Nigeria\2013\NGPR6AFL.dta
 
 Pakistan\2006\PKPR53FL.dta
 Pakistan\2012\PKPR61FL.dta
-PapuaNewGuinea\2016\PGPR70FL.dta
 Peru\2000\PEPR41FL.dta
 Peru\2007\PEPR51FL.dta
 Peru\2012\PEPR6IFL.dta
