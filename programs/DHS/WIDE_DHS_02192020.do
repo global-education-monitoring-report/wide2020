@@ -1001,9 +1001,12 @@ save "$data_dhs\PR\Step4_`part'.dta", replace
 *https://www.stata.com/meeting/baltimore17/slides/Baltimore17_Correia.pdf
 
 cap mkdir "$data_dhs\PR\collapse"
+
+
+/*
 cd "$data_dhs\PR\collapse"
-*foreach part in part1 part2 part3 {
-foreach part in part3 {
+foreach part in part1 part2 part3 {
+*foreach part in part3 {
 use "$data_dhs\PR\Step4_`part'.dta", clear
 set more off
 tuples $categories_collapse, display
@@ -1017,9 +1020,7 @@ foreach i of numlist 0/6 12/18 20/21 31 41 {
 	restore
 }
 }
-
-*****************************************************************************************
-*****************************************************************************************
+*/
 
 * Appending the results
 cd "$data_dhs\PR\collapse"
@@ -1030,69 +1031,8 @@ foreach i of numlist 0/6 12/18 20/21 31 41 {
  	append using "result`i'_`part'"
 }
 }
-drop if t_0==1
-drop t_0
-
-replace category="total" if category==""
-tab category
 gen survey="DHS"
+include "$gral_dir/WIDE/programs/standardizes_collapse_dhs_mics.do"
 
-**************************
-*** FROM HERE IS STANDARD
-**************************
-
-*-- Fixing for missing values in categories
-foreach X in $categories_collapse {
-drop if `X'=="" & category=="`X'"
-}
-
-for X in any sex wealth religion ethnicity region: drop if category=="location X" & (location==""|X=="")
-for X in any wealth religion ethnicity region: drop if category=="sex X" & (sex==""|X=="")
-for X in any region: drop if category=="wealth X" & (wealth==""|X=="")
-
-drop if category=="location sex wealth" & (location==""|sex==""|wealth=="")
-drop if category=="sex wealth region" & (sex==""|wealth==""|region=="")
-
-replace category=proper(category)
-split category, gen(c)
-gen category_original=category
-replace category=c1+" & "+c2 if c1!="" & c2!="" & c3==""
-replace category=c1+" & "+c2+" & "+c3 if c1!="" & c2!="" & c3!=""
-drop c1 c2 c3
-
-tab category category_orig
-drop category_orig
-compress
-
-order country survey year category* $categories_collapse $varlist_m $varlist_no
-
-foreach var of varlist $vars_comp $vars_eduout {
-		replace `var'=`var'*100
-}
-
-*Merge with year_uis
-merge m:1 iso_code3 survey year using "$aux_data/GEM/country_survey_year_uis.dta", keepusing(year_uis)
-drop if _merge==2
-drop _merge
-compress
- *drop edu2* edu4*
-sort iso_code category $categories_collapse
-
-foreach var of varlist $varlist_m  {
-		replace `var'=. if `var'_no<30
-}
-
-merge m:1 iso_code3 using "$aux_data\country_iso_codes_names.dta", keepusing(country)
-drop if _m==2
-drop _merge
-order survey iso country year
-drop country_year 
-save "$data_dhs\PR\dhs_collapse_by_categories_FEB2020.dta", replace
-export delimited "$data_dhs\PR\dhs_collapse_by_categories_FEB2020.csv", replace
-
-*save "$data_dhs\PR\dhs_collapse_by_categories_v9.dta", replace
-*export delimited "$data_dhs\PR\dhs_collapse_by_categories_v9.csv", replace
-
-
-
-
+save "$data_dhs\PR\dhs_collapse_by_categories_v10.dta", replace
+export delimited "$data_dhs\PR\dhs_collapse_by_categories_v10.csv", replace

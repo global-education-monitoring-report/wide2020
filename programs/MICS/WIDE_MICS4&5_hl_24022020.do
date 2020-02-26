@@ -19,9 +19,6 @@ global aux_programs "$programs_mics\auxiliary"
 *global aux_data "$gral_dir\WIDE\WIDE_DHS_MICS\data\auxiliary_data"
 *global data_mics "$gral_dir\WIDE\WIDE_DHS_MICS\data\mics"
 
-
-
-
 *Vars to keep
 global vars_mics4 hh1 hh2 hh5* hl1 hl3 hl4 hl5* hl6 hl7 hh6* hh7* ed1 ed3* ed4* ed5* ed6* ed7* ed8* windex5 schage hhweight religion ethnicity region windex5
 global list4 hh6 hh7 ed3 ed4a ed4b ed5 ed6b ed6a ed7 ed8a religion ethnicity hh7r ed3x ed4 ed4ax region 
@@ -1398,6 +1395,8 @@ compress
 save "$data_mics\hl\All_MICS_Step_5.dta", replace
 
 
+cap mkdir "$data_mics\hl\collapse"
+
 /*
 cd "$data_mics\hl\collapse"
 set more off
@@ -1410,7 +1409,6 @@ foreach i of numlist 0/6 12/18 20/21 31 41 {
 }
 */
 
-
 * Appending the results
 cd "$data_mics\hl\collapse"
 use "result0.dta", clear
@@ -1418,69 +1416,20 @@ gen t_0=1
 foreach i of numlist 0/6 12/18 20/21 31 41 {
  	append using "result`i'"
 }
-drop if t_0==1
-drop t_0
-replace category="total" if category==""
-tab category
 gen survey="MICS"
+include "$gral_dir/WIDE/programs/standardizes_collapse_dhs_mics.do"
+
+save "$data_mics\hl\mics_collapse_by_categories_v10.dta", replace
+export delimited "$data_mics\hl\mics_collapse_by_categories_v10.csv", replace
 
 
-**************************
-*** FROM HERE IS STANDARD
-**************************
 
-*-- Fixing for missing values in categories
-foreach X in $categories_collapse {
-drop if `X'=="" & category=="`X'"
-}
+******************************************************************************
+*****---- END OF MICS CALCULATIONS
+******************************************************************************
 
-for X in any sex wealth religion ethnicity region: drop if category=="location X" & (location==""|X=="")
-for X in any wealth religion ethnicity region: drop if category=="sex X" & (sex==""|X=="")
-for X in any region: drop if category=="wealth X" & (wealth==""|X=="")
+** COMPARISON WITH UIS RESULTS
 
-drop if category=="location sex wealth" & (location==""|sex==""|wealth=="")
-drop if category=="sex wealth region" & (sex==""|wealth==""|region=="")
-
-replace category=proper(category)
-split category, gen(c)
-gen category_original=category
-replace category=c1+" & "+c2 if c1!="" & c2!="" & c3==""
-replace category=c1+" & "+c2+" & "+c3 if c1!="" & c2!="" & c3!=""
-drop c1 c2 c3
-
-tab category category_orig
-drop category_orig
-compress
-
-order country survey year category $categories_collapse $varlist_m $varlist_no
-
-foreach var of varlist $vars_comp $vars_eduout comp_prim_aux comp_lowsec_aux{
-		replace `var'=`var'*100
-}
-
-************* aqui se termina lo que son iguales
-
-*Merge with year_uis
-merge m:1 iso_code3 survey year using "$aux_data/gem/country_survey_year_uis.dta", keepusing(year_uis)
-drop if _merge==2
-drop _merge
-compress
-
-foreach var of varlist $varlist_m {
-	replace `var'=. if `var'_no<30
-}	
-	
-
-	
-
-sort iso_code category $categories_collapse
-order iso_code category country_year year survey location sex wealth region ethnicity religion comp_prim_aux comp_lowsec_aux
-save "$data_mics\hl\mics_AllRounds_collapse_categories_v5.dta", replace
-
-use "$data_mics\hl\mics_AllRounds_collapse_categories_v5.dta", clear
-export delimited "$data_mics\hl\mics_AllRounds_collapse_categories_v5.csv", replace
-
-*-----------------------------------------------------------------------------------------------
 *To create the flags for total
 
 use "$aux_data\UIS\completion\UIS_completion_29Nov2018_with_sources.dta", clear
