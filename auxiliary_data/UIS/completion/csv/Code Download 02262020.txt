@@ -1,0 +1,30 @@
+User: r.vidarte-chicchon@unesco.org
+API Key: 0ad400a308ec48bd901e75b6330239c7
+
+UIS_Completion_02262020
+
+*Note: download it in CSV, not in Excel
+
+*** COMPLETION RATE
+*Primary
+https://api.uis.unesco.org/sdmx/data/UNESCO,EDU_NON_FINANCE,3.0/CR.PT.L1.._T+F+M.................?startPeriod=1989&endPeriod=2018&format=csv-both&locale=en&subscription-key=0ad400a308ec48bd901e75b6330239c7
+ 
+*Lower Secondary
+https://api.uis.unesco.org/sdmx/data/UNESCO,EDU_NON_FINANCE,3.0/CR.PT.L2.._T+F+M.................?startPeriod=1989&endPeriod=2018&format=csv-both&locale=en&subscription-key=0ad400a308ec48bd901e75b6330239c7
+
+*Upper Seconday
+https://api.uis.unesco.org/sdmx/data/UNESCO,EDU_NON_FINANCE,3.0/CR.PT.L3.._T+F+M.................?startPeriod=1989&endPeriod=2018&format=csv-both&locale=en&subscription-key=0ad400a308ec48bd901e75b6330239c7
+
+
+*** OUT OF SCHOOL
+*Primary
+https://api.uis.unesco.org/sdmx/data/UNESCO,EDU_NON_FINANCE,3.0/ROFST_PHH.PT.L1.._T+F+M.................?startPeriod=1989&endPeriod=2018&format=csv-both&locale=en&subscription-key=0ad400a308ec48bd901e75b6330239c7
+
+*Lowsec
+https://api.uis.unesco.org/sdmx/data/UNESCO,EDU_NON_FINANCE,3.0/ROFST_PHH.PT.L2.._T+F+M.................?startPeriod=1989&endPeriod=2018&format=csv-both&locale=en&subscription-key=0ad400a308ec48bd901e75b6330239c7
+
+*Upsec
+https://api.uis.unesco.org/sdmx/data/UNESCO,EDU_NON_FINANCE,3.0/ROFST_PHH.PT.L3.._T+F+M.................?startPeriod=1989&endPeriod=2018&format=csv-both&locale=en&subscription-key=0ad400a308ec48bd901e75b6330239c7
+
+
+
