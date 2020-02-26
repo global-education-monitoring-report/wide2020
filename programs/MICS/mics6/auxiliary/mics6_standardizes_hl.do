@@ -47,4 +47,6 @@ for X in any ed3 ed5 ed7: cap tostring X, gen(temp_X) // for Palestine
 drop $list6 ed_completed
 for X in any $list6 ed_completed: cap ren temp_X X
 cap label drop _all
+
+for X in any ethnicity region religion: replace X=proper(X)
 compress

@@ -1,18 +1,18 @@
 *For Desktop-Work
 *global gral_dir "O:\ED\ProgrammeExecution\GlobalEducationMonitoringReport_GEMR\1.ReportDevelopment\WIDE"
-*global data_raw_mics "$gral_dir\Data\MICS\MICS6"
-
+*global data_raw_mics "$gral_dir\Data\MICS"
 
 *For laptop
-global gral_dir "C:\Users\Rosa_V\Dropbox\WIDE"
-global data_raw_mics "$gral_dir\Data\MICS\MICS6"
+*global gral_dir "C:\Users\Rosa_V\Dropbox"
+*global data_raw_mics "$gral_dir\WIDE\Data\MICS"
 
-global programs_mics "$gral_dir\WIDE\programs\MICS\MICS6"
-global aux_programs "$programs_mics\auxiliary"
+*global programs_mics "$gral_dir\WIDE\WIDE_DHS_MICS\programs\mics"
+*global aux_programs "$programs_mics\auxiliary"
+*global aux_data "$gral_dir\WIDE\WIDE_DHS_MICS\data\auxiliary_data"
+*global data_mics "$gral_dir\WIDE\WIDE_DHS_MICS\data\mics"
 
-global aux_data "$gral_dir\WIDE\auxiliary_data"
-global data_mics "$gral_dir\WIDE\WIDE_MICS\data\mics6\hl"
 
+global data_mics "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\WIDE_MICS\data\mics6\hl"
 
 *Vars to keep
 global vars_mics6 hh1 hh2 hh5* hl1 hl3 hl4 hl5* hl6 hl7 hh6* hh7* ed1 ed3* ed4* ed5* ed6* ed7* ed8* windex5 schage hhweight religion ethnicity region windex5 disability caretakerdis
@@ -20,14 +20,6 @@ global list6 hh6 hh7 ed3 ed4a ed4b ed5 ed6b ed6a ed7 ed8a religion ethnicity hh7
 global vars_keep_mics "hhid hvidx hv000 hv005 hv006 hv007 hv008 hv016 hv009 hv024 hv025 hv270 hv102 hv104 hv105 hv106 hv107 hv108 hv109 hv121 hv122 hv123 hv124"
 global categories sex urban region wealth
 *global extra_keep ...// for the variables that I want to add later ex. cluster
-global categories_collapse location sex wealth region ethnicity religion
-global categories_subset location sex wealth
-global vars_comp comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029
-global vars_eduout edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
-global varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
-global varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no
-
-
 
 *****************************************************************************************************
 *	Preparing databases to append later (MICS 4 & 5)
@@ -36,12 +28,11 @@ global varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1
 
 * CREATING INDIVIDUAL DATABASES FOR EACH OF THE COUNTRIES
 
-foreach country in Iraq KyrgyzRepublic LaoPDR SierraLeone Suriname TheGambia Tunisia Lesotho  ///
-Madagascar Mongolia Zimbabwe Georgia {
+foreach country in Iraq KyrgyzRepublic LaoPDR SierraLeone Suriname TheGambia Tunisia Lesotho Madagascar Mongolia Zimbabwe Georgia {
  set more off
- use "$data_raw_mics\\`country'\hl.dta", clear
+ use "C:\Users\Rosa_V\Dropbox\WIDE\Data\MICS\\`country'\hl.dta", clear
  gen country="`country'"
- include "$aux_programs\mics6_standardizes_hl.do"
+ include "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\WIDE_MICS\programs\auxiliary\mics6_standardizes_hl.do"
  save "$data_mics\countries\\`country'.dta", replace
 }
 
@@ -137,6 +128,8 @@ ren windex5 wealth
 
 *codebook ethnicity, tab(200)
 
+*Fixes regions, ethnicity, religion (later)
+
 drop hl3
 compress
 save "$data_mics\Step_0.dta", replace
@@ -189,7 +182,7 @@ foreach var of varlist ed3 ed4a ed4b ed5 ed6a ed6b ed7 ed8a ed_completed {
 	replace `var' = "no" if (`var'=="nao"|`var'=="non")
 	replace `var' = "yes" if (`var'=="si"|`var'=="sim"|`var'=="oui")
 	replace `var' = "missing" if (`var'=="em falta"|`var'=="manquant"|`var'=="omitido"|`var'=="no reportado")
-	replace `var' = "doesn't answer" if (`var' =="nr"|`var'=="non declare/pas de reponse"|`var'=="no responde"|`var'=="no response"|`var'=="non reponse")
+	replace `var' = "doesn't answer" if (`var' =="nr"|`var'=="non declare/pas de reponse"|`var'=="no responde"|`var'=="no response")
 	replace `var' = "don't know" if (`var'=="dk"|`var'=="no sabe"|`var'=="nao sabe"|`var'=="ns"|`var'=="ne sait pas"|`var'=="nsp")
 	replace `var' = "inconsistent" if (`var'=="inconsistente"|`var'=="incoherent"|`var'=="incoherence"|`var'=="incoherencia"|`var'=="incoherente")
 	replace `var' = "" if (`var'==".")
@@ -235,13 +228,15 @@ label define edulevel_new ///
 	80 "not formal/not regular/not standard" ///
 	90 "khalwa/coranique (ex. Mauritania, SouthSudan, Sudan)" 
 
+	
 *To check duration of levels	
 gen level=string(ed4a_nr)+"_"+ed4a
 bys country_year: tab ed4b_nr level, m
 codebook level if country_year=="Georgia_2018", tab(100)
 	
-*KGZ: (7) 4+5+2
-*LAO: (6) 5+4+3 --> coincides with data :)
+	
+*Kyr: (7) 4+5+2
+*Lao: (6) 5+4+3 --> coincides with data :)
 *TUN: (6) 6+3+4 --> coincides with data :)
 *SUR: (6) 6+4+3  changed through years!
 *SLE: (6) 6+3+4  changed through years!
@@ -254,6 +249,8 @@ codebook level if country_year=="Georgia_2018", tab(100)
 *Zimbabwe:  (6) 7+2+4 --> doesn't coincide with data. Data says that lowsec is 4y & upsec 2y
 *Georgia: (6) 6+3+3 
 	
+
+
 * Countries that need recoding of the edulevel to be in line with the NEW value labels
 
 foreach var of varlist code_ed4a code_ed6a code_ed8a {
@@ -309,8 +306,9 @@ bys country_year: egen year=median(hh5y)
 	*The durations for 2018 are not available, so I create a "fake year"
 	ren year year_original
 	gen year=year_original
-	replace year=2017 if year_original>=2018
-	merge m:1 iso_code3 year using "$aux_data\UIS\duration_age\UIS_duration_age_25072018.dta"
+	replace year=year_original-1 if year_original==2018
+	replace year=year_original-2 if year_original==2019
+	merge m:1 iso_code3 year using "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\data_created\auxiliary_data\UIS\duration_age\UIS_duration_age_25072018.dta"
 	drop year
 	ren year_original year
 	drop if _m==2
@@ -542,6 +540,12 @@ save "$data_mics\Step_4.dta", replace
 **********************************************************************************************
 **********************************************************************************************
 
+global categories_collapse location sex wealth region ethnicity religion
+global categories_subset location sex wealth
+global vars_comp comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029
+global vars_eduout edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
+global varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
+global varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no
 
 /*
 use "$data_mics\hl\Step_4.dta", clear
@@ -604,19 +608,41 @@ replace attend_primary=0 if attend==0
 */
 
 
-* FOR UIS request
-gen comp_prim_aux=comp_prim if schage>=lowsec_age1+3 & schage<=lowsec_age1+5
-gen comp_lowsec_aux=comp_lowsec if schage>=upsec_age1+3 & schage<=upsec_age1+5
 
+*enrolment rate in pre-primary relative to the population, by single age
+*- can be created with attend_preschool, with no restriction of preschool before
 
-**** Age limits for completion
+*the new entry into pre-primary (i.e. not enrolled in education at all last year, enrolled in pre-primary this year), by single age?
+
+cap drop eduout
+
+recode attend (1=0) (0=1), gen(no_attend)
+
+gen eduout=no_attend
+replace eduout=. if (attend==1 & code_ed6a==.)
+replace eduout=. if age==.
+replace eduout=. if (code_ed6a==98|code_ed6a==99) & eduout==0 // missing when age, attendance or level of attendance (when goes to school) is missing
+replace eduout=1 if code_ed6a==0 // level attended: goes to preschool 
+replace eduout=1 if ed3=="no" // "out of school" if "ever attended school"=no
+
+replace eduout=1 if code_ed6a==80 // level attended=not formal/not regular/not standard
+replace eduout=1 if code_ed6a==90 // level attended=khalwa/coranique (ex. Mauritania, SouthSudan, Sudan)
+*Code_ed6a=80/90 affects countries Nigeria 2011, Nigeria 2016, Mauritania 2015, SouthSudan 2010, Sudan 2010 2014
+
+*schage available for all countries (no need to do the adjustment)
+
+**** Age limits for completion and out of school
 *Age limits 
 foreach X in prim lowsec upsec {
 	gen comp_`X'_v2=comp_`X' if schage>=`X'_age1+3 & schage<=`X'_age1+5
 
 }
-	
-	
+
+* FOR UIS request
+gen comp_prim_aux=comp_prim if schage>=lowsec_age1+3 & schage<=lowsec_age1+5
+gen comp_lowsec_aux=comp_lowsec if schage>=upsec_age1+3 & schage<=upsec_age1+5
+
+
 *foreach AGE in agestandard  {
 foreach AGE in schage  {
 	gen comp_prim_1524=comp_prim if `AGE'>=15 & `AGE'<=24
@@ -668,8 +694,9 @@ for X in any prim_dur lowsec_dur upsec_dur prim_age0 : ren X X_comp
 *Durations for OUT-OF-SCHOOL & ATTENDANCE 
 	ren year year_original
 	gen year=year_original
-	replace year=2017 if year_original>=2018
-	merge m:1 iso_code3 year using "$aux_data\UIS\duration_age\UIS_duration_age_25072018.dta"
+	replace year=year_original-1 if year_original==2018
+	replace year=year_original-2 if year_original==2019
+	merge m:1 iso_code3 year using "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\data_created\auxiliary_data\UIS\duration_age\UIS_duration_age_25072018.dta"
 
 	drop year
 	ren year_original year
@@ -682,35 +709,7 @@ for X in any prim_dur lowsec_dur upsec_dur prim_age0 : ren X X_comp
 	gen lowsec_age0_eduout=prim_age0_eduout+prim_dur_eduout
 	gen upsec_age0_eduout=lowsec_age0_eduout+lowsec_dur_eduout
 	for X in any prim lowsec upsec: gen X_age1_eduout=X_age0_eduout+X_dur_eduout-1
-
 	
-*enrolment rate in pre-primary relative to the population, by single age
-*- can be created with attend_preschool, with no restriction of preschool before
-
-*the new entry into pre-primary (i.e. not enrolled in education at all last year, enrolled in pre-primary this year), by single age?
-cap drop eduout
-
-*Restriction: identifies those that attend preschool
-gen in_preschool=1 if (ed6a=="early childhood education"|ed6a=="ece"|ed6a=="kindergarten"|ed6a=="pre primary"|ed6a=="pre school"|ed6a=="pre scolaire") // level attended: goes to preschool
-
-gen primary_age_range=0
-replace primary_age_range=1 if schage>=prim_age0_eduout & schage<=prim_age1_eduout
-replace primary_age_range=. if schage==.
-
-* The standard out of school:
-recode attend (0=1) (1=0), gen(eduout)
-replace eduout=. if attend==1 & (schage==.|ed6a==""|ed6a=="don't know"|ed6a=="doesn't answer") // missing when age, attendance or level of attendance (when goes to school) is missing
-replace eduout=1 if in_preschool==1 // level attended: goes to preschool. 23826 changes made
-replace eduout=1 if ed3=="no" // ed3="no" eduout=1 if "ever attended school"=no
-*- Also eduout=1 if level attended=not formal/not regular/not standard
-replace eduout=1 if code_ed6a==80 // level attended=not formal/not regular/not standard
-replace eduout=1 if code_ed6a==90 // level attended=khalwa/coranique (ex. Mauritania, SouthSudan, Sudan)
-
-*Auxiliary definition of eduout: Primary-school-age children in pre-primary as being in school (eduout=0)
-gen eduout_aux=eduout
-replace eduout_aux=0 if in_preschool==1 & primary_age_range==1
-
-*schage available for all countries (no need to do the adjustment)
 *Age limits for out of school
 
 foreach X in prim lowsec upsec {
@@ -739,6 +738,9 @@ foreach var of varlist $varlist_m {
 		gen `var'_no=`var'
 }
 
+		
+}
+
 cap ren urban location
 *Converting the categories to string: 
 cap label define wealth 1 "quintile 1" 2 "quintile 2" 3 "quintile 3" 4 "quintile 4" 5 "quintile 5"
@@ -751,38 +753,25 @@ foreach var in $categories_subset {
 	cap replace `var'=proper(`var')
 }
 
-
-*Standardizes disability variables (LaoPDR doesn't have info on disability)
-replace disability=lower(disability)
-replace disability="has functional difficulty" if disability=="1"|disability=="has functional difficulties"
-replace disability="has no functional difficulty" if disability=="2"|disability=="has no functional difficulties"
-replace disability="" if disability=="."|disability=="missing"
-bys country: tab disability
-
 *Need disability info for Madagascar (now with the fs module, then add the ch module! for preschool)
-merge 1:1 country id using "$gral_dir\WIDE\WIDE_MICS\data\mics6\fs\Madagascar.dta", keepusing(fsdisability) nogen
-merge 1:1 country id using "$gral_dir\WIDE\WIDE_MICS\data\mics6\wm\Madagascar.dta", keepusing(women_disability) nogen
-merge 1:1 country id using "$gral_dir\WIDE\WIDE_MICS\data\mics6\mn\Madagascar.dta", keepusing(men_disability) nogen
-replace disability="has functional difficulty" if (fsdisability==1|women_disability==1|men_disability==1) & country_year=="Madagascar_2018"
-replace disability="has no functional difficulty" if (fsdisability==2|women_disability==2|men_disability==2) & country_year=="Madagascar_2018"
-drop fsdisability women_disability men_disability
+merge 1:1 country id using "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\WIDE_MICS\data\mics6\fs\Madagascar.dta", keepusing(fsdisability) nogen
+des disability fsdisa
+codebook fsdisability
+replace disability="Has functional difficulty" if fsdisability==1 & country=="Madagascar"
+replace disability="Has no functional difficulty" if fsdisability==2 & country=="Madagascar"
+drop fsdisability
 
-gen disab=1 if disability=="has functional difficulty"
-replace disab=0 if disability=="has no functional difficulty"
+merge 1:1 country id using "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\WIDE_MICS\data\mics6\wm\Madagascar.dta", keepusing(women_disability) nogen
+codebook women_dis
+replace disability="Has functional difficulty" if women_disability==1 & country=="Madagascar"
+replace disability="Has no functional difficulty" if women_disability==2 & country=="Madagascar"
+drop women_disability
 
-*Fixing region, religion, ethnicity
-bys country: tab region, m
-bys country: tab hh7, m
-bys country: tab religion, m
-bys country: tab ethnicity, m
-
-
-for X in any region religion ethnicity hh7: replace X="" if X=="."
-* I replace the regions to try to make it consistent with other MICS rounds
-replace region=hh7 if region==""
-replace region=hh7 if country_year=="Iraq_2018"|country_year=="SierraLeone_2017"
-for X in any region religion ethnicity: replace X=proper(X)
-for X in any region religion ethnicity: replace X="" if (X=="Missing"|X=="Missing/Dk")
+merge 1:1 country id using "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\WIDE_MICS\data\mics6\mn\Madagascar.dta", keepusing(men_disability) nogen
+codebook men_dis
+replace disability="Has functional difficulty" if men_disability==1 & country=="Madagascar"
+replace disability="Has no functional difficulty" if men_disability==2 & country=="Madagascar"
+drop men_disability
 compress
 save "$data_mics\Step_4_temp.dta", replace
 
@@ -802,7 +791,9 @@ compress
 *save "C:\Users\Rosa_V\Desktop\WIDE\WIDE\microdata_bilal\microdata_MICS6.dta", replace
 save "C:\Users\Rosa_V\Dropbox\microdata_Bilal\microdata_MICS6.dta", replace
 
-********************************************
+use "C:\Users\Rosa_V\Dropbox\microdata_Bilal\microdata_MICS6.dta", clear
+
+
 use "$data_mics\Step_4_temp.dta", clear
 *Dropping variables
 drop hl* hh5* cluster hh6*
@@ -810,47 +801,142 @@ drop ed3* ed4* ed5* ed6* ed7* ed8* code*
 drop lowsec_age0* upsec_age0* prim_age1* lowsec_age1* upsec_age1*
 drop years_prim years_lowsec years_upsec years_higher
 
+compress
+codebook disability, tab(200)
+replace disability=lower(disability)
+bys country: tab disability, m
+replace disability="has functional difficulty" if disability=="1"|disability=="has functional difficulties"
+replace disability="has no functional difficulty" if disability=="2"|disability=="has no functional difficulties"
+replace disability="" if disability=="."|disability=="missing"
+
+gen disab=1 if disability=="has functional difficulty"
+replace disab=0 if disability=="has no functional difficulty"
+
+bys sex: tab age disability, m
+
 *Create variables for count of observations
 foreach var of varlist $varlist_m {
 		gen `var'_COUNT0=`var' if `var'==0 
 		gen `var'_COUNT1=`var' if `var'==1 
 }
 
+gen dis_nr=1 if disability=="has functional difficulty"
+replace dis_nr=0 if disability=="has no functional difficulty"
 
-*Not needed to create "adjustment" since we have schage, but going to create as missing to keep the code the same
-gen adjustment=.
 compress
 save "$data_mics\Step_5.dta", replace
 
 **********************************************
 
-cap mkdir "$data_mics\collapse"
+use "$data_mics\Step_5.dta", clear
+collapse dis_nr [iweight=hhweight], by(country year age)
+ren dis_nr disability_age_chronological
+gen nr=age
+ren age age_chronological
+save "$data_mics\collapse_age_chronological.dta", replace
 
-/*
-cd "$data_mics\collapse"
-set more off
-tuples $categories_collapse, display
-foreach i of numlist 0/6 12/18 20/21 31 41 {
-	use "$data_mics\Step_5.dta", clear
-	collapse (mean) $varlist_m comp_prim_aux comp_lowsec_aux (count) $varlist_no [weight=hhweight], by(country_year iso_code3 year adjustment `tuple`i'')
-	gen category="`tuple`i''"	
-	save "result`i'.dta", replace
-}
-*/
 
-*http://uis.unesco.org/en/news/uis-releases-more-timely-country-level-data-sdg-4-education
+use "$data_mics\Step_5.dta", clear
+collapse dis_nr [iweight=hhweight], by(country year schage)
+gen nr=schage
+ren dis_nr disability_schage
+save "$data_mics\collapse_schage.dta", replace
 
-* Appending the results
-cd "$data_mics\collapse"
-use "result0.dta", clear
-gen t_0=1
-foreach i of numlist 0/6 12/18 20/21 31 41 {
- 	append using "result`i'"
-}
-gen survey="MICS"
-include "$gral_dir/WIDE/programs/standardizes_collapse_dhs_mics.do"
+use "$data_mics\collapse_age_chronological.dta", clear
+merge 1:1 country year nr using "$data_mics\collapse_schage.dta"
+keep if _m==3
+drop _m
+order country year nr age_chrono disability_age schage disability_schage
+keep if age<=49
+br
+export excel using "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\WIDE_MICS\tables\mics6\disability_by_age.xlsx", first(var) replace 
 
-save "$data_mics\mics6_collapse_by_categories_v02.dta", replace
-export delimited "$data_mics\mics6_collapse_by_categories_v02.csv", replace
 
-br if category=="Total"
+************
+
+use "$data_mics\Step_5.dta", clear
+
+gen dis_eduout=dis_nr
+replace dis_eduout=. if eduout_lowsec==.
+
+
+gen dis_eduout=dis_nr
+replace dis_eduout=. if eduout_lowsec==.
+
+
+
+
+keep if country=="Gambia"
+
+
+
+bys country: tab schage if eduout_lowsec!=. // 13 to 15
+
+
+*13-15 overall (8.4%) (according to 'disability by age.xlsx’).
+
+sum dis_nr dis_eduout if (schage>=13 & schage<=15) & country=="Gambia"
+sum dis_nr dis_eduout if (schage>=13 & schage<=15) & country=="Gambia" [iweight=hhweight]
+
+sum dis_nr dis_eduout if (age>=13 & age<=15) & country=="Gambia"
+sum dis_nr dis_eduout if (age>=13 & age<=15) & country=="Gambia" [iweight=hhweight]
+
+
+sum
+
+
+
+
+
+use "$data_mics\Step_5.dta", clear
+
+collapse (mean) comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 eduout_prim eduout_lowsec eduout_upsec (count) comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no eduout_prim_no eduout_lowsec_no eduout_upsec_no *COUNT0 *COUNT1 [weight=hhweight], by(country_year iso_code3 year prim_age0_comp prim_dur_comp lowsec_dur_comp upsec_dur_comp prim_age0_eduout prim_dur_eduout lowsec_dur_eduout upsec_dur_eduout)
+gen category="Total"
+save "$data_mics\collapse_total.dta", replace
+
+use "$data_mics\Step_5.dta", clear
+collapse (mean) comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 eduout_prim eduout_lowsec eduout_upsec (count) comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no eduout_prim_no eduout_lowsec_no eduout_upsec_no *COUNT0 *COUNT1 [weight=hhweight], by(country_year iso_code3 year sex prim_age0_comp prim_dur_comp lowsec_dur_comp upsec_dur_comp prim_age0_eduout prim_dur_eduout lowsec_dur_eduout upsec_dur_eduout)
+drop if sex==""
+gen category="Sex"
+save "$data_mics\collapse_sex.dta", replace
+
+
+use "$data_mics\Step_5.dta", clear
+collapse (mean) comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 eduout_prim eduout_lowsec eduout_upsec (count) comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no eduout_prim_no eduout_lowsec_no eduout_upsec_no *COUNT0 *COUNT1 [weight=hhweight], by(country_year iso_code3 year disability prim_age0_comp prim_dur_comp lowsec_dur_comp upsec_dur_comp prim_age0_eduout prim_dur_eduout lowsec_dur_eduout upsec_dur_eduout)
+drop if disability==""
+gen category="Disability"
+save "$data_mics\collapse_disability.dta", replace
+ 
+use "$data_mics\Step_5.dta", clear
+collapse (mean) comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 eduout_prim eduout_lowsec eduout_upsec (count) comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no eduout_prim_no eduout_lowsec_no eduout_upsec_no *COUNT0 *COUNT1 [weight=hhweight], by(country_year iso_code3 year disability sex prim_age0_comp prim_dur_comp lowsec_dur_comp upsec_dur_comp prim_age0_eduout prim_dur_eduout lowsec_dur_eduout upsec_dur_eduout)
+drop if disability==""|sex==""
+gen category="Sex & Disability"
+save "$data_mics\collapse_disability_sex.dta", replace
+
+
+
+*************
+use "$data_mics\collapse_total.dta", clear
+append using "$data_mics\collapse_sex.dta"
+append using "$data_mics\collapse_disability.dta"
+append using "$data_mics\collapse_disability_sex.dta"
+
+gen survey="MICS6"
+gen country=country_year
+
+for X in any comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 eduout_prim eduout_lowsec eduout_upsec: replace X=. if X_no<30
+order survey iso country year category sex disability comp_prim_v2* comp_lowsec_v2* comp_upsec_v2* eduout_prim* eduout_lowsec* eduout_upsec*
+drop country
+merge m:1 iso_code3 using "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\data_created\auxiliary_data\country_iso_codes_names.dta", keepusing(country) 
+drop if _m==2
+drop _merge
+replace disability="Has functional difficulty" if disability=="has functional difficulty"
+replace disability="Has no functional difficulty" if disability=="has no functional difficulty"
+order survey iso country year
+sort country category sex disability
+sort category sex disability
+sort country
+sort category
+save "$data_mics\indicators_mics6_v5.dta", replace
+export delimited using "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\WIDE_MICS\tables\mics6\indicators_mics6_v5.csv", replace
+*export excel using "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\WIDE_MICS\tables\mics6\indicators_mics6_v5_EXCEL.xlsx", first(var) replace 
