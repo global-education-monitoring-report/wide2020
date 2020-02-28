@@ -1,5 +1,14 @@
-global dir "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\auxiliary_data\UIS\completion"
-global aux_data "C:\Users\Rosa_V\Dropbox\WIDE\WIDE\auxiliary_data"
+
+*** LAPTOP
+global folder "C:\Users\Rosa_V\Dropbox\WIDE\WIDE"
+global aux_data "$folder\auxiliary_data"
+global dir "$aux_data\UIS\completion"
+
+*** PC
+global folder "P:\WIDE"
+global aux_data "$folder\auxiliary_data"
+global dir "$aux_data\UIS\completion"
+
 
 foreach level in prim lowsec upsec {
 foreach indicator in comp eduout {
@@ -9,7 +18,7 @@ foreach indicator in comp eduout {
 	keep edu_level sex wealth_quintile location ref_area time_period obs_value obs_status
 	ren time_period year_uis
 	ren ref_area iso_code2
-	ren obs_value `indicator'_`level'
+	ren obs_value `indicator'_`level'_uis
 	ren obs_status status_`indicator'_`level'
 	*What is obs_status?
 	drop edu_level
@@ -58,52 +67,55 @@ drop if _merge==2
 drop _merge
 
 order iso* country year category sex location wealth comp* eduout*
+
+
 compress
 save "$dir\UIS_comp_eduout_02262020.dta", replace
 
-
-use "$dir\UIS_comp_eduout_02262020.dta", clear
-tab iso_code3
-
-br if category=="Total" & year>=2017
-
-
-
-use "$uis_data\UIS_completion_16Nov2018.dta", clear
-
-
+/*
 foreach level in prim lowsec upsec {
 	foreach indicator in comp eduout {
 	erase "$dir\UIS_`indicator'_`level'_02262020.dta"
 }
 }
+*/
 
+**************************************************
 
-order iso year comp_prim comp_low comp_up 
-codebook iso //114 countries
-merge m:1 iso_code2 using "$aux_data\country_iso_codes_names.dta"
-drop if _m==2
-drop _merge
-drop country_name_mics country_name_WIDE country_name_dhs country_code_dhs
-
+use "$dir\UIS_comp_eduout_02262020.dta", clear // it is like formerly named "UIS_completion_16Nov2018.dta"
+codebook iso_code3 //155countries, previously 114 countries
 gen year=year_uis
 *I merge with the latest metadata that UIS has sent us
-merge m:1 iso_code3 year using "$aux_data\UIS\sources\HH surveys metadata_UIS September release_2018.11.16.dta"
-drop if _m==2
+merge m:1 iso_code3 year using "$aux_data\UIS\sources\HH surveys metadata_UIS September release_2018.11.16.dta", keepusing(survey year uisreferenceyear surveyyear)
+br if _m==2
+drop if _m==2 // solo Bangladesh MICS 2009
 drop _m
 
-*Now I merge with the database I had before about "sources" to complete those that don't have sources right now.
-merge m:1 iso_code3 year using "$aux_data\UIS\sources\UIS_sources_02022018.dta"
-drop if _m==2
-br if _m==1
 
-*Comparing the sources
-count if survey==source_uis // 186 cases
-tab source_uis if survey=="" & source_uis!="" // all the databases that are not DHS/MICS
+
+
+*Now I merge with the database I had before about "sources" to complete those that don't have sources right now.
+br year*
+merge m:1 iso_code3 year_uis using "$aux_data\UIS\sources\UIS_sources_02262020.dta"
+br if _m==2 & year_uis>=2000 // these were released before, but now they were taken out
+drop if _m==2
+count if _m==1 & category=="Total"
+br country year* survey source* if _m==1 & category=="Total"
+br country year* survey source* if _m==3 & category=="Total"
+drop _merge
+
+*Drop Argentina 2011 because doesn't have "Total" only Urban
+drop if country=="Argentina" & survey=="MICS" & year==2011
+
 replace survey=source_uis if survey=="" & source_uis!=""
 br if survey==source_uis // 416 out of 426 observations
-br if survey!=source_uis & survey!="" & source_uis!="" // 4 obs. I keep the latest info that UIS sent
-br if survey!=source_uis & survey!="" & source_uis=="" // 6 obs. These are the newest, the ones that UIS just added.
-gen survey_uis=survey
-save "$uis_data\UIS_completion_02262020_with_sources.dta", replace
+br if survey!=source_uis & survey!="" & source_uis!="" 
+br if survey!=source_uis & survey!="" & source_uis=="" 
+*gen survey_uis=survey
+drop iso_code2 country_source_uis nr_order source_uis_original
+drop status*
+drop year
+compress
+br if survey=="" // solve this cases later. Seems that are not NATIONAL surveys
+save "$dir\UIS_comp_eduout_02262020_with_sources.dta", replace
 

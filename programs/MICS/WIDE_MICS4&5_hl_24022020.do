@@ -26,6 +26,15 @@ global vars_keep_mics "hhid hvidx hv000 hv005 hv006 hv007 hv008 hv016 hv009 hv02
 global categories sex urban region wealth
 *global extra_keep ...// for the variables that I want to add later ex. cluster
 
+
+global categories_collapse location sex wealth region ethnicity religion
+global categories_subset location sex wealth
+global vars_comp comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029
+global vars_eduout edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
+global varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
+global varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no
+
+
 *****************************************************************************************************
 *	Preparing databases to append later (MICS 4 & 5)
 *----------------------------------------------------------------------------------------------------
@@ -1030,13 +1039,6 @@ save "$data_mics\hl\Step_4.dta", replace
 **********************************************************************************************
 **********************************************************************************************
 
-global categories_collapse location sex wealth region ethnicity religion
-global categories_subset location sex wealth
-global vars_comp comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029
-global vars_eduout edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
-global varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
-global varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no
-
 /*
 use "$data_mics\hl\Step_4.dta", clear
 set more off
@@ -1417,7 +1419,7 @@ foreach i of numlist 0/6 12/18 20/21 31 41 {
  	append using "result`i'"
 }
 gen survey="MICS"
-include "$gral_dir/WIDE/programs/standardizes_collapse_dhs_mics.do"
+include "$dir_synchro/programs/standardizes_collapse_dhs_mics.do"
 
 save "$data_mics\hl\mics_collapse_by_categories_v10.dta", replace
 export delimited "$data_mics\hl\mics_collapse_by_categories_v10.csv", replace
@@ -1427,224 +1429,3 @@ export delimited "$data_mics\hl\mics_collapse_by_categories_v10.csv", replace
 ******************************************************************************
 *****---- END OF MICS CALCULATIONS
 ******************************************************************************
-
-** COMPARISON WITH UIS RESULTS
-
-*To create the flags for total
-
-use "$aux_data\UIS\completion\UIS_completion_29Nov2018_with_sources.dta", clear
-for X in any region ethnicity religion: gen X=""
-save "$aux_data\UIS\completion\UIS_completion_29Nov2018_TEMP.dta", replace
-
-
-use "$aux_data\UIS\completion\UIS_completion_29Nov2018_with_sources.dta", clear
-keep if category=="Total"
-save "$aux_data\UIS\completion\UIS_completion_29Nov2018_TOTAL.dta", replace
-
-***********-------------------------------------------------------------------------------------------
-
-
-use "$data_mics\hl\mics_AllRounds_collapse_categories_v5.dta", clear
-keep if category=="Total"
-append using "C:\Users\Rosa_V\Desktop\WIDE\WIDE\WIDE_DHS\data\PR\dhs_collapse_by_categories_v8.dta"
-keep if category=="Total"
-merge 1:1 iso_code3 survey year_uis category using "$aux_data\UIS\completion\UIS_completion_29Nov2018_TOTAL.dta"
-keep if survey=="DHS"|survey=="MICS"
-tab _merge
-tab iso_code3 year_uis if _m==2
-*Completing the info for those that _nerge==2
-br if _merge==2
-replace country_year=country+"_"+string(year_uis) if _merge==2
-replace year=year_uis if _merge==2
-
-for X in any prim lowsec upsec: gen diff_comp_X=abs(comp_X_v2-comp_X_uis)
-for X in any prim lowsec upsec: gen diff_eduout_X=abs(eduout_X-eduout_X_uis)
-
-*Flags for completion
-gen flag_comp=0 // Both in UIS & GEM. No problem
-replace flag_comp=1 if (diff_comp_prim>=3|diff_comp_lowsec>=3|diff_comp_lowsec>=3) // Both in UIS & GEM. Diff>3
-replace flag_comp=2 if comp_prim_uis==. // Only in GEM
-replace flag_comp=3 if (comp_prim_v2==. & comp_prim_uis!=.) // Only in UIS
-
-*Flags for out of school
-gen flag_eduout=0 // Both in UIS & GEM. No problem
-replace flag_eduout=1 if (diff_eduout_prim>=3|diff_eduout_lowsec>=3|diff_eduout_lowsec>=3) // Both in UIS & GEM. Diff>3
-replace flag_eduout=2 if eduout_prim_uis==. // Only in GEM
-replace flag_eduout=3 if (eduout_prim==. & eduout_prim_uis!=.) // Only in UIS
-
-label define flag 0 "Both in UIS & GEM. No problem" 1 "Both in UIS & GEM. Diff>3" 2 "Only in GEM" 3 "Only in UIS" 
-for X in any comp eduout: label values flag_X flag
-
-foreach X in comp eduout {
-gen result_`X'="UIS estimates are reported" if flag_`X'==0
-	replace result_`X'="Need to analyze" if flag_`X'==1
-	replace result_`X'="GEM estimates are reported" if flag_`X'==2
-	replace result_`X'="UIS estimates are reported" if flag_`X'==3
-}
-
-sort survey country_year
-order survey country_year year comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 flag_comp result_comp diff_comp_prim diff_comp_lowsec diff_comp_upsec eduout_prim eduout_lowsec eduout_upsec flag_eduout result_eduout diff_eduout_prim diff_eduout_lowsec diff_eduout_upsec
-br survey country_year year comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 flag_comp result_comp diff_comp_prim diff_comp_lowsec diff_comp_upsec eduout_prim eduout_lowsec eduout_upsec flag_eduout result_eduout diff_eduout_prim diff_eduout_lowsec diff_eduout_upsec
-
-*save "$gral_dir\WIDE\WIDE_DHS_MICS\data\Comparison_UIS_GEM.dta", replace
-
-
-
-************************************************************************************************************
-global categories_collapse location sex wealth region ethnicity religion
-global categories_subset location sex wealth
-global vars_comp comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029
-global vars_eduout edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
-global varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
-global varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no
-
-use "$data_mics\hl\mics_AllRounds_collapse_categories_v5.dta", clear
-append using "C:\Users\Rosa_V\Desktop\WIDE\WIDE\WIDE_DHS\data\PR\dhs_collapse_by_categories_v8.dta"
-
-merge 1:1 iso_code3 survey year_uis category location sex wealth region ethnicity religion using "$aux_data\UIS\completion\UIS_completion_29Nov2018_TEMP.dta"
-keep if survey=="DHS"|survey=="MICS"
-tab iso_code3 if _m==2 //these 6 plus Yemen 2013
-
-* MERGE=2 6 countries plus Yemen 2013
- 	* BDI Burundi DHS 2017 
-	* BLZ Belize MICS 2016 
-	* LKA Sri Lanka DHS 2006 (fata not public)
-	* TLS Timor-Leste DHS 2016
-	* UGA Uganda DHS 2016 
-* MERGE=2 additional that just appeared	
-	 *  ARG Argentina MICS 2011 			// To be dropped because it only includes URBAN.
-     *  LCA Saint Lucia MICS 2012  (19 obs) // it has another name for wealth. Called windex51 before
-     *  URY Uruguay MICS 2013 (19 obs) 		// it has another name for wealth. Called windex5_5 before
-     *  ZMB Zambia DHS 2001 (40 obs) 		// UIS has wealth, but wealth is not in the DHS database
-
-drop if iso_code3=="ARG" & survey=="MICS" & year_uis==2011
-
-*Eliminate those that are less than 30
-*This is to add the end after comparing with UIS
-*Append to DHS.
-*merge to UIS
-*Compare to UIS
-*Create flags bys country_year survey: gen keep=1 if diff_prim & diff_lowsec & diff_upsec=0
-
-global varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no
-foreach var of varlist $varlist_no {
-	gen count_`var'=1
-	replace count_`var'=0 if `var'<30
-}
-	* Drop rows with n<30 for all variables
-	egen row_keep=rowtotal(count_comp_prim_v2_no-count_eduout_upsec_no)
-	* Drop rows with n<30 for all variables
-	tab row_keep 
-	br if row_keep==12
-	br if row_keep==0
-	drop if row_keep==0 & eduout_prim_uis==.
-	
-
-for X in any prim lowsec upsec: gen diff_comp_X=abs(comp_X_v2-comp_X_uis)
-
-gen flag_comp=0 // Both in UIS & GEM. No problem
-replace flag_comp=1 if (diff_comp_prim>=3|diff_comp_lowsec>=3|diff_comp_lowsec>=3) // Both in UIS & GEM. Diff>3
-replace flag_comp=2 if comp_prim_uis==. // Only in GEM
-replace flag_comp=3 if (comp_prim_v2==. & comp_prim_uis!=.) // Only in UIS
-replace flag_comp=. if category!="Total"
-bys country_year survey: egen t_flag=max(flag_comp) 
-drop flag_comp
-
-label define flag_comp 0 "Both in UIS & GEM. No problem" 1 "Both in UIS & GEM. Diff>3" 2 "Only in GEM" 3 "Only in UIS" 
-label values t_flag flag_comp
-
-decode t_flag, gen(flag_comp)
-drop t_flag
-
-bys flag_comp: tab iso_code3
-drop count*
-drop iso_code2*
-drop diff*
-drop _merge
-drop row_keep
-merge m:1 iso_code3 using "$aux_data/country_iso_codes_names.dta", keepusing(country)
-drop if _merge==2
-drop _merge
-sort iso_code3 country year survey category 
-order iso_code3 country year survey category $categories_collapse $vars_m $vars_no
-
-gen categories_uis=1 if (category=="Total"|category=="Location"|category=="Sex"|category=="Wealth"|category=="Sex & Wealth"|category=="Location & Wealth"|category=="Location & Sex"|category=="Location & Sex & Wealth")
-
-foreach X in comp_prim comp_lowsec comp_upsec {
-	replace `X'_v2=`X'_uis if categories_uis==1 & flag_comp=="Both in UIS & GEM. No problem"
-}
-
-** Have to check if with the UIS replacements some have n<30
-
-gen source="GEM"
-replace source="UIS" if categories_uis==1 & flag_comp=="Both in UIS & GEM. No problem"
-
-save "C:\Users\Rosa_V\Desktop\WIDE\WIDE\data_created\edu_indicators\GEM_UIS_AllCategories_v2.dta", replace
-*-----------------------------------
-
-use "C:\Users\Rosa_V\Desktop\WIDE\WIDE\data_created\edu_indicators\GEM_UIS_AllCategories_v2.dta", clear
-export excel "C:\Users\Rosa_V\Desktop\WIDE\WIDE\data_created\edu_indicators\GEM_UIS_AllCategories_v2.csv", firstrow(variables) replace
-
-
-*****************************************************************************
-use "$gral_dir\WIDE\WIDE_DHS_MICS\data\GEM_UIS_AllCategories_v5.dta", clear
-keep if survey=="DHS"
-keep if category=="Total"
-replace year=year_uis if year==.
-keep country year eduout_prim eduout_lowsec eduout_upsec eduout_prim_uis eduout_lowsec_uis eduout_upsec_uis
-
-for X in any prim lowsec upsec: gen diff_eduout_X=abs(eduout_X-eduout_X_uis)
-*Flags for out of school
-gen flag_eduout=0 // Both in UIS & GEM. No problem
-replace flag_eduout=1 if (diff_eduout_prim>=3|diff_eduout_lowsec>=3|diff_eduout_lowsec>=3) // Both in UIS & GEM. Diff>3
-replace flag_eduout=2 if eduout_prim_uis==. // Only in GEM
-replace flag_eduout=3 if (eduout_prim==. & eduout_prim_uis!=.) // Only in UIS
-
-label define flag 0 "Both in UIS & GEM. No problem" 1 "Both in UIS & GEM. Diff>3" 2 "Only in GEM" 3 "Only in UIS" 
-for X in any eduout: label values flag_X flag
-
-foreach X in eduout {
-gen result_`X'="UIS estimates are reported" if flag_`X'==0
-	replace result_`X'="Need to analyze" if flag_`X'==1
-	replace result_`X'="GEM estimates are reported" if flag_`X'==2
-	replace result_`X'="UIS estimates are reported" if flag_`X'==3
-}
-
-*------------------------------------------------------------------------------------
-*------------------------------------------------------------------------------------
-
-******** THE FOLLOWING HAS EDUOUT BADLY CALCULATED
-
-use "$gral_dir\WIDE\WIDE_DHS_MICS\data\GEM_UIS_AllCategories_v4.dta", clear
-keep if survey=="DHS"
-keep if category=="Total"
-replace year=year_uis if year==.
-keep iso_code year_uis country* year eduout*
-drop *no
-for X in any prim lowsec upsec: ren eduout_X_m eduout_X
-merge 1:1 iso_code3 year_uis using "$aux_data\UIS\completion\UIS_completion_29Nov2018_TOTAL.dta"
-keep if survey=="DHS"
-keep if category=="Total"
-tab _merge
-replace year=year_uis if year==.
-replace country_year=country+"_"+string(year_uis) if country_year==""
-
-for X in any prim lowsec upsec: gen diff_eduout_X=abs(eduout_X-eduout_X_uis)
-*Flags for out of school
-gen flag_eduout=0 // Both in UIS & GEM. No problem
-replace flag_eduout=1 if (diff_eduout_prim>=3|diff_eduout_lowsec>=3|diff_eduout_lowsec>=3) // Both in UIS & GEM. Diff>3
-replace flag_eduout=2 if eduout_prim_uis==. // Only in GEM
-replace flag_eduout=3 if (eduout_prim==. & eduout_prim_uis!=.) // Only in UIS
-
-label define flag 0 "Both in UIS & GEM. No problem" 1 "Both in UIS & GEM. Diff>3" 2 "Only in GEM" 3 "Only in UIS" 
-for X in any eduout: label values flag_X flag
-
-foreach X in eduout {
-gen result_`X'="UIS estimates are reported" if flag_`X'==0
-	replace result_`X'="Need to analyze" if flag_`X'==1
-	replace result_`X'="GEM estimates are reported" if flag_`X'==2
-	replace result_`X'="UIS estimates are reported" if flag_`X'==3
-}
-sort country_year
-order survey country year eduout_prim eduout_lowsec eduout_upsec diff_eduout_prim flag_eduout result_eduout result_eduout diff_eduout_lowsec diff_eduout_upsec
-br survey country year eduout_prim eduout_lowsec eduout_upsec diff_eduout_prim flag_eduout result_eduout result_eduout diff_eduout_lowsec diff_eduout_upsec
