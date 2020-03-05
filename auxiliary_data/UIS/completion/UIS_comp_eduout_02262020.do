@@ -119,3 +119,17 @@ compress
 br if survey=="" // solve this cases later. Seems that are not NATIONAL surveys
 save "$dir\UIS_comp_eduout_02262020_with_sources.dta", replace
 
+
+
+
+use "P:\WIDE\auxiliary_data\UIS\completion\UIS_comp_eduout_02262020.dta", clear
+merge m:1 iso_code3 year using "P:\WIDE\auxiliary_data\UIS\sources\UIS_metadata_02262020.dta"
+tab category if _m==1 // they don't have total, only urban! so not included in my calculations
+tab country if _m==1 // Argentina and Uruguay
+drop if _m==1
+drop _m
+br
+save "$dir\UIS_comp_eduout_02262020_with_metadata.dta", replace
+
+
+
