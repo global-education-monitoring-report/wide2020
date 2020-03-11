@@ -1,4 +1,4 @@
-iso3,country,year,current_edu_level,new_edu_level
+iso_code3,country,year,edu_level,new_edu_level
 ,Algeria ,2012,2,21
 ,Algeria ,2012,3,22
 ,Algeria ,2012,4,3
