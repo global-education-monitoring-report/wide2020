@@ -10,12 +10,15 @@ foreach X in $categories_collapse {
 drop if `X'=="" & category=="`X'"
 }
 
-for X in any sex wealth religion ethnicity region: drop if category=="location X" & (location==""|X=="")
-for X in any wealth religion ethnicity region: drop if category=="sex X" & (sex==""|X=="")
-for X in any region: drop if category=="wealth X" & (wealth==""|X=="")
+for X in any sex wealth religion ethnicity region: cap drop if category=="location X" & (location==""|X=="")
+for X in any wealth religion ethnicity region: cap drop if category=="sex X" & (sex==""|X=="")
+for X in any region: cap drop if category=="wealth X" & (wealth==""|X=="")
 
 drop if category=="location sex wealth" & (location==""|sex==""|wealth=="")
 drop if category=="sex wealth region" & (sex==""|wealth==""|region=="")
+
+* Categories that are not used:
+drop if category=="location sex wealth region"|category=="location region"|category=="location sex region"|category=="location wealth region"
 
 replace category=proper(category)
 split category, gen(c)
