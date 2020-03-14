@@ -1,10 +1,4 @@
-* reading: program to read all countries dta
-* Version 1.0
-
-program define reading
-	syntax path
-	
-	clear
+clear
 global data_path "path"
 
 * get a list of files with the extension .dta in directory 
