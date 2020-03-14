@@ -1,4 +1,4 @@
-use "$data_mics\hl\Step_0_temp.dta", clear
+use "$raw_data\all\cleaning.dta", clear
 set more off
 
 
@@ -41,4 +41,4 @@ set more off
 
 
 compress
-save "$data_mics\hl\cleaning.dta", replace
+save "$raw_data\all\cleaning.dta", replace
