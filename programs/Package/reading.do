@@ -5,6 +5,8 @@ global data_path "path"
 cd $data_path
 local allfiles : dir . files "*.dta"
 
+mkdir "$data_path\temporal"
+
 * read all files 
 foreach file of local allfiles {
   *read a file
@@ -15,21 +17,26 @@ foreach file of local allfiles {
   
   *rename variables 	
   
-
+  *select variables
+  
+  
   *generate variables with file name
   tokenize "`file'", parse("_")
 	gen country = "`1'" 
 	gen year_folder = `3'
 
   compress 
-  save "$data_path\\`1'_`3'_hl", replace
+  save "$data_path\temporal\\`1'_`3'_hl", replace
 }
 
 *append all
+set more off
 foreach f of local allfiles {
 	qui append using `f'
 }
 
+*Remove temporal folder and files
+rmdir "$data_path\temporal"
 
 *Drop unnecessary variables
 drop   ed8b  //hh6r hh7a1 hh7a2
