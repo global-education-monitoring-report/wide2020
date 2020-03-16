@@ -29,6 +29,9 @@ foreach file of local allfiles {
   save "$data_path\temporal\\`1'_`3'_hl", replace
 }
 
+cd $data_path\temporal
+local allfiles : dir . files "*.dta"
+
 *append all
 set more off
 foreach f of local allfiles {
