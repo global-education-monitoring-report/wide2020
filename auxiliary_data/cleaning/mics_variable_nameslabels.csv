@@ -1,0 +1,90 @@
+name,varlab
+hl3,Relationship to the head
+hl4,Sex
+hl5m,Month of birth
+hl5y,Year of birth
+hl6,Age
+ed3,Ever attended school or pre-school
+ed4a,Highest level of education attended
+ed4b,Highest grade completed at that level
+ed5,Attended school during current school year (2009-2010)
+ed6a,Level of education attended current school year
+ed6b,Grade of education attended current school year
+hh5d,Day of interview
+hh5m,Month of interview
+hh5y,Year of interview
+hh6,Area
+hhweight,Household sample weight
+schage,Age at beginning of school year
+hh6b,Region
+windex5,Wealth index quintiles
+hlweight,Household members weight (normalized)
+hl4,Sexe
+hl3,Lien de parenté avec le chef
+hl5m,Mois de naissance
+hl5y,Année de naissance
+hl6,Age
+ed4a,Plus haut niveau d'éducation fréquenté
+ed4b,Dernière classe achevée a ce niveau
+ed3,A fréquenté l'école ou l'école maternelle
+ed5,A fréquenté l'école ou l'école maternelle pendant l'anné
+ed6a,Niveau d'éducation fréquenté pendant cette année scolai
+ed6b,Classe fréquenté pendant cette année scolaire
+hh5d,Jour de l'interview
+hh5m,Mois de l'interview
+hh5y,Année de l'interview
+hh6,Milieu
+hh7,Région
+religion,Religion du chef de ménage
+hc1c,Ethnie du chef du ménage
+windex5,Quintile du bien-être économique
+schage,Age at beginning of school year
+hhweight,Poids normalisé des ménages
+hl3,Relación de parentesco con (el jefe/la jefa)
+hl4,Sexo
+hl5m,Mes de nacimiento
+hl5y,Año de nacimiento
+hl6,Edad
+ed3,Alguna vez asistió a la escuela o el pre-escolar
+ed4a,Nivel de educación más alto al que asistió
+ed4b,Grado más alto de educación que completó
+ed5,Asistió a la escuela en el presente año escolar 2013
+ed6a,Nivel de educación del presente año escolar
+ed6b,Grado de educación del presente año escolar
+hh5d,Día de la entrevista
+hh5m,Mes de la entrevista
+hh5y,Año de la entrevista
+hh6,Área
+hh7,Dominio del estudio
+hh6a,Área
+hh7a,Dominio
+region,Agrupación de departamentos
+ethnicity,Etnia o raza del jefe de hogar
+schage,Edad de inicio del año escolar
+hhweight,Ponderación del hogar
+windex5,Quintiles del índice de riqueza
+windex5_5,Quintiles del índice de riqueza original
+hl3,Relationship to the head
+hl4,Sex
+hl5m,Month of birth
+hl5y,Year of birth
+hl6,Age
+ed3,Ever attended school or pre-school
+ed4a,Highest level of education attended
+ed4b,Highest grade completed at that level
+ed4ap,Highest level of education attended [survey specific]
+ed4bp,Highest grade completed at that level  [survey specific]
+ed5,Attended school during current school year (2013-2014)
+ed6a,Level of education attended current school year
+ed6b,Grade of education attended current school year
+ed6ap,Level of education attended current school year [survey specific]
+ed6bp,Grade of education attended current school year [survey specific]
+hh5d,Day of interview
+hh5m,Month of interview
+hh5y,Year of interview
+hh6,Area
+hh7,Governorate
+schage,Age at beginning of school year
+hhweight,Household sample weight
+region,Region
+windex5,Wealth index quintile
