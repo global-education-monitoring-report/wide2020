@@ -1,24 +1,32 @@
 name,varlab
+ed3,Ever attended school or pre-school
+ed4a,Highest level of education attended
+ed4ap,Highest level of education attended [survey specific]
+ed4b,Highest grade completed at that level
+ed4bp,Highest grade completed at that level  [survey specific]
+ed5,Attended school during current school year (2009-2010)
+ed5,Attended school during current school year (2013-2014)
+ed6a,Level of education attended current school year
+ed6ap,Level of education attended current school year [survey specific]
+ed6b,Grade of education attended current school year
+ed6bp,Grade of education attended current school year [survey specific]
+hh5d,Day of interview
+hh5m,Month of interview
+hh5y,Year of interview
+hh6,Area
+hh6b,Region
+hh7,Governorate
+hhweight,Household sample weight
 hl3,Relationship to the head
 hl4,Sex
 hl5m,Month of birth
 hl5y,Year of birth
 hl6,Age
-ed3,Ever attended school or pre-school
-ed4a,Highest level of education attended
-ed4b,Highest grade completed at that level
-ed5,Attended school during current school year (2009-2010)
-ed6a,Level of education attended current school year
-ed6b,Grade of education attended current school year
-hh5d,Day of interview
-hh5m,Month of interview
-hh5y,Year of interview
-hh6,Area
-hhweight,Household sample weight
-schage,Age at beginning of school year
-hh6b,Region
-windex5,Wealth index quintiles
 hlweight,Household members weight (normalized)
+region,Region
+schage,Age at beginning of school year
+windex5,Wealth index quintiles
+windex5,Wealth index quintile
 hl4,Sexe
 hl3,Lien de parenté avec le chef
 hl5m,Mois de naissance
@@ -64,27 +72,5 @@ schage,Edad de inicio del año escolar
 hhweight,Ponderación del hogar
 windex5,Quintiles del índice de riqueza
 windex5_5,Quintiles del índice de riqueza original
-hl3,Relationship to the head
-hl4,Sex
-hl5m,Month of birth
-hl5y,Year of birth
-hl6,Age
-ed3,Ever attended school or pre-school
-ed4a,Highest level of education attended
-ed4b,Highest grade completed at that level
-ed4ap,Highest level of education attended [survey specific]
-ed4bp,Highest grade completed at that level  [survey specific]
-ed5,Attended school during current school year (2013-2014)
-ed6a,Level of education attended current school year
-ed6b,Grade of education attended current school year
-ed6ap,Level of education attended current school year [survey specific]
-ed6bp,Grade of education attended current school year [survey specific]
-hh5d,Day of interview
-hh5m,Month of interview
-hh5y,Year of interview
-hh6,Area
-hh7,Governorate
-schage,Age at beginning of school year
-hhweight,Household sample weight
-region,Region
-windex5,Wealth index quintile
+country,
+year_folder,
