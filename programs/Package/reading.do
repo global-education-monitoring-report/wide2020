@@ -16,7 +16,7 @@ foreach file of local allfiles {
   use "`file'", clear
   
   *lowercase all variables
-  cap rename *, lower
+  capture rename *, lower
   
   *generate variables with file name
   tokenize `file', parse("_")
