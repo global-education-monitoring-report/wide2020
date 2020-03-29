@@ -9,8 +9,17 @@ local allfiles : dir . files "*.dta"
 
 mkdir "$data_path/temporal"
 
-* read all files 
 
+* mics variables to keep
+import delimited "$aux_data_path/mics_variables_nameslabels.csv", clear varnames(1) encoding(UTF-8)
+keep name 
+duplicates drop name, force
+sxpose, clear firstnames
+ds
+local micsvars `r(varlist)'
+
+
+* read all files 
 foreach file of local allfiles {
   *read a file
   use "`file'", clear
@@ -27,53 +36,23 @@ foreach file of local allfiles {
     label variable country "Country name"
 	label variable year_file "File year"
   
+	*select common variables 
+	ds
+	local datavars `r(varlist)'
+	local common : list datavars & micsvars
+	*display "`common'"
+	keep `common'
+	ds
+
   compress 
   save "$data_path/temporal/`1'_`3'_hl", replace
 }
-
-* some R code using the rsource module (I keep trying to do it in stata but there doesn't seem to be an easy way as in R)
-* select variables using dictionary 
-
-*ssc install rsource 
-rsource, terminator(END_OF_R) rpath("/C:/Program Files/R/R-3.6.3/bin/i386/R.exe") roptions(`"--vanilla"')
-
-library(haven);     # import and export Stata datasets
-library(dplyr);     # manipulate dataframe
-library(sjlabelled) # manage variable labelled
-
-tempfile_path <- "/raw_data/temporal"
-
-# read mics variables and labels
-dictionary <- read_csv("auxiliary_data/cleaning/mics_variables_nameslabels.csv");
-
-file.list <- list.files(path = tempfile_path, pattern = '*.dta');
-file.list <- setNames(file.list, file.list);
-
-# store all .dta files as individual data frames inside of one list
-
-for(j in 1:length(file.list)){
-  
-  df <- read_dta(paste0("raw_data/temporal/", file.list[j]));
-  varlabel <- get_label(df) %>% as.data.frame();
-  varlabel$label <- varlabel[,1];
-  varlabel$variable <- rownames(varlabel);
-  
-  # common variable and label
-  vars <- inner_join(varlabel, dictionary, by = c("variable" = "name", "label" = "varlab"));
-  
-  # select variables and save
-  df <- df %>%
-    select(vars$variable)
-  write_dta(data = df, path = paste0("raw_data/temporal/", names(file.list)[j]));
-  
-}
-
-END_OF_R
 
 
 cd $data_path/temporal
 local allfiles : dir . files "*.dta", respectcase
 
+*standarize variables format 
 
 * ssc install fs 
 * append all
