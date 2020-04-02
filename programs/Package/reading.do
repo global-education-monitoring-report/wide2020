@@ -5,13 +5,16 @@ global aux_data_path "path"
 * get a list of files with the extension .dta in directory 
 
 cd $data_path
+
 local allfiles : dir . files "*.dta"
 
 mkdir "$data_path/temporal"
 
 
 * mics variables to keep
-import delimited "$aux_data_path/mics_variables_nameslabels.csv", clear varnames(1) encoding(UTF-8)
+import delimited "$aux_data_path/mics_dictionary.csv", clear varnames(1) encoding(UTF-8)
+tempfile dictionary
+save `dictionary'
 keep name 
 duplicates drop name, force
 sxpose, clear firstnames
@@ -43,7 +46,22 @@ foreach file of local allfiles {
 	*display "`common'"
 	keep `common'
 	ds
-
+	
+	*rename 
+	fix_names
+	
+	*encode
+	use "`dictionary'", clear
+	 drop if encode != "decode"
+	 keep name_new
+	 sxpose, clear firstnames
+	 ds
+	 local micsvars_decode `r(varlist)'
+	 
+	foreach var of local micsvars_decode {
+	 sdecode `var', replace
+	}
+	
   compress 
   save "$data_path/temporal/`1'_`3'_hl", replace
 }
@@ -52,10 +70,11 @@ foreach file of local allfiles {
 cd $data_path/temporal
 local allfiles : dir . files "*.dta", respectcase
 
-*standarize variables format 
 
-* ssc install fs 
+*ssc install encodefrom
+
 * append all
+* ssc install fs 
 fs *.dta
 append using `r(files)'
 
