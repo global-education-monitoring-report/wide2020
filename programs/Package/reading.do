@@ -21,9 +21,19 @@ sxpose, clear firstnames
 ds
 local micsvars `r(varlist)'
 
+* mics variables to decode
+use `dictionary', clear
+*save `"`dictionary'"', replace
+drop if encode != "decode"
+keep name_new
+sxpose, clear firstnames
+ds
+local micsvars_decode `r(varlist)'
+
 
 * read all files 
 foreach file of local allfiles {
+
   *read a file
   use "`file'", clear
   
@@ -51,17 +61,15 @@ foreach file of local allfiles {
 	fix_names
 	
 	*encode
-	use "`dictionary'", clear
-	 drop if encode != "decode"
-	 keep name_new
-	 sxpose, clear firstnames
-	 ds
-	 local micsvars_decode `r(varlist)'
-	 
-	foreach var of local micsvars_decode {
-	 sdecode `var', replace
+	foreach var of local `micsvars_decode' {
+	 cap sdecode `var', replace
 	}
 	
+	*for X in any ed3 ed7 ed5: cap tostring X, gen(temp_X)
+	*drop ed3 ed7 ed5
+	*for X in any ed3 ed7 ed5: cap rename temp_X X
+	
+	*save each file in temporal folder
   compress 
   save "$data_path/temporal/`1'_`3'_hl", replace
 }
@@ -69,9 +77,6 @@ foreach file of local allfiles {
 
 cd $data_path/temporal
 local allfiles : dir . files "*.dta", respectcase
-
-
-*ssc install encodefrom
 
 * append all
 * ssc install fs 
@@ -84,6 +89,6 @@ rmdir "$data_path/temporal"
 
 * save all dataset in a single one
 compress
-save "$data_path/all/hl_mics_reading.dta", replace
+save "$data_path/all/mics_reading.dta", replace
 
 

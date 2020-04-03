@@ -2,7 +2,7 @@
 * Version 2.0
 
 program define replace_character
-		
+	*previously convert values to lowercase	
 	cleanchars , in("ĂŠ Ă¨ č é è")   out("e") vval values
 	cleanchars , in("ă ŕ ĂĄ ĂŁ à á") out("a") vval values
 	cleanchars , in("ń")             out("n") vval values

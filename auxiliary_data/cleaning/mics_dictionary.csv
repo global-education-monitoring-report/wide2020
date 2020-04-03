@@ -1,7 +1,10 @@
 name,name_new,varlab_es,varlab_en,varlab_fr,encode
 country,country,,Country name,,
-ed3,ed3,Alguna vez asistió a la escuela o el pre-escolar,Ever attended school or pre-school,A fréquenté l'école ou l'école maternelle,tostring
-ed4a,ed4a,,,,
+hh1,hh1,,,,
+hh2,hh2,,,,
+hl15,hl15,,,,
+hl6,hl6,,,,
+ed3,ed3,Alguna vez asistió a la escuela o el pre-escolar,Ever attended school or pre-school,A fréquenté l'école ou l'école maternelle,
 ed4a,ed4a,Nivel de educación más alto al que asistió,Highest level of education attended,Plus haut niveau d'éducation fréquenté,decode
 ed4ap,ed4a,,Highest level of education attended [survey specific],,
 ed4b,ed4b,Grado más alto de educación que completó,Highest grade completed at that level,Dernière classe achevée a ce niveau,decode
