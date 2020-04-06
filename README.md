@@ -1,6 +1,6 @@
 # WIDE
 
-The main changes I made to the MICS code are to separate it into 4 parts: reading, cleaning, calculating variables and summarizing. At the same time, inside each of these parts I have tried to simplify the code as much as possible and to separate the logic from the data.  To do this, I introduced several Stata module commands that need to be installed and generated specific commands. On the other hand, I created auxiliary tables that, through a merge with the dataset, allow a systematic replacement of values in different variables (region, ethnicity, etc.).
+The main changes I made to the MICS code are to separate it into 4 parts: reading, cleaning, calculating variables and summarizing. At the same time, inside each of these parts I have tried to simplify the code as much as possible and to separate the logic from the data.  To do this, I introduced several Stata module commands that need to be installed and generated specific commands. On the other hand, I created auxiliary tables that, through a merge with the dataset, allow a systematic replacement of values in different variables (region, ethnicity, etc.). There was also a change in the organization of the data and the homogenization of the country names. The files for each country should be in a single folder and named as follows: country_yyyy_hl.dta. This makes it easier to read and join them into a single file.
 
 
 ## Reading
