@@ -60,11 +60,16 @@ foreach file of local allfiles {
 	*rename 
 	fix_names
 	
-	*encode
+	*encoding and changing strings values to lower case
 	foreach var of local `micsvars_decode' {
 	 cap sdecode `var', replace
+	 replace `var' = lower(`var')
+	 *replace `var'=stritrim(`var')
+	 *replace `var'=strltrim(`var')
+	 *replace `var'=strrtrim(`var')
 	}
 	
+	* improve this to palestine 2010
 	*for X in any ed3 ed7 ed5: cap tostring X, gen(temp_X)
 	*drop ed3 ed7 ed5
 	*for X in any ed3 ed7 ed5: cap rename temp_X X

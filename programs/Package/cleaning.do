@@ -31,6 +31,9 @@ set more off
 * remove special character in values and labels
 replace_character
 
+* recoding several variables
+recoding	
+	
 *create new variables
 *ssc install catenate
 catenate country_year  = country year_file
