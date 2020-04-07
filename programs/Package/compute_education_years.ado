@@ -186,7 +186,7 @@ program define compute_education_years
 	replace eduyears = 97 if (ed4b == 97 | ed4b_label == "inconsistent")
 	replace eduyears = 98 if (ed4b == 98 | ed4b_label == "don't know")
 	replace eduyears = 99 if (ed4b == 99 | ed4b_label == "missing" | ed4b_label == "doesn't answer" | ed4b_label == "missing/dk")
-	replace eduyears = 0 if ed4b == 0 // this keeps the format for version B
+	replace eduyears = 0  if ed4b == 0 // this keeps the format for version B
 	
 end
 	

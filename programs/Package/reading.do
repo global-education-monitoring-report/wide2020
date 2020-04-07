@@ -69,10 +69,12 @@ foreach file of local allfiles {
 	 *replace `var'=strrtrim(`var')
 	}
 	
-	* improve this to palestine 2010
-	*for X in any ed3 ed7 ed5: cap tostring X, gen(temp_X)
-	*drop ed3 ed7 ed5
-	*for X in any ed3 ed7 ed5: cap rename temp_X X
+	if country_year == "Palestine_2010" {
+	for X in any ed3 ed7 ed5: cap tostring X, gen(temp_X)
+	drop ed3 ed7 ed5
+	for X in any ed3 ed7 ed5: cap rename temp_X X
+	}
+	
 	
 	*save each file in temporal folder
   compress 
