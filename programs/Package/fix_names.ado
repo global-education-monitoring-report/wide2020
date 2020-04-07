@@ -3,7 +3,7 @@ program define fix_names
 *renamefrom using $aux_data_path/mics_dictionary.csv, filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlabel_en)
 
 *remove underscore from variable name
-rename *_* **
+cap rename *_* **
  
 cap if !missing(ed4a)      & !missing(ed4ap)     drop ed4a
 cap if !missing(ed4b)      & !missing(ed4bp)     drop ed4b

@@ -40,6 +40,13 @@ catenate country_year  = country year_file
 catenate individual_id = country_year hh1 hh2 hl1
 catenate hh_id         = country_year hh1 hh2 
 
+*Add info interview for Thailand. It is in the hh module -> improve
+if country_year == "Thailand_2015" {
+		merge m:1 hh_id using "$data_raw_mics/Thailand/dates.dta", update
+		drop if _merge==2
+		drop _merge
+}
+	
 *fix several variables
 
 *replace year of the survey by year_file if it is wrong
