@@ -4,17 +4,16 @@ global aux_data_path "path"
 
 * get a list of files with the extension .dta in directory 
 
-cd $data_path
+cd $data_path/dta
 
 local allfiles : dir . files "*.dta"
 
 mkdir "$data_path/temporal"
 
 
-* mics variables to keep
+* mics variables to keep first
 import delimited "$aux_data_path/mics_dictionary.csv", clear varnames(1) encoding(UTF-8)
-tempfile dictionary
-save `dictionary'
+preserve
 keep name 
 duplicates drop name, force
 sxpose, clear firstnames
@@ -22,14 +21,21 @@ ds
 local micsvars `r(varlist)'
 
 * mics variables to decode
-use `dictionary', clear
-*save `"`dictionary'"', replace
+restore
+preserve
 drop if encode != "decode"
 keep name_new
 sxpose, clear firstnames
 ds
 local micsvars_decode `r(varlist)'
 
+* mics variables to keep last
+restore
+keep if keep == 1
+keep name_new
+sxpose, clear firstnames
+ds
+local micsvars_keep `r(varlist)'
 
 * read all files 
 foreach file of local allfiles {
@@ -40,14 +46,6 @@ foreach file of local allfiles {
   *lowercase all variables
   capture rename *, lower
   
-  *generate variables with file name
-  tokenize `file', parse("_")
-	generate country = "`1'" 
-	generate year_file = `3'
-	
-   *label new variables
-    label variable country "Country name"
-	label variable year_file "File year"
   
 	*select common variables 
 	ds
@@ -60,25 +58,65 @@ foreach file of local allfiles {
 	*rename 
 	fix_names
 	
+	*generate variables with file name
+	tokenize `file', parse("_")
+		generate country = "`1'" 
+		generate year_file = `3'
+	
+   *label new variables
+    label variable country "Country name"
+	label variable year_file "File year"
+	
+	
 	*encoding and changing strings values to lower case
-	foreach var of local `micsvars_decode' {
-	 cap sdecode `var', replace
-	 replace `var' = lower(`var')
-	 *replace `var'=stritrim(`var')
-	 *replace `var'=strltrim(`var')
-	 *replace `var'=strrtrim(`var')
+	local common_decode : list common & micsvars_decode
+	
+	foreach var of varlist `common_decode'{ 
+		cap sdecode `var', replace
+		replace `var' = lower(`var')
+		*replace `var' = stritrim(`var')
+		*replace `var' = strltrim(`var')
+		*replace `var' = strrtrim(`var')
+	 }
+	 
+		
+	if country == "Palestine" & year_file == 2010 {
+		for X in any ed3 ed7 ed5: cap tostring X, gen(temp_X)
+		drop ed3 ed7 ed5
+		for X in any ed3 ed7 ed5: cap rename temp_X X
 	}
 	
-	if country_year == "Palestine_2010" {
-	for X in any ed3 ed7 ed5: cap tostring X, gen(temp_X)
-	drop ed3 ed7 ed5
-	for X in any ed3 ed7 ed5: cap rename temp_X X
-	}
+	*create new variables
+	*ssc install catenate
+	catenate country_year  = country year_file, p("_")
+	catenate individual_id = country_year hh1 hh2 hl1, p(no)
+	catenate hh_id         = country_year hh1 hh2, p(no) 
+
+	*Add info interview for Thailand. It is in the hh module -> improve
+	 
+	*if country_year == "Thailand_2015" {
+	*preserve
+		*use "$data_path/dta/hh/Thailand_2015_hh.dta", clear
+		*cap rename *, lower
+		*keep hh1 hh2 hh5m hh5y
+		*generate country_year = "Thailand_2015"
+		*catenate hh_id = country_year hh1 hh2, p(no) 
+		*tempfile th_hh
+		*save `th_hh'
+	*restore
+		*merge m:1 hh_id using "`th_hh'", update
+		*drop if _merge==2
+		*drop _merge
+   *}
 	
+	*creating variables doesnt exist
+	for X in any `micsvars_keep': cap gen X=.
+	order `micsvars_keep'
 	
 	*save each file in temporal folder
-  compress 
-  save "$data_path/temporal/`1'_`3'_hl", replace
+  	
+	compress 
+	save "$data_path/temporal/`1'_`3'_hl", replace
 }
 
 
@@ -88,7 +126,7 @@ local allfiles : dir . files "*.dta", respectcase
 * append all
 * ssc install fs 
 fs *.dta
-append using `r(files)'
+append using `r(files)', force
 
 
 * remove temporal folder and files

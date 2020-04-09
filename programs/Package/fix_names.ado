@@ -34,6 +34,7 @@ cap rename hh6a      hh6
 cap rename hh6b      hh7
 cap rename hh7a      region
 cap rename hlweight  hhwieght
+cap rename hhwieght  hhweight
 cap rename hc1a      religion
 cap rename hl15      religion
 cap rename windex5_5 windex5
