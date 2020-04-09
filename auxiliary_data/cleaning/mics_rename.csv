@@ -1,0 +1,29 @@
+name,name_new,varlab_en
+country,country,Country name
+year_file,year_file,File year
+hh1,hh1,
+hh2,hh2,
+hl1,hl1,
+hl4,sex,Sex
+hl5m,hl5m,Month of birth
+hl5y,hl5y,Year of birth
+hl6,age,Age
+ed3,ed3,Ever attended school or pre-school
+ed4a,ed4a,Highest level of education attended
+ed4b,ed4b,Highest grade completed at that level
+ed5,ed5,Attended school during current school year
+ed6a,ed6a,Level of education attended current school year
+ed6b,ed6b,Grade of education attended current school year
+ed7,ed7,
+ed8a,ed8a,
+ethnicity,ethnicity,Ethnicity
+hh6,urban,Area
+hh7,region,Governorate
+hhweight,hhweight,Household sample weight
+religion,religion,Religion
+schage,schage,Age at beginning of school year
+windex5,wealth,Wealth index quintile
+hl3,hl3,Relationship to the head
+hh5d,hh5d,Day of interview
+hh5m,hh5m,Month of interview
+hh5y,hh5y,Year of interview

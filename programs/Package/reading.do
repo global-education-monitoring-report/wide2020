@@ -8,7 +8,7 @@ cd $data_path/dta
 
 local allfiles : dir . files "*.dta"
 
-mkdir "$data_path/temporal"
+capture mkdir "$data_path/temporal"
 
 
 * mics variables to keep first
@@ -57,23 +57,18 @@ foreach file of local allfiles {
 	
 	*rename 
 	fix_names
-	
+		
 	*generate variables with file name
 	tokenize `file', parse("_")
 		generate country = "`1'" 
 		generate year_file = `3'
-	
-   *label new variables
-    label variable country "Country name"
-	label variable year_file "File year"
-	
 	
 	*encoding and changing strings values to lower case
 	local common_decode : list common & micsvars_decode
 	
 	foreach var of varlist `common_decode'{ 
 		cap sdecode `var', replace
-		replace `var' = lower(`var')
+		cap replace `var' = lower(`var')
 		*replace `var' = stritrim(`var')
 		*replace `var' = strltrim(`var')
 		*replace `var' = strrtrim(`var')
@@ -112,6 +107,9 @@ foreach file of local allfiles {
 	*creating variables doesnt exist
 	for X in any `micsvars_keep': cap gen X=.
 	order `micsvars_keep'
+	
+	*rename variables
+	renamefrom using $aux_data_path/mics_rename.csv, filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
 	
 	*save each file in temporal folder
   	

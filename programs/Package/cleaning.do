@@ -98,6 +98,13 @@ set more off
 * remove special character in values and labels
 replace_character
 
+* rename variables
+cap rename hl4 sex
+cap rename hl6 age
+cap rename windex5 wealth
+cap rename hh6 urban
+cap rename hh7 region
+
 *fix several variables
 
 *replace year of the survey by year_file if it is wrong
