@@ -1,6 +1,6 @@
 # WIDE
 
-The main changes I made to the MICS code are to separate it into 4 parts: reading, cleaning, calculating variables and summarizing. At the same time, inside each of these parts I have tried to simplify the code as much as possible and to separate the logic from the data.  To do this, I introduced several Stata module commands that need to be installed and generated specific commands. On the other hand, I created auxiliary tables that, through a merge with the dataset, allow a systematic replacement of values in different variables (region, ethnicity, etc.). There was also a change in the organization of the data and the homogenization of the country names. The files for each country should be in a single folder and named as follows: country_yyyy_hl.dta. This makes it easier to read and join them into a single file.
+The main changes I made to the MICS code are to separate it into 4 parts: reading, cleaning, calculating variables and summarizing. At the same time, inside each of these parts I have tried to simplify the code as much as possible and to separate the logic from the data. To do this, I introduced several Stata module commands that need to be installed and generated specific commands that I named with an underscore. On the other hand, I created auxiliary tables that, through a merge with the dataset, allow a systematic replacement of values in different variables (region, ethnicity, etc.). There was also a change in the organization of the data and the homogenization of the country names. The files for each country should be in a single folder and named as follows: country_yyyy_hl.dta. This makes it easier to read and join them into a single file. For those countries whose name contains more than one word, the first letter of each is capitalized without leaving any space between the words.
 
 
 ## Reading
@@ -21,13 +21,17 @@ The new commands are:
 
 **cleanchars**: a compact way to replace special characters. It is included in the replace_characters.ado.
 
+**catenate**: a simple way to concatenate strings variables
 
 ## Cleaning
 
-In this part the values of the variables are standardized and for some variables the values are replaced according to the auxiliary tables. This includes: names of regions, names of religions, dates, ethnicities, years of education and durations.
+In this part the values of the variables are standardized and for some variables the values are replaced according to the auxiliary tables. This includes: region, religion, date, ethnicity, urban, sex, year, original education variables. New variables were also created such as: years of education and durations.
 
-- **catenate**: a simple way to concatenate strings variables
+To simplify replacing one value with another, I created the *replace_many* function that replaces a "master" dataset value with a "using" dataset value as long as certain variables match. 
 
+**replace_many**: to replace at once many values.
+
+**compute_education_years**: to calculate the years of education
 
 ## Calculating
 
