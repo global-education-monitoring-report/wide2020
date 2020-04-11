@@ -1,4 +1,4 @@
-iso_code3,region   ,new_region,country
+iso_code3,region   ,region_replace,country
 ,fbih,federation of bosnia and herzegovina,BosniaandHerzegovina
 ,rs,republic of srpska,BosniaandHerzegovina
 ,bd,district of brcko,BosniaandHerzegovina

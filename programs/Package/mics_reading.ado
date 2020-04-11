@@ -44,7 +44,7 @@ foreach file of local allfiles {
   capture rename *, lower
   
   
-	*select common variables 
+	*select common variables between the dataset and the mics dictionary (1st column)
 	ds
 	local datavars `r(varlist)'
 	local common : list datavars & micsvars
@@ -60,15 +60,25 @@ foreach file of local allfiles {
 		generate country = "`1'" 
 		generate year_file = `3'
 	
-	*encoding and changing strings values to lower case
-	local common_decode : list common & micsvars_decode
 	
+	*create variables doesnt exist 
+	for X in any `micsvars_keep': cap gen X=.
+	order `micsvars_keep'
+	
+	*create numerics variables 
+	for X in any ed4a ed4b ed6a ed6b ed8a: gen X_rn = X
+	
+	*decode and change strings values to lower case
+	local common_decode : list common & micsvars_decode
+		
 	foreach var of varlist `common_decode'{ 
 		cap sdecode `var', replace
 		cap replace `var' = lower(`var')
-		*replace `var' = stritrim(`var')
-		*replace `var' = strltrim(`var')
-		*replace `var' = strrtrim(`var')
+		* remove special character in values and labels
+		cap	replace_character
+		cap replace `var' = stritrim(`var')
+		cap replace `var' = strltrim(`var')
+		cap replace `var' = strrtrim(`var')
 	 }
 	 
 		
@@ -78,7 +88,7 @@ foreach file of local allfiles {
 		for X in any ed3 ed7 ed5: cap rename temp_X X
 	}
 	
-	*create new variables
+	*create ids variables
 	*ssc install catenate
 	catenate country_year  = country year_file, p("_")
 	catenate individual_id = country_year hh1 hh2 hl1, p(no)
@@ -101,15 +111,10 @@ foreach file of local allfiles {
 		*drop _merge
    *}
 	
-	*creating variables doesnt exist
-	for X in any `micsvars_keep': cap gen X=.
-	order `micsvars_keep'
-	
-	*rename variables
+	*save each file in temporal folder
+  	*rename some variables
 	renamefrom using `rename', filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
 	
-	*save each file in temporal folder
-  	
 	compress 
 	save "`temporal_path'/`1'_`3'_hl", replace
 }

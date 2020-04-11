@@ -1,23 +1,23 @@
 sex,sex_replace,urban,urban_replace,ed3,ed3_replace,ed4a,ed4a_replace,ed4b,ed4b_replace,ed5,ed5_replace,ed6a,ed6a_replace,ed6b,ed6b_replace,ed7,ed7_replace,ed8a,ed8a_replace
-2,0,rural,0,nao,no,nao,no,nao,no,nao,no,nao,no,nao,no,nao,no,nao,no
-9,.,rural coastal,0,non,no,non,no,non,no,non,no,non,no,non,no,non,no,non,no
-3,.,rural interior,0,si,yes,si,yes,si,yes,si,yes,si,yes,si,yes,si,yes,si,yes
-4,.,rural with road,0,sim,yes,sim,yes,sim,yes,sim,yes,sim,yes,sim,yes,sim,yes,sim,yes
-,,rural without road,0,oui,yes,oui,yes,oui,yes,oui,yes,oui,yes,oui,yes,oui,yes,oui,yes
-,,rural y menores de 5 mil habitantes,0,em falta,missing,em falta,missing,em falta,missing,em falta,missing,em falta,missing,em falta,missing,em falta,missing,em falta,missing
-,,,0,manquant,missing,manquant,missing,manquant,missing,manquant,missing,manquant,missing,manquant,missing,manquant,missing,manquant,missing
-,,Non-municipal,0,omitido,missing,omitido,missing,omitido,missing,omitido,missing,omitido,missing,omitido,missing,omitido,missing,omitido,missing
-,,urbain,1,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing
-,,urban ,1,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing
-,,urbana,1,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer
-,,urbano,1,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer
-,,municipal,1,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer
-,,kma,1,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know
-,,capital city,1,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know
-,,aimag center,1,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know
-,,soum center,1,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know
-,,camp,2,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know
-,,camps,2,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know
+2,0,rural,rural,nao,no,nao,no,nao,no,nao,no,nao,no,nao,no,nao,no,nao,no
+9,.,rural coastal,rural,non,no,non,no,non,no,non,no,non,no,non,no,non,no,non,no
+3,.,rural interior,rural,si,yes,si,yes,si,yes,si,yes,si,yes,si,yes,si,yes,si,yes
+4,.,rural with road,rural,sim,yes,sim,yes,sim,yes,sim,yes,sim,yes,sim,yes,sim,yes,sim,yes
+,,rural without road,rural,oui,yes,oui,yes,oui,yes,oui,yes,oui,yes,oui,yes,oui,yes,oui,yes
+,,rural y menores de 5 mil habitantes,rural,em falta,missing,em falta,missing,em falta,missing,em falta,missing,em falta,missing,em falta,missing,em falta,missing,em falta,missing
+,,,rural,manquant,missing,manquant,missing,manquant,missing,manquant,missing,manquant,missing,manquant,missing,manquant,missing,manquant,missing
+,,Non-municipal,rural,omitido,missing,omitido,missing,omitido,missing,omitido,missing,omitido,missing,omitido,missing,omitido,missing,omitido,missing
+,,urbain,urban  ,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing,no reportado,missing
+,,urban ,urban  ,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing,non declaree,missing
+,,urbana,urban  ,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer,nr,doesn’t answer
+,,urbano,urban  ,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer,non declare/pas de response,doesn’t answer
+,,municipal,urban  ,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer,no responde,doesn’t answer
+,,kma,urban  ,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know,dk,don’t know
+,,capital city,urban  ,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know,no sabe,don’t know
+,,aimag center,urban  ,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know,nao sabe,don’t know
+,,soum center,urban  ,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know,ns,don’t know
+,,camp,camps,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know,en sait pas,don’t know
+,,camps,camps,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know,nsp,don’t know
 ,,,,inconsistente,inconsistent,inconsistente,inconsistent,inconsistente,inconsistent,inconsistente,inconsistent,inconsistente,inconsistent,inconsistente,inconsistent,inconsistente,inconsistent,inconsistente,inconsistent
 ,,,,incoherent,inconsistent,incoherent,inconsistent,incoherent,inconsistent,incoherent,inconsistent,incoherent,inconsistent,incoherent,inconsistent,incoherent,inconsistent,incoherent,inconsistent
 ,,,,incoherence,inconsistent,incoherence,inconsistent,incoherence,inconsistent,incoherence,inconsistent,incoherence,inconsistent,incoherence,inconsistent,incoherence,inconsistent,incoherence,inconsistent
