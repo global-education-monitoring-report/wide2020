@@ -2,8 +2,20 @@
 * Version 1.0
 
 program define compute_education_years
+	args input_path table_path output_path
+
+	import delimited `input_path',  varnames(1) encoding(UTF-8) clear
+	tempfile group
+	save `group'
+	
+	use `input_path', clear
+	merge m:1 country_year using `group', keep(match master) nogenerate
 	
 	generate eduyears = .
+	
+	rename ed4b ed4b_label
+	rename ed4b_rn ed4b
+	
 	
 	* replace eduyears according to which group it belongs
 	*GROUP 0*
@@ -38,7 +50,7 @@ program define compute_education_years
 		replace eduyears = years_upsec      if ed4b == 30 | ed4b == 40
 		replace eduyears = years_upsec + 2  if ed4b == 31 
 		replace eduyears = years_upsec + 3  if (ed4b == 32 | ed4b == 33) 
-		replace eduyears = years_upsec      if ed4b == 40 & country_year=="Nigeria_2011" // ??
+		replace eduyears = years_upsec      if ed4b == 40 & country_year == "Nigeria_2011" // ??
 		replace eduyears = years_higher 	if ed4b == 42 
 		replace eduyears = years_higher + 2 if ed4b == 43 // those higher than higher
 	 }
@@ -88,7 +100,7 @@ program define compute_education_years
 	 	replace eduyears = ed4b                if (code_ed4a == 1 | code_ed4a == 2 | code_ed4a == 21 | code_ed4a == 22 | code_ed4a == 23) 
 		replace eduyears = ed4b + years_upsec  if (code_ed4a == 3 | code_ed4a == 32 | code_ed4a == 33)
 		replace eduyears = ed4b + years_higher if (code_ed4a == 40) 
-		replace eduyears = ed4b + years_lowsec if (code_ed4a == 24) & country_year=="Kazakhstan_2015"
+		replace eduyears = ed4b + years_lowsec if (code_ed4a == 24) & country_year == "Kazakhstan_2015"
 	 }
 	 *GROUP 11*
 	 else if group == 11 {
@@ -178,7 +190,7 @@ program define compute_education_years
 		replace eduyears = 0                if ed4b_label == "preschool" 
 	 }
 	 else {
-		replace eduyears = .
+		replace eduyears = eduyears
 	 }
 	 
 	 
@@ -186,7 +198,9 @@ program define compute_education_years
 	replace eduyears = 97 if (ed4b == 97 | ed4b_label == "inconsistent")
 	replace eduyears = 98 if (ed4b == 98 | ed4b_label == "don't know")
 	replace eduyears = 99 if (ed4b == 99 | ed4b_label == "missing" | ed4b_label == "doesn't answer" | ed4b_label == "missing/dk")
-	replace eduyears = 0  if ed4b == 0 // this keeps the format for version B
+	replace eduyears = 0  if ed4b == 0
+	
+	save `output_path', replace
 	
 end
 	
