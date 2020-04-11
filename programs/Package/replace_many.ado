@@ -7,7 +7,8 @@ program define replace_many
 	preserve
 	import delimited `datafile' ,  varnames(1) encoding(UTF-8) clear
 	keep `varx' `vary' `keyvar1' `keyvar2'
-	drop if `varx' == "" | `varx' == .
+	cap drop if `varx' == ""
+	cap drop if `varx' == .
 	tempfile usefile
     qui save `usefile'
     local datafile `usefile'
