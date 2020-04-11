@@ -25,16 +25,16 @@ The new commands are:
 
 ## Cleaning
 
-In this part the values of the variables are standardized and for some variables the values are replaced according to the auxiliary tables. This includes: region, religion, date, ethnicity, urban, sex, year, original education variables. New variables were also created such as: years of education and durations.
+In this part the values of the variables are standardized and for some variables the values are replaced according to the auxiliary tables. This includes: region, religion, date, ethnicity, urban, sex, year, original education variables. 
 
 To simplify replacing one value with another, I created the *replace_many* function that replaces a "master" dataset value with a "using" dataset value as long as certain variables match. 
 
 **replace_many**: to replace at once many values.
 
-**compute_education_years**: to calculate the years of education
 
 ## Calculating
 
 In this part the education variables are calculated by creating specific commands.
 
+**compute_education_years**: to calculate the years of education
 
