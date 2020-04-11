@@ -2,6 +2,28 @@
 
 The main changes I made to the MICS code are to separate it into 4 parts: reading, cleaning, calculating variables and summarizing. At the same time, inside each of these parts I have tried to simplify the code as much as possible and to separate the logic from the data. To do this, I introduced several Stata module commands that need to be installed and generated specific commands that I named with an underscore. On the other hand, I created auxiliary tables that, through a merge with the dataset, allow a systematic replacement of values in different variables (region, ethnicity, etc.). There was also a change in the organization of the data and the homogenization of the country names. The files for each country should be in a single folder and named as follows: country_yyyy_hl.dta. This makes it easier to read and join them into a single file. For those countries whose name contains more than one word, the first letter of each is capitalized without leaving any space between the words.
 
+The 'cleaning' folder contains the auxiliary tables: 
+
+- country_iso_codes_names.csv: to add the iso code3 variable
+- mics_dictionary.csv: to select the variables in each country dataset and to standardize the names
+- mics_changes_duration_stage.csv
+- mics_fix_date.csv 
+- mics_fix_ethnicity.csv
+- mics_fix_region.csv
+- mics_fix_religion.csv
+- mics_recode_edulevel.csv
+- mics_group_eduyears.csv
+- mics_rename.csv
+- mics_setcode.csv
+- dhs_fixes_ethnicity.csv
+- dhs_fix_regions.csv
+- dhs_fix_religion.csv
+- dhs_fix_year.csv
+
+
+The "Package" folder contains the master do-file (MICS_master.do) and the ado-files created. Thus, **mics_reading.ado** is the program that reads the data and standardizes to obtain a single dataset. While **mics_cleaning.ado** is the program that fixs values in different variables. These programs use other ado-files that do specific tasks.
+
+
 
 ## Reading
 
