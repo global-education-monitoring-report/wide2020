@@ -26,6 +26,6 @@ mics_education_years $data_path/all/mics_cleaning.dta  $aux_data_path/mics_group
 * input_path table1_path table2_path output_path
 mics_age_adjustment $data_path/all/mics_educvar.dta "$aux_data\temp\current_school_year_MICS.dta" $aux_data_uis/months_school_year/month_start.dta $data_path/all/mics_educvar.dta
 
-mics_education_completion
+mics_education_completion $data_path/all/mics_educvar.dta $data_path/all/mics_educvar.dta 
 
-mics_education_out
+mics_education_out $data_path/all/mics_educvar.dta  $aux_data\UIS\duration_age\UIS_duration_age_25072018.dta

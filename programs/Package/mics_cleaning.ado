@@ -1,3 +1,6 @@
+* mics_cleaning: program to cleaning the data (fixing and recoding variables)
+* Version 1.0
+* April 2020
 
 program define mics_cleaning
 	args input_path tables_path uis_path output_path 
@@ -70,8 +73,8 @@ replace_many "mics_fix_region.csv" region region_replace country
 *replace_many "mics_fix_ethnicity.csv" ethnicity
 
 
-* urban
-replace_many "mics_setcode.csv" urban urban_replace
+* location
+replace_many "mics_setcode.csv" location location_replace
 
 * sex
 replace_many "mics_setcode.csv" sex sex_replace
@@ -138,10 +141,10 @@ generate higher_dur=4
 
 	
 *With info of duration of primary and secondary I can compare official duration with the years of education completed..
-	gen years_prim   = prim_dur
-	gen years_lowsec = prim_dur + lowsec_dur
-	gen years_upsec  = prim_dur + lowsec_dur + upsec_dur
-	gen years_higher = prim_dur + lowsec_dur + upsec_dur + higher_dur
+	generate years_prim   = prim_dur
+	generate years_lowsec = prim_dur + lowsec_dur
+	generate years_upsec  = prim_dur + lowsec_dur + upsec_dur
+	generate years_higher = prim_dur + lowsec_dur + upsec_dur + higher_dur
 
 compress
 save "`output_path'", replace

@@ -17,7 +17,7 @@ ed6b,ed6b,Grade of education attended current school year
 ed7,ed7,
 ed8a,ed8a,
 ethnicity,ethnicity,Ethnicity
-hh6,urban,Area
+hh6,location,Area
 hh7,region,Governorate
 hhweight,hhweight,Household sample weight
 religion,religion,Religion

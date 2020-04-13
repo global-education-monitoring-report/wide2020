@@ -4,24 +4,24 @@ The main changes I made to the MICS code are to separate it into 4 parts: readin
 
 The 'cleaning' folder contains the auxiliary tables: 
 
-- country_iso_codes_names.csv: to add the iso code3 variable
-- mics_dictionary.csv: to select the variables in each country dataset and to standardize the names
-- mics_changes_duration_stage.csv
-- mics_fix_date.csv 
-- mics_fix_ethnicity.csv
-- mics_fix_region.csv
-- mics_fix_religion.csv
-- mics_recode_edulevel.csv
-- mics_group_eduyears.csv
-- mics_rename.csv
-- mics_setcode.csv
+- country_iso_codes_names.csv: adds the iso code3 variable
+- mics_dictionary.csv: selects the variables in each country dataset and standardizes the names
+- mics_changes_duration_stage.csv: fixes duration stage values
+- mics_fix_date.csv: transformd the dates according to the Gregorian calendar 
+- mics_fix_ethnicity.csv: standardizes the categories
+- mics_fix_region.csv: standardizes the categories
+- mics_fix_religion.csv: standardizes the categories
+- mics_recode_edulevel.csv: fixes education level values
+- mics_group_eduyears.csv: groups countries according to the calculation formula adopted for years of education
+- mics_rename.csv: renames some variables
+- mics_setcode.csv: recodes some variables
 - dhs_fixes_ethnicity.csv
 - dhs_fix_regions.csv
 - dhs_fix_religion.csv
 - dhs_fix_year.csv
 
 
-The "Package" folder contains the master do-file (MICS_master.do) and the ado-files created. Thus, **mics_reading.ado** is the program that reads the data and standardizes to obtain a single dataset. While **mics_cleaning.ado** is the program that fixs values in different variables. These programs use other ado-files that do specific tasks.
+The "Package" folder contains the master do-file (**MICS_master.do**) and the ado-files created. Thus, **mics_reading.ado** is the program that reads the data and standardizes to obtain a single dataset. While **mics_cleaning.ado** is the program that fixs values in different variables. These programs use other ado-files that do specific tasks.
 
 
 
@@ -58,5 +58,16 @@ To simplify replacing one value with another, I created the *replace_many* funct
 
 In this part the education variables are calculated by creating specific commands.
 
-**compute_education_years**: to calculate the years of education
+**mics_education_years**: calculates the years of education according the 
+ mics_group_eduyears.csv file
 
+**mics_age_adjustment**:
+
+**mics_education_completion**:
+
+**mics_education_out**:
+
+
+## Summarizing
+
+**mics_summarizing**:
