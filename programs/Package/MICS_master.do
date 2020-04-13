@@ -20,10 +20,10 @@ mics_cleaning $data_path/all/mics_reading.dta $aux_data_path  $aux_data_uis/dura
 
 * CALCULATING EDUCATION VARIABLES
 
-compute_education_years
+mics_education_years $data_path/all/mics_cleaning.dta  $aux_data_path/mics_group_eduyears $data_path/all/mics_educvar.dta
 
-age_adjustment
+mics_age_adjustment
 
-compute_education_completion
+mics_education_completion
 
-compute_education_out
+mics_education_out

@@ -1,14 +1,15 @@
-* compute_education_years: program to compute the years of education by country
+* mics_education_years: program to compute the years of education by country
 * Version 1.0
 
-program define compute_education_years
+program define mics_education_years
 	args input_path table_path output_path
 
-	import delimited `input_path',  varnames(1) encoding(UTF-8) clear
+	import delimited `table_path',  varnames(1) encoding(UTF-8) clear
 	tempfile group
 	save `group'
 	
 	use `input_path', clear
+	set more off
 	merge m:1 country_year using `group', keep(match master) nogenerate
 	
 	generate eduyears = .
@@ -16,6 +17,7 @@ program define compute_education_years
 	rename ed4b ed4b_label
 	rename ed4b_rn ed4b
 	
+	*Alert: check ed4b value 94. Replace 97, 98, 99 for different type of missings
 	
 	* replace eduyears according to which group it belongs
 	*GROUP 0*
@@ -200,6 +202,7 @@ program define compute_education_years
 	replace eduyears = 99 if (ed4b == 99 | ed4b_label == "missing" | ed4b_label == "doesn't answer" | ed4b_label == "missing/dk")
 	replace eduyears = 0  if ed4b == 0
 	
+	compress
 	save `output_path', replace
 	
 end
