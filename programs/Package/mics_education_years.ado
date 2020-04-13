@@ -1,5 +1,6 @@
 * mics_education_years: program to compute the years of education by country
 * Version 1.0
+* April 2020
 
 program define mics_education_years
 	args input_path table_path output_path

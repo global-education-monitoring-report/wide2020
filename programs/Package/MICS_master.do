@@ -20,9 +20,11 @@ mics_cleaning $data_path/all/mics_reading.dta $aux_data_path  $aux_data_uis/dura
 
 * CALCULATING EDUCATION VARIABLES
 
+* input_path table_path output_path
 mics_education_years $data_path/all/mics_cleaning.dta  $aux_data_path/mics_group_eduyears $data_path/all/mics_educvar.dta
 
-mics_age_adjustment
+* input_path table1_path table2_path output_path
+mics_age_adjustment $data_path/all/mics_educvar.dta "$aux_data\temp\current_school_year_MICS.dta" $aux_data_uis/months_school_year/month_start.dta $data_path/all/mics_educvar.dta
 
 mics_education_completion
 
