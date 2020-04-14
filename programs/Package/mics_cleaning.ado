@@ -42,7 +42,7 @@ save `fixduration'
 
 *fix some uis duration
 use `uis_path', clear
-merge m:1 country year using `fixduration', keep(match master)
+merge m:1 country year using `fixduration', keep(match master) nogenerate
 replace prim_dur_uis   = prim_dur_replace[_n] if _merge == 3 & prim_dur_replace!=.
 replace lowsec_dur_uis = lowsec_dur_replace[_n] if _merge == 3 & lowsec_dur_replace !=.
 replace upsec_dur_uis  = upsec_dur_replace[_n] if _merge == 3 & upsec_dur_replace !=.
