@@ -21,7 +21,7 @@ The 'cleaning' folder contains the auxiliary tables:
 - dhs_fix_year.csv
 
 
-The "Package" folder contains the master do-file (**MICS_master.do**) and the ado-files created. Thus, **mics_reading.ado** is the program that reads the data and standardizes to obtain a single dataset. While **mics_cleaning.ado** is the program that fixs values in different variables. These programs use other ado-files that do specific tasks.
+The "Package" folder contains the master do-file (**MICS_master.do**) and the ado-files created. Thus, **mics_reading.ado** is the program that reads the data and standardizes to obtain a single dataset. While **mics_cleaning.ado** is the program that fixes values in different variables. These programs use other ado-files that do specific tasks.
 
 
 
@@ -29,7 +29,7 @@ The "Package" folder contains the master do-file (**MICS_master.do**) and the ad
 
 In this part the data of each country is read, variables are selected according to the mics dictionary where only those we are interested in keeping are included, the country and year_file variables are created, the names of variables and type are standardized.
 
-Not always the same variable (according to its label) is called the same for different years or countries. The different names it takes are detailed in the dictionary and then in the standardization process they are renamed.
+Not always the same variable (according to its label) is called the same for different years or countries. The different names it takes are detailed in the dictionary and then in the standardization process where they are renamed.
 
 A part of the data cleaning is needed in the reading.do because it is necessary to obtain a single set of data with the same name of variables, thus reducing the amount of stored variables that occupy disk space but mainly occupy ram memory in reading and processing.
 
@@ -37,17 +37,17 @@ The new commands are:
 
 **fs**: to simplify the append without the need to make a loop.
 
-**sxpose**: to transpose the dictionary rows (variable names) to columns and stored them in a local macro. It is a trick to select variables from the master data without having to name the variables in the code.
+**sxpose**: to transpose the dictionary rows (variable names) to columns and stored them in a local macro. It is a solution to select variables from the master data without having to name the variables in the code.
 
 **sdecode**: to decode variables in a systematic way and in one step. It is no longer necessary to generate a new variable and then apply the decode command to it to then delete the original variable and rename the new variable.
 
 **cleanchars**: a compact way to replace special characters. It is included in the replace_characters.ado.
 
-**catenate**: a simple way to concatenate strings variables
+**catenate**: a simple way to concatenate strings variables.
 
 ## Cleaning
 
-In this part the values of the variables are standardized and for some variables the values are replaced according to the auxiliary tables. This includes: region, religion, date, ethnicity, urban, sex, year, original education variables. 
+In this part the values of the variables are standardized and for some variables the values are replaced according to the auxiliary tables. These includes: region, religion, date, ethnicity, urban, sex, year, original education variables. 
 
 To simplify replacing one value with another, I created the *replace_many* function that replaces a "master" dataset value with a "using" dataset value as long as certain variables match. 
 
