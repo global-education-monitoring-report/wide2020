@@ -1,363 +1,124 @@
-* Modificado para GIT
+* dhs_reading: program to read the datasets and append all in one file
+* Version 1.0
+* April 2020
 
-*For my laptop
-global gral_dir "C:\Users\Rosa_V\Dropbox\WIDE"
-global data_raw_dhs "$gral_dir\Data\DHS"
-global programs_dhs "$gral_dir\WIDE\programs\DHS"
-global programs_dhs_aux "$programs_dhs\auxiliary"
-global aux_data "$gral_dir\WIDE\auxiliary_data"
-global data_dhs "$gral_dir\WIDE\WIDE_DHS\data"
-global temp "$data_dhs\temp"
+program define dhs_reading
+	args input_path tables_path uis_path output_path 
 
+	cd `input_path'
 
-*-----------------------------------------------------------------------------------
+	* Reading individual datasets and appending them all
 
-global varlist_edu edu_out_prim edu_out_lowsec edu_out_upsec attend_higher_1822 attend_higher_2022 comp_prim_v2_A comp_prim_v2_B comp_prim_1524_A comp_prim_1524_B comp_lowsec_v2_B comp_lowsec_1524_B comp_upsec_v2_A comp_upsec_v2_B comp_upsec_2029_A comp_upsec_2029_B comp_higher_2529_A comp_higher_2529_B	comp_higher_3034_A comp_higher_3034_B edu2_20 edu4_20 eduyears_20
-global varlist_m edu_out_prim_m edu_out_lowsec_m edu_out_upsec_m attend_higher_1822_m attend_higher_2022_m comp_prim_v2_A_m comp_prim_v2_B_m comp_prim_1524_A_m comp_prim_1524_B_m comp_lowsec_v2_B_m comp_lowsec_1524_B_m comp_upsec_v2_A_m comp_upsec_v2_B_m comp_upsec_2029_A_m comp_upsec_2029_B_m comp_higher_2529_A_m comp_higher_2529_B_m comp_higher_3034_A_m comp_higher_3034_B_m edu2_20_m edu4_20_m eduyears_20_m
-global varlist_no edu_out_prim_no edu_out_lowsec_no edu_out_upsec_no attend_higher_1822_no attend_higher_2022_no comp_prim_v2_A_no comp_prim_v2_B_no comp_prim_1524_A_no comp_prim_1524_B_no comp_lowsec_v2_B_no comp_lowsec_1524_B_no comp_upsec_v2_A_no comp_upsec_v2_B_no comp_upsec_2029_A_no comp_upsec_2029_B_no comp_higher_2529_A_no comp_higher_2529_B_no comp_higher_3034_A_no comp_higher_3034_B_no edu2_20_no edu4_20_no eduyears_20_no
-global categories_collapse location sex wealth region ethnicity religion
+	local allfiles : dir . files "*.dta"
 
-global vars_keep_dhs "hhid hvidx hv000 hv001 hv002 hv003 hv005 hv006 hv007 hv008 hv016 hv009 hv024 hv025 hv270 hv102 hv104 hv105 hv106 hv107 hv108 hv109 hv121 hv122 hv123 hv124 hv125 hv126 hv127 hv128 hv129"
-global vars_value_labels "hv024 hv129"
-global extra_vars cluster
-
-* To run a codebook of the variables needed and produce log files
-*include "$programs_dhs_aux\codebook_variables.do"
-
-
-**************************************************************************************************
-*	APPENDING ALL THE DATABASES (in 2 parts)
-*----------------------------------------------------------------------------------------------------
-* To run a codebook of the variables needed and produce log files
-*include "$programs_dhs_aux\codebook_variables.do"
-
-/*
-*****************************************************************************************************
-*	CREATING INDIVIDUAL DATABASES AND APPENDING THEM ALL 
-*----------------------------------------------------------------------------------------------------
-
-cap mkdir "$data_dhs\PR\\countries"
-for X in any 1 2 3: cap mkdir "$data_dhs\PR\countries\\partX"
-
-foreach part in part1 part2 part3 {
-*foreach part in part3 {
-set more off
-include "$programs_dhs_aux\survey_list_PR_`part'"
-
-foreach file in $survey_list_PR {
-use "$data_raw_dhs/`file'", clear
-
-	tokenize "`file'", parse("\")
-	gen country = "`1'" 
-	gen year_folder= `3'
-
-ren *, lower
-for X in any $vars_keep_dhs : cap gen X=.
-for X in any $vars_value_labels: cap decode X, gen(temp_X)
-for X in any $vars_value_labels: cap tostring X, gen(temp_X)
-drop $vars_value_labels
-for X in any $vars_value_labels: cap ren temp_X X
-cap label drop _all
-keep $vars_keep_dhs country year*
-cap label drop _all
-compress
-save "$data_dhs\PR\countries\\`part'\\`1'`3'", replace
-}
-}
-
-*---------------------------------------------------------------------------------------------------------
-* Appending all the databases
-*---------------------------------------------------------------------------------------------------------
-
-
-foreach part in part1 part2 part3 {
-*foreach part in part3 {
-cd "$data_dhs\PR\countries\\`part'"
-local allfiles : dir . files "*.dta"
-
-cap use "Albania2008.dta", clear
-cap use "SouthAfrica2016.dta", clear
-gen id_c=1
-foreach f of local allfiles {
-   qui append using `f'
-}
-drop if id_c==1 // I eliminate the first country.
-drop id_c
-
-save "$data_dhs\PR\dhs_PR_append_`part'.dta" , replace
-}
-
-
-*---------------------------------------------------------------------------------------------------------
-
-*Translate: I tried with encoding "ISO-8859-1" and it didn't work
-set more off
-foreach part in part1 part2 part 3{
-*foreach part in part3 {
-clear
-cd "$data_dhs\PR"
-set more off
-unicode analyze "dhs_PR_append_`part'.dta"
-unicode encoding set ibm-912_P100-1995
-unicode translate "dhs_PR_append_`part'.dta"
-}
-
-*/
-**************************************************************************
-*			Fixing categories and creating variables
-**************************************************************************
-foreach part in part1 part2 part3 {
-use "$data_dhs\PR\dhs_PR_append_`part'.dta" , clear
-*use "$data_dhs\PR\dhs_PR_append_part3.dta" , clear
-set more off
-
-* ID for each country year: Variable country_year. Year of survey can be different from the year in the name of the folder
-catenate country_year = country year_folder, p("_")
-
-* Country dhs code
-generate country_code_dhs = substr(hv000, 1, 2)
-
-*Round of DHS
-generate round_dhs = substr(hv000, 3, 1)
-drop hv000
-replace round_dhs = "4" if country_year == "VietNam_2002"
-
-*Individual ids
-for X in any hv001 hv002 hvidx: gen X_s = string(X, "%25.0f")
-generate individual_id = country_year+" "+hv001_s+" "+hv002_s+" "+hvidx_s
-
-*Special cases IDs for countries: Honduras_2005, Mali_2001, Peru_2012, Senegal_2005
-replace individual_id=country_year+" "+hhid+" "+hvidx_s if (country_year=="Honduras_2005"|country_year=="Mali_2001"|country_year=="Peru_2012"|country_year=="Senegal_2005")
-replace individual_id=country_year+" "+hhid+" "+"0"+hvidx_s if country_year=="Peru_2012"
-replace individual_id=country_year+" "+hhid+" "+" "+hvidx_s if hvidx<=9 & (country_year=="Mali_2001"|country_year=="Honduras_2005"|country_year=="Senegal_2005") 
-
-*codebook individual_id // uniquely identifies all except Turkey 2008
-
-
-*gen n=1
-*bys country_year individual_id: egen d_count=sum(n)
-*tab d_count
-*br individual country_year hv001_s hv002_s hvidx_s if d_count>=2
-*tab country_year if d_count>=2 // problems with ID of Turkey 2008...
-*drop n d_count
-
-
-*Household ids
-catenate hh_id = country_year hv001_s hv002_s 
-rename hhid hhid_original
-drop *_s
-
-*Cluster variable
-rename hv001 cluster
-
-*drop hhid
-
-* "Official" Year of the survey is hv007. 
-* I median of year
-
-*Fixing problems with year: variable hv007
-*codebook hv007, tab(100)
-
-
-	replace hv007=1990 if hv007==. & country_year=="Colombia_1990" 
-	replace hv007=2000 if hv007==0 & (country_year=="Gabon_2000"|country_year=="Bangladesh_1999"|country_year=="India_1998")
-	replace hv007=2001 if hv007==1 & country_year=="Gabon_2000" 	// label was 2001, but the value said 1
-	replace hv007=2002 if hv007==2 & country_year=="VietNam_2002" 	// label was 2002, but the value said 2
-
-	* COUNTRIES WITH DIFFERENT CALENDAR: the years/months don't coincide with the Gregorian Calendar
+	capture mkdir "`temporal_path'"
 	
-	*replace_many read auxiliary tables to fix values by replace
-	replace_many "mics_fix_date_month.csv" hv006 hv006_replace country_year
+	* DHS variables to keep first
+	import delimited "`dictionary'", clear varnames(1) encoding(UTF-8)
+	preserve
+	keep name 
+	duplicates drop name, force
+	sxpose, clear firstnames
+	ds
+	local dhsvars `r(varlist)'
 
-	replace_many "mics_fix_date_year.csv" hv007 hv007_replace country_year
+	* DHS variables to decode
+	restore
+	preserve
+	drop if encode != "decode"
+	keep name_new
+	sxpose, clear firstnames
+	ds
+	local dhsvars_decode `r(varlist)'
+
+	* DHS variables to keep last
+	restore
+	keep if keep == 1
+	keep name_new
+	sxpose, clear firstnames
+	ds
+	local dhsvars_keep `r(varlist)'
+	
+	* read all files 
+	foreach file of local allfiles {
+
+	  *read a file
+	  use "`file'", clear
+	  
+	  *lowercase all variables
+	  capture rename *, lower
+	  
+	  
+		*select common variables between the dataset and the mics dictionary (1st column)
+		ds
+		local datavars `r(varlist)'
+		local common : list datavars & dhsvars
+		*display "`common'"
+		keep `common'
+		ds
 		
-	
-	drop if (hv007==2003|hv007==2004|hv007==2005|hv007==2006) & country_year=="Peru_2007" // For Peru, we have to drop the observations for years not included in that country_year
-
-	foreach num of numlist 0/9 {    //Fix format of years
-		replace hv007=199`num' if hv007==9`num'
-	}
-	
-	*Missing in the day or month of interview
-	replace hv016=1 if (country_year=="Colombia_1990"|country_year=="Indonesia_1991"|country_year=="Indonesia_1994") // Take the 1st of the month
-	replace hv006=7 if hv006==. & country_year=="Colombia_1990"  // Take the month in the middle of the 2 fieldwork dates
+		*rename 
+		*fix_names
+			
+		*generate variables with file name
+		tokenize `file', parse("_")
+			generate country = "`1'" 
+			generate year_file = `3'
 		
-	*Inconsistency in number of days for the month. 7567 cases
-	*Countries: Afghanistan 2015; Ethiopia (2000, 20011, 2016); Nepal (2001,2006,2011,2016); Nigeria 2008 (1 case)
-	replace hv016=30 if hv016==31 & (hv006==4|hv006==6|hv006==9|hv006==11) & (country=="Afghanistan"|country=="Ethiopia"|country=="Nepal"|country=="Nigeria") // Months that don't have 31 days...
-	replace hv016=28 if hv016>=29 & hv006==2 & (country=="Afghanistan"|country=="Ethiopia"|country=="Nepal"|country=="Nigeria") // Most of the cases are for February
-	replace hv016=31 if hv016==32 & (hv006==5|hv006==7) & (country=="Nepal")
+		
+		*create variables doesnt exist 
+		for X in any `dhsvars_keep': cap gen X=.
+		order `dhsvars_keep'
+		
+		*create numerics variables 
+		*for X in any ed4a ed4b ed6a ed6b ed8a: gen X_rn = X
+		
+		*decode and change strings values to lower case
+		local common_decode : list common & dhsvars_decode
+			
+		foreach var of varlist `common_decode'{ 
+			cap sdecode `var', replace
+			cap tostring `var', gen(temp_`var')
+			drop `var'
+			cap rename temp_`var' `var'
+			cap replace `var' = lower(`var')
+			* remove special character in values and labels
+			cap	replace_character
+			cap replace `var' = stritrim(`var')
+			cap replace `var' = strltrim(`var')
+			cap replace `var' = strrtrim(`var')
+		 }
+		 		
+		
+		*create ids variables
+		*ssc install catenate
+		*catenate country_year  = country year_file, p("_")
+		*catenate individual_id = country_year hh1 hh2 hl1, p(no)
+		*catenate hh_id         = country_year hh1 hh2, p(no) 
 
-*Create the variable YEAR
-	bys country_year: egen year=median(hv007)
-	drop if year<=1999 // drop the countries that have the median year of 1999
-
-	bys country: tab hv016 hv006 
-	
-
-*-----------------------------------------------------------------------------------------------
-* Merge with Duration in years, start age and names of countries (codes_dhs, mics_dhs, iso_code, WIDE names)
-*isocodes
-import delimited "country_iso_codes_names.csv" ,  varnames(1) encoding(UTF-8) clear
-keep country_code_dhs iso_code3
-drop if country_code_dhs==""
-tempfile isocode
-save `isocode'
-
-merge m:1 country_code_dhs using `isocode', keep(master match) nogenerate
-
-*Now we have year 2018, but the database of duration only has until 2017
-rename year year_original
-generate year = year_original
-replace year = 2017 if year_original >= 2018
-
-merge m:1 iso_code3 year using "$aux_data\UIS\duration_age\UIS_duration_age_25072018.dta", keep(match master) nogenerate
-drop year
-rename year_original year
-drop lowsec_age_uis upsec_age_uis
-for X in any prim_dur lowsec_dur upsec_dur: ren X_uis X
-ren prim_age_uis prim_age0
-	
-compress 
-*save "$data_dhs\PR\Step0_part3.dta", replace
-save "$data_dhs\PR\Step0_`part'.dta", replace
+		*rename some variables  (later "urban" is renamed "location". better to do it now)
+		*renamefrom using `rename', filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
+		
+		*save each file in temporal folder
+		compress 
+		save "`temporal_path'/`1'_`3'_hl", replace
 }
 
+	cd `temporal_path'
+	local allfiles : dir . files "*.dta", respectcase
+
+	* append all the datasets
+	* ssc install fs 
+	fs *.dta
+	append using `r(files)', force
 
 
-*-----------------------------------------------------------------------------------------------
-*-----------------------------------------------------------------------------------------------
+	* remove temporal folder and files
+	capture rmdir "`temporal_path'"
 
-*************************************************************
-*	AGE ADJUSTMENT
-*************************************************************
+	* save all dataset in a single one
+	compress
+	save "`output_path'/dhs_reading.dta", replace
 
-foreach part in part1 part2 part3 {
-use "$data_dhs\PR\Step0_`part'.dta", clear
-*use "$data_dhs\PR\Step0_part3.dta", clear
-set more off
+end
 
-keep hv006 hv007 hv016 country year country_year iso_code3
-
-*Merge with info about reference school year:
-merge m:1 country_year using  "$aux_data\temp\current_school_year_DHS.dta", keep(match master) nogenerate
-drop yearwebpage currentschoolyearDHSreport
-
-generate year_c = hv007
-replace year_c = 2017 if year_c >= 2018 // I only have data on school calendar until 2017
-merge m:1 iso_code3 year_c using `table2_path', keep(master match) nogenerate
-drop max_month min_month diff year_c
-
-
-*All countries have month_start. Malawi_2015 has now the month 9 (OK)
-rename school_year current_school_year
-
-*For those with missing in school year, I replace by the interview year
-generate missing_current_school_year = 1 if current_school_year == .
-replace current_school_year = hv007 if current_school_year == .
-
-
-*tab hv007 if country_year=="PapuaNewGuinea_2016" // span of 3 years... affects adjustment?
-
-*-------------------------------------------------------------------------------------
-* Adjustment VERSION 1: Difference in number of days 
-*-			Start school	: Month from UIS database (we only had years 2009/2010 and 2014/2015. The values for the rest of the years were imputed by GEM
-*- 			Interview		: Month as presented in the survey data
-*-------------------------------------------------------------------------------------
-	
-	generate month_start_norm = month_start
-	
-*Taking into account the days	
-	for X in any norm max min: generate s_school1_X=string(1)+"/"+string(month_start_X)+"/"+string(current_school_year)
-	catenate s_interview1 = hv016 hv006 hv007, p("/") // date of the interview created with the original info
-
-	for X in any norm max min: generate date_school1_X = date(s_school1_X, "DMY", 2000) 
-	generate date_interview1 = date(s_interview1, "DMY", 2000)
-	
-*Without taking into account the days
-	for X in any norm max min: catenate s_school2_X = month_start_X current_school_year, p("/")
-	catenate s_interview2 = hv006 hv007, p("/") // date of the interview created with the original info
-	
-	for X in any norm max min: generate date_school2_X = date(s_school2_X, "MY", 2000) // official month of start... plus school year of reference
-	generate date_interview2 = date(s_interview2, "MY", 2000)
-
-*Adjustment=1 if 50% or more of hh (the median) have difference of (month_interv-month_school)>=6 months.
-*Median difference is >=6.
-*50% of hh have 6 months of difference or more
-*gen diff1=(date_interview1-date_school1)/(365/12) // expressed in months
-
-foreach M in norm max min {
-	foreach X in 1 2 {
-		generate diff`X'_`M' = (date_interview`X' - date_school`X'_`M')
-		generate temp`X'_`M' = mod(diff`X'_`M', 365) 
-		replace diff`X'_`M' = temp`X'_`M' if missing_current_school_year == 1
-		bys country_year: egen median_diff`X'_`M' = median(diff`X'_`M')
-		generate adj`X'_`M' = 0
-		replace adj`X'_`M' = 1 if median_diff`X'_`M' >= 182
-	}
-}
-
-sort country_year
-collapse diff* adj* flag_month, by(country_year)		
-
-*save "$data_dhs\PR\dhs_adjustment_part3.dta", replace
-save "$data_dhs\PR\dhs_adjustment_`part'.dta", replace
-}
-
-
-use "$data_dhs\PR\dhs_adjustment_part1.dta", clear
-append using "$data_dhs\PR\dhs_adjustment_part2.dta"
-append using "$data_dhs\PR\dhs_adjustment_part3.dta"
-save "$data_dhs\PR\dhs_adjustment.dta", replace
-*for X in any 1 2 3: erase "$data_dhs\PR\dhs_adjustment_partX.dta"
-
-
-**************************************************************************************************************************
-**************************************************************************************************************************
-*-------------------------------------------------------------------------------
-*	CREATING EDUC VARIABLES AND CATEGORIES
-*-------------------------------------------------------------------------------
-
-foreach part in part1 part2 part3{
-use "$data_dhs\PR\Step0_`part'.dta", clear
-*use "$data_dhs\PR\Step0_part3.dta", clear
-set more off
-
-*Creating the variables for EDUOUT indicators
-	for X in any prim_dur lowsec_dur upsec_dur: generate X_eduout = X 
-	generate prim_age0_eduout = prim_age0
-	
-
-*FOR COMPLETION: Changes to match UIS calculations
-*Changes to duration
-import delimited "dhs_changes_duration_stage.csv"  ,  varnames(1) encoding(UTF-8) clear
-drop iso_code3 message
-tempfile fixduration
-save `fixduration'
-
-*fix some uis duration
-use `uis_path', clear
-merge m:1 country_year using `fixduration', keep(match master) nogenerate
-replace prim_dur_uis   = prim_dur_replace[_n] if _merge == 3 & prim_dur_replace!=.
-replace lowsec_dur_uis = lowsec_dur_replace[_n] if _merge == 3 & lowsec_dur_replace !=.
-replace upsec_dur_uis  = upsec_dur_replace[_n] if _merge == 3 & upsec_dur_replace !=.
-replace prim_age_uis   = prim_age0_replace[_n] if _merge == 3 & prim_age_replace !=.
-tempfile fixduration_uis
-save `fixduration_uis'
-
-merge m:1 iso_code3 year using "`fixduration_uis'", keep(match master)  nogenerate
-drop lowsec_age_uis upsec_age_uis 
-
-
-*Questions to UIS
-*- Burkina Faso 2010 (DHS) should use age 6 or 7 as start age? The start age changes from 7 to 6 in 2010, the school year starts in October.
-*- Egypt 2005 DHS: prim dur changes from 5 to 6 in 2005. Should we use 5 or 6 for year 2005 considering that school years starts in September.
-*- Armenia 2010 DHS: All the interviews were in 2010, but UIS says it is year 2011 and has put duration and ages of that year. We put duration and age for 2010 and our results match UNICEF'S
-*Education: hv107, hv108, hv109, hv121
-compress 
-*save "$data_dhs\PR\Step1_part3.dta", replace
-save "$data_dhs\PR\Step1_`part'.dta", replace
-}
-
-
-***************************************************************

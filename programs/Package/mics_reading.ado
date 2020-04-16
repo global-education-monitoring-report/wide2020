@@ -1,3 +1,6 @@
+* mics_reading: program to read the datasets and append all in one file
+* Version 1.0
+* April 2020
 
 program define mics_reading
 	args input_path temporal_path output_path dictionary rename

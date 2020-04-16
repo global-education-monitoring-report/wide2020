@@ -1,4 +1,4 @@
-* mics_cleaning: program to cleaning the data (fixing and recoding variables)
+* mics_cleaning: program to clean the data (fixing and recoding variables)
 * Version 1.0
 * April 2020
 
