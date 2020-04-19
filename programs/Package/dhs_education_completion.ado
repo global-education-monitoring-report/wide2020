@@ -43,7 +43,7 @@ drop lowsec_age_uis upsec_age_uis
 *- Armenia 2010 DHS: All the interviews were in 2010, but UIS says it is year 2011 and has put duration and ages of that year. We put duration and age for 2010 and our results match UNICEF'S
 *Education: hv107, hv108, hv109, hv121
 compress 
-save "`input_path'", replace
+save "`output_path'", replace
 
 end
 
