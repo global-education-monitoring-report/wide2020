@@ -16,3 +16,7 @@ dhs_cleaning "$data_dhs/reading.dta"  "$aux_data_uis/duration_age/UIS_duration_a
 
 
 * CALCULATING EDUCATION VARIABLES
+
+* age adjustment
+
+dhs_age_adjustment "$data_dhs/cleaning.dta" $aux_data\temp\current_school_year_DHS.dta "$aux_data_uis/months_school_year/month_start.dta"
