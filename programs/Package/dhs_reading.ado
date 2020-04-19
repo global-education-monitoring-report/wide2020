@@ -47,8 +47,7 @@ program define dhs_reading
 	  
 	  *lowercase all variables
 	  capture rename *, lower
-	  
-	  
+	  	  
 		*select common variables between the dataset and the mics dictionary (1st column)
 		ds
 		local datavars `r(varlist)'
@@ -70,38 +69,26 @@ program define dhs_reading
 		for X in any `dhsvars_keep': cap gen X=.
 		order `dhsvars_keep'
 		
-		*create numerics variables 
-		*for X in any ed4a ed4b ed6a ed6b ed8a: gen X_rn = X
-		
 		*decode and change strings values to lower case
 		local common_decode : list common & dhsvars_decode
 			
 		foreach var of varlist `common_decode'{ 
 			cap sdecode `var', replace
-			cap tostring `var', gen(temp_`var')
-			drop `var'
-			cap rename temp_`var' `var'
 			cap replace `var' = lower(`var')
 			* remove special character in values and labels
-			cap	replace_character
+			*cap	replace_character
 			cap replace `var' = stritrim(`var')
 			cap replace `var' = strltrim(`var')
 			cap replace `var' = strrtrim(`var')
 		 }
 		 		
 		
-		*create ids variables
-		*ssc install catenate
-		*catenate country_year  = country year_file, p("_")
-		*catenate individual_id = country_year hh1 hh2 hl1, p(no)
-		*catenate hh_id         = country_year hh1 hh2, p(no) 
-
 		*rename some variables  (later "urban" is renamed "location". better to do it now)
 		*renamefrom using `rename', filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
 		
 		*save each file in temporal folder
 		compress 
-		save "`temporal_path'/`1'_`3'_hl", replace
+		save "`temporal_path'/`1'_`3'", replace
 }
 
 	cd `temporal_path'
