@@ -3,7 +3,7 @@
 * April 2020
 
 program define dhs_reading
-	args input_path tables_path uis_path output_path 
+	args input_path temporal_path output_path table1_path 
 
 	cd `input_path'
 
@@ -14,7 +14,7 @@ program define dhs_reading
 	capture mkdir "`temporal_path'"
 	
 	* DHS variables to keep first
-	import delimited "`dictionary'", clear varnames(1) encoding(UTF-8)
+	import delimited "`table1_path'", clear varnames(1) encoding(UTF-8)
 	preserve
 	keep name 
 	duplicates drop name, force

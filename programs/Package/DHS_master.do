@@ -6,13 +6,31 @@ global aux_data_path "../WIDE/auxiliary_data/cleaning"
 
 global aux_data_uis "../WIDE/auxiliary_data/UIS"
 
-* READING EACH COUNTRY FILE AND APPENDING IN ONE FILE
 
-dhs_reading
+
+* READING EACH COUNTRY FILE AND APPENDING IN ONE FILE
+* input_path temporal_path output_path table1_path 
+
+dhs_reading $data_path  $data_path/temporal $data_path/all $aux_data_path/dhs_dictionary.csv
+
+* alternative: if data is stored in different foldes 
+
+dhs_reading $data_path/Part1 $data_path/temporal/Part1 $data_path/all/Part1 $aux_data_path/dhs_dictionary.csv
+
+dhs_reading $data_path/Part2 $data_path/temporal/Part2 $data_path/all/Part2 $aux_data_path/dhs_dictionary.csv
+
+
 
 * CLEANING THE DATASET (RECODING SEVERAL VARIABLES)
 
-dhs_cleaning "$data_dhs/reading.dta"  "$aux_data_uis/duration_age/UIS_duration_age_25072018.dta" "$data_dhs/cleaning.dta"
+dhs_cleaning $data_dhs/reading.dta $aux_data_uis/duration_age/UIS_duration_age_25072018.dta $data_dhs/cleaning.dta
+
+* alternative: if data is stored in different foldes 
+
+dhs_cleaning $data_dhs/Part1/reading.dta $aux_data_uis/duration_age/UIS_duration_age_25072018.dta $data_dhs/Part1/cleaning.dta
+
+dhs_cleaning $data_dhs/Part2/reading.dta $aux_data_uis/duration_age/UIS_duration_age_25072018.dta $data_dhs/Part2/cleaning.dta
+
 
 
 * CALCULATING EDUCATION VARIABLES
