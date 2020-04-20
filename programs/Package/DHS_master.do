@@ -23,13 +23,13 @@ dhs_reading $data_path/Part2 $data_path/temporal/Part2 $data_path/all/Part2 $aux
 
 * CLEANING THE DATASET (RECODING SEVERAL VARIABLES)
 
-dhs_cleaning $data_dhs/reading.dta $aux_data_uis/duration_age/UIS_duration_age_25072018.dta $data_dhs/cleaning.dta
+dhs_cleaning $data_path/all/dhs_reading.dta $aux_data_path $aux_data_uis/duration_age/UIS_duration_age_25072018.dta $data_path/all/dhs_cleaning.dta
 
 * alternative: if data is stored in different foldes 
 
-dhs_cleaning $data_dhs/Part1/reading.dta $aux_data_uis/duration_age/UIS_duration_age_25072018.dta $data_dhs/Part1/cleaning.dta
+dhs_cleaning $data_path/all/Part1/dhs_reading.dta $aux_data_path $aux_data_uis/duration_age/UIS_duration_age_25072018.dta $data_path/all/Part1/dhs_cleaning.dta
 
-dhs_cleaning $data_dhs/Part2/reading.dta $aux_data_uis/duration_age/UIS_duration_age_25072018.dta $data_dhs/Part2/cleaning.dta
+dhs_cleaning $data_path/all/Part2/dhs_reading.dta $aux_data_path $aux_data_uis/duration_age/UIS_duration_age_25072018.dta $data_path/all/Part2/dhs_cleaning.dta
 
 
 
