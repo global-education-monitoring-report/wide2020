@@ -1,8 +1,8 @@
-* compute_education_out: program to compute if someone does not go to school
+* mics_education_out: program to compute if someone does not go to school
 * Version 1.0
 * April 2020
 
-program define compute_education_out
+program define mics_education_out
 	args
 	
 	use "$data_mics\hl\Step_4.dta", clear

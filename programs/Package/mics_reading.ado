@@ -3,7 +3,7 @@
 * April 2020
 
 program define mics_reading
-	args input_path temporal_path output_path dictionary rename
+	args input_path temporal_path output_path table1_path table2_path
 
 	cd `input_path'
 
@@ -12,7 +12,7 @@ program define mics_reading
 	capture mkdir "`temporal_path'"
 
 	* mics variables to keep first
-	import delimited "`dictionary'", clear varnames(1) encoding(UTF-8)
+	import delimited "`table1_path'", clear varnames(1) encoding(UTF-8)
 	preserve
 	keep name 
 	duplicates drop name, force
@@ -115,7 +115,7 @@ program define mics_reading
 	   *}
 		
 		*rename some variables  (later "urban" is renamed "location". better to do it now)
-		renamefrom using `rename', filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
+		renamefrom using `table2_path', filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
 		
 		*save each file in temporal folder
 		compress 
