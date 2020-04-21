@@ -1,7 +1,8 @@
-* compute_education_completion: program to compute the level reached in primary, secondary, etc.
+* mics_education_completion: program to compute the level reached in primary, secondary, etc.
 * Version 1.0
+* April 2020
 
-program define compute_education_completion
+program define mics_education_completion
 	args input_path output_path
 
 	
@@ -19,7 +20,8 @@ program define compute_education_completion
 
 	generate eduyears_C = eduyears	
 		replace eduyears_C = years_prim 	if eduyears == 0 & (code_ed4a ==2 | code_ed4a == 21 | code_ed4a == 23)
-		replace eduyears_C = years_lowsec 	if eduyears == 0 & (code_ed4a == 22 | code_ed4a == 24)
+		re
+		place eduyears_C = years_lowsec 	if eduyears == 0 & (code_ed4a == 22 | code_ed4a == 24)
 		replace eduyears_C = years_upsec 	if eduyears == 0 & (code_ed4a == 3 | code_ed4a == 32 | code_ed4a == 33)
 		replace eduyears_C = years_higher 	if eduyears == 0 & code_ed4a == 40
 		

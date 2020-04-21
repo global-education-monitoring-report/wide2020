@@ -38,3 +38,8 @@ dhs_cleaning $data_path/all/Part2/dhs_reading.dta $aux_data_path $aux_data_uis/d
 * age adjustment
 
 dhs_age_adjustment "$data_dhs/cleaning.dta" $aux_data\temp\current_school_year_DHS.dta "$aux_data_uis/months_school_year/month_start.dta"
+
+dhs_education_years
+
+dhs_education_completion
+
