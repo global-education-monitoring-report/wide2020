@@ -3,7 +3,7 @@
 * April 2020
 
 program define dhs_cleaning
-	args input_path table1_path table2_path uis_path output_path 
+	args input_path table1_path table2_path output_path 
 
 	
 	* Creates temporal files to Change duration
@@ -13,7 +13,7 @@ program define dhs_cleaning
 	save `fixduration'
 
 	*fix some uis duration
-	use `uis_path', clear
+	use `table2_path', clear
 	catenate country_year = country year, p("_")
 	
 	merge m:1 country_year using `fixduration', keep(match master) 
@@ -21,72 +21,37 @@ program define dhs_cleaning
 	replace lowsec_dur_uis = lowsec_dur_replace[_n] if _merge == 3 & lowsec_dur_replace != .
 	replace upsec_dur_uis  = upsec_dur_replace[_n] if _merge == 3 & upsec_dur_replace != .
 	replace prim_age_uis   = prim_age0_replace[_n] if _merge == 3 & prim_age0_replace != .
+	drop _merge *_replace
 	tempfile fixduration_uis
 	save `fixduration_uis'
 		
-	*Fixing categories and creating variables
-
 	* read the master data
 	use "`input_path'", clear
 	set more off
 
-
-	*create ids variables
-	* ID for each country year: Variable country_year. Year of survey can be different from the year in the name of the folder
-	catenate country_year = country year_file, p("_")
-
-	* Country dhs code
-	generate country_code_dhs = substr(hv000, 1, 2)
-
-	*Round of DHS
-	generate round_dhs = substr(hv000, 3, 1)
-	replace round_dhs = "4" if country_year == "VietNam_2002"
-
-
-	*Individual ids
-	generate zero = string(0)
-		
-	*Special cases IDs for countries: Honduras_2005, Mali_2001, Peru_2012, Senegal_2005
-	if (country_year=="Honduras_2005"|country_year=="Mali_2001"|country_year=="Peru_2012"|country_year=="Senegal_2005") {
-		if hvidx <= 9 {
-		catenate individual_id = country_year hhid zero hvidx 
-		}
-		else {
-		catenate individual_id = country_year hhid hvidx 
-		}
-	}
-	else {
-		if hvidx <= 9 {
-		catenate individual_id = country_year hv001 hv002 zero hvidx 
-		} 
-		else {
-		catenate individual_id = country_year hv001 hv002 hvidx
-		}
-	}
-
-	*Household ids
-	catenate hh_id = country_year hv001 hv002 
-	rename hhid hhid_original
-
-	drop hv000
-	 
-	*Cluster variable
-	rename hv001 cluster
-
-*drop hhid
-
-* "Official" Year of the survey is hv007. 
-* I median of year
-
-	* COUNTRIES WITH DIFFERENT CALENDAR: the years/months don't coincide with the Gregorian Calendar
-	
+	*Fixing categories and creating variables
 	*replace_many read auxiliary tables to fix values by replace
-	replace_many "`table1_path'/dhs_fix_date_month.csv" hv006 hv006_replace country_year
-
-	replace_many "`table1_path'/dhs_fix_date_year.csv" hv007 hv007_replace country_year hv006
 	
-	* Other countrys
-	replace_many "`table1_path'/dhs_fix_date_year2.csv" hv007 hv007_replace country_year
+	* location
+	replace_many "`table1_path'/dhs_setcode.csv" location location_replace
+
+	* region
+	replace_many "`table1_path'/dhs_fix_region.csv" region region_replace country 
+
+	* religion	
+	*replace_many "`table1_path'/dhs_fix_religion.csv" religion religion_replace
+
+	* ethnicity
+	*replace_many "`table1_path'/dhs_fix_ethnicity.csv" ethnicity
+
+	* Countries with different calendar: the years/months don't coincide with the Gregorian Calendar
+	
+	* month
+	replace_many "`table1_path'/dhs_fix_date_month.csv" hv006 hv006_replace country_year
+	
+	* year
+	replace_many "`table1_path'/dhs_fix_date_year.csv" hv007 hv007_replace country_year hv006
+	replace_many "`table1_path'/dhs_fix_date_year2.csv" hv007 hv007_replace country_year 
 	
 	* For Peru, we have to drop the observations for years not included in that country_year
 	drop if (hv007 == 2003 | hv007 == 2004 | hv007 == 2005 | hv007 == 2006) & country_year == "Peru_2007" 
@@ -119,10 +84,7 @@ program define dhs_cleaning
 	* Delete the countries that have the median year of 1999
 	drop if year <= 1999 
 
-
-	*-----------------------------------------------------------------------------------------------
 	* Merge with Duration in years, start age and names of countries (codes_dhs, mics_dhs, iso_code, WIDE names)
-	*isocodes
 	preserve
 	import delimited "`table1_path'/country_iso_codes_names.csv" ,  varnames(1) encoding(UTF-8) clear
 	keep country_code_dhs iso_code3
@@ -138,24 +100,22 @@ program define dhs_cleaning
 	generate year = year_original
 	replace year = 2017 if year_original >= 2018
 
-	merge m:1 iso_code3 year using "`table2_path'", keep(match master) nogenerate
-	drop year
+	
+	*FOR COMPLETION: Changes to match UIS calculations
+	merge m:1 iso_code3 year using "`fixduration_uis'", keep(match master) nogenerate
+	drop year 
 	rename year_original year
-
-	drop lowsec_age_uis upsec_age_uis
+	
 	for X in any prim_dur lowsec_dur upsec_dur: ren X_uis X
 	rename prim_age_uis prim_age0
 
-	*Create education variables
-
+	*drop lowsec_age_uis upsec_age_uis
+	
 	*Creating the variables for EDUOUT indicators
-		for X in any prim_dur lowsec_dur upsec_dur: generate X_eduout = X 
-		generate prim_age0_eduout = prim_age0
-		
-	*FOR COMPLETION: Changes to match UIS calculations
-	merge m:1 iso_code3 year using "`fixduration_uis'", keep(match master)  nogenerate
-	drop lowsec_age_uis upsec_age_uis 
-
+	for X in any prim_dur lowsec_dur upsec_dur: generate X_eduout = X 
+	generate prim_age0_eduout = prim_age0
+	
+	
 	*Questions to UIS
 	*- Burkina Faso 2010 (DHS) should use age 6 or 7 as start age? The start age changes from 7 to 6 in 2010, the school year starts in October.
 	*- Egypt 2005 DHS: prim dur changes from 5 to 6 in 2005. Should we use 5 or 6 for year 2005 considering that school years starts in September.
