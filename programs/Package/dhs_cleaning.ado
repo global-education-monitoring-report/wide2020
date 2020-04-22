@@ -34,7 +34,13 @@ program define dhs_cleaning
 	
 	* location
 	replace_many "`table1_path'/dhs_setcode.csv" location location_replace
-
+	
+	* hv121
+	replace_many "`table1_path'/dhs_setcode.csv" hv121 hv121_replace
+	
+	* hv122
+	replace_many "`table1_path'/dhs_setcode.csv" hv122 hv122_replace
+	
 	* region
 	replace_many "`table1_path'/dhs_fix_region.csv" region region_replace country 
 

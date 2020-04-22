@@ -13,9 +13,9 @@ program define dhs_age_adjustment
 
 	keep hv006 hv007 hv016 country year country_year iso_code3
 
-	*Merge with info about reference school year: $aux_data\temp\current_school_year_DHS.dta
-	merge m:1 country_year using  `table1_path', keep(match master) nogenerate
-	drop yearwebpage currentschoolyearDHSreport
+	*Merge with info about reference school year: $aux_data\temp\current_school_year_DHS.dta. I don't have the file
+	*merge m:1 country_year using  `table1_path', keep(match master) nogenerate
+	*drop yearwebpage currentschoolyearDHSreport
 
 	generate year_c = hv007
 	replace year_c = 2017 if year_c >= 2018 // I only have data on school calendar until 2017

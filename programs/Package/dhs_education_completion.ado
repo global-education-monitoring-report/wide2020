@@ -3,11 +3,9 @@
 * April 2020
 
 program define dhs_education_completion
-	args input_path table1_path table2_path uis_path output_path 
+	args input_path output_path 
 
-	cd `input_path'
-
-	use "`input_path'.dta", clear
+	use "`input_path'", clear
 	set more off
 
 	* Creates education variables
@@ -26,12 +24,12 @@ program define dhs_education_completion
 
 	*Upper secondary
 	generate comp_upsec_A = 0
-		replace comp_upsec_A = 1 if hv109 >= 4  //hv109=4: Complete secondary
+		replace comp_upsec_A = 1 if hv109 >= 4 
 		replace comp_upsec_A = . if (hv109 == . | hv109 == 8 | hv109 == 9)
 
 	*Higher
 	generate comp_higher_A = 0
-		replace comp_higher_A = 1 if hv109 >= 5 //hv109=5: Higher
+		replace comp_higher_A = 1 if hv109 >= 5 
 		replace comp_higher_A = . if (hv109 == . | hv109 == 8 | hv109 == 9)
 
 
@@ -50,29 +48,19 @@ program define dhs_education_completion
 		generate upsec_age0 = lowsec_age0 + lowsec_dur
 		for X in any prim lowsec upsec: generate X_age1 = X_age0 + X_dur-1
 		
-	*bys country_year: egen count_hv108=count(hv108)
-	*tab country_year if count_hv108==0
-	*drop count_hv108 // need to check info sh17_a sh17_b for Yemen 2013
-
-	label define hv109 0 "no education" 1 "incomplete primary" 2 "complete primary" 3 "incomplete secondary" 4 "complete secondary" 5 "higher"
-	label values hv109 hv109
-
-	*To analyze structure/duration of the education variables:
-	*bys country_year: tab hv107 hv106, m
-	*bys country_year: tab hv108, m
-	*bys country_year: tab hv108 hv109, m
-
+	*label define hv109 0 "no education" 1 "incomplete primary" 2 "complete primary" 3 "incomplete secondary" 4 "complete secondary" 5 "higher"
+	*label values hv109 hv109
 
 	*Creating "B" variables
 	foreach X in prim lowsec upsec {
 		cap generate comp_`X'_B = 0
-			replace comp_`X'_B = 1 if hv108 >= years_`X'
-			replace comp_`X'_B = . if (hv108 == . | hv108 >= 90) // here includes those ==98, ==99 
-			replace comp_`X'_B = 0 if (hv108 == 0 | hv109 == 0) // Added in Aug 2019!!	
+		 	replace comp_`X'_B  = 1 if hv108 >= years_`X'
+			replace comp_`X'_B  = . if (hv108 == . | hv108 >= 90) // here includes those ==98, ==99 
+			replace comp_`X'_B  = 0 if (hv108 == 0 | hv109 == 0) // Added in Aug 2019!!	
 	}
 
-	*For 2 countries, I use hv109 (I don't find other solution)
-	replace comp_upsec_B = comp_upsec_A if country_year == "Egypt_2005" // I don't know why if goes to 28.93 if I don't do this... Check difference between A & B later
+	*For 2 countries, I use hv109 (I don't find other solution). I don't know why if goes to 28.93 if I don't do this
+	replace comp_upsec_B = comp_upsec_A if country_year == "Egypt_2005" 
 
 	compress 
 	save "`output_path'", replace
