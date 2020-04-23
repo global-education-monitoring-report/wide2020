@@ -47,10 +47,10 @@ dhs_education_completion $data_path/all/dhs_educvar.dta $data_path/all/dhs_educv
 
 dhs_education_out $data_path/all/dhs_educvar.dta  $aux_data/UIS/duration_age/UIS_duration_age_25072018.dta
 
-* CREATING AN SQL FILE
+* CREATING AN SQL FILE (we can load a few variables from a stata file, this could be enough without making a sql query)
 
-dta_tosql $data_path/all/dhs_educvar.dta dhs *
+*dta_tosql $data_path/all/dhs_educvar.dta dhs *
 * dta_tosql $data_path/all/dhs_educvar.dta dhs cluster age
 
 
-dhs_summary
+dhs_summary $data_path/all/dhs_educvar.dta  $data_path/all/dhs_summary.dta

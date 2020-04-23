@@ -119,6 +119,10 @@ program define dhs_reading
 		catenate hh_id = country_year cluster hv002 
 		rename hhid hhid_original
 
+		
+		*Religion
+		*merge m:1 hh_id using "$data_dhs\dhs_ethnicity_religion_v2.dta", keepusing (ethnicity religion) keep(master match)
+		
 	
 		*save each file in temporal folder
 		compress 
@@ -143,4 +147,6 @@ program define dhs_reading
 	save "`output_path'/dhs_reading.dta", replace
 
 end
+
+
 
