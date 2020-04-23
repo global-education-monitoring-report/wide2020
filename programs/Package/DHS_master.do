@@ -41,9 +41,16 @@ dhs_education_years $data_path/all/dhs_cleaning.dta  $data_path/all/dhs_educvar.
 
 dhs_age_adjustment "$data_dhs/cleaning.dta" $aux_data\temp\current_school_year_DHS.dta "$aux_data_uis/months_school_year/month_start.dta"
 
+* completion
 
-dhs_education_completion $data_path/all/mics_educvar.dta $data_path/all/mics_educvar.dta 
+dhs_education_completion $data_path/all/dhs_educvar.dta $data_path/all/dhs_educvar.dta 
 
 dhs_education_out $data_path/all/dhs_educvar.dta  $aux_data/UIS/duration_age/UIS_duration_age_25072018.dta
 
+* CREATING AN SQL FILE
 
+dta_tosql $data_path/all/dhs_educvar.dta dhs *
+* dta_tosql $data_path/all/dhs_educvar.dta dhs cluster age
+
+
+dhs_summary
