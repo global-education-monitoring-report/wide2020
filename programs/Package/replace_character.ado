@@ -1,15 +1,18 @@
 * replace_character: program to replace several characters and accents 
-* Version 2.0
+* Version 3.0
 
 program define replace_character
-	*previously convert values to lowercase	
-	cleanchars , in("ĂŠ Ă¨ č é è")   out("e") vval values
-	cleanchars , in("ă ŕ ĂĄ ĂŁ à á") out("a") vval values
-	cleanchars , in("ń")             out("n") vval values
-	cleanchars , in("í")             out("i") vval values
-	cleanchars , in("ó")             out("o") vval values
-	cleanchars , in("ú")             out("u") vval values
-	cleanchars , in("-")             out(" ") vval values
+
+	args var
+
+	replacestrvar `var' , r("ĂŠ Ă¨ č é è")     w("e") 
+	replacestrvar `var' , r("ŕ ĂĄ ă ą ąă ĂŁ ăł ł à á") w("a") 
+	replacestrvar `var' , r("ń")               w("n") 
+	replacestrvar `var' , r("í")               w("i") 
+	replacestrvar `var' , r("ó")               w("o") 
+	replacestrvar `var' , r("ú")               w("u") 
+	replacestrvar `var' , r("-")               w(" ") 
+	
 
 end
 	
