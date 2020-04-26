@@ -1,46 +1,46 @@
-name,name_new,varlab_es,varlab_en,varlab_fr,encode,keep
-country,country,,Country name,,,1
-year_file,year_file,File year,File year,,,1
-hh1,hh1,,,,,1
-hh2,hh2,,,,,1
-hl1,hl1,,,,,1
-hl4,hl4,Sexo,Sex,Sexe,,1
-hl5m,hl5m,Mes de nacimiento,Month of birth,Mois de naissance,,1
-hl5y,hl5y,Año de nacimiento,Year of birth,Année de naissance,,1
-hl6,hl6,Edad,Age,,,1
-ed3,ed3,Alguna vez asistió a la escuela o el pre-escolar,Ever attended school or pre-school,A fréquenté l'école ou l'école maternelle,decode,1
-ed4a,ed4a,Nivel de educación más alto al que asistió,Highest level of education attended,Plus haut niveau d'éducation fréquenté,decode,1
-ed4ap,ed4a,,,,,
-ed4b,ed4b,Grado más alto de educación que completó,Highest grade completed at that level,Dernière classe achevée a ce niveau,decode,1
-ed4bp,ed4b,,,,,
-ed5,ed5,Asistió a la escuela en el presente año escolar 2013,Attended school during current school year,A fréquenté l'école ou l'école maternelle pendant l'anné,decode,1
-ed6a,ed6a,Nivel de educación del presente año escolar,Level of education attended current school year,Niveau d'éducation fréquenté pendant cette année scolai,decode,1
-ed6n,ed6a,,,,,
-ed6c,ed6b,,,,,
-ed6ap,ed6a,Level of education attended current school year [survey specific],,,,
-ed6b,ed6b,Grado de educación del presente año escolar,Grade of education attended current school year,Classe fréquenté pendant cette année scolaire,decode,1
-ed6bp,ed6b,,,,,
-ed7,ed7,,,,decode,1
-ed8a,ed8a,,,,decode,1
-ethnicity,ethnicity,Etnia o raza del jefe de hogar,Ethnicity of household head,,decode,1
-hc1c,ethnicity,,,Ethnie du chef du ménage,,
-hh6,hh6,Área,Area,Milieu,decode,1
-hh6a,hh6,Área,Area,,,
-hh6b,hh7,,,,,
-hh7,hh7,Région,Region (original variable),,decode,1
-hh7a,hh7,Dominio,,,,
-region,hh7,Region,,,,
-hhweight,hhweight,Ponderación del hogar,Household sample weight,Poids normalisé des ménages,,1
-hhwieght,hhweight,,,,,
-hlweight,hhweight,,,,,
-hc1a,religion,,,,decode,1
-religion,religion,,Religion of household head,Religion du chef de ménage,,
-hl15,religion,,,,,
-schage,schage,Edad de inicio del año escolar,Age at beginning of school year,,,1
-windex5,windex5,Quintiles del índice de riqueza,Wealth index quintiles,Quintile du bien-être économique,,1
-windex5_5,windex5,Quintiles del índice de riqueza original,,,,
-windex5_1,windex5,,,,,
-hl3,hl3,Relación de parentesco con (el jefe/la jefa),Relationship to the head,Lien de parenté avec le chef,,
-hh5d,hh5d,Día de la entrevista,Day of interview,Jour de l'interview,,1
-hh5m,hh5m,Mes de la entrevista,Month of interview,Mois de l'interview,,1
-hh5y,hh5y,Año de la entrevista,Year of interview,Année de l'interview,,1
+name,name_new,varlab_en,encode,keep
+country,country,Country name,,1
+year_file,year_file,File year,,1
+hh1,hh1,,,1
+hh2,hh2,,,1
+hl1,hl1,,,1
+hl4,hl4,Sex,,1
+hl5m,hl5m,Month of birth,,1
+hl5y,hl5y,Year of birth,,1
+hl6,hl6,Age,,1
+ed3,ed3,Ever attended school or pre-school,decode,1
+ed4a,ed4a,Highest level of education attended,decode,1
+ed4ap,ed4a,,,
+ed4b,ed4b,Highest grade completed at that level,decode,1
+ed4bp,ed4b,,,
+ed5,ed5,Attended school during current school year,decode,1
+ed6a,ed6a,Level of education attended current school year,decode,1
+ed6n,ed6a,,,
+ed6c,ed6b,,,
+ed6ap,ed6a,,,
+ed6b,ed6b,Grade of education attended current school year,decode,1
+ed6bp,ed6b,,,
+ed7,ed7,,decode,1
+ed8a,ed8a,,decode,1
+ethnicity,ethnicity,Ethnicity of household head,decode,1
+hc1c,ethnicity,,,
+hh6,hh6,Area,decode,1
+hh6a,hh6,Area,,
+hh6b,hh7,,,
+hh7,hh7,Region (original variable),decode,1
+hh7a,hh7,,,
+region,hh7,,,
+hhweight,hhweight,Household sample weight,,1
+hhwieght,hhweight,,,
+hlweight,hhweight,,,
+hc1a,religion,,decode,1
+religion,religion,Religion of household head,,
+hl15,religion,,,
+schage,schage,Age at beginning of school year,,1
+windex5,windex5,Wealth index quintiles,,1
+windex5_5,windex5,,,
+windex5_1,windex5,,,
+hl3,hl3,Relationship to the head,,
+hh5d,hh5d,Day of interview,,1
+hh5m,hh5m,Month of interview,,1
+hh5y,hh5y,Year of interview,,1

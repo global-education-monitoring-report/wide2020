@@ -1,5 +1,5 @@
-location,location_replace,hv122,hv122_replace,hv121,hv121_replace
-2,0,1,1,1,1
-9,.,2,1,2,1
-,,8,.,8,.
-,,9,.,9,.
+location,location_replace,hv122,hv122_replace,hv121,hv121_replace,sex,sex_replace,hv109,hv109_replace
+2,0,1,1,1,1,2,0,8,.
+9,.,2,1,2,1,9,.,9,.
+,,8,.,8,.,3,.,,
+,,9,.,9,.,4,.,,
