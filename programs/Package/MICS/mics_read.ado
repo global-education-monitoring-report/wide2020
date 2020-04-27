@@ -1,4 +1,4 @@
-* mics_read: program to read the datasets and append all in one file
+* mics_read: program to read the MICS datasets and append all in one file
 * Version 1.0
 * April 2020
 
@@ -12,8 +12,7 @@ program define mics_read
 	capture mkdir "`temporal_path'"
 
 	* mics variables to keep first
-	*import delimited "`table_path'/mics_dictionary.csv", clear varnames(1) encoding(UTF-8)
-	import delimited "$aux_data_path/mics_dictionary.csv", clear varnames(1) encoding(UTF-8)
+	import delimited "`table_path'/mics_dictionary.csv", clear varnames(1) encoding(UTF-8)
 	preserve
 	keep name 
 	duplicates drop name, force
@@ -39,6 +38,7 @@ program define mics_read
 	ds
 	local micsvars_keep `r(varlist)'
 
+	* mics numeric variables
 	restore 
 	preserve
 	keep if numeric == 1 & keep == 1
@@ -47,6 +47,7 @@ program define mics_read
 	ds
 	local micsvars_keepnum `r(varlist)'
 	
+	* mics string variables
 	restore 
 	keep if numeric == 0 & keep == 1
 	keep name_new
@@ -89,13 +90,13 @@ program define mics_read
 		* remove special character and space in string variables
 		foreach var of varlist `common_decode'{ 
 			cap tostring `var', replace
-			cap sdecode `var', replace
-			cap replace `var' = "missing" if `var' == ""
-			cap replace `var' = lower(`var')
+			cap sdecode  `var', replace
+			cap replace  `var' = "missing" if `var' == ""
+			cap replace  `var' = lower(`var')
 			cap replace_character `var'
-			cap replace `var' = stritrim(`var')
-			cap replace `var' = strltrim(`var')
-			cap replace `var' = strrtrim(`var')
+			cap replace  `var' = stritrim(`var')
+			cap replace  `var' = strltrim(`var')
+			cap replace  `var' = strrtrim(`var')
 		 }
 		 
 		*create ids variables
@@ -109,16 +110,13 @@ program define mics_read
 		order `micsvars_keep'
 
 		*rename some variables  (later "urban" is renamed "location". better to do it now)
-		*renamefrom using "`table_path'/mics_renamevars.csv", filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
-		cap renamefrom using  "$aux_data_path/mics_renamevars.csv", filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
-		
+		cap renamefrom using "`table_path'/mics_renamevars.csv", filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
+				
 		*compress and save each file in a temporal folder
 		compress 
-		save "$data_path/temporal/`1'_`3'_hl", replace
-		*save "`temporal_path'/`1'_`3'_hl", replace
+		save "`temporal_path'/`1'_`3'_hl", replace
 }
-
-
+	* change dir to temporal folder
 	cd `temporal_path'
 	local allfiles : dir . files "*.dta", respectcase
 
