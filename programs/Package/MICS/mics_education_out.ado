@@ -3,10 +3,10 @@
 * April 2020
 
 program define mics_education_out
-	args input_path table1_path table2_path output_path
-
+	args data_path table_path 
+	
 	* read data
-	use `input_path', clear
+	use "`data_path'/all/mics_educvar.dta", clear
 	set more off
 
 	*Creating age groups for preschool
@@ -70,7 +70,7 @@ program define mics_education_out
 	}
 
 	* Merging with adjustment
-	merge m:1 country_year using `table1_path', keepusing(adj1_norm) nogen
+	merge m:1 country_year using "`data_path'/all/mics_adjustment.dta", keepusing(adj1_norm) nogen
 	rename adj1_norm adjustment
 	generate agestandard = ageU if adjustment == 0
 	replace agestandard = ageA if adjustment == 1
@@ -141,7 +141,7 @@ program define mics_education_out
 
 		
 	*Durations for OUT-OF-SCHOOL & ATTENDANCE 
-	merge m:1 iso_code3 year using `table2_path', keep(master match) nogenerate
+	merge m:1 iso_code3 year using "`table_path'/UIS/duration_age/UIS_duration_age_25072018.dta", keep(master match) nogenerate
 	drop lowsec_age_uis upsec_age_uis
 		
 	for X in any prim_dur lowsec_dur upsec_dur: rename X_uis X_eduout
@@ -189,7 +189,7 @@ program define mics_education_out
 		
 	* save data		
 	compress
-	save "`output_path'", replace
+	save "`data_path'/all/mics_educvar.dta", replace
 
 end
 	

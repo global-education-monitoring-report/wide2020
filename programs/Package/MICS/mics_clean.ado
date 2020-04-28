@@ -3,7 +3,7 @@
 * April 2020
 
 program define mics_clean
-	args input_path table_path uis_path output_path 
+	args data_path table_path 
 
 	cd `table_path'
 
@@ -40,7 +40,7 @@ program define mics_clean
 	save `fixduration'
 
 	*fix some uis duration
-	use "`uis_path'/UIS_duration_age_25072018.dta", clear
+	use "`table_path'/UIS/duration_age/UIS_duration_age_25072018.dta", clear
 	merge m:1 country year using `fixduration', keep(match master) 
 	replace prim_dur_uis   = prim_dur_replace[_n]   if _merge == 3 & prim_dur_replace   !=.
 	replace lowsec_dur_uis = lowsec_dur_replace[_n] if _merge == 3 & lowsec_dur_replace !=.
@@ -51,7 +51,7 @@ program define mics_clean
 	save `fixduration_uis'
 
 	* read the master data
-	use "`input_path'", clear
+	use "`data_path'/all/mics_read.dta", clear
 	set more off
 
 	* FIX SEVERAL VARIABLES
@@ -152,6 +152,6 @@ program define mics_clean
 
 	* save data 	
 	compress
-	save "`output_path'", replace
+	save "`data_path'/all/mics_clean.dta", replace
 
 end

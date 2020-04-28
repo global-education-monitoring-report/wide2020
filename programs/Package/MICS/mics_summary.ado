@@ -3,14 +3,14 @@
 * April 2020
 
 program define mics_summary
-	args input_path table1_path table2_path output_path 
+	args data_path table_path 
 	
 	* variables to keep
 	local keepvars comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 eduout_prim eduout_lowsec eduout_upsec hhweight 
 	local keeepvarsby country_year iso_code3 year adjustment prim_age0_comp prim_dur_comp lowsec_dur_comp upsec_dur_comp prim_age0_eduout prim_dur_eduout lowsec_dur_eduout upsec_dur_eduout
 	
 	* read some variables from data
-	use `keepvars' `keepvarsby'  using `input_path', clear
+	use `keepvars' `keepvarsby'  using "`data_path'/all/mics_educvar.dta", clear
 	set more off
 
 	collapse (mean) comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 eduout_prim eduout_lowsec eduout_upsec [weight=hhweight], by(country_year iso_code3 year adjustment prim_age0_comp prim_dur_comp lowsec_dur_comp upsec_dur_comp prim_age0_eduout prim_dur_eduout lowsec_dur_eduout upsec_dur_eduout)
@@ -24,13 +24,13 @@ program define mics_summary
 	generate survey = "MICS"
 
 	* merge with year_uis
-	merge 1:1 iso_code3 survey year using `table1_path', keepusing(year_uis) keep(master match) nogenerate
+	merge 1:1 iso_code3 survey year using "`table_path'/GEM/country_survey_year_uis.dta", keepusing(year_uis) keep(master match) nogenerate
 
 	generate location = ""
 	generate sex = "" 
 	generate wealth = ""
 
-	merge 1:1 iso_code3 survey year_uis category location sex wealth using `table2_path', keep(master match) nogenerate
+	merge 1:1 iso_code3 survey year_uis category location sex wealth using "`table_path'/UIS/UIS_indicators_29Nov2018_with_metadata.dta", keep(master match) nogenerate
 	drop if survey != "MICS"
 	drop iso_code2 country survey_uis location sex wealth year_uis category survey
 	generate cy = lower(country_year)
@@ -62,13 +62,17 @@ program define mics_summary
 
 	keep iso_code3 country_year survey year *_uis flag_comp
 
+	* create a temporal folder
+	capture mkdir "`data_path'/all/temporal/"
+	
 	* combine categories 
 	local categories_collapse location sex wealth region ethnicity religion
 	tuples `categories_collapse'
+	
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		collapse (mean) $varlist_m comp_prim_aux comp_lowsec_aux (count) $varlist_no [weight=hhweight], by(country_year iso_code3 year adjustment `tuple`i'')
 		generate category = "`tuple`i''"	
-		save "`output_path'/temporal/result`i'.dta", replace
+		save "`data_path'/all/temporal/result`i'.dta", replace
 	}
 	
 	cd `output_path'/temporal
@@ -81,8 +85,8 @@ program define mics_summary
 	generate survey = "MICS"
 	*include "$dir_synchro/programs/standardizes_collapse_dhs_mics.do"
 
-	save "`output_path'/mics_collapse", replace
-	export delimited "`output_path'mics_collapse/", replace
+	save "`data_path'/all/mics_collapse.dta", replace
+	export delimited "`output_path'/all/mics_collapse.csv", replace
 
 	
 end

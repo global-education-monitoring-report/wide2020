@@ -1,15 +1,15 @@
-* mics_age_adjustment: program to 
+* mics_age_adjustment: program to adjust school year
 * Version 1.0
 * April 2020
 
 program define mics_age_adjustment
-	args input_path table1_path table2_path output_path
+	args data_path table_path
 	
-	use `input_path', clear
+	use "`data_path'/all/mics_educvar.dta", clear
 	set more off
 	
 	* current school year that ED question in MICS refers to
-	merge m:1 country_year using `table1_path', keep(master match) nogenerate 
+	merge m:1 country_year using "`table_path'/current_school_year_MICS.dta", keep(master match) nogenerate 
 
 	* replace current 
 	replace current = "" if current == "doesn't have the variable"
@@ -20,7 +20,7 @@ program define mics_age_adjustment
 	* Median of month
 	cap drop month* 
 	generate year_c = hh5y	
-	merge m:1 iso_code3 year_c using `table2_path', keep(master match) nogenerate 
+	merge m:1 iso_code3 year_c using "`table_path'/UIS/months_school_year/month_start.dta", keep(master match) nogenerate 
 	drop max_month min_month diff year_c
 
 	* replace missing in school year by the interview year
@@ -86,6 +86,6 @@ program define mics_age_adjustment
 	*gcollapse diff* adj* flag_month, by(country_year) 
 	collapse diff* adj* flag_month, by(country_year)	
 
-	save `output_path', replace
+	save "`data_path'/all/mics_adjustment.dta", replace
 
 end

@@ -3,7 +3,7 @@
 * April 2020
 
 program define mics_education_years
-	args input_path table_path output_path
+	args data_path table_path 
 
 	* read auxiliary table to calculate eduyears 
 	import delimited "`table_path'/mics_group_eduyears.csv",  varnames(1) encoding(UTF-8) clear
@@ -11,7 +11,7 @@ program define mics_education_years
 	save `group'
 	
 	* read the main data
-	use `input_path', clear
+	use "`data_path'/all/mics_clean.dta", clear
 	set more off
 	merge m:1 country_year using `group', keep(match master) nogenerate
 	
@@ -210,7 +210,7 @@ program define mics_education_years
 	
 	* save data
 	compress
-	save `output_path', replace
+	save "`data_path'/all/mics_educvar.dta", replace
 	
 end
 	

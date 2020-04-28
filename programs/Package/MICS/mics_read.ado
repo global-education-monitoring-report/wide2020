@@ -3,14 +3,14 @@
 * April 2020
 
 program define mics_read
-	args input_path temporal_path output_path table_path
+	args data_path table_path
 
-	cd `input_path'
+	cd `data_path'
 
 	local allfiles : dir . files "*.dta"
 	
 	* create folder
-	capture mkdir "`temporal_path'"
+	capture mkdir "`data_path'/temporal"
 
 	* mics variables to keep first
 	import delimited "`table_path'/mics_dictionary.csv", clear varnames(1) encoding(UTF-8)
@@ -119,7 +119,7 @@ program define mics_read
 					
 		*compress and save each file in a temporal folder
 		compress 
-		save "`temporal_path'/`1'_`3'_hl", replace
+		save "`data_path'/temporal/`1'_`3'_hl", replace
 	}
 
 	
@@ -132,10 +132,10 @@ program define mics_read
 	append using `r(files)', force
 
 	* remove temporal folder and files
-	capture rmdir "`temporal_path'"
+	capture rmdir "`data_path'/temporal"
 
 	* save all dataset in a single one
 	compress
-	save "`output_path'", replace
+	save "`data_path'/all/mics_read.dta", replace
 
 end

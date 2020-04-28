@@ -3,10 +3,10 @@
 * April 2020
 
 program define mics_education_completion
-	args input_path output_path
+	args data_path 
 
 	* read data
-	use `input_path', clear
+	use "`data_path'/all/mics_educvar.dta", clear
 	set more off
 
 	* Ages for completion
@@ -48,7 +48,7 @@ program define mics_education_completion
 
 	* save data
 	compress
-	save `output_path', replace
+	save "`data_path'/all/mics_educvar.dta", replace
 
 end
 	
