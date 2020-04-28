@@ -15,10 +15,7 @@ cap var_exists ed6b ed6bp ed6b
 cap var_exists ethnicity hc1c ethnicity
 cap var_exists hh6 hh6a hh6
 cap var_exists hh7 hh6b hh7
-cap var_exists region hh7a hh7
-*cap var_exists hh7 hh7a hh7
-*cap if !missing(hh7) 	   & !missing(region)    drop hh7
-*cap if !missing(hh8)       & !missing(region)    drop hh8
+cap var_exists region hh7 hh7
 cap var_exists hhweight hlweight hhweight
 cap var_exists religion hc1a religion
 cap var_exists religion hl15 religion

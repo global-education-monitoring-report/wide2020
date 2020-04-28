@@ -1,54 +1,52 @@
 * mics_education_completion: program to compute the level reached in primary, secondary, etc.
-* Version 1.0
+* Version 2.0
 * April 2020
 
 program define mics_education_completion
 	args input_path output_path
 
-	
+	* read data
 	use `input_path', clear
 	set more off
 
-	*Ages for completion
-		generate lowsec_age0 = prim_age0 + prim_dur
-		generate upsec_age0  = lowsec_age0 + lowsec_dur
-		for X in any prim lowsec upsec: generate X_age1 = X_age0 + X_dur-1
+	* Ages for completion
+	generate lowsec_age0 = prim_age0 + prim_dur
+	generate upsec_age0  = lowsec_age0 + lowsec_dur
+	for X in any prim lowsec upsec: generate X_age1 = X_age0 + X_dur - 1
 
 	* VERSION C to fix eduyears
-	*Recoding those with zero to a lower level of education 
-	*Those with zero eduyears that have a level of edu higher than pre-primary, are re-categorized as having completed the last grade of the previous level!
-
-	generate eduyears_C = eduyears	
-		replace eduyears_C = years_prim 	if eduyears == 0 & (code_ed4a ==2 | code_ed4a == 21 | code_ed4a == 23)
-		re
-		place eduyears_C = years_lowsec 	if eduyears == 0 & (code_ed4a == 22 | code_ed4a == 24)
-		replace eduyears_C = years_upsec 	if eduyears == 0 & (code_ed4a == 3 | code_ed4a == 32 | code_ed4a == 33)
-		replace eduyears_C = years_higher 	if eduyears == 0 & code_ed4a == 40
+	* Recoding those with zero to a lower level of education 
+	* Those with zero eduyears that have a level of edu higher than pre-primary, are re-categorized as having completed the last grade of the previous level!
+	replace eduyears = years_prim 	if eduyears == 0 & inlist(code_ed4a, 2, 21, 23)
+	replace eduyears = years_lowsec if eduyears == 0 & inlist(code_ed4a, 22, 24)
+	replace eduyears = years_upsec 	if eduyears == 0 & inlist(code_ed4a, 3, 32, 33)
+	replace eduyears = years_higher if eduyears == 0 & code_ed4a == 40
 		
-	*-- Without Age limits 
+	* Without Age limits 
 	* I consider that those with or with more years than those necessary for completing that level to have completed that level.
 	foreach X in prim lowsec upsec higher {
-
-		generate comp_`X'_C = 0
-			replace comp_`X'_C = 1	if eduyears_C >= years_`X'
-			replace comp_`X'_C = . 	if (eduyears_C == . | eduyears_C == 97 | eduyears_C == 98 | eduyears_C == 99)
-			replace comp_`X'_C = 0 	if ed3=="no" | code_ed4a==0 // those that never went to school have not completed! those that went to kindergarten max have no completed primary.
+		generate comp_`X' = 0
+			replace comp_`X' = 1	if eduyears >= years_`X'
+			replace comp_`X' = . 	if inlist(eduyears, 97, 98, 99)
+			replace comp_`X' = 0 	if ed3 == "no" | code_ed4a == 0 
 	}
 		
 
-	*Age limits
+	* Age limits
+	generate ageA = age-1
+    generate ageU = age
+	
 	foreach X in prim lowsec upsec {
 		foreach AGE in ageU ageA {
-			generate comp_`X'_v2_C_`AGE' = comp_`X'_C if `AGE' >= `X'_age1+3 & `AGE' <= `X'_age1+5
+			generate comp_`X'_v2_`AGE' = comp_`X' if `AGE' >= `X'_age1+3 & `AGE' <= `X'_age1+5
 		}
 	}
 
 	* Recoding ED5: "Attended school during current school year?"
-	generate attend = 1 if ed5 == "yes" // equivalent to school
-		replace attend = 0 if ed5=="no"
+	generate attend = 1 if ed5 == "yes" 
+	replace attend  = 0 if ed5 == "no"
 
-	generate eduout = .
-
+	* save data
 	compress
 	save `output_path', replace
 

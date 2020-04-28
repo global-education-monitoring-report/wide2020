@@ -13,3 +13,9 @@ output/edu_indicators/WIDE_All_2019-03-22 (1).dta
 .Rproj.user
 to_dta.Rdhs2.sql
 README.html
+auxiliary_data/current_school_year_DHS.dta
+auxiliary_data/dhs_adjustment.dta
+auxiliary_data/dhs_collapse_by_categories_v7.dta
+auxiliary_data/dhs_interview_dates.dta
+auxiliary_data/current_school_year_MICS.dta
+dhs2.sql
