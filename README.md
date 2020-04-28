@@ -23,7 +23,7 @@ The ado files should be placed in the `c:\ado\personal\` folder and read by Stat
 The use of this package requires that the data from each source (DHS and MICS) be in a specific folder. In particular, MICS files should not have a generic name, the one that comes with the download, but should be called by the country name, the year and "hl" that identifies the corresponding base. If the name of the country consists of more than one word each must be capitalized, unless one of them is "and".
 
 
-<img src="filenames.png" width="350" />
+<img src="raw_data.png" width="350" />
 
 ## Auxiliary data
 
@@ -42,6 +42,11 @@ In addition to the raw data, different auxiliary tables are used to standardize 
 |group_eduyears | groups countries according to the calculation formula adopted for years of education|
 |renamevars | renames some variables|
 |setcode | recodes some variables |
+
+
+The files corresponding to these auxiliary tables should be organized according to the following diagram:
+
+<img src="auxiliary_data.png" width="350" />
 
 
 ## Example
