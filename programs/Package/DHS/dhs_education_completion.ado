@@ -1,11 +1,11 @@
-* dhs_education_completion: program to create education completion
+* dhs_education_completion: program to create education level completion variable
 * Version 1.0
 * April 2020
 
 program define dhs_education_completion
-	args input_path output_path 
+	args data_path
 
-	use "`input_path'", clear
+	use "`data_path'/all/dhs_educvar.dta", clear
 	set more off
 
 	* Creates education variables
@@ -63,7 +63,7 @@ program define dhs_education_completion
 	replace comp_upsec_B = comp_upsec_A if country_year == "Egypt_2005" 
 
 	compress 
-	save "`output_path'", replace
+	save "`data_path'/all/dhs_educvar.dta", replace
 
 end
 

@@ -1,25 +1,25 @@
-* dhs_age_adjustment: program to clean the data (fixing and recoding variables)
+* dhs_age_adjustment: program to adjust school year 
 * Version 1.0
 * April 2020
 
 program define dhs_age_adjustment
-	args input_path table1_path table2_path uis_path output_path 
+	args data_path table_path 
 
-	cd `input_path'
+	cd `data_path'
 
 	*	AGE ADJUSTMENT
-	use "`input_path'", clear
+	use "`data_path'/all/dhs_educvar.dta", clear
 	set more off
 
 	keep hv006 hv007 hv016 country year country_year iso_code3
 
 	*Merge with info about reference school year: $aux_data\temp\current_school_year_DHS.dta. I don't have the file
-	*merge m:1 country_year using  `table1_path', keep(match master) nogenerate
-	*drop yearwebpage currentschoolyearDHSreport
+	merge m:1 country_year using  "`table_path'/current_school_year_DHS.dta", keep(match master) nogenerate
+	drop yearwebpage currentschoolyearDHSreport
 
 	generate year_c = hv007
 	replace year_c = 2017 if year_c >= 2018 // I only have data on school calendar until 2017
-	merge m:1 iso_code3 year_c using `table2_path', keep(master match) nogenerate
+	merge m:1 iso_code3 year_c using "`table_path'/UIS/months_school_year/month_start.dta", keep(master match) nogenerate
 	drop max_month min_month diff year_c
 
 	*All countries have month_start. Malawi_2015 has now the month 9 (OK)

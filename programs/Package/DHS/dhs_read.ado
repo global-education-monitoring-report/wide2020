@@ -3,18 +3,20 @@
 * April 2020
 
 program define dhs_read
-	args input_path temporal_path output_path table1_path table2_path
+	args data_path table_path
 
-	cd `input_path'
-
-	* Reading individual datasets and appending them all
-
+	* table to get country_year
+	import delimited "`table_path'/dhs_country_year.csv", clear varnames(1) encoding(UTF-8)
+	tempfile countryyear
+	save `countryyear'
+	
+	cd `data_path'
 	local allfiles : dir . files "*.dta"
 
-	capture mkdir "`temporal_path'"
+	cap mkdir "`data_path'/temporal"
 	
 	* DHS variables to keep first
-	import delimited "`table1_path'", clear varnames(1) encoding(UTF-8)
+	import delimited "`table_path'/dhs_dictionary.csv", clear varnames(1) encoding(UTF-8)
 	preserve
 	keep name 
 	duplicates drop name, force
@@ -26,7 +28,7 @@ program define dhs_read
 	restore
 	preserve
 	drop if encode != "decode"
-	keep name_new
+	keep name
 	sxpose, clear firstnames
 	ds
 	local dhsvars_decode `r(varlist)'
@@ -34,7 +36,7 @@ program define dhs_read
 	* DHS variables to keep last
 	restore
 	keep if keep == 1
-	keep name_new
+	keep name
 	sxpose, clear firstnames
 	ds
 	local dhsvars_keep `r(varlist)'
@@ -42,9 +44,9 @@ program define dhs_read
 	* read all files 
 	foreach file of local allfiles {
 
-		*read a file
+	    *read a file
 		use "`file'", clear
-				  
+
 		*lowercase all variables
 		capture rename *, lower
 						  
@@ -55,15 +57,9 @@ program define dhs_read
 		*display "`common'"
 		keep `common'
 		ds
-						
-		*generate variables with file name
-		tokenize `file', parse("_")
-		generate country = "`1'" 
-		generate year_file = `3'
-				
-				
+
 		*create variables doesnt exist 
-		for X in any `dhsvars_keep': cap gen X=.
+		for X in any `dhsvars_keep': cap generate X = .
 		order `dhsvars_keep'
 				
 		*decode and change strings values to lower case
@@ -80,17 +76,23 @@ program define dhs_read
 		}
 				
 		*rename some variables
-		*renamefrom using "`table2_path'", filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
-		renamefrom using "$aux_data_path/dhs_renamevars.csv", filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
-		
+		renamefrom using "`table_path'/dhs_renamevars.csv", filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
+				
 		*create numeric variables for easy recoding
-		for X in any sex wealth location: gen X_n = X
+		for X in any sex wealth location: generate X_n = X
+		for X in any sex wealth location: drop X
 		for X in any sex wealth location: rename X_n X
 		
+		*generate country_year using file name
+		generate file = "`file'"
+		replace file =  substr(file, 1, strlen(file) - 4)
+		merge m:1 file using `countryyear', keep(master match) nogenerate
+		drop file 
+		
+		generate country = substr(country_year, 1, strlen(country_year) -5)
+		
 		*create ids variables
-		* ID for each country year: Variable country_year. Year of survey can be different from the year in the name of the folder
-		catenate country_year = country year_file, p("_")
-
+		
 		* Country dhs code
 		generate country_code_dhs = substr(hv000, 1, 2)
 
@@ -118,7 +120,9 @@ program define dhs_read
 			catenate individual_id = country_year cluster hv002 hvidx
 			}
 		}
-
+		
+		drop zero
+		
 		*Household ids
 		catenate hh_id = country_year cluster hv002 
 		rename hhid hhid_original
@@ -127,16 +131,14 @@ program define dhs_read
 		*Religion
 		*merge m:1 hh_id using "$data_dhs\dhs_ethnicity_religion_v2.dta", keepusing (ethnicity religion) keep(master match)
 		
-	
 		*save each file in temporal folder
 		compress 
-		save "temporal/`1'_`3'", replace
-		*save "`temporal_path'/`1'_`3'", replace
+		save "`data_path'/temporal/`file'", replace
 }
 
 
-	cd `temporal_path'
-	local allfiles : dir . files "*.dta", respectcase
+	cd "`data_path'/temporal/"
+	local all : dir . files "*.dta", respectcase
 
 	* append all the datasets
 	* ssc install fs 
@@ -144,11 +146,14 @@ program define dhs_read
 	append using `r(files)', force
 
 	* remove temporal folder and files
-	capture rmdir "`temporal_path'"
-
+	cap rmdir "`data_path'/temporal"
+	
+	* make the output folder
+	cap makedir"`data_path'/all"
+	
 	* save all dataset in a single one
 	compress
-	save "`output_path'/dhs_reading.dta", replace
+	save "`data_path'/all/dhs_read.dta", replace
 
 end
 

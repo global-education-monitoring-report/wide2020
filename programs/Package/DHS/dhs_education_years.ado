@@ -3,9 +3,9 @@
 * April 2020
 
 program define dhs_education_years
-	args input_path output_path 
+	args data_path 
 
-	use "`input_path'", clear
+	use "`data_path'/all/dhs_clean.dta", clear
 	set more off
 	
 	* CHANGES IN HV108
@@ -63,13 +63,18 @@ program define dhs_education_years
 	else {
 		replace hv108 = hv108
 	}
-		
+	
+	* create eduyears, max of years as 30 
+	generate eduyears = hv108
+	replace eduyears = 30 if hv108 >= 30
+	replace eduyears = . if hv108 >= 90
+
 	*Hv108: 
 	*Albania 2017: doesn't have hv108==10, 11
 	*Mali 2018: doesn't have hv108==11
 	*Haiti 2017, Pakistan 2018, South Africa 2016: only goes until 16 years
 	*Indonesia 2017, Maldives 2017, Mali 2018: only goes until 17 years
 	compress
-	save  "`output_path'", replace
+	save  "`data_path'/all/dhs_educvar.dta", replace
 	
 end

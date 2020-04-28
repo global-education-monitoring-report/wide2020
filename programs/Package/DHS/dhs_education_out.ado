@@ -3,8 +3,9 @@
 * April 2020
 
 program define dhs_education_out
-	args input_path table1_path table2_path uis_path output_path 
+	args data_path table_path
 	
+
 ****************************************************
 
 /*
@@ -220,7 +221,7 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 */
 
 	
-	use "`input_path'", clear
+	use "`data_path'/all/dhs_educvar.dta", clear
 	set more off
 
 	*Age
@@ -231,26 +232,23 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 	rename age ageU
 
 	*Attendance to higher educ
-	*recode hv121 (1/2=1) (8/9=.), gen(attend)
-
+	recode hv121 (1/2=1) (8/9=.), generate(attend)
 	
-	*	Out of school
+	*Out of school
+	generate eduout = .
+	replace eduout = 0 if inlist(hv121, 1, 2)
+	replace eduout = 1 if hv121 == 0 
+	replace eduout = . if ageU == .
+	replace eduout = . if inlist(hv121, 8, 9, .)
+	replace eduout = . if inlist(hv122, 8, 9) & eduout == 0 
+	replace eduout = 1 if hv122 == 0
+
+	*those whose highest ed level is preschool.. DO NOT ADD THIS LINE, makes it really different to UIS estimates!! See the version 4 for the results!
+	*replace eduout=1 if hv106==0  
 	
-	gen eduout_1 = .
-	replace eduout_1 = 0 if (hv121 == 1 | hv121 == 2) // goes to school
-	replace eduout_1 = 1 if (hv121 == 0) // does not go to school
-	replace eduout_1 = . if ageU == .
-	replace eduout_1 = . if (hv121 == 8 | hv121 == 9 | hv121 == .)
-	replace eduout_1 = . if (hv122 == 8 | hv122 == 9) & eduout_1 == 0 // missing when age, attendance or level of attendance (when goes to school) is missing
-
-	generate eduout = eduout_1
-	replace eduout = 1 if hv122 == 0 // level attended: goes to preschool
-	*** replace eduout=1 if hv106==0 // those whose highest ed level is preschool.. DO NOT ADD THIS LINE, makes it really different to UIS estimates!! See the version 4 for the results!
-	drop eduout_1
-
-	*--------------------------------------------
+	
 	* Completion indicators (version A & B) with age limits 
-	*--------------------------------------------
+	
 	*Age limits for Version A and B
 	foreach Y in A B {
 		foreach X in prim upsec {
@@ -260,8 +258,7 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 		}
 	}
 
-	merge m:1 country_year using "$data_dhs\PR\dhs_adjustment.dta", keepusing(adj1_norm) keep(master match) nogenerate
-	*merge m:1 country_year using "C:\Users\Rosa_V\Desktop\casa\dhs_adjustment.dta", keepusing(adj1_norm)
+	merge m:1 country_year using "`data_path'/all/dhs_adjustment.dta", keepusing(adj1_norm) keep(master match) nogenerate
 	rename adj1_norm adjustment
 
 	*Creating the appropiate age according to adjustment
@@ -301,15 +298,6 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 	generate comp_prim_aux   = comp_prim   if agestandard >= lowsec_age1 + 3 & agestandard <= lowsec_age1 + 5
 	generate comp_lowsec_aux = comp_lowsec if agestandard >= upsec_age1 + 3 & agestandard <= upsec_age1 + 5
 
-	*--------------------
-	* Years of education
-	*--------------------
-	*codebook hv108, tab(200)
-	*If this eduyears would be a version, it would be version "A" because it comes directly from DHS variables.
-	generate eduyears = hv108
-		replace eduyears = 30 if hv108 >= 30 // I put the max of years as 30
-		replace eduyears = . if hv108 >= 90
-
 
 	*With age limits
 	generate eduyears_2024 = eduyears if agestandard >= 20 & agestandard <= 24
@@ -319,12 +307,10 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 			replace edu`X'_2024 = . if eduyears_2024 == .
 	}
 
-	*----------------------
 	* Never been to school
-	*----------------------
 	recode hv106 (0=1) (1/3=0) (4/9=.), gen(edu0)
 	gen never_prim_temp=1 if (hv106==0|hv109==0) & (hv107==. & hv123==.)
-	replace edu0=1 if (eduyears==0|never_prim_temp==1)
+	replace edu0=1 if eduyears==0|never_prim_temp==1
 	replace edu0=. if eduyears==.
 
 	foreach AGE in agestandard  {
@@ -335,10 +321,9 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 
 	drop never_prim_temp edu0
 
-	*codebook hv121 hv122, tab(200)
 	generate attend_higher = 0
-		replace attend_higher = 1 if [(hv121 == 1 | hv121 == 2) & hv122 == 3]
-		replace attend_higher = . if [(hv121 == 8 | hv121 == 9 )|(hv122 == 8 | hv122 == 9)]
+	replace attend_higher = 1 if inlist(hv121, 1, 2) & hv122 == 3
+	replace attend_higher = . if inlist(hv121, 8, 9) | inlist(hv122, 8, 9)
 
 
 	*Durations for out-of-school
@@ -356,5 +341,8 @@ export delimited using "$data_dhs/DHS_age_attendance.csv", replace
 		generate attend_higher_1822 = attend_higher if `AGE' >= 18 & `AGE' <= 22
 	}
 	drop attend_higher
+	
+	compress
+	save  "`data_path'/all/dhs_educvar.dta", replace
 
 end

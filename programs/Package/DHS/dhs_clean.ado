@@ -3,17 +3,17 @@
 * April 2020
 
 program define dhs_clean
-	args input_path table1_path table2_path output_path 
+	args data_path table_path
 
 	
 	* Creates temporal files to Change duration
-	import delimited "`table1_path'/dhs_changes_duration_stage.csv" ,  varnames(1) encoding(UTF-8) clear
+	import delimited "`table_path'/dhs_fix_duration.csv" ,  varnames(1) encoding(UTF-8) clear
 	drop iso_code3 message
 	tempfile fixduration
 	save `fixduration'
 
 	*fix some uis duration
-	use `table2_path', clear
+	use "`table_path'/UIS/duration_age/UIS_duration_age_25072018.dta", clear
 	catenate country_year = country year, p("_")
 	
 	merge m:1 country_year using `fixduration', keep(match master) 
@@ -26,29 +26,26 @@ program define dhs_clean
 	save `fixduration_uis'
 		
 	* read the master data
-	use "`input_path'", clear
+	use "`data_path'/all/dhs_read.dta", clear
 	set more off
 
 	*Fixing categories and creating variables
 	*replace_many read auxiliary tables to fix values by replace
 	
 	* location
-	replace_many "`table1_path'/dhs_setcode.csv" location location_replace
+	replace_many "`table_path'/dhs_setcode.csv" location location_replace
 	
 	* sex
-	replace_many "`table1_path'/dhs_setcode.csv" sex sex_replace
+	replace_many "`table_path'/dhs_setcode.csv" sex sex_replace
 	
 	* hv109
-	replace_many "`table1_path'/dhs_setcode.csv" hv109 hv109_replace
-		
-	* hv121
-	replace_many "`table1_path'/dhs_setcode.csv" hv121 hv121_replace
+	replace_many "`table_path'/dhs_setcode.csv" hv109 hv109_replace
 	
 	* hv122
-	replace_many "`table1_path'/dhs_setcode.csv" hv122 hv122_replace
+	replace_many "`table_path'/dhs_setcode.csv" hv122 hv122_replace
 	
 	* region
-	replace_many "`table1_path'/dhs_fix_region.csv" region region_replace country 
+	replace_many "`table_path'/dhs_fix_region.csv" region region_replace country 
 
 	* religion	
 	*replace_many "`table1_path'/dhs_fix_religion.csv" religion religion_replace
@@ -59,11 +56,11 @@ program define dhs_clean
 	* Countries with different calendar: the years/months don't coincide with the Gregorian Calendar
 	
 	* month
-	replace_many "`table1_path'/dhs_fix_date_month.csv" hv006 hv006_replace country_year
+	replace_many "`table_path'/dhs_fix_date_month.csv" hv006 hv006_replace country_year
 	
 	* year
-	replace_many "`table1_path'/dhs_fix_date_year.csv" hv007 hv007_replace country_year hv006
-	replace_many "`table1_path'/dhs_fix_date_year2.csv" hv007 hv007_replace country_year 
+	replace_many "`table_path'/dhs_fix_date_year.csv" hv007 hv007_replace country_year hv006
+	replace_many "`table_path'/dhs_fix_date_year2.csv" hv007 hv007_replace country_year 
 	
 	* For Peru, we have to drop the observations for years not included in that country_year
 	drop if (hv007 == 2003 | hv007 == 2004 | hv007 == 2005 | hv007 == 2006) & country_year == "Peru_2007" 
@@ -98,15 +95,16 @@ program define dhs_clean
 
 	* Merge with Duration in years, start age and names of countries (codes_dhs, mics_dhs, iso_code, WIDE names)
 	preserve
-	import delimited "`table1_path'/country_iso_codes_names.csv" ,  varnames(1) encoding(UTF-8) clear
-	keep country_code_dhs iso_code3
+	import delimited "`table_path'/country_iso_codes_names.csv" ,  varnames(1) encoding(UTF-8) clear
+	keep country_name_dhs country_code_dhs iso_code3 
 	drop if country_code_dhs == ""
 	tempfile isocode
 	save `isocode'
 	restore
+	 
+	merge m:1 country_code_dhs using `isocode', keep(master match) nogenerate		
 	
-	merge m:1 country_code_dhs using `isocode', keep(master match) nogenerate
-
+	
 	*Now we have year 2018, but the database of duration only has until 2017
 	rename year year_original
 	generate year = year_original
@@ -136,6 +134,6 @@ program define dhs_clean
 
 
 	compress 
-	save "`output_path'", replace
+	save "`data_path'/all/dhs_clean.dta", replace
 
 end
