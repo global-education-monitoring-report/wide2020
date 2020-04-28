@@ -23,7 +23,7 @@ The ado files should be placed in the `c:\ado\personal\` folder and read by Stat
 The use of this package requires that the data from each source (DHS and MICS) be in a specific folder. In particular, MICS files should not have a generic name, the one that comes with the download, but should be called by the country name, the year and "hl" that identifies the corresponding base. If the name of the country consists of more than one word each must be capitalized, unless one of them is "and".
 
 
-<img src="raw_data.png" width="350" />
+<img src="raw_data.png" width="360" />
 
 ## Auxiliary data
 
@@ -52,4 +52,14 @@ The files corresponding to these auxiliary tables should be organized according 
 ## Example
 
 This is a basic example which shows you how to use this package:
+
+
+    * Defines the path folder in a relative way
+    global data_path_mics "../WIDE/raw_data/MICS"
+    global data_path_dhs "../WIDE/raw_data/DHS"
+    global aux_data_path "../WIDE/auxiliary_data/"
+
+    * Calls the functions
+    mics $data_path_mics $aux_data_path 
+    dhs $data_path_dhs $aux_data_path 
 
