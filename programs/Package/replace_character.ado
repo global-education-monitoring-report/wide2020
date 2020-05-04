@@ -5,14 +5,13 @@ program define replace_character
 
 	args var
 
-	replacestrvar `var' , r("ĂŠ Ă¨ č é è")               w("e") 
 	replacestrvar `var' , r("ŕ ĂĄ ă ą ąă ĂŁ ăł ł à Á á") w("a") 
-	replacestrvar `var' , r("ń")                         w("n") 
-	replacestrvar `var' , r("Í í")                       w("i") 
-	replacestrvar `var' , r("Ó ó")                       w("o") 
+	replacestrvar `var' , r("ĂŠ Ă¨ č é è ? ę")           w("e") 
+	replacestrvar `var' , r("Í í Ą")                     w("i") 
+	replacestrvar `var' , r("ń ¤")                       w("n") 
+	replacestrvar `var' , r("Ó ó ˘ ö")                   w("o") 
 	replacestrvar `var' , r("Ú ú")                       w("u") 
-	replacestrvar `var' , r("-")                         w(" ") 
-	
+	replacestrvar `var' , r("- ..")                      w(" ") 
 
 end
 	

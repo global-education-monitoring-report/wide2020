@@ -16,7 +16,7 @@ mics_education_completion $data_path
 
 mics_age_adjustment $data_path $aux_data_path 
 
-mics_education_out $data_path  $aux_data
+mics_education_out $data_path  $aux_data_path 
 
 * CALCULATING SUMMARY TABLES 
 mics_summary $data_path $aux_data_path 

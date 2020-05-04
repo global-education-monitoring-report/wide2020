@@ -34,7 +34,6 @@ program define mics_education_out
 	generate eduout = no_attend
 	replace eduout  = . if (attend == 1 & code_ed6a == .) | age == . | (inlist(code_ed6a,. , 98, 99) & eduout == 0)
 	replace eduout  = 1 if code_ed6a == 0 | ed3 == "no" 
-
 	*Code_ed6a=80/90 affects countries Nigeria 2011, Nigeria 2016, Mauritania 2015, SouthSudan 2010, Sudan 2010 2014
 	* level attended=not formal/not regular/not standard
 	replace eduout = 1 if code_ed6a == 80 
@@ -113,8 +112,8 @@ program define mics_education_out
 	* NEVER BEEN TO SCHOOL
 	generate edu0 = 0 if ed3 == "yes"
 	replace edu0  = 1 if ed3 == "no"
-	replace edu0  = 1 if (code_ed4a == 0)
-	replace edu0  = 1 if (eduyears == 0)
+	replace edu0  = 1 if code_ed4a == 0
+	replace edu0  = 1 if eduyears == 0
 
 	foreach AGE in schage  {
 		gen edu0_prim=edu0 if `AGE' >= prim_age0 + 3 & `AGE'<=prim_age0 + 6
@@ -126,16 +125,22 @@ program define mics_education_out
 	*Completion of higher
 	foreach X in 2 4 {
 		generate comp_higher_`X'yrs = 0
-		replace comp_higher_`X'yrs = 1	if eduyears >= years_upsec + `X'
+		*replace comp_higher_`X'yrs = 1	if eduyears >= years_upsec + `X'
 		replace comp_higher_`X'yrs = . 	if inlist(eduyears, ., 97, 98, 99)
 		replace comp_higher_`X'yrs = 0 	if ed3 == "no"  
 		replace comp_higher_`X'yrs = 0 	if code_ed4a == 0 
 	}
+	replace comp_higher_2yrs = 1 if eduyears >= years_upsec + 2
+	replace comp_higher_4yrs = 1 if eduyears >= years_upsec + 4
 
 	*Ages for completion higher
-	for X in any 2 4: generate comp_higher_`X'yrs_2529 = comp_higher_`X'yrs if schage >= 25 & schage <= 29
-	for X in any 4  : generate comp_higher_`X'yrs_3034 = comp_higher_`X'yrs if schage >= 30 & schage <= 34
-	drop comp_higher_2yrs comp_higher_4yrs
+	foreach X in 2 4{
+		generate comp_higher_`X'yrs_2529 = comp_higher_`X'yrs if schage >= 25 & schage <= 29
+	}
+	foreach X in 4{
+		generate comp_higher_`X'yrs_3034 = comp_higher_`X'yrs if schage >= 30 & schage <= 34
+		drop comp_higher_`X'yrs 
+	}
 
 	for X in any prim_dur lowsec_dur upsec_dur prim_age0 : rename X X_comp
 
@@ -149,32 +154,31 @@ program define mics_education_out
 
 	generate lowsec_age0_eduout = prim_age0_eduout   + prim_dur_eduout
 	generate upsec_age0_eduout  = lowsec_age0_eduout + lowsec_dur_eduout
-	for X in any prim lowsec upsec: generate X_age1_eduout = X_age0_eduout + X_dur_eduout-1
+	for X in any prim lowsec upsec: generate X_age1_eduout = X_age0_eduout + X_dur_eduout - 1
 		
 	*Age limits for out of school
-
 	foreach X in prim lowsec upsec {
 		generate eduout_`X' = eduout if schage >= `X'_age0_eduout & schage <= `X'_age1_eduout
 	}
 
 	*Age limit for Attendance:
-
 	*-- PRESCHOOL 3
-	generate attend_preschool   = 1 if attend == 1 & (code_ed6a == 0)
-	replace attend_preschool    = 0 if attend == 1 & (code_ed6a != 0)
+	generate attend_preschool   = 1 if attend == 1 & code_ed6a == 0
+	replace attend_preschool    = 0 if attend == 1 & code_ed6a != 0
 	replace attend_preschool    = 0 if attend == 0
 	generate preschool_3        = attend_preschool if schage >= 3 & schage <= 4
 	generate preschool_1ybefore = attend_preschool if schage == prim_age0_eduout - 1
 
 	*-- HIGHER ED
 	generate high_ed       = 1 if inlist(code_ed6a, 3, 32, 33, 40)
-	generate attend_higher = 1 if attend == 1 & (high_ed == 1)
-	replace attend_higher  = 0 if attend == 1 & (high_ed != 1)
+	generate attend_higher = 1 if attend == 1 & high_ed == 1
+	replace attend_higher  = 0 if attend == 1 & high_ed != 1
 	replace attend_higher  = 0 if attend == 0
 	generate attend_higher_1822 = attend_higher if schage >= 18 & schage <= 22
 
 	* Create variables for count of observations
-	foreach var of varlist $varlist_m {
+	local varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
+	foreach var of varlist `varlist_m' {
 			generate `var'_no = `var'
 	}
 
@@ -182,7 +186,8 @@ program define mics_education_out
 	cap label define wealth 1 "quintile 1" 2 "quintile 2" 3 "quintile 3" 4 "quintile 4" 5 "quintile 5"
 	cap label values wealth wealth
 
-	foreach var in $categories_subset {
+	local categories_subset location sex wealth
+	foreach var in `categories_subset' {
 		cap sdecode `var', replace
 		cap replace `var' = proper(`var')
 	}

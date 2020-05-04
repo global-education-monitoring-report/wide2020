@@ -124,8 +124,8 @@ program define mics_read
 
 	
 	* change dir to temporal folder
-	cd `temporal_path'
-	local allfiles : dir . files "*.dta", respectcase
+	cd "`data_path'/temporal"
+	local all : dir . files "*.dta", respectcase
 
 	* append all files
 	fs *.dta
