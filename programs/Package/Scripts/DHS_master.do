@@ -46,4 +46,4 @@ dhs_education_out $data_path  $aux_data_path
 * dta_tosql $data_path/all/dhs_educvar.dta dhs cluster age
 
 
-dhs_summary $data_path  
+dhs_summary $data_path $aux_data_path
