@@ -7,12 +7,20 @@ The goal of WIDE package is to generate the statistics WIDE tables.
 
 ## Prerequisites 
 
-You need to have the following commands installed: `catenate`, `fs`, `odbc`, `replacestrvar`, `renamefrom`, `sdecode`, `sxpose` and `tosql`.
+You need to have the following commands installed: `catenate`, `fs`, `ftools`, `odbc`, `replacestrvar`, `renamefrom`, `sdecode`, `sxpose`, `tosql` and `usespss`.
 
 For example, to install the `fs` package you must run this line of code:
  
       ssc install fs
 
+
+To fix the `ftools` error "fcollapse fails with string by variables" try running
+
+         ftools, compile 
+     
+and then 
+
+        clear all
 
 ## Installation 
 
