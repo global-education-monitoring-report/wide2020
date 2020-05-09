@@ -7,7 +7,7 @@ The goal of WIDE package is to generate the statistics WIDE tables.
 
 ## Prerequisites 
 
-You need to have the following commands installed: `catenate`, `fs`, `ftools`, `odbc`, `replacestrvar`, `renamefrom`, `sdecode`, `sxpose`, `tosql` and `usespss`.
+You need to have the following commands installed: `catenate`, `fs`, `ftools`, `moremata`, `odbc`, `replacestrvar`, `renamefrom`, `sdecode`, `sxpose`, `tosql` and `usespss`.
 
 For example, to install the `fs` package you must run this line of code:
  
@@ -21,6 +21,9 @@ To fix the `ftools` error "fcollapse fails with string by variables" try running
 and then 
 
         clear all
+
+The `fcollapse` function (from `ftools`) requires the `moremata` package for some the median and percentile stats.
+
 
 ## Installation 
 
@@ -40,7 +43,7 @@ As a rule to write the name of the countries we define:
 We keep the DHS data the same way. We select the module Household Member Recode and in this case, there is the option to download them in different formats, we choose the option FL (Flat ASCII data).
 The DHS filenames are more specific than the MICS filenames, e.g. HNPR61FL, where 'HN' is the country code, 'PR' is the survey module, '61' is the round, and 'FL' is the file format.
 
-<img src="raw_data.png" width="350" />
+<img src="raw_data.png" width="320" />
 
 ## Auxiliary data
 
