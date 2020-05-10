@@ -181,17 +181,16 @@ program define mics_education_out
 	foreach var of varlist `varlist_m' {
 			generate `var'_no = `var'
 	}
-
-	* Converting the categories to string: 
-	cap label define wealth 1 "quintile 1" 2 "quintile 2" 3 "quintile 3" 4 "quintile 4" 5 "quintile 5"
-	cap label values wealth wealth
-
-	local categories_subset location sex wealth
-	foreach var in `categories_subset' {
-		cap sdecode `var', replace
-		cap replace `var' = proper(`var')
+	
+	* neccesary for fcollapse in summary function
+	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
+	
+	foreach var in `vars' {
+	cap sdecode `var', replace
+	cap tostring `var', replace
 	}
-		
+	
+	
 	* save data		
 	compress
 	save "`data_path'/all/mics_educvar.dta", replace
