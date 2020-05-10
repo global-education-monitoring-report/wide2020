@@ -126,6 +126,23 @@ program define dhs_education_out
 	}
 	drop attend_higher
 	
+	* necessary for fcollapse
+	
+	* neccesary for fcollapse in summary function
+	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
+	
+	foreach var in `vars' {
+	cap sdecode `var', replace
+	cap tostring `var', replace
+	}
+	
+	rename ageU age
+	
+	* Create variables for count of observations
+	foreach var of varlist `varlist_m'  {
+			gen `var'_no=`var'
+	}
+
 	compress
 	save  "`data_path'/all/dhs_educvar.dta", replace
 

@@ -135,13 +135,6 @@ program define mics_clean
 	cap label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
 	cap label values wealth wealth
 	
-	* neccesary for fcollapse
-	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
-	
-	foreach var in `vars' {
-	cap tostring `var', replace
-	}
-	
 	* save data 	
 	compress
 	save "`data_path'/all/mics_clean.dta", replace

@@ -190,7 +190,7 @@ program define mics_education_out
 	cap tostring `var', replace
 	}
 	
-	
+		
 	* save data		
 	compress
 	save "`data_path'/all/mics_educvar.dta", replace
