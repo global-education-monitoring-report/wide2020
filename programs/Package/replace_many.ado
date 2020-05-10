@@ -1,20 +1,11 @@
+* replace_many: program to replace several values in master data using an auxiliary table
+* Version 2.0
+* April 2020
 
 program define replace_many
 
 	args datafile varx vary keyvar1 keyvar2
-	*syntax	[anything]	[,	datafile varx vary keyvar1 keyvar2]			
-	
-	preserve
-	import delimited `datafile' ,  varnames(1) encoding(UTF-8) clear
-	keep `varx' `vary' `keyvar1' `keyvar2'
-	cap drop if `varx' == ""
-	cap drop if `varx' == .
-	tempfile usefile
-    qui save `usefile'
-    local datafile `usefile'
-    restore
-
-	
+		
 	if "`keyvar1'" =="" {
     merge m:1 `varx' using `datafile' 
 	drop if _merge == 2
@@ -22,13 +13,13 @@ program define replace_many
 	drop `vary' _merge
 	}
 	else if "`keyvar1'" !="" & "`keyvar2'" ==""{
-	merge m:1 `keyvar1' `varx' using `datafile' 
+	merge m:1 `keyvar1' `varx' using `datafile'
 	drop if _merge == 2
 	replace `varx' = `vary'[_n] if _merge == 3
 	drop `vary' _merge
 	}
 	else if "`keyvar2'" !="" {
-	merge m:1 `keyvar1' `keyvar2' `varx' using `datafile' 
+	merge m:1 `keyvar1' `keyvar2' `varx' using `datafile'
 	drop if _merge == 2
 	replace `varx' = `vary'[_n] if _merge == 3
 	drop `vary' _merge
