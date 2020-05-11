@@ -52,21 +52,10 @@ In addition to the raw data, different auxiliary tables are used to standardize 
 | Table   | Description |
 |---------|-------------|
 |country_iso_codes_names | adds the iso code3 variable |
-|dictionary | selects the variables in each country dataset and standardizes the names|
-|fix_duration | fixes duration stage values|
-|fix_date | transforms the dates according to the Gregorian calendar|
-|fix_ethnicity | standardizes the categories|
-|fix_region | standardizes the categories|
-|fix_religion | standardizes the categories|
-|recode_edulevel | fixes education level values |
-|group_eduyears | groups countries according to the calculation formula adopted for years of education|
-|renamevars | renames some variables|
-|setcode | recodes some variables |
-
+|dictionary_setcode | selects the variables in each country dataset, standardizes the names and recodes several variables|
+|filenams | lists the file paths to be read |
 
 The files corresponding to these auxiliary tables should be organized according to the following diagram:
-
-<img src="auxiliary_data.png" width="350" />
 
 
 ## Example
