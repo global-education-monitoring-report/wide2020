@@ -44,24 +44,17 @@ program define mics_clean
 
 	* replace year of the survey by year_file if it is wrong
 	replace hh5y = year_file if  (hh5y - year_file) > 3
-
 	* replace_many read auxiliary tables to fix values by replace
-
 	* date
 	replace_many `fixdate' hh5m hh5m_replace country year_file
-
 	* region
 	replace_many `fixregion' region region_replace country 
-
 	* religion	
 	replace_many `fixreligion' religion religion_replace
-
 	* ethnicity
 	replace_many `fixethnicity' ethnicity ethnicity_replace
-
 	* location
 	replace_many `fixlocation' location location_replace
-
 	* sex
 	replace_many `fixsex' sex sex_replace
 
@@ -69,25 +62,18 @@ program define mics_clean
 	* FIX EDUCATION VARIABLES 
 	* ed3
 	replace_many `fixed3' ed3 ed3_replace
-
 	* ed4a
 	replace_many `fixed4a' ed4a ed4a_replace
-
 	* ed4b
 	replace_many `fixed4b' ed4b ed4b_replace
-
 	* ed5
 	replace_many `fixed5' ed5 ed5_replace
-
 	* ed6a
 	replace_many `fixed6a' ed6a ed6a_replace
-
 	* ed6b
 	replace_many `fixed6b' ed6b ed6b_replace
-
 	* ed7
 	replace_many `fixed7' ed7 ed7_replace
-
 	* ed8a
 	replace_many `fixed8a' ed8a ed8a_replace
 
@@ -97,13 +83,9 @@ program define mics_clean
 
 
 	* EDUCATION LEVEL
-	
 	* merge with auxiliary data of education levels for ed4a, ed6a, ed8a
-
 	replace_many `fixcode_ed4a' code_ed4a code_ed4a_replace country year_file
-
 	replace_many `fixcode_ed6a' code_ed6a code_ed6a_replace country year_file 
-	
 	replace_many `fixcode_ed8a' code_ed8a code_ed8a_replace country year_file
 		
 	* convert to numeric code_*
@@ -130,10 +112,8 @@ program define mics_clean
 
     * labelling
     cap label define sex 0 "Female" 1 "Male"
-	cap label values sex sex 
-
 	cap label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
-	cap label values wealth wealth
+	for Z in any sex wealth: cap label values Z Z
 	
 	* save data 	
 	compress
