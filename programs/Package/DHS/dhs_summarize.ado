@@ -26,14 +26,14 @@ program define dhs_summarize
 
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/all/dhs_educvar.dta", clear
+		use `keepvars' using "`data_path'/all/dhs_calculate.dta", clear
 		fcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultm_`i'.dta", replace
 	}
 	
 	* total estimation
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/all/dhs_educvar.dta", clear
+		use `keepvars' using "`data_path'/all/dhs_calculate.dta", clear
 		fcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
 	}
@@ -59,8 +59,8 @@ program define dhs_summarize
 	*standardizes summary dhs & mics
 	standarize_output `table_path'
 
-	save "`output_path'/DHS/dhs_summary_`today'.dta", replace
-	export delimited "`output_path'/DHS/dhs_summary_`today'.csv", replace
+	save "`output_path'/DHS/dhs_summarize_`today'.dta", replace
+	export delimited "`output_path'/DHS/dhs_summarize_`today'.csv", replace
 	
 
 end
