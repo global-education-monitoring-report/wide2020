@@ -1,50 +1,32 @@
 * dhs_read: program to read the datasets and append all in one file
-* Version 1.0
+* Version 2.0
 * April 2020
 
 program define dhs_read
 	args data_path table_path
 
-	* table to get country_year
-	import delimited "`table_path'/dhs_country_year.csv", clear varnames(1) encoding(UTF-8)
-	tempfile countryyear
-	save `countryyear'
+	
+	import excel "`table_path'/filenames.xlsx", sheet(dhs_pr_files) firstrow clear 
+	levelsof filepath, local(filepath) clean
+
+	* create local macros from dictionary
+	import excel "`table_path'dhs_dictionary_setcode.xlsx", sheet(dictionary) firstrow clear 
+	* dhs variables to keep first
+	levelsof name, local(dhsvars) clean
+	* dhs variables to decode
+	levelsof name if encode == "decode", local(dhsvars_decode) clean
+	* dhs variables to keep last
+	levelsof name if keep == 1, local(dhsvars_keep) clean 
 	
 	cd `data_path'
-	local allfiles : dir . files "*.dta"
-
+	
 	cap mkdir "`data_path'/temporal"
-	
-	* DHS variables to keep first
-	import delimited "`table_path'/dhs_dictionary.csv", clear varnames(1) encoding(UTF-8)
-	preserve
-	keep name 
-	duplicates drop name, force
-	sxpose, clear firstnames
-	ds
-	local dhsvars `r(varlist)'
 
-	* DHS variables to decode
-	restore
-	preserve
-	drop if encode != "decode"
-	keep name
-	sxpose, clear firstnames
-	ds
-	local dhsvars_decode `r(varlist)'
-
-	* DHS variables to keep last
-	restore
-	keep if keep == 1
-	keep name
-	sxpose, clear firstnames
-	ds
-	local dhsvars_keep `r(varlist)'
-	
+		
 	* read all files 
-	foreach file of local allfiles {
+	foreach file of local filepath {
 
-	    *read a file
+		*read a file
 		use "`file'", clear
 
 		*lowercase all variables
@@ -57,6 +39,11 @@ program define dhs_read
 		*display "`common'"
 		keep `common'
 		ds
+		
+		*generate variables with file name
+		tokenize `file', parse("/")
+			generate country = "`1'" 
+			generate year_folder = `3'
 
 		*create variables doesnt exist 
 		for X in any `dhsvars_keep': cap generate X = .
@@ -75,23 +62,16 @@ program define dhs_read
 			cap replace `var' = strrtrim(`var')
 		}
 				
-		*rename some variables
-		renamefrom using "`table_path'/dhs_renamevars.csv", filetype(delimited) delimiters(",") raw(name) clean(name_new) label(varlab_en) keepx
-				
+		*rename some variables 
+		cap renamefrom using "`table_path'/dhs_dictionary_setcode.xlsx", filetype(excel)  if(!missing(rename)) raw(name) clean(rename) label(varlab_en) keepx
+		
 		*create numeric variables for easy recoding
 		for X in any sex wealth location: generate X_n = X
 		for X in any sex wealth location: drop X
 		for X in any sex wealth location: rename X_n X
 		
-		*generate country_year using file name
-		generate file = "`file'"
-		replace file =  substr(file, 1, strlen(file) - 4)
-		merge m:1 file using `countryyear', keep(master match) nogenerate
-		drop file 
-		
-		generate country = substr(country_year, 1, strlen(country_year) -5)
-		
 		*create ids variables
+		catenate country_year = country year_folder
 		
 		* Country dhs code
 		generate country_code_dhs = substr(hv000, 1, 2)
@@ -128,32 +108,28 @@ program define dhs_read
 		rename hhid hhid_original
 
 		
-		*Religion
-		*merge m:1 hh_id using "$data_dhs\dhs_ethnicity_religion_v2.dta", keepusing (ethnicity religion) keep(master match)
+		* add religion and ethnicity
+		merge m:1 hh_id using "`data_path'/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match)
 		
+			
 		*save each file in temporal folder
 		compress 
-		save "`data_path'/temporal/`file'", replace
+		save "`data_path'/temporal/`1'_`3'_pr.dta", replace
 }
 
 
 	cd "`data_path'/temporal/"
-	local all : dir . files "*.dta", respectcase
-
+	
 	* append all the datasets
-	* ssc install fs 
 	fs *.dta
 	append using `r(files)', force
 
 	* remove temporal folder and files
 	cap rmdir "`data_path'/temporal"
 	
-	* make the output folder
-	cap makedir"`data_path'/all"
-	
 	* save all dataset in a single one
 	compress
-	save "`data_path'/all/dhs_read.dta", replace
+	save "`data_path'/dhs_read.dta", replace
 
 end
 
