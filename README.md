@@ -7,7 +7,7 @@ The goal of WIDE package is to generate the statistics WIDE tables.
 
 ## Prerequisites 
 
-You need to have the following commands installed: `catenate`, `fs`, `ftools`, `moremata`, `odbc`, `replacestrvar`, `renamefrom`, `sdecode`, `sxpose`, `tosql` and `usespss`.
+You need to have the following commands installed: `catenate`, `fs`, `ftools`, `gtools` `moremata`, `odbc`, `replacestrvar`, `renamefrom`, `sdecode`, `sxpose`, `tosql`, `tuples` and `usespss`.
 
 For example, to install the `fs` package you must run this line of code:
  
@@ -53,7 +53,7 @@ In addition to the raw data, different auxiliary tables are used to standardize 
 |---------|-------------|
 |country_iso_codes_names | adds the iso code3 variable |
 |dictionary_setcode | selects the variables in each country dataset, standardizes the names and recodes several variables|
-|filenams | lists the file paths to be read |
+|filenames | lists the file paths to be read |
 
 The files corresponding to these auxiliary tables should be organized according to the following diagram:
 

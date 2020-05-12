@@ -8,8 +8,6 @@ program define dhs_summarize
 	* automate file names using current date 
 	local today : di %tdDNCY daily("$S_DATE", "DMY")
 			
-	* create a temporal folder
-	cap mkdir "`output_path'/DHS/temporal/"
 		
 	* combine categories 
 	local categories_collapse location sex wealth region ethnicity religion
@@ -17,24 +15,31 @@ program define dhs_summarize
 
 	* defining local macro
 	local varlist_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no
+	
 	local varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
+	
 	local keepvars location sex wealth region ethnicity religion hhweight comp_prim_aux comp_lowsec_aux comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduyears_2024_no edu2_2024_no edu4_2024_no eduout_prim_no eduout_lowsec_no eduout_upsec_no country_year iso_code3 year adjustment
+	
 	local varsby country_year iso_code3 year adjustment
 	
-	
+	* create a temporal folder
+	cap mkdir "`output_path'/DHS/temporal/"
+		
 	cd "`output_path'/DHS/temporal"
 
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/all/dhs_calculate.dta", clear
-		fcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
+		use `keepvars' using "`data_path'/dhs_calculate.dta", clear
+		*fcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
+		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultm_`i'.dta", replace
 	}
 	
 	* total estimation
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/all/dhs_calculate.dta", clear
-		fcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
+		use `keepvars' using "`data_path'/dhs_calculate.dta", clear
+		*fcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
+		gcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
 	}
 	
