@@ -3,7 +3,7 @@
 * April 2020
 
 program define dhs_summarize
-	args data_path
+	args data_path output_path
 	
 	* automate file names using current date 
 	local today : di %tdDNCY daily("$S_DATE", "DMY")
@@ -29,7 +29,7 @@ program define dhs_summarize
 
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/dhs_calculate.dta", clear
+		use `keepvars' using "`data_path'/DHS/dhs_calculate.dta", clear
 		*fcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultm_`i'.dta", replace
@@ -37,7 +37,7 @@ program define dhs_summarize
 	
 	* total observations
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/dhs_calculate.dta", clear
+		use `keepvars' using "`data_path'/DHS/dhs_calculate.dta", clear
 		*fcollapse (count) `varlist_no', by(`varsby' `tuple`i'') fast
 		gcollapse (count) `varlist_no', by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
@@ -51,10 +51,12 @@ program define dhs_summarize
 	    save "result_`i'.dta", replace
 	}
 	
-	* delete intermediate file (only for windows)
-	!del *resultc*.dta
-	!del *resultm*.dta
-
+	* delete intermediate files
+	foreach i of numlist 0/6 12/18 20/21 31 41 {
+		erase "resultc`i'.dta"
+		erase "resultm`i'.dta"
+	}
+	
 	* append the results
 	fs *.dta
 	append using `r(files)', force

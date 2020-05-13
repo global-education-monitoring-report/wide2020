@@ -13,7 +13,7 @@ program define mics_calculate
 	save `group'
 	
 	* read the main data
-	use "`data_path'/all/mics_clean.dta", clear
+	use "`data_path'/MICS/mics_clean.dta", clear
 	set more off
 	merge m:1 country_year using `group', keep(match master) nogenerate
 	
@@ -251,12 +251,12 @@ program define mics_calculate
 
 	* save data
 	compress
-	save "`data_path'/all/mics_calculate.dta", replace
+	save "`data_path'/MICS/mics_calculate.dta", replace
 
 	
 	* ADJUST SCHOOL YEAR
 	
-	use "`data_path'/all/mics_calculate.dta", clear
+	use "`data_path'/MICS/mics_calculate.dta", clear
 	set more off
 	
 	* current school year that ED question in MICS refers to
@@ -338,12 +338,12 @@ program define mics_calculate
 	*gcollapse diff* adj* flag_month, by(country_year) 
 	collapse diff* adj* flag_month, by(country_year)	
 
-	save "`data_path'/all/mics_adjustment.dta", replace
+	save "`data_path'/MICS/mics_adjustment.dta", replace
 
 	
 	* COMPUTE IF SOMEONE DOES NOT GO TO SCHOOL (education out)
 	
-	use "`data_path'/all/mics_calculate.dta", clear
+	use "`data_path'/MICS/mics_calculate.dta", clear
 	set more off
 
 	*Creating age groups for preschool
@@ -406,7 +406,7 @@ program define mics_calculate
 	}
 
 	* Merging with adjustment
-	merge m:1 country_year using "`data_path'/all/mics_calculate.dta", keepusing(adj1_norm) nogen
+	merge m:1 country_year using "`data_path'/MICS/mics_calculate.dta", keepusing(adj1_norm) nogen
 	rename adj1_norm adjustment
 	generate agestandard = ageU if adjustment == 0
 	replace agestandard = ageA if adjustment == 1
@@ -530,6 +530,6 @@ program define mics_calculate
 		
 	* save data		
 	compress
-	save "`data_path'/all/mics_calculate.dta", replace
+	save "`data_path'/MICS/mics_calculate.dta", replace
 
 end

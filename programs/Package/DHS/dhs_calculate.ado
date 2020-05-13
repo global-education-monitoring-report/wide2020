@@ -7,7 +7,7 @@ program define dhs_calculate
 
 	* COMPUTE THE YEARS OF EDUCATION BY COUNTRY 
 	
-		use "`data_path'/all/dhs_clean.dta", clear
+		use "`data_path'/DHS/dhs_clean.dta", clear
 	set more off
 	
 	* CHANGES IN HV108
@@ -135,12 +135,12 @@ program define dhs_calculate
 	replace comp_upsec_B = comp_upsec_A if country_year == "Egypt_2005" 
 
 	compress 
-	save "`data_path'/all/dhs_calculate.dta", replace
+	save "`data_path'/DHS/dhs_calculate.dta", replace
 	
 
 	* ADJUST SCHOOL YEAR
 	
-	use "`data_path'/all/dhs_calculate.dta", clear
+	use "`data_path'/DHS/dhs_calculate.dta", clear
 	set more off
 
 	keep hv006 hv007 hv016 country year country_year iso_code3
@@ -209,12 +209,12 @@ program define dhs_calculate
 	*see gcollapse
 	collapse diff* adj* flag_month, by(country_year)		
 
-	save "$data_path/all/dhs_adjustment.dta", replace
+	save "$data_path/DHS/dhs_adjustment.dta", replace
 
 	
 	* COMPUTE IF SOMEONE DOES NOT GO TO SCHOOL (education out)
 	
-	use "`data_path'/all/dhs_calculate.dta", clear
+	use "`data_path'/DHS/dhs_calculate.dta", clear
 	set more off
 
 	*Age
@@ -250,7 +250,7 @@ program define dhs_calculate
 		}
 	}
 
-	merge m:1 country_year using "`data_path'/all/dhs_adjustment.dta", keepusing(adj1_norm) keep(master match) nogenerate
+	merge m:1 country_year using "`data_path'/DHS/dhs_adjustment.dta", keepusing(adj1_norm) keep(master match) nogenerate
 	rename adj1_norm adjustment
 
 	*Creating the appropiate age according to adjustment
@@ -352,4 +352,4 @@ program define dhs_calculate
 	}
 
 	compress
-	save  "`data_path'/all/dhs_calculate.dta", replace
+	save  "`data_path'/DHS/dhs_calculate.dta", replace

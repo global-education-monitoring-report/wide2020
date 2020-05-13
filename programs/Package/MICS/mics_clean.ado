@@ -37,7 +37,7 @@ program define mics_clean
 	save `fixduration_uis'
 
 	* read the master data
-	use "`data_path'/all/mics_read.dta", clear
+	use "`data_path'/MICS/mics_read.dta", clear
 	set more off
 
 	* FIX SEVERAL VARIABLES
@@ -117,6 +117,6 @@ program define mics_clean
 	
 	* save data 	
 	compress
-	save "`data_path'/all/mics_clean.dta", replace
+	save "`data_path'/MICS/mics_clean.dta", replace
 
 end

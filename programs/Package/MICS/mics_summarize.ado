@@ -27,7 +27,7 @@ program define mics_summarize
 	
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/mics_calculate.dta", clear
+		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
 		*fcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultm_`i'.dta", replace
@@ -35,7 +35,7 @@ program define mics_summarize
 	
 	* total estimation
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/mics_calculate.dta", clear
+		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
 		*fcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
 		gcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
@@ -50,8 +50,11 @@ program define mics_summarize
 	}
 	
 	* delete intermediate file (only for windows)
-	!del *resultc*.dta
-	!del *resultm*.dta
+	* delete intermediate files
+	foreach i of numlist 0/6 12/18 20/21 31 41 {
+		erase "resultc`i'.dta"
+		erase "resultm`i'.dta"
+	}
 
 	* append the results
 	fs *.dta

@@ -11,8 +11,8 @@ program define dhs_read
 	
 	foreach module of local modules {
 		
-		cap mkdir "`data_path'/temporal/`module'"
-		cd `data_path'
+		cap mkdir "`data_path'/DHS/temporal/`module'"
+		cd "`data_path'/DHS/"
 		
 		import excel "`table_path'/filenames.xlsx", sheet(dhs_`module'_files) firstrow cellrange (:D2) clear 
 		levelsof filepath, local(filepath) clean
@@ -48,29 +48,29 @@ program define dhs_read
 			cap label drop _all
 			
 			compress
-			save "`data_path'/temporal/`module'/`1'_`3'", replace
+			save "`data_path'/DHS/temporal/`module'/`1'_`3'", replace
 			
 		}
 		
-		cd "`data_path'/temporal/`module'/"
+		cd "`data_path'/DHS/temporal/`module'/"
 	
 		fs *.dta
 		append using `r(files)', force
-		save "`data_path'/temporal/dhs_`module'.dta" , replace
+		save "`data_path'/DHS/temporal/dhs_`module'.dta" , replace
 	}
 	
-	use "`data_path'/temporal/dhs_ir.dta", clear
-	append using "`data_path'/temporal/dhs_mr.dta"
+	use "`data_path'/DHS/temporal/dhs_ir.dta", clear
+	append using "`data_path'/DHS/temporal/dhs_mr.dta"
 	
-	erase `data_path'/temporal/dhs_ir.dta
-	erase `data_path'/temporal/dhs_mr.dta
+	erase "`data_path'/DHS/temporal/dhs_ir.dta"
+	erase "`data_path'/DHS/temporal/dhs_mr.dta"
 	
 	rename v130 religion
 	rename v131 ethnicity
 	
 	
 	compress
-	save "`data_path'/temporal/dhs_religion_ethnicity.dta", replace
+	save "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta", replace
 
 	
 	* read pr files
@@ -86,9 +86,9 @@ program define dhs_read
 	* dhs variables to keep last
 	levelsof name if keep == 1, local(dhsvars_keep) clean 
 	
-	cd `data_path'
+	cd "`data_path'/DHS/"
 	
-	cap mkdir "`data_path'/temporal"
+	cap mkdir "`data_path'/DHS/temporal"
 
 		
 	* read all files 
@@ -100,7 +100,7 @@ program define dhs_read
 		*lowercase all variables
 		rename *, lower
 						  
-		*select common variables between the dataset and the mics dictionary (1st column)
+		*select common variables between the dataset and the DHS dictionary (1st column)
 		ds
 		local datavars `r(varlist)'
 		local common : list datavars & dhsvars
@@ -177,27 +177,27 @@ program define dhs_read
 
 		
 		* add religion and ethnicity
-		merge m:1 hh_id using "`data_path'/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
+		merge m:1 hh_id using "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
 		
 			
 		*save each file in temporal folder
 		compress 
-		save "`data_path'/temporal/`1'_`3'_pr.dta", replace
+		save "`data_path'/DHS/temporal/`1'_`3'_pr.dta", replace
 }
 
 
-	cd "`data_path'/temporal/"
+	cd "`data_path'/DHS/temporal/"
 	
 	* append all the datasets
 	fs *.dta
 	append using `r(files)', force
 
 	* remove temporal folder and files
-	cap rmdir "`data_path'/temporal"
+	cap rmdir "`data_path'/DHS/temporal"
 	
 	* save all dataset in a single one
 	compress
-	save "`data_path'/dhs_read.dta", replace
+	save "`data_path'/DHS/dhs_read.dta", replace
 
 end
 

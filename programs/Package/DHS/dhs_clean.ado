@@ -30,7 +30,7 @@ program define dhs_clean
 	save `fixduration_uis'
 		
 	* read the master data
-	use "`data_path'/all/dhs_read.dta", clear
+	use "`data_path'/DHS/dhs_read.dta", clear
 	set more off
 
 	*Fixing categories and creating variables
@@ -128,6 +128,6 @@ program define dhs_clean
 
 
 	compress 
-	save "`data_path'/all/dhs_clean.dta", replace
+	save "`data_path'/DHS/dhs_clean.dta", replace
 
 end

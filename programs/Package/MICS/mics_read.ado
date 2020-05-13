@@ -7,7 +7,7 @@ program define mics_read
 
 		
 	* create folder
-	capture mkdir "`data_path'/temporal"
+	capture mkdir "`data_path'/MICS/temporal"
 
 	import excel "`table_path'/filenames.xlsx", sheet(mics_hl_files) firstrow clear 
 	levelsof filepath, local(filepath) clean
@@ -26,7 +26,7 @@ program define mics_read
 	levelsof standard_name if numeric == 0 & keep == 1, local(micsvars_keepstr) clean
 	
 	
-	cd `data_path'
+	cd "`data_path'/MICS"
 	
 	* read all files 
 	foreach file of local filepath {
@@ -91,22 +91,22 @@ program define mics_read
 							
 		*compress and save each file in a temporal folder
 		compress 
-		save "`data_path'/temporal/`1'_`3'_hl", replace
+		save "`data_path'/MICS/temporal/`1'_`3'_hl", replace
 	}
 
 	
 	* change dir to temporal folder
-	cd "`data_path'/temporal"
+	cd "`data_path'/MICS/temporal"
 	
 	* append all files
 	fs *.dta
 	append using `r(files)', force
 
 	* remove temporal folder and files
-	capture rmdir "`data_path'/temporal"
+	capture rmdir "`data_path'/MICS/temporal"
 
 	* save all dataset in a single one
 	compress
-	save "`data_path'/mics_read.dta", replace
+	save "`data_path'/MICS/mics_read.dta", replace
 
 end
