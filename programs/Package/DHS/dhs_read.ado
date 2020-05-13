@@ -6,11 +6,79 @@ program define dhs_read
 	args data_path table_path
 
 	
-	import excel "`table_path'/filenames.xlsx", sheet(dhs_pr_files) firstrow clear 
+	* read IR and MR files to get ethnicity and religion
+	local modules ir mr 
+	
+	foreach module of local modules {
+		
+		cap mkdir "`data_path'/temporal/`module'"
+		cd `data_path'
+		
+		import excel "`table_path'/filenames.xlsx", sheet(dhs_`module'_files) firstrow cellrange (:D2) clear 
+		levelsof filepath, local(filepath) clean
+
+		foreach file of local filepath {
+
+			*read a file
+			use *v001 *v002 *v130 *v131 *v150 using "`file'", clear
+
+			rename *, lower
+			for X in any v001 v002 v130 v131 v150: cap rename mX X
+			for X in any v001 v002 v130 v131 v150 : cap generate X=.
+			
+			* only keep the household head
+			keep if v150 == 1 
+			
+			tokenize "`file'", parse("/")
+			generate country = "`1'" 
+			generate year_folder = `3'
+			catenate country_year = country year_folder
+			catenate hh_id = country_year v001  v002
+			drop v150 v001 v002
+			
+			foreach var of varlist v130 v131{ 
+				cap sdecode `var', replace
+				cap replace `var' = lower(`var')
+				cap replace_character
+				cap replace `var' = stritrim(`var')
+				cap replace `var' = strltrim(`var')
+				cap replace `var' = strrtrim(`var')
+			}
+			
+			cap label drop _all
+			
+			compress
+			save "`data_path'/temporal/`module'/`1'_`3'", replace
+			
+		}
+		
+		cd "`data_path'/temporal/`module'/"
+	
+		fs *.dta
+		append using `r(files)', force
+		save "`data_path'/temporal/dhs_`module'.dta" , replace
+	}
+	
+	use "`data_path'/temporal/dhs_ir.dta", clear
+	append using "`data_path'/temporal/dhs_mr.dta"
+	
+	erase `data_path'/temporal/dhs_ir.dta
+	erase `data_path'/temporal/dhs_mr.dta
+	
+	rename v130 religion
+	rename v131 ethnicity
+	
+	
+	compress
+	save "`data_path'/temporal/dhs_religion_ethnicity.dta", replace
+
+	
+	* read pr files
+	import excel "`table_path'/filenames.xlsx", sheet(dhs_pr_files) cellrange (:D2) firstrow clear 
 	levelsof filepath, local(filepath) clean
 
 	* create local macros from dictionary
-	import excel "`table_path'dhs_dictionary_setcode.xlsx", sheet(dictionary) firstrow clear 
+	import excel "`table_path'/dhs_dictionary_setcode.xlsx", sheet(dictionary) firstrow clear 
 	* dhs variables to keep first
 	levelsof name, local(dhsvars) clean
 	* dhs variables to decode
@@ -30,7 +98,7 @@ program define dhs_read
 		use "`file'", clear
 
 		*lowercase all variables
-		capture rename *, lower
+		rename *, lower
 						  
 		*select common variables between the dataset and the mics dictionary (1st column)
 		ds
@@ -109,7 +177,7 @@ program define dhs_read
 
 		
 		* add religion and ethnicity
-		merge m:1 hh_id using "`data_path'/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match)
+		merge m:1 hh_id using "`data_path'/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
 		
 			
 		*save each file in temporal folder

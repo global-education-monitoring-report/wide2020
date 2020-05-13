@@ -35,11 +35,11 @@ program define dhs_summarize
 		save "resultm_`i'.dta", replace
 	}
 	
-	* total estimation
+	* total observations
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/dhs_calculate.dta", clear
-		*fcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
-		gcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
+		*fcollapse (count) `varlist_no', by(`varsby' `tuple`i'') fast
+		gcollapse (count) `varlist_no', by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
 	}
 	
