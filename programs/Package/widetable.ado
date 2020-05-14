@@ -83,7 +83,7 @@ program define widetable
 			dhs_summarize `data_path' `table_path' `output_path'
 		} 
 		else if "`step'" == "read" {
-			dhs_read "`data_path'" "`table_path'"
+			dhs_read `data_path' `table_path'
 		}
 		else if "`step'" == "clean" {
 			dhs_clean `data_path' `table_path'
