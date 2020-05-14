@@ -2,8 +2,14 @@
 * Version 1.0
 * May 2020
 * Syntax
-*	source: indicates whihc source must use ("dhs","mics" or "both"). The option "both" includes the other two.
+*	source: indicates which source must use ("dhs","mics" or "both"). The option "both" includes the other two.
 *	step: indicates which process must run ("read", "clean", "calculate", "summarize" or "all"). The option "all" includes all the above.
+* Example
+*	
+* 
+* 
+* 
+*
 
 program define widetable
     args source step data_path table_path output_path

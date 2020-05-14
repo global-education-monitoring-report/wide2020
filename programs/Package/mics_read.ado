@@ -45,8 +45,41 @@ program define mics_read
 		keep `common'
 		ds
 			
-		*rename 
-		fix_names
+		*fix names
+		cap rename *_* **
+		
+		local var1 ed4a ed4b ed6a  ed6b ed6a ed6b hh6 hh7 region hhweight windex5 windex5 
+		local var2 ed4ap ed4bp ed6n ed6c ed6ap ed6bp hh6a hh6b hh7 hlweight windex5_5 windex5_1
+
+		capture confirm var `var1' `var2' 
+	       
+		if _rc == 0 { 
+			drop `var1'
+			rename `var2' `var1'
+		}
+		else {
+			capture confirm var `var1' 
+			if _rc == 0 { 
+				rename `var1' `var1'
+			} 
+			else {
+			rename `var2' `var1'
+			}
+		}
+
+		if (country == "Mali" & year_file == 2009) {
+			 drop ethnicity 
+			 rename hc1c ethnicity 
+		}
+		if (country == "Panama" & year_file == 2013) {
+			 drop religion
+			 rename hc1a religion
+		}
+		if (country == "TrinidadandTobago" & year_file == 2011) {
+			 drop religion
+			 rename hl15 religion
+		}
+
 				
 		*generate variables with file name
 		tokenize `file', parse("/")

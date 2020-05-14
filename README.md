@@ -4,10 +4,11 @@ The goal of WIDE package is to generate the statistics WIDE tables.
 
 ## Description 
 
+The main function of the package, widetable, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators are obtained for each country and year of the survey, disaggregated by different variables of interest.
 
 ## Prerequisites 
 
-You need to have the following commands installed: `catenate`, `fs`, `ftools`, `gtools` `moremata`, `odbc`, `replacestrvar`, `renamefrom`, `sdecode`, `sxpose`, `tosql`, `tuples` and `usespss`.
+You need to have the following commands installed: `catenate`, `fs`, `ftools`, `gtools` `moremata`, `odbc`, `replacestrvar`, `renamefrom`, `sdecode`, `tosql`, `tuples` and `usespss`.
 
 For example, to install the `fs` package you must run this line of code:
  
@@ -41,7 +42,7 @@ As a rule to write the name of the countries we define:
 - if the name of the country consists of more than one word each must be capitalized unless one of them is "and".
 
 We keep the DHS data the same way. We select the module Household Member Recode and in this case, there is the option to download them in different formats, we choose the option FL (Flat ASCII data).
-The DHS filenames are more specific than the MICS filenames, e.g. HNPR61FL, where 'HN' is the country code, 'PR' is the survey module, '61' is the round, and 'FL' is the file format.
+The DHS filenames are more specific than the MICS filenames, e.g. HNPR61FL, where 'HN' is the country code, 'PR' is the survey module, '61' is the round, and 'FL' is the file format. From DHS it is also necessary to download the (IR) module and the (MR).
 
 <img src="raw_data.png" width="320" />
 
@@ -57,18 +58,27 @@ In addition to the raw data, different auxiliary tables are used to standardize 
 
 The files corresponding to these auxiliary tables should be organized according to the following diagram:
 
+<img src="auxiliary_data.png" width="350" />
 
 ## Example
 
-This is a basic example which shows you how to use this package:
+The main function is widetable and have five arguments:
 
+- source: indicates which source must use ('dhs','mics' or 'both'). The option 'both' includes the other two.
+- step: indicates which process must run ('read', 'clean', 'calculate', 'summarize' or 'all'). The option 'all' includes all the above.
 
-    * Defines the path folder in a relative way
-    global data_path_mics "../WIDE/raw_data/MICS"
-    global data_path_dhs "../WIDE/raw_data/DHS"
-    global aux_data_path "../WIDE/auxiliary_data/"
+You can write the paths directly in the function or previously create a local or global macro. For example, if you use a local macro: 
 
-    * Calls the functions
-    mics $data_path_mics $aux_data_path 
-    dhs $data_path_dhs $aux_data_path 
+    * Defines the path folder in a absolute way (replace the dots)
+    local data_path ../WIDE/raw_data/
+    local table_path ../WIDE/auxiliary_data/
+    local data_output ../WIDE/raw_data/output
+    
+This is a basic example which shows you how to use the widetable function:
+
+    widetable "both" "all" `data_path' `table_path' `output_path'
+    
+    
+    
+    
 
