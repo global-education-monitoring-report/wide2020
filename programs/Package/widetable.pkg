@@ -1,0 +1,17 @@
+d 'WIDETABLE'
+d 
+F dhs_read.ado
+F standarize_output.ado
+F replace_many.ado
+F tests.ado
+F widetest.sql
+F dhs_summarize.ado
+F dhs_clean.ado
+F replace_character.ado
+F mics_calculate.ado
+F dhs_calculate.ado
+F mics_summarize.ado
+F widetable.ado
+F widetests.ado
+F mics_read.ado
+F mics_clean.ado
