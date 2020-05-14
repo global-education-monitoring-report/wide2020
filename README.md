@@ -30,6 +30,20 @@ The `fcollapse` function (from `ftools`) requires the `moremata` package for som
 
 The ado files should be placed in the `c:\ado\personal\` folder and read by Stata from there. They should not be placed in the `c:\ado\plus\` folder (where packages downloaded from the Internet are located) because they may be deleted in an update.
 
+To install the latest version directly from Github, type in Stata:
+
+    net install widetable, from(https://raw.githubusercontent.com/XXXXX/widetable/master/build/)
+
+To update all files associated with widetable type:
+
+    adoupdate widetable, update
+    
+## Usage
+
+The documentation of the command is available after installation using:
+        
+    help widetable
+
 ## Folder directory
 
 For the proper functioning of the package the folder structure should be as follows: 
@@ -69,26 +83,21 @@ The files corresponding to these auxiliary tables should be organized according 
 
 ## Example
 
-The main function is widetable and have five arguments:
+The main function is widetable and have four arguments:
 
 - source: indicates which source must use ('dhs','mics' or 'both'). The option 'both' includes the other two.
 - step: indicates which process must run ('read', 'clean', 'calculate', 'summarize' or 'all'). The option 'all' includes all the above.
+- data_path: 
+- output_path: 
 
-You can write the paths directly in the function or previously create a local or global macro. For example, if you use a local macro: 
+You can write the paths directly in the function or previously create a local macro:
 
     * Defines the path folder in a absolute way (replace the dots)
-    local data_path /../WIDE/raw_data/
-    local table_path /../WIDE/auxiliary_data/
-    local data_output /../WIDE/raw_data/output
-    
+    local dpath /../WIDE/raw_data/
+    local opath /../WIDE/raw_data/output
+   
 This is a basic example which shows you how to use the widetable function:
 
-    widetable "both" "all" `data_path' `table_path' `output_path'
+    widetable, source(both) step(all) data_path(`dpath') output_path(`opath')
     
 The result is a table with the indicators that is saved in the 'output' folder in 'dta' and 'csv' format called 'WIDE_mmddyyy', where *mm* refers to the month, *dd* to the day and *yyyy* refers to the year.    
-
-    
-    
-    
-    
-

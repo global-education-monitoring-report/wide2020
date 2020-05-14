@@ -12,7 +12,7 @@
 *
 
 program define widetable
-    args source step data_path table_path output_path
+		syntax, [source(string) step(string) data_path(string) output_path(string)]
 
 	* error message 
 	if ("`source'" != "mics" & "`source'" != "dhs" & "`source'"  != "both") {
