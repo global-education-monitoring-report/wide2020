@@ -4,7 +4,7 @@ The goal of WIDE package is to generate the statistics WIDE table.
 
 ## Description 
 
-The main function of the package, widetable, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators (access and completion) are obtained for each country and year of the survey, disaggregated by different variables of interest.
+The main function of the package, `widetable`, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators (access and completion) are obtained for each country and year of the survey, disaggregated by different variables of interest.
 
 ## Prerequisites 
 
@@ -77,13 +77,16 @@ The main function is widetable and have five arguments:
 You can write the paths directly in the function or previously create a local or global macro. For example, if you use a local macro: 
 
     * Defines the path folder in a absolute way (replace the dots)
-    local data_path ../WIDE/raw_data/
-    local table_path ../WIDE/auxiliary_data/
-    local data_output ../WIDE/raw_data/output
+    local data_path /../WIDE/raw_data/
+    local table_path /../WIDE/auxiliary_data/
+    local data_output /../WIDE/raw_data/output
     
 This is a basic example which shows you how to use the widetable function:
 
     widetable "both" "all" `data_path' `table_path' `output_path'
+    
+The result is a table with the indicators that is saved in the 'output' folder in 'dta' and 'csv' format called 'WIDE_mmddyyy', where *mm* refers to the month, *dd* to the day and *yyyy* refers to the year.    
+
     
     
     
