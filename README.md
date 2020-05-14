@@ -1,10 +1,10 @@
 # WIDE
 
-The goal of WIDE package is to generate the statistics WIDE tables.
+The goal of WIDE package is to generate the statistics WIDE table. 
 
 ## Description 
 
-The main function of the package, widetable, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators are obtained for each country and year of the survey, disaggregated by different variables of interest.
+The main function of the package, widetable, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators (access and completion) are obtained for each country and year of the survey, disaggregated by different variables of interest.
 
 ## Prerequisites 
 
@@ -29,6 +29,13 @@ The `fcollapse` function (from `ftools`) requires the `moremata` package for som
 ## Installation 
 
 The ado files should be placed in the `c:\ado\personal\` folder and read by Stata from there. They should not be placed in the `c:\ado\plus\` folder (where packages downloaded from the Internet are located) because they may be deleted in an update.
+
+## Folder directory
+
+For the proper functioning of the package the folder structure should be as follows: 
+
+<img src="folder_directory.png" width="240" />
+
 
 ## Raw data 
 
