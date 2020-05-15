@@ -3,17 +3,24 @@
 * April 2020
 
 program define mics_read
-	args data_path table_path
+	args data_path  nf
 
 		
 	* create folder
 	capture mkdir "`data_path'/MICS/temporal"
 
-	import excel "`table_path'/filenames.xlsx", sheet(mics_hl_files) firstrow clear 
+	if (`nf'-1) > 71{
+	  local nf 71
+	}
+	
+	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
+	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nf') clear 
+	*import excel "`'/filenames.xlsx", sheet(mics_hl_files) firstrow cellrange clear 
 	levelsof filepath, local(filepath) clean
 
 	* create local macros from dictionary
-	import excel "`table_path'/mics_dictionary_setcode.xlsx", sheet(dictionary) firstrow clear 
+	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
+	import excel "`r(fn)'", sheet(dictionary) firstrow clear 
 	* mics variables to keep first
 	levelsof original_name, local(micsvars) clean
 	* mics variables to decode
@@ -120,7 +127,8 @@ program define mics_read
 		order `micsvars_keep'
 
 		*rename some variables 
-		cap renamefrom using "`table_path'/mics_dictionary_setcode.xlsx", filetype(excel)  if(!missing(rename)) raw(standard_name) clean(rename) label(varlab_en) keepx
+		findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
+		cap renamefrom using "`r(fn)'", filetype(excel)  if(!missing(rename)) raw(standard_name) clean(rename) label(varlab_en) keepx
 							
 		*compress and save each file in a temporal folder
 		compress 

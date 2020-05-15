@@ -3,11 +3,11 @@
 * April 2020
 
 program define dhs_calculate
-	args data_path  table_path 
+	args data_path 
 
 	* COMPUTE THE YEARS OF EDUCATION BY COUNTRY 
 	
-		use "`data_path'/DHS/dhs_clean.dta", clear
+	use "`data_path'/DHS/dhs_clean.dta", clear
 	set more off
 	
 	* CHANGES IN HV108
@@ -79,14 +79,8 @@ program define dhs_calculate
 
 	
 	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
-
-		* Creates education variables
-
 	* VERSION A
 	* For Completion: Version A is directly with hv109; Version B uses years of education and duration
-
-	*Creating generic variables for WIDE
-	* Attainment, years of education, attendance
 	*hv109: 0=no education, 1=incomplete primary, 2=complete primary, 3=incomplete secondary, 4=complete secondary, 5=higher
 							 
 	*Primary
@@ -127,8 +121,8 @@ program define dhs_calculate
 	foreach X in prim lowsec upsec {
 		cap generate comp_`X'_B = 0
 		 	replace comp_`X'_B  = 1 if hv108 >= years_`X'
-			replace comp_`X'_B  = . if (hv108 == . | hv108 >= 90) // here includes those ==98, ==99 
-			replace comp_`X'_B  = 0 if (hv108 == 0 | hv109 == 0) // Added in Aug 2019!!	
+			replace comp_`X'_B  = . if (hv108 == . | hv108 >= 90) 
+			replace comp_`X'_B  = 0 if (hv108 == 0 | hv109 == 0) 
 	}
 
 	*For 2 countries, I use hv109 (I don't find other solution). I don't know why if goes to 28.93 if I don't do this
@@ -145,13 +139,16 @@ program define dhs_calculate
 
 	keep hv006 hv007 hv016 country year country_year iso_code3
 
-	*Merge with info about reference school year: $aux_data\temp\current_school_year_DHS.dta. I don't have the file
-	merge m:1 country_year using  "`table_path'/current_school_year_DHS.dta", keep(match master) nogenerate
+	*Merge with info about reference school year
+	findfile current_school_year_DHS.dta, path("`c(sysdir_personal)'/")
+	merge m:1 country_year using  "`r(fn)'", keep(match master) nogenerate
 	drop yearwebpage currentschoolyearDHSreport
 
 	generate year_c = hv007
-	replace year_c = 2017 if year_c >= 2018 // I only have data on school calendar until 2017
-	merge m:1 iso_code3 year_c using "`table_path'/UIS/months_school_year/month_start.dta", keep(master match) nogenerate
+	replace year_c = 2017 if year_c >= 2018 
+	
+	findfile month_start.dta, path("`c(sysdir_personal)'/")
+	merge m:1 iso_code3 year_c using "`r(fn)'", keep(master match) nogenerate
 	drop max_month min_month diff year_c
 
 	*All countries have month_start. Malawi_2015 has now the month 9 (OK)
@@ -161,12 +158,9 @@ program define dhs_calculate
 	generate missing_current_school_year = 1 if current_school_year == .
 	replace current_school_year = hv007 if current_school_year == .
 
-
-	*-------------------------------------------------------------------------------------
 	* Adjustment VERSION 1: Difference in number of days 
 	*-	Start school	: Month from UIS database (we only had years 2009/2010 and 2014/2015. The values for the rest of the years were imputed by GEM
 	*- Interview		: Month as presented in the survey data
-	*-------------------------------------------------------------------------------------
 		
 		generate month_start_norm = month_start
 		
@@ -220,7 +214,6 @@ program define dhs_calculate
 	*Age
 	replace age = . if age >= 98
 	
-	*before it had the restriction "if adj==1" . I'll show both adjusted and unadjusted and a flag that says if it should be adjusted!
 	generate ageA = age - 1 
 	rename age ageU
 
@@ -236,9 +229,6 @@ program define dhs_calculate
 	replace eduout = . if inlist(hv122, 8, 9) & eduout == 0 
 	replace eduout = 1 if hv122 == 0
 
-	*those whose highest ed level is preschool.. DO NOT ADD THIS LINE, makes it really different to UIS estimates!! See the version 4 for the results!
-	*replace eduout=1 if hv106==0  
-	
 	* Completion indicators (version A & B) with age limits 
 	
 	*Age limits for Version A and B
@@ -262,9 +252,6 @@ program define dhs_calculate
 		for X in any prim upsec: cap generate comp_X_v2_A = comp_X_A if `AGE' >= X_age1 + 3 & `AGE' <= X_age1 + 5
 	}
 
-	*-- Collapse for comparison with UIS (adjusted vs not adjusted)
-	*collapse (mean) comp_prim_v2* comp_lowsec_v2* comp_upsec_v2* prim_age* lowsec_age* upsec_age*  [iw=hv005], by(country_year country iso_code3 year adjustment)
-
 	*Dropping adjusted ages and the _ageU indicators (but keep ageU)
 	cap drop *ageA *_ageU
 
@@ -279,9 +266,6 @@ program define dhs_calculate
 		*gen comp_higher_2529=comp_higher if `AGE'>=25 & `AGE'<=29
 		generate comp_lowsec_1524=comp_lowsec if `AGE'>=15 & `AGE'<=24
 	}
-
-	*-- Collapse comparing hv108 & hv109
-	*collapse (mean) comp_prim_v2 comp_prim_v2_A comp_lowsec_v2 comp_upsec_v2 comp_upsec_v2_A prim_age* lowsec_age* upsec_age*  [iw=hv005], by(country_year country iso_code3 year adjustment)
 
 	*Dropping the A version (not going to be used)
 	cap drop *_A
@@ -323,9 +307,6 @@ program define dhs_calculate
 	generate upsec_age0_eduout  = lowsec_age0_eduout + lowsec_dur_eduout
 	for X in any prim lowsec upsec: generate X_age1_eduout = X_age0_eduout + X_dur_eduout - 1
 		
-	*Creating variables for Bilal: attendance to each level by age
-	*https://dhsprogram.com/Data/Guide-to-DHS-Statistics/School_Attendance_Ratios.htm
-
 	keep country_year year age* iso_code3 hv007 sex location wealth hhweight region comp_* eduout* attend* cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv122 hv124 years_*
 
 	foreach AGE in agestandard {
@@ -333,8 +314,6 @@ program define dhs_calculate
 		generate attend_higher_1822 = attend_higher if `AGE' >= 18 & `AGE' <= 22
 	}
 	drop attend_higher
-	
-	* necessary for fcollapse
 	
 	* neccesary for fcollapse in summary function
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion

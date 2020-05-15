@@ -3,7 +3,7 @@
 * April 2020
 
 program define mics_summarize
-	args data_path table_path output_path 
+	args data_path output_path 
 	
 	* automate file names using current date 
 	local today : di %tdDNCY daily("$S_DATE", "DMY")
@@ -63,7 +63,7 @@ program define mics_summarize
 	generate survey = "MICS"
 	
 	*standardizes summary dhs & mics
-	standarize_output `table_path'
+	standarize_output
 
 	save "`output_path'/MICS/mics_summarize_`today'.dta", replace
 	export delimited "`output_path'/MICS/mics_summarize_`today'.csv", replace

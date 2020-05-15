@@ -3,21 +3,21 @@
 * April 2020
 
 program define dhs_clean
-	args data_path table_path
-
-	cd `table_path'
-
-		*create auxiliary tempfiles from setcode table to fix values later
+	args data_path 
+	
+	*create auxiliary tempfiles from setcode table to fix values later
+	findfile dhs_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 	local vars sex location date duration ethnicity region religion hv122 hv109 calendar calendar2
 	foreach X in `vars'{
-		import excel "dhs_setcode.xlsx", sheet(`X') firstrow clear 
+		import excel "`r(fn)'", sheet(`X') firstrow clear 
 		for Y in any sex_replace location_replace hv122_replace hv109_replace hv007: cap destring Y, replace
 		tempfile fix`X'
 		save `fix`X''
 	}
 	
 	*fix some uis duration
-	use "`table_path'/UIS/duration_age/UIS_duration_age_25072018.dta", clear
+	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
+	use "`r(fn)'", clear
 	catenate country_year = country year, p("_")
 	
 	merge m:1 country_year using `fixduration', keep(match master) keepusing(*_replace)
@@ -90,7 +90,8 @@ program define dhs_clean
 
 	* Merge with Duration in years, start age and names of countries (codes_dhs, mics_dhs, iso_code, WIDE names)
 	preserve
-	import delimited "`table_path'/country_iso_codes_names.csv" ,  varnames(1) encoding(UTF-8) clear
+	findfile country_iso_codes_names.csv, path("`c(sysdir_personal)'/")
+	import delimited "`r(fn)'",  varnames(1) encoding(UTF-8) clear
 	keep country_name_dhs country_code_dhs iso_code3 
 	drop if country_code_dhs == ""
 	tempfile isocode

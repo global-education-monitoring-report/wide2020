@@ -8,7 +8,7 @@ The main function of the package, `widetable`, imports DHS and MICS files, stand
 
 ## Prerequisites 
 
-You need to have the following commands installed: `catenate`, `fs`, `ftools`, `gtools` `moremata`, `odbc`, `replacestrvar`, `renamefrom`, `sdecode`, `tosql`, `tuples` and `usespss`.
+You need to have the following commands installed: `catenate`, `fs`, `ftools`, `gtools` `moremata`, `replacestrvar`, `encodefrom`, `sdecode`, `tosql`, `tuples` and `usespss`.
 
 For example, to install the `fs` package you must run this line of code:
  
@@ -30,25 +30,37 @@ The `fcollapse` function (from `ftools`) requires the `moremata` package for som
 
 The ado files should be placed in the `c:\ado\personal\` folder and read by Stata from there. They should not be placed in the `c:\ado\plus\` folder (where packages downloaded from the Internet are located) because they may be deleted in an update.
 
-To install the latest version directly from Github, type in Stata:
+When the package is hosted in a public repository, it can be installed directly from Stata. To install the latest version directly from Github, type in Stata:
 
-    net install widetable, from(https://raw.githubusercontent.com/XXXXX/widetable/master/build/)
+    github install XXXX/widetable
+
+You must have the github package installed to type it into Stata: `net install github, from ("https://haghish.github.io/github/")`. This way of installation is better than using the net command as it automatically installs the package's dependencies.
 
 To update all files associated with widetable type:
 
     adoupdate widetable, update
-    
+
+During the installation, in addition to the ado-files, auxiliary tables are downloaded that are used in different functions and will be located in the same folder. 
+
+These tables are used to standardize both MICS and DHS data. 
+
+| Table   | Description |
+|---------|-------------|
+|country_iso_codes_names | adds the iso code3 variable |
+|dictionary_setcode | selects the variables in each country dataset, standardizes the names and recodes several variables|
+|filenames | lists the file paths to be read |
+|dhs_adjustment |                           |
+|current_school_year_MICS |                           |
+|current_school_year_DHS |                           |
+|UIS_duration_age_25072018 |                           |
+|month_start |  |
+| country_survey_year_uis | |
+
 ## Usage
 
 The documentation of the command is available after installation using:
         
     help widetable
-
-## Folder directory
-
-For the proper functioning of the package the folder structure should be as follows: 
-
-<img src="folder_directory.png" width="240" />
 
 
 ## Raw data 
@@ -65,32 +77,21 @@ As a rule to write the name of the countries we define:
 We keep the DHS data the same way. We select the module Household Member Recode and in this case, there is the option to download them in different formats, we choose the option FL (Flat ASCII data).
 The DHS filenames are more specific than the MICS filenames, e.g. HNPR61FL, where 'HN' is the country code, 'PR' is the survey module, '61' is the round, and 'FL' is the file format. From DHS it is also necessary to download the (IR) module and the (MR).
 
+For the proper functioning of the package the folder structure should be as follows:
+
 <img src="raw_data.png" width="320" />
-
-## Auxiliary data
-
-In addition to the raw data, different auxiliary tables are used to standardize both MICS and DHS data. 
-
-| Table   | Description |
-|---------|-------------|
-|country_iso_codes_names | adds the iso code3 variable |
-|dictionary_setcode | selects the variables in each country dataset, standardizes the names and recodes several variables|
-|filenames | lists the file paths to be read |
-
-The files corresponding to these auxiliary tables should be organized according to the following diagram:
-
-<img src="auxiliary_data.png" width="350" />
 
 ## Example
 
-The main function is widetable and have four arguments:
+The main function is widetable and have five arguments:
 
 - source: indicates which source must use ('dhs','mics' or 'both'). The option 'both' includes the other two.
 - step: indicates which process must run ('read', 'clean', 'calculate', 'summarize' or 'all'). The option 'all' includes all the above.
-- data_path: 
-- output_path: 
+- data_path: indicates the raw data folder path.  
+- output_path: indicates the output table folder path. 
+- nf: default value is 300. With this value all MICS and DHS files are read. To test the function it is recommended to use a value lower than 50.  
 
-You can write the paths directly in the function or previously create a local macro:
+Defining the folder path, it is recommended to use slash (/) as separator instead of backslash (\\), regardless of the operating system. You can write the paths directly in the function or previously create a local macro:
 
     * Defines the path folder in a absolute way (replace the dots)
     local dpath /../WIDE/raw_data/

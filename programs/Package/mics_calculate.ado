@@ -3,12 +3,13 @@
 * April 2020
 
 program define mics_calculate 
-	args data_path  table_path 
+	args data_path 
 
 	* COMPUTE THE YEARS OF EDUCATION BY COUNTRY 
 
 	* read auxiliary table to calculate eduyears 
-	import delimited "`table_path'/mics_group_eduyears.csv",  varnames(1) encoding(UTF-8) clear
+	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
+	import excel "`r(fn)'", sheet(group_eduyears) firstrow cellrange clear 
 	tempfile group
 	save `group'
 	
@@ -213,7 +214,7 @@ program define mics_calculate
 	
 	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
 
-		generate lowsec_age0 = prim_age0 + prim_dur
+	generate lowsec_age0 = prim_age0 + prim_dur
 	generate upsec_age0  = lowsec_age0 + lowsec_dur
 	for X in any prim lowsec upsec: generate X_age1 = X_age0 + X_dur - 1
 
@@ -260,7 +261,8 @@ program define mics_calculate
 	set more off
 	
 	* current school year that ED question in MICS refers to
-	merge m:1 country_year using "`table_path'/current_school_year_MICS.dta", keep(master match) nogenerate 
+	findfile current_school_year_MICS.dta, path("`c(sysdir_personal)'/")
+	merge m:1 country_year using "`r(fn)'", keep(master match) nogenerate 
 
 	* replace current 
 	replace current = "" if current == "doesn't have the variable"
@@ -271,7 +273,8 @@ program define mics_calculate
 	* Median of month
 	cap drop month* 
 	generate year_c = hh5y	
-	merge m:1 iso_code3 year_c using "`table_path'/UIS/months_school_year/month_start.dta", keep(master match) nogenerate 
+	findfile month_start.dta, path("`c(sysdir_personal)'/")
+	merge m:1 iso_code3 year_c using "`r(fn)'", keep(master match) nogenerate 
 	drop max_month min_month diff year_c
 
 	* replace missing in school year by the interview year
@@ -293,11 +296,9 @@ program define mics_calculate
 			
 	drop s_* date_*
 	
-	*-------------------------------------------------------------------------------------
 	* Adjustment VERSION 1: Difference in number of days 
 	*-			Start school	: Month from UIS database (we only had years 2009/2010 and 2014/2015. The values for the rest of the years were imputed by GEM
 	*- 			Interview		: Month as presented in the survey data
-	*-------------------------------------------------------------------------------------
 		
 	generate month_start_norm = month_start
 		
@@ -332,8 +333,7 @@ program define mics_calculate
 		}
 	}
 
-	sort country_year
-	*hashsort country_year
+	hashsort country_year
 	
 	*gcollapse diff* adj* flag_month, by(country_year) 
 	collapse diff* adj* flag_month, by(country_year)	
@@ -483,7 +483,8 @@ program define mics_calculate
 
 		
 	*Durations for OUT-OF-SCHOOL & ATTENDANCE 
-	merge m:1 iso_code3 year using "`table_path'/UIS/duration_age/UIS_duration_age_25072018.dta", keep(master match) nogenerate
+	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
+	merge m:1 iso_code3 year using "`r(fn)'", keep(master match) nogenerate
 	drop lowsec_age_uis upsec_age_uis
 		
 	for X in any prim_dur lowsec_dur upsec_dur: rename X_uis X_eduout

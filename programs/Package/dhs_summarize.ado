@@ -64,7 +64,7 @@ program define dhs_summarize
 	generate survey = "DHS"
 	
 	*standardizes summary dhs & mics
-	standarize_output `table_path'
+	standarize_output
 
 	save "`output_path'/DHS/dhs_summarize_`today'.dta", replace
 	export delimited "`output_path'/DHS/dhs_summarize_`today'.csv", replace

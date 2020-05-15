@@ -3,7 +3,7 @@
 * April 2020
 
 program define dhs_read
-	args data_path table_path
+	args data_path nf
 
 	
 	* read IR and MR files to get ethnicity and religion
@@ -14,7 +14,13 @@ program define dhs_read
 		cap mkdir "`data_path'/DHS/temporal/`module'"
 		cd "`data_path'/DHS/"
 		
-		import excel "`table_path'/filenames.xlsx", sheet(dhs_`module'_files) firstrow cellrange (:D2) clear 
+		if (`nf'-1) > 172{
+			local nf 172
+		}
+		
+		findfile filenames.xlsx, path("`c(sysdir_personal)'/")
+		import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nf') clear 
+		*import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow clear 
 		levelsof filepath, local(filepath) clean
 
 		foreach file of local filepath {
@@ -74,11 +80,13 @@ program define dhs_read
 
 	
 	* read pr files
-	import excel "`table_path'/filenames.xlsx", sheet(dhs_pr_files) cellrange (:D2) firstrow clear 
+	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
+	import excel "`r(fn)'", sheet(dhs_pr_files) cellrange (:D`n') firstrow clear 
 	levelsof filepath, local(filepath) clean
 
 	* create local macros from dictionary
-	import excel "`table_path'/dhs_dictionary_setcode.xlsx", sheet(dictionary) firstrow clear 
+	findfile dhs_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
+	import excel "`r(fn)'", sheet(dictionary) firstrow clear 
 	* dhs variables to keep first
 	levelsof name, local(dhsvars) clean
 	* dhs variables to decode
@@ -131,7 +139,8 @@ program define dhs_read
 		}
 				
 		*rename some variables 
-		cap renamefrom using "`table_path'/dhs_dictionary_setcode.xlsx", filetype(excel)  if(!missing(rename)) raw(name) clean(rename) label(varlab_en) keepx
+		findfile dhs_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
+		cap renamefrom using "`r(fn)'", filetype(excel)  if(!missing(rename)) raw(name) clean(rename) label(varlab_en) keepx
 		
 		*create numeric variables for easy recoding
 		for X in any sex wealth location: generate X_n = X

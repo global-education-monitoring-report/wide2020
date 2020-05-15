@@ -3,22 +3,23 @@
 * April 2020
 
 program define mics_clean
-	args data_path table_path 
-
-	cd `table_path'
+	args data_path  
 
 	*create auxiliary tempfiles from setcode table to fix values later
 	local vars sex location ed3 ed4a ed4b ed5 ed6a ed6b ed7 ed8a date duration ethnicity region religion code_ed4a code_ed6a code_ed8a
+	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
+
 	foreach X in `vars'{
-		import excel "mics_setcode.xlsx", sheet(`X') firstrow clear 
-			cap destring sex_replace, replace
-			cap tostring code_*, replace
+		import excel "`r(fn)'", sheet(`X') firstrow clear 
+		cap destring sex_replace, replace
+		cap tostring code_*, replace
 		tempfile fix`X'
 		save `fix`X''
 	}
   
 	*isocodes
-	import delimited "country_iso_codes_names.csv" ,  varnames(1) encoding(UTF-8) clear
+	findfile country_iso_codes_names.csv, path("`c(sysdir_personal)'/")
+	import delimited "`r(fn)'",  varnames(1) encoding(UTF-8) clear
 	keep country_name_mics iso_code3
 	drop if country_name_mics == ""
 	rename country_name_mics country
@@ -26,7 +27,8 @@ program define mics_clean
 	save `isocode'
 
 	*fix some uis duration
-	use "`table_path'/UIS/duration_age/UIS_duration_age_25072018.dta", clear
+	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
+	use "`r(fn)'", clear
 	merge m:1 country year using `fixduration', keep(match master) 
 	replace prim_dur_uis   = prim_dur_replace[_n]   if _merge == 3 & prim_dur_replace   !=.
 	replace lowsec_dur_uis = lowsec_dur_replace[_n] if _merge == 3 & lowsec_dur_replace !=.

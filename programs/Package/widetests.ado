@@ -1,7 +1,9 @@
 program define widetests
-    args data_path
+    args data_path 
 
-odbc load, table("wide_05142020") dsn("wide")
+    use "`data_path'", clear 
+    tosql, table(wide)
+    odbc load, table("wide") dsn("WIDE")
 
 
 end
