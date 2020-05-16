@@ -9,7 +9,7 @@ program define mics_calculate
 
 	* read auxiliary table to calculate eduyears 
 	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
-	import excel "`r(fn)'", sheet(group_eduyears) firstrow cellrange clear 
+	import excel "`r(fn)'", sheet(group_eduyears) firstrow clear 
 	tempfile group
 	save `group'
 	
@@ -271,7 +271,7 @@ program define mics_calculate
 	* Create date
 	* Inteview date:  hh5y=year; hh5m=month; hh5d=day  
 	* Median of month
-	cap drop month* 
+	capture drop month* 
 	generate year_c = hh5y	
 	findfile month_start.dta, path("`c(sysdir_personal)'/")
 	merge m:1 iso_code3 year_c using "`r(fn)'", keep(master match) nogenerate 
@@ -335,8 +335,8 @@ program define mics_calculate
 
 	hashsort country_year
 	
-	*gcollapse diff* adj* flag_month, by(country_year) 
-	collapse diff* adj* flag_month, by(country_year)	
+	gcollapse diff* adj* flag_month, by(country_year) fast
+	*collapse diff* adj* flag_month, by(country_year)	
 
 	save "`data_path'/MICS/mics_adjustment.dta", replace
 
@@ -406,11 +406,11 @@ program define mics_calculate
 	}
 
 	* Merging with adjustment
-	merge m:1 country_year using "`data_path'/MICS/mics_calculate.dta", keepusing(adj1_norm) nogen
+	merge m:1 country_year using "`data_path'/MICS/mics_adjustment.dta", keepusing(adj1_norm) nogenerate
 	rename adj1_norm adjustment
 	generate agestandard = ageU if adjustment == 0
 	replace agestandard = ageA if adjustment == 1
-	cap drop *ageU *ageA 
+	capture drop *ageU *ageA 
 
 	*Confirming that schage is available (for example, it is not available for South Sudan 2010)
 	bys country_year: egen temp_count = count(schage)
@@ -524,8 +524,8 @@ program define mics_calculate
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	
 	foreach var in `vars' {
-	cap sdecode `var', replace
-	cap tostring `var', replace
+	capture sdecode `var', replace
+	capture tostring `var', replace
 	}
 	
 		

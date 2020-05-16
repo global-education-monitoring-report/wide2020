@@ -54,7 +54,7 @@ program define standarize_output
 	findfile country_iso_codes_names.dta, path("`c(sysdir_personal)'/")
 	merge m:1 iso_code3 using "`r(fn)'", keepusing(country)  keep(master match) nogenerate
 	 
-	fsort iso_code category `categories_collapse'
+	hashsort iso_code category `categories_collapse'
 	order iso_code country year country_year survey category location sex wealth region ethnicity religion
 
 end

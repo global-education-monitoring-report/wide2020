@@ -119,7 +119,7 @@ program define dhs_calculate
 
 	*Creating "B" variables
 	foreach X in prim lowsec upsec {
-		cap generate comp_`X'_B = 0
+		capture generate comp_`X'_B = 0
 		 	replace comp_`X'_B  = 1 if hv108 >= years_`X'
 			replace comp_`X'_B  = . if (hv108 == . | hv108 >= 90) 
 			replace comp_`X'_B  = 0 if (hv108 == 0 | hv109 == 0) 
@@ -249,11 +249,11 @@ program define dhs_calculate
 
 	*Age limits 
 	foreach AGE in agestandard  {
-		for X in any prim upsec: cap generate comp_X_v2_A = comp_X_A if `AGE' >= X_age1 + 3 & `AGE' <= X_age1 + 5
+		for X in any prim upsec: capture generate comp_X_v2_A = comp_X_A if `AGE' >= X_age1 + 3 & `AGE' <= X_age1 + 5
 	}
 
 	*Dropping adjusted ages and the _ageU indicators (but keep ageU)
-	cap drop *ageA *_ageU
+	capture drop *ageA *_ageU
 
 	*I keep the version B
 	for X in any prim lowsec upsec: ren comp_X_B comp_X
@@ -268,7 +268,7 @@ program define dhs_calculate
 	}
 
 	*Dropping the A version (not going to be used)
-	cap drop *_A
+	capture drop *_A
 
 	* FOR UIS request
 	generate comp_prim_aux   = comp_prim   if agestandard >= lowsec_age1 + 3 & agestandard <= lowsec_age1 + 5
@@ -319,8 +319,8 @@ program define dhs_calculate
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	
 	foreach var in `vars' {
-	cap sdecode `var', replace
-	cap tostring `var', replace
+	capture sdecode `var', replace
+	capture tostring `var', replace
 	}
 	
 	rename ageU age

@@ -10,7 +10,7 @@ program define dhs_clean
 	local vars sex location date duration ethnicity region religion hv122 hv109 calendar calendar2
 	foreach X in `vars'{
 		import excel "`r(fn)'", sheet(`X') firstrow clear 
-		for Y in any sex_replace location_replace hv122_replace hv109_replace hv007: cap destring Y, replace
+		for Y in any sex_replace location_replace hv122_replace hv109_replace hv007: capture destring Y, replace
 		tempfile fix`X'
 		save `fix`X''
 	}

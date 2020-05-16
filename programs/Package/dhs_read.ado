@@ -5,19 +5,19 @@
 program define dhs_read
 	args data_path nf
 
-	
-	* read IR and MR files to get ethnicity and religion
-	local modules ir mr 
-	
-	foreach module of local modules {
-		
-		cap mkdir "`data_path'/DHS/temporal/`module'"
-		cd "`data_path'/DHS/"
-		
 		if (`nf'-1) > 172{
 			local nf 172
 		}
-		
+	
+	* read IR and MR files to get ethnicity and religion
+	local modules ir mr 
+	cd "`data_path'/DHS/"
+	cap mkdir "`data_path'/DHS/temporal/"
+
+	foreach module of local modules {
+		cd "`data_path'/DHS/"
+		cap mkdir "`data_path'/DHS/temporal/`module'"
+				
 		findfile filenames.xlsx, path("`c(sysdir_personal)'/")
 		import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nf') clear 
 		*import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow clear 
@@ -81,7 +81,7 @@ program define dhs_read
 	
 	* read pr files
 	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
-	import excel "`r(fn)'", sheet(dhs_pr_files) cellrange (:D`n') firstrow clear 
+	import excel "`r(fn)'", sheet(dhs_pr_files) cellrange (:D`nf') firstrow clear 
 	levelsof filepath, local(filepath) clean
 
 	* create local macros from dictionary
@@ -96,9 +96,6 @@ program define dhs_read
 	
 	cd "`data_path'/DHS/"
 	
-	cap mkdir "`data_path'/DHS/temporal"
-
-		
 	* read all files 
 	foreach file of local filepath {
 
@@ -184,11 +181,9 @@ program define dhs_read
 		catenate hh_id = country_year cluster hv002 
 		rename hhid hhid_original
 
-		
 		* add religion and ethnicity
 		merge m:1 hh_id using "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
-		
-			
+					
 		*save each file in temporal folder
 		compress 
 		save "`data_path'/DHS/temporal/`1'_`3'_pr.dta", replace

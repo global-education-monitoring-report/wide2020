@@ -43,7 +43,8 @@ program define mics_read
 		  
 		*lowercase all variables
 		capture rename *, lower
-			  
+		capture rename *_* **
+		
 		*select common variables between the dataset and the mics dictionary (1st column)
 		ds
 		local datavars `r(varlist)'
@@ -51,69 +52,74 @@ program define mics_read
 		*display "`common'"
 		keep `common'
 		ds
-			
-		*fix names
-		cap rename *_* **
 		
-		local var1 ed4a ed4b ed6a  ed6b ed6a ed6b hh6 hh7 region hhweight windex5 windex5 
-		local var2 ed4ap ed4bp ed6n ed6c ed6ap ed6bp hh6a hh6b hh7 hlweight windex5_5 windex5_1
-
-		capture confirm var `var1' `var2' 
-	       
-		if _rc == 0 { 
-			drop `var1'
-			rename `var2' `var1'
-		}
-		else {
-			capture confirm var `var1' 
-			if _rc == 0 { 
-				rename `var1' `var1'
-			} 
-			else {
-			rename `var2' `var1'
-			}
-		}
-
-		if (country == "Mali" & year_file == 2009) {
-			 drop ethnicity 
-			 rename hc1c ethnicity 
-		}
-		if (country == "Panama" & year_file == 2013) {
-			 drop religion
-			 rename hc1a religion
-		}
-		if (country == "TrinidadandTobago" & year_file == 2011) {
-			 drop religion
-			 rename hl15 religion
-		}
-
-				
 		*generate variables with file name
 		tokenize `file', parse("/")
 			generate country = "`1'" 
 			generate year_folder = `3'
-						
+			
+		*fix names
+		for X in any hh7a hh7r: capture rename X region 
+		for X in any region: capture rename X hh7
+		for X in any 4 6 8: capture rename edXa edXa 
+		for X in any 4 6 8: capture rename edXb edXb 
+		for X in any ethnie ethnicidad: capture rename X ethnicity
+			
+		if country=="Palestine" & year_folder==2010 {
+			capture rename ed4a ed4b 
+			capture rename ed4 ed4a  
+			capture rename hlweight hhweight
+		}
+		if country=="Jamaica" {
+			capture rename hh6b hh7
+		}
+		if country=="Mali" & year_folder==2015 {
+			drop ed6a
+			capture rename ed6n ed6a
+			capture rename ed6c ed6b
+		}
+		if (country == "Mali" & year_folder == 2009) {
+			 drop ethnicity 
+			 rename hc1c ethnicity 
+		}
+		if (country == "Panama" & year_folder == 2013) {
+			 drop religion
+			 rename hc1a religion
+		}
+		if (country == "TrinidadandTobago" & year_folder == 2011) {
+			 drop religion
+			 rename hl15 religion
+		}
+		if country=="Uruguay" & year_folder==2012 {
+		cap drop windex5
+		capture rename windex5_5 windex5
+		}
+		if country=="SaintLucia" & year_folder==2012 {
+		cap drop windex5
+		capture rename windex51 windex5
+		}
+							
 		*create numerics variables 
-		for X in any ed4a ed4b ed6a ed6b ed8a schage: cap generate X_nr = X
+		for X in any ed4a ed4b ed6a ed6b ed8a schage: capture generate X_nr = X
 			
 		* drop schage missing values 
-		cap replace schage_nr = . if schage_nr >= 150
-		cap drop schage
-		cap rename schage_nr schage
+		capture replace schage_nr = . if schage_nr >= 150
+		capture drop schage
+		capture rename schage_nr schage
 		
 		*decode and change strings values to lower case
 		local common_decode : list common & micsvars_decode
 			
 		* remove special character and space in string variables
 		foreach var of varlist `common_decode'{ 
-			cap tostring `var', replace
-			cap sdecode  `var', replace
-			cap replace  `var' = "missing" if `var' == ""
-			cap replace  `var' = lower(`var')
-			cap replace_character `var'
-			cap replace  `var' = stritrim(`var')
-			cap replace  `var' = strltrim(`var')
-			cap replace  `var' = strrtrim(`var')
+			capture tostring `var', replace
+			capture sdecode  `var', replace
+			capture replace  `var' = "missing" if `var' == ""
+			capture replace  `var' = lower(`var')
+			capture replace_character `var'
+			capture replace  `var' = stritrim(`var')
+			capture replace  `var' = strltrim(`var')
+			capture replace  `var' = strrtrim(`var')
 		 }
 			
 		*create ids variables
@@ -122,13 +128,13 @@ program define mics_read
 		catenate individual_id = country_year hh1 hh2 hl1, p(no)
 			
 		*create variables doesnt exist 
-		for X in any `micsvars_keepnum': cap generate X = .
-		for X in any `micsvars_keepstr': cap generate X = ""
+		for X in any `micsvars_keepnum': capture generate X = .
+		for X in any `micsvars_keepstr': capture generate X = ""
 		order `micsvars_keep'
 
 		*rename some variables 
 		findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
-		cap renamefrom using "`r(fn)'", filetype(excel)  if(!missing(rename)) raw(standard_name) clean(rename) label(varlab_en) keepx
+		capture renamefrom using "`r(fn)'", filetype(excel)  if(!missing(rename)) raw(standard_name) clean(rename) label(varlab_en) keepx
 							
 		*compress and save each file in a temporal folder
 		compress 

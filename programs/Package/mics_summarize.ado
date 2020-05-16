@@ -9,7 +9,9 @@ program define mics_summarize
 	local today : di %tdDNCY daily("$S_DATE", "DMY")
 			
 	* create a temporal folder
-	cap mkdir "`output_path'/MICS/temporal/"
+	cd "`output_path'"
+	capture mkdir "`output_path'/MICS/"
+	capture mkdir "`output_path'/MICS/temporal/"
 	cd "`output_path'/MICS/temporal"
 	
 	* combine categories 
@@ -49,11 +51,10 @@ program define mics_summarize
 	    save "result_`i'.dta", replace
 	}
 	
-	* delete intermediate file (only for windows)
 	* delete intermediate files
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		erase "resultc`i'.dta"
-		erase "resultm`i'.dta"
+		erase "resultc_`i'.dta"
+		erase "resultm_`i'.dta"
 	}
 
 	* append the results

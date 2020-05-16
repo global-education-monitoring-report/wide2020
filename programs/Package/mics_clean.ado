@@ -8,11 +8,12 @@ program define mics_clean
 	*create auxiliary tempfiles from setcode table to fix values later
 	local vars sex location ed3 ed4a ed4b ed5 ed6a ed6b ed7 ed8a date duration ethnicity region religion code_ed4a code_ed6a code_ed8a
 	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
-
+	local dic `r(fn)'
+	
 	foreach X in `vars'{
-		import excel "`r(fn)'", sheet(`X') firstrow clear 
-		cap destring sex_replace, replace
-		cap tostring code_*, replace
+		import excel "`dic'", sheet(`X') firstrow clear 
+		capture destring sex_replace, replace
+		capture tostring code_*, replace
 		tempfile fix`X'
 		save `fix`X''
 	}
@@ -43,56 +44,39 @@ program define mics_clean
 	set more off
 
 	* FIX SEVERAL VARIABLES
-
-	* replace year of the survey by year_file if it is wrong
-	replace hh5y = year_file if  (hh5y - year_file) > 3
-	* replace_many read auxiliary tables to fix values by replace
-	* date
-	replace_many `fixdate' hh5m hh5m_replace country year_file
-	* region
+	replace hh5y = year_folder if  (hh5y - year_folder) > 3
+	replace_many `fixdate' hh5m hh5m_replace country year_folder
 	replace_many `fixregion' region region_replace country 
-	* religion	
 	replace_many `fixreligion' religion religion_replace
-	* ethnicity
 	replace_many `fixethnicity' ethnicity ethnicity_replace
-	* location
 	replace_many `fixlocation' location location_replace
-	* sex
 	replace_many `fixsex' sex sex_replace
 
 
 	* FIX EDUCATION VARIABLES 
-	* ed3
 	replace_many `fixed3' ed3 ed3_replace
-	* ed4a
 	replace_many `fixed4a' ed4a ed4a_replace
-	* ed4b
 	replace_many `fixed4b' ed4b ed4b_replace
-	* ed5
 	replace_many `fixed5' ed5 ed5_replace
-	* ed6a
 	replace_many `fixed6a' ed6a ed6a_replace
-	* ed6b
 	replace_many `fixed6b' ed6b ed6b_replace
-	* ed7
 	replace_many `fixed7' ed7 ed7_replace
-	* ed8a
 	replace_many `fixed8a' ed8a ed8a_replace
 
 	* generate code variables
-	for X in any ed4a ed6a ed8a: cap generate code_X = X_nr
+	for X in any ed4a ed6a ed8a: capture generate code_X = X_nr
 	tostring code_*, replace
 
 
 	* EDUCATION LEVEL
 	* merge with auxiliary data of education levels for ed4a, ed6a, ed8a
-	replace_many `fixcode_ed4a' code_ed4a code_ed4a_replace country year_file
-	replace_many `fixcode_ed6a' code_ed6a code_ed6a_replace country year_file 
-	replace_many `fixcode_ed8a' code_ed8a code_ed8a_replace country year_file
+	replace_many `fixcode_ed4a' code_ed4a code_ed4a_replace country year_folder
+	replace_many `fixcode_ed6a' code_ed6a code_ed6a_replace country year_folder 
+	replace_many `fixcode_ed8a' code_ed8a code_ed8a_replace country year_folder
 		
 	* convert to numeric code_*
 	destring code_*, replace
-	for X in any ed4a ed6a ed8a: cap replace code_X = . if X >= 97
+	for X in any ed4a ed6a ed8a: capture replace code_X = . if X >= 97
 	
 	* merge with iso code3 table
 	merge m:1 country using "`isocode'", keep(match master) nogenerate
@@ -113,9 +97,9 @@ program define mics_clean
 	generate years_higher = prim_dur + lowsec_dur + upsec_dur + higher_dur
 
     * labelling
-    cap label define sex 0 "Female" 1 "Male"
-	cap label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
-	for Z in any sex wealth: cap label values Z Z
+    capture label define sex 0 "Female" 1 "Male"
+	capture label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
+	for Z in any sex wealth: capture label values Z Z
 	
 	* save data 	
 	compress

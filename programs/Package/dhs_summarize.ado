@@ -23,7 +23,7 @@ program define dhs_summarize
 	local varsby country_year iso_code3 year adjustment
 	
 	* create a temporal folder
-	cap mkdir "`output_path'/DHS/temporal/"
+	capture mkdir "`output_path'/DHS/temporal/"
 		
 	cd "`output_path'/DHS/temporal"
 
@@ -48,7 +48,7 @@ program define dhs_summarize
 		use  "resultm_`i'.dta", clear
 		merge 1:1 country_year iso_code3 year adjustment `tuple`i'' using "resultc_`i'.dta", nogenerate
 		generate category = "`tuple`i''"	
-	    save "result_`i'.dta", replace
+	        save "result_`i'.dta", replace
 	}
 	
 	* delete intermediate files
