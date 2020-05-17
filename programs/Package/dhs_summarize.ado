@@ -8,7 +8,6 @@ program define dhs_summarize
 	* automate file names using current date 
 	local today : di %tdDNCY daily("$S_DATE", "DMY")
 			
-		
 	* combine categories 
 	local categories_collapse location sex wealth region ethnicity religion
 	tuples `categories_collapse'
@@ -24,7 +23,6 @@ program define dhs_summarize
 	
 	* create a temporal folder
 	capture mkdir "`output_path'/DHS/temporal/"
-		
 	cd "`output_path'/DHS/temporal"
 
 	* mean estimation 
@@ -53,8 +51,8 @@ program define dhs_summarize
 	
 	* delete intermediate files
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		erase "resultc`i'.dta"
-		erase "resultm`i'.dta"
+		erase "resultc_`i'.dta"
+		erase "resultm_`i'.dta"
 	}
 	
 	* append the results

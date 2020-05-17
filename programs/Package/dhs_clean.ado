@@ -6,10 +6,12 @@ program define dhs_clean
 	args data_path 
 	
 	*create auxiliary tempfiles from setcode table to fix values later
-	findfile dhs_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 	local vars sex location date duration ethnicity region religion hv122 hv109 calendar calendar2
+	findfile dhs_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
+	local dic `r(fn)'
+	
 	foreach X in `vars'{
-		import excel "`r(fn)'", sheet(`X') firstrow clear 
+		import excel "`dic'", sheet(`X') firstrow clear 
 		for Y in any sex_replace location_replace hv122_replace hv109_replace hv007: capture destring Y, replace
 		tempfile fix`X'
 		save `fix`X''
@@ -28,33 +30,28 @@ program define dhs_clean
 	drop _merge *_replace
 	tempfile fixduration_uis
 	save `fixduration_uis'
+	
+	findfile country_iso_codes_names.csv, path("`c(sysdir_personal)'/")
+	import delimited "`r(fn)'",  varnames(1) encoding(UTF-8) clear
+	keep country_name_dhs country_code_dhs iso_code3 
+	drop if country_code_dhs == ""
+	tempfile isocode
+	save `isocode'
 		
 	* read the master data
 	use "`data_path'/DHS/dhs_read.dta", clear
 	set more off
 
 	*Fixing categories and creating variables
-	*replace_many read auxiliary tables to fix values by replace
-	
-	* location
+	replace hv007 = year_folder if hv007 < 1980
 	replace_many `fixlocation' location location_replace
-	* sex
 	replace_many `fixsex' sex sex_replace
-	* hv109
 	replace_many `fixhv109' hv109 hv109_replace
-	* hv122
 	replace_many `fixhv122' hv122 hv122_replace
-	* region
 	replace_many `fixregion' region region_replace country 
-	* religion	
-	*replace_many `fixreligion' religion religion_replace
-	* ethnicity
-	*replace_many `fixethnicity' ethnicity ethnicity_replace
-
-	* Countries with different calendar: the years/months don't coincide with the Gregorian Calendar
-	* month
+	replace_many `fixreligion' religion religion_replace
+	replace_many `fixethnicity' ethnicity ethnicity_replace
 	replace_many `fixdate' hv006 hv006_replace country_year
-	* year
 	replace_many `fixcalendar' hv007 hv007_replace country_year hv006
 	replace_many `fixcalendar2' hv007 hv007_replace country_year 
 	
@@ -73,12 +70,8 @@ program define dhs_clean
 	replace hv006 = 7 if hv006 == .  
 		
 	*Inconsistency in number of days for the month. 7567 cases
-	*Countries: Afghanistan 2015; Ethiopia (2000, 20011, 2016); Nepal (2001,2006,2011,2016); Nigeria 2008 (1 case)
-	*Months that don't have 31 days...
 	replace hv016 = 30 if hv016 == 31 &  inlist(hv006, 4, 6, 9, 11)
-	* February
 	replace hv016 = 28 if hv016 >= 29 & hv006 == 2 
-	* Months don't have 32 days
 	replace hv016 = 31 if hv016 > 31 & inlist(hv006, 1, 3, 5, 7, 8, 10, 12)
 	replace hv016 = 30 if hv016 > 31 & inlist(hv006, 4, 6, 9, 11)
 	
@@ -89,24 +82,12 @@ program define dhs_clean
 	drop if year <= 1999 
 
 	* Merge with Duration in years, start age and names of countries (codes_dhs, mics_dhs, iso_code, WIDE names)
-	preserve
-	findfile country_iso_codes_names.csv, path("`c(sysdir_personal)'/")
-	import delimited "`r(fn)'",  varnames(1) encoding(UTF-8) clear
-	keep country_name_dhs country_code_dhs iso_code3 
-	drop if country_code_dhs == ""
-	tempfile isocode
-	save `isocode'
-	restore
-	 
 	merge m:1 country_code_dhs using `isocode', keep(master match) nogenerate		
-	
-	
 	*Now we have year 2018, but the database of duration only has until 2017
 	rename year year_original
 	generate year = year_original
 	replace year = 2017 if year_original >= 2018
 
-	
 	*FOR COMPLETION: Changes to match UIS calculations
 	merge m:1 iso_code3 year using "`fixduration_uis'", keep(match master) nogenerate
 	drop year 
@@ -114,7 +95,6 @@ program define dhs_clean
 	
 	for X in any prim_dur lowsec_dur upsec_dur: ren X_uis X
 	rename prim_age_uis prim_age0
-
 	*drop lowsec_age_uis upsec_age_uis
 	
 	*Creating the variables for EDUOUT indicators

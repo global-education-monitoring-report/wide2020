@@ -10,9 +10,6 @@ program define dhs_calculate
 	use "`data_path'/DHS/dhs_clean.dta", clear
 	set more off
 	
-	* CHANGES IN HV108
-
-	*Republic of Moldova doesn't have info on eduyears
 	if country_year == "RepublicofMoldova_2005"{
 		replace hv108 = hv107               if (hv106 == 0 | hv106 == 1)
 		replace hv108 = hv107 + years_prim  if hv106 == 2 
@@ -71,61 +68,38 @@ program define dhs_calculate
 	replace eduyears = 30 if hv108 >= 30
 	replace eduyears = . if hv108 >= 90
 
-	*Hv108: 
-	*Albania 2017: doesn't have hv108==10, 11
-	*Mali 2018: doesn't have hv108==11
-	*Haiti 2017, Pakistan 2018, South Africa 2016: only goes until 16 years
-	*Indonesia 2017, Maldives 2017, Mali 2018: only goes until 17 years
-
-	
 	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
-	* VERSION A
-	* For Completion: Version A is directly with hv109; Version B uses years of education and duration
-	*hv109: 0=no education, 1=incomplete primary, 2=complete primary, 3=incomplete secondary, 4=complete secondary, 5=higher
-							 
-	*Primary
+	* VERSION A:is directly with hv109; Version B uses years of education and duration
 	generate comp_prim_A = 0
 		replace comp_prim_A = 1 if hv109 >= 2
 		replace comp_prim_A = . if (hv109 == . | hv109 == 8 | hv109 == 9)
-
-	*Upper secondary
 	generate comp_upsec_A = 0
 		replace comp_upsec_A = 1 if hv109 >= 4 
 		replace comp_upsec_A = . if (hv109 == . | hv109 == 8 | hv109 == 9)
-
-	*Higher
 	generate comp_higher_A = 0
 		replace comp_higher_A = 1 if hv109 >= 5 
 		replace comp_higher_A = . if (hv109 == . | hv109 == 8 | hv109 == 9)
 
-
 	* VERSION B
-	* Mix of years of education completed (hv108) and duration of levels --> useful for lower secondary
-
-	* duration of levels 
-	*With the info of years that last primary and secondary I can also compare official duration with the years of education completed..
-		generate years_prim		= prim_dur
+	* Mix of years of education completed (hv108) and duration of levels 
+		generate years_prim	= prim_dur
 		generate years_lowsec	= prim_dur + lowsec_dur
 		generate years_upsec	= prim_dur + lowsec_dur + upsec_dur
 		*gen years_higher	=prim_dur+lowsec_dur+upsec_dur+higher_dur
 
 	*Ages for completion
 		generate lowsec_age0 = prim_age0 + prim_dur
-		generate upsec_age0 = lowsec_age0 + lowsec_dur
+		generate upsec_age0  = lowsec_age0 + lowsec_dur
 		for X in any prim lowsec upsec: generate X_age1 = X_age0 + X_dur-1
-		
-	*label define hv109 0 "no education" 1 "incomplete primary" 2 "complete primary" 3 "incomplete secondary" 4 "complete secondary" 5 "higher"
-	*label values hv109 hv109
 
 	*Creating "B" variables
 	foreach X in prim lowsec upsec {
-		capture generate comp_`X'_B = 0
-		 	replace comp_`X'_B  = 1 if hv108 >= years_`X'
-			replace comp_`X'_B  = . if (hv108 == . | hv108 >= 90) 
-			replace comp_`X'_B  = 0 if (hv108 == 0 | hv109 == 0) 
+		generate comp_`X'_B = 0
+		replace comp_`X'_B  = 1 if hv108 >= years_`X'
+		replace comp_`X'_B  = . if (hv108 == . | hv108 >= 90) 
+		replace comp_`X'_B  = 0 if (hv108 == 0 | hv109 == 0) 
 	}
 
-	*For 2 countries, I use hv109 (I don't find other solution). I don't know why if goes to 28.93 if I don't do this
 	replace comp_upsec_B = comp_upsec_A if country_year == "Egypt_2005" 
 
 	compress 
@@ -133,7 +107,6 @@ program define dhs_calculate
 	
 
 	* ADJUST SCHOOL YEAR
-	
 	use "`data_path'/DHS/dhs_calculate.dta", clear
 	set more off
 
@@ -143,10 +116,8 @@ program define dhs_calculate
 	findfile current_school_year_DHS.dta, path("`c(sysdir_personal)'/")
 	merge m:1 country_year using  "`r(fn)'", keep(match master) nogenerate
 	drop yearwebpage currentschoolyearDHSreport
-
 	generate year_c = hv007
 	replace year_c = 2017 if year_c >= 2018 
-	
 	findfile month_start.dta, path("`c(sysdir_personal)'/")
 	merge m:1 iso_code3 year_c using "`r(fn)'", keep(master match) nogenerate
 	drop max_month min_month diff year_c
@@ -162,7 +133,7 @@ program define dhs_calculate
 	*-	Start school	: Month from UIS database (we only had years 2009/2010 and 2014/2015. The values for the rest of the years were imputed by GEM
 	*- Interview		: Month as presented in the survey data
 		
-		generate month_start_norm = month_start
+	generate month_start_norm = month_start
 		
 	*Taking into account the days	
 		generate one = string(1)
@@ -198,13 +169,9 @@ program define dhs_calculate
 		}
 	}
 
-	sort country_year
-
-	*see gcollapse
-	collapse diff* adj* flag_month, by(country_year)		
-
-	save "$data_path/DHS/dhs_adjustment.dta", replace
-
+	hashsort country_year
+	gcollapse diff* adj* flag_month, by(country_year)		
+	save "`data_path'/DHS/dhs_adjustment.dta", replace
 	
 	* COMPUTE IF SOMEONE DOES NOT GO TO SCHOOL (education out)
 	
@@ -213,7 +180,6 @@ program define dhs_calculate
 
 	*Age
 	replace age = . if age >= 98
-	
 	generate ageA = age - 1 
 	rename age ageU
 
@@ -230,12 +196,10 @@ program define dhs_calculate
 	replace eduout = 1 if hv122 == 0
 
 	* Completion indicators (version A & B) with age limits 
-	
-	*Age limits for Version A and B
 	foreach Y in A B {
 		foreach X in prim upsec {
 			foreach AGE in ageU ageA {
-				gen comp_`X'_v2_`Y'_`AGE' = comp_`X'_`Y' if `AGE' >= `X'_age1 + 3 & `AGE' <= `X'_age1 + 5 
+				generate comp_`X'_v2_`Y'_`AGE' = comp_`X'_`Y' if `AGE' >= `X'_age1 + 3 & `AGE' <= `X'_age1 + 5 
 			}
 		}
 	}
@@ -249,31 +213,28 @@ program define dhs_calculate
 
 	*Age limits 
 	foreach AGE in agestandard  {
-		for X in any prim upsec: capture generate comp_X_v2_A = comp_X_A if `AGE' >= X_age1 + 3 & `AGE' <= X_age1 + 5
+		for X in any prim upsec: generate comp_X_v2_A = comp_X_A if `AGE' >= X_age1 + 3 & `AGE' <= X_age1 + 5
 	}
 
 	*Dropping adjusted ages and the _ageU indicators (but keep ageU)
 	capture drop *ageA *_ageU
-
-	*I keep the version B
-	for X in any prim lowsec upsec: ren comp_X_B comp_X
-
+	*keep the version B
+	for X in any prim lowsec upsec: rename comp_X_B comp_X
 	*Age limits 
 	foreach AGE in agestandard  {
 		for X in any prim lowsec upsec: generate comp_X_v2=comp_X if `AGE'>=X_age1+3 & `AGE'<=X_age1+5
-		generate comp_prim_1524=comp_prim if `AGE'>=15 & `AGE'<=24
-		generate comp_upsec_2029=comp_upsec if `AGE'>=20 & `AGE'<=29
+		generate comp_prim_1524 = comp_prim if `AGE' >=15 & `AGE' <=24
+		generate comp_upsec_2029 = comp_upsec if `AGE' >=20 & `AGE' <=29
 		*gen comp_higher_2529=comp_higher if `AGE'>=25 & `AGE'<=29
-		generate comp_lowsec_1524=comp_lowsec if `AGE'>=15 & `AGE'<=24
+		generate comp_lowsec_1524 = comp_lowsec if `AGE' >=15 & `AGE' <=24
 	}
 
 	*Dropping the A version (not going to be used)
 	capture drop *_A
 
 	* FOR UIS request
-	generate comp_prim_aux   = comp_prim   if agestandard >= lowsec_age1 + 3 & agestandard <= lowsec_age1 + 5
+	generate comp_prim_aux = comp_prim   if agestandard >= lowsec_age1 + 3 & agestandard <= lowsec_age1 + 5
 	generate comp_lowsec_aux = comp_lowsec if agestandard >= upsec_age1 + 3 & agestandard <= upsec_age1 + 5
-
 
 	*With age limits
 	generate eduyears_2024 = eduyears if agestandard >= 20 & agestandard <= 24
@@ -284,7 +245,7 @@ program define dhs_calculate
 	}
 
 	* Never been to school
-	recode hv106 (0=1) (1/3=0) (4/9=.), generate(edu0)
+	recode hv106 (0 = 1) (1/3 = 0) (4/9 = .), generate(edu0)
 	generate never_prim_temp = 1 if (hv106 == 0 | hv109 == 0) & (hv107 == . & hv123 == .)
 	replace edu0 = 1 if eduyears == 0 | never_prim_temp == 1
 	replace edu0 = . if eduyears == .
@@ -296,18 +257,15 @@ program define dhs_calculate
 	}
 
 	drop never_prim_temp edu0
-
 	generate attend_higher = 0
 	replace attend_higher = 1 if inlist(hv121, 1, 2) & hv122 == 3
 	replace attend_higher = . if inlist(hv121, 8, 9) | inlist(hv122, 8, 9)
-
 
 	*Durations for out-of-school
 	generate lowsec_age0_eduout = prim_age0_eduout + prim_dur_eduout
 	generate upsec_age0_eduout  = lowsec_age0_eduout + lowsec_dur_eduout
 	for X in any prim lowsec upsec: generate X_age1_eduout = X_age0_eduout + X_dur_eduout - 1
-		
-	keep country_year year age* iso_code3 hv007 sex location wealth hhweight region comp_* eduout* attend* cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv122 hv124 years_*
+	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv122 hv124 years_*
 
 	foreach AGE in agestandard {
 		for X in any prim lowsec upsec: generate eduout_X = eduout if `AGE' >= X_age0_eduout & `AGE' <= X_age1_eduout
@@ -315,20 +273,23 @@ program define dhs_calculate
 	}
 	drop attend_higher
 	
-	* neccesary for fcollapse in summary function
-	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
-	
+	local vars country_year year adjustment location sex wealth region ethnicity religion
 	foreach var in `vars' {
 	capture sdecode `var', replace
 	capture tostring `var', replace
+	capture replace `var' = proper(`var')
 	}
 	
 	rename ageU age
 	
 	* Create variables for count of observations
+	local varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
+	
 	foreach var of varlist `varlist_m'  {
-			gen `var'_no=`var'
+			generate `var'_no = `var'
 	}
 
 	compress
 	save  "`data_path'/DHS/dhs_calculate.dta", replace
+
+end

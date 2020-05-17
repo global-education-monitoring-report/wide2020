@@ -1,5 +1,5 @@
 * standarize_output: program to standarize DHS and MICS output summary format
-* Version 1.0
+* Version 2.0
 * April 2020
 
 program define standarize_output
@@ -11,7 +11,7 @@ program define standarize_output
 
 	replace category = "total" if category == ""
 
-	*-- Fixing for missing values in categories
+	* Fixing for missing values in categories
 	foreach X in `categories_collapse' {
 		drop if `X' == "" & category == "`X'"
 	}
@@ -23,17 +23,12 @@ program define standarize_output
 	drop if category == "location sex wealth" & (location == "" | sex == "" | wealth == "")
 	drop if category == "sex wealth region" & (sex == "" | wealth == "" | region == "")
 
-	* Categories that are not used:
-	drop if category == "location sex wealth region" | category == "location region" | category == "location sex region" | category == "location wealth region"
-
 	replace category = proper(category)
 	split category, gen(c)
 	gen category_original = category
 	replace category = c1+" & "+c2 if c1! = "" & c2 != "" & c3 == ""
 	replace category = c1+" & "+c2+" & "+c3 if c1 != "" & c2 != "" & c3 != ""
 	drop c1 c2 c3 category_orig
-
-	order country survey year category* `categories_collapse' `varlist_m' `varlist_no'
 
 	* to 100%
 	foreach var of varlist `vars100' {
@@ -46,7 +41,7 @@ program define standarize_output
 	}
 
 	* Merge with year_uis
-	cap destring year, replace
+	capture destring year, replace
 	findfile country_survey_year_uis.dta, path("`c(sysdir_personal)'/")
 	merge m:1 iso_code3 survey year using "`r(fn)'", keepusing(year_uis) keep(master match) nogenerate 
 	
@@ -55,6 +50,6 @@ program define standarize_output
 	merge m:1 iso_code3 using "`r(fn)'", keepusing(country)  keep(master match) nogenerate
 	 
 	hashsort iso_code category `categories_collapse'
-	order iso_code country year country_year survey category location sex wealth region ethnicity religion
+	order iso_code country year country_year survey category  `categories_collapse' `varlist_m' `varlist_no'
 
 end

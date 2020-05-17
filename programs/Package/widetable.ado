@@ -4,7 +4,7 @@
 
 
 program define widetable
-	syntax, [source(string) step(string) data_path(string) output_path(string) nf(integer 300)]
+	syntax, source(string) step(string) data_path(string) output_path(string) [nf(integer 300)]
 
 	
 	* error message 

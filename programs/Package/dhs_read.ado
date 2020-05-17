@@ -12,11 +12,11 @@ program define dhs_read
 	* read IR and MR files to get ethnicity and religion
 	local modules ir mr 
 	cd "`data_path'/DHS/"
-	cap mkdir "`data_path'/DHS/temporal/"
+	capture mkdir "`data_path'/DHS/temporal/"
 
 	foreach module of local modules {
 		cd "`data_path'/DHS/"
-		cap mkdir "`data_path'/DHS/temporal/`module'"
+		capture mkdir "`data_path'/DHS/temporal/`module'"
 				
 		findfile filenames.xlsx, path("`c(sysdir_personal)'/")
 		import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nf') clear 
@@ -29,8 +29,8 @@ program define dhs_read
 			use *v001 *v002 *v130 *v131 *v150 using "`file'", clear
 
 			rename *, lower
-			for X in any v001 v002 v130 v131 v150: cap rename mX X
-			for X in any v001 v002 v130 v131 v150 : cap generate X=.
+			for X in any v001 v002 v130 v131 v150: capture rename mX X
+			for X in any v001 v002 v130 v131 v150 : capture generate X=.
 			
 			* only keep the household head
 			keep if v150 == 1 
@@ -43,15 +43,15 @@ program define dhs_read
 			drop v150 v001 v002
 			
 			foreach var of varlist v130 v131{ 
-				cap sdecode `var', replace
-				cap replace `var' = lower(`var')
-				cap replace_character
-				cap replace `var' = stritrim(`var')
-				cap replace `var' = strltrim(`var')
-				cap replace `var' = strrtrim(`var')
+				capture sdecode `var', replace
+				capture replace `var' = lower(`var')
+				capture replace_character
+				capture replace `var' = stritrim(`var')
+				capture replace `var' = strltrim(`var')
+				capture replace `var' = strrtrim(`var')
 			}
 			
-			cap label drop _all
+			capture label drop _all
 			
 			compress
 			save "`data_path'/DHS/temporal/`module'/`1'_`3'", replace
@@ -62,6 +62,7 @@ program define dhs_read
 	
 		fs *.dta
 		append using `r(files)', force
+		gduplicates drop
 		save "`data_path'/DHS/temporal/dhs_`module'.dta" , replace
 	}
 	
@@ -119,25 +120,25 @@ program define dhs_read
 			generate year_folder = `3'
 
 		*create variables doesnt exist 
-		for X in any `dhsvars_keep': cap generate X = .
+		for X in any `dhsvars_keep': capture generate X = .
 		order `dhsvars_keep'
 				
 		*decode and change strings values to lower case
 		local common_decode : list common & dhsvars_decode
 					
 		foreach var of varlist `common_decode'{ 
-			cap sdecode `var', replace
-			cap replace `var' = lower(`var')
+			capture sdecode `var', replace
+			capture replace `var' = lower(`var')
 			* remove special character in values and labels
-			cap replace_character
-			cap replace `var' = stritrim(`var')
-			cap replace `var' = strltrim(`var')
-			cap replace `var' = strrtrim(`var')
+			capture replace_character
+			capture replace `var' = stritrim(`var')
+			capture replace `var' = strltrim(`var')
+			capture replace `var' = strrtrim(`var')
 		}
 				
 		*rename some variables 
 		findfile dhs_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
-		cap renamefrom using "`r(fn)'", filetype(excel)  if(!missing(rename)) raw(name) clean(rename) label(varlab_en) keepx
+		capture renamefrom using "`r(fn)'", filetype(excel)  if(!missing(rename)) raw(name) clean(rename) label(varlab_en) keepx
 		
 		*create numeric variables for easy recoding
 		for X in any sex wealth location: generate X_n = X
@@ -197,7 +198,7 @@ program define dhs_read
 	append using `r(files)', force
 
 	* remove temporal folder and files
-	cap rmdir "`data_path'/DHS/temporal"
+	capture rmdir "`data_path'/DHS/temporal"
 	
 	* save all dataset in a single one
 	compress
