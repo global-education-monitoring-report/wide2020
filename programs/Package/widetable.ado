@@ -49,6 +49,11 @@ program define widetable
 		else if  "`step'" == "summarize" {
 			mics_summarize `data_path' `output_path'
 			dhs_summarize `data_path' `output_path'
+			local today : di %tdDNCY daily("$S_DATE", "DMY")
+			use "`output_path'/MICS/mics_summarize_`today'.dta", clear
+			append using "`output_path'/DHS/dhs_summarize_`today'.dta", force
+			save "`output_path'/widetable_`today'.dta", replace
+			export delimited "`output_path'/widetable_`today'.csv", replace
 		}
 		else {
 			
