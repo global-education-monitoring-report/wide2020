@@ -15,8 +15,8 @@ program define mics_read
 	else{
 	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nf') clear 
 	}
-	
-	* create local macros from dictionary
+	levelsof filepath, local(filepath) clean
+
 	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 	import excel "`r(fn)'", sheet(dictionary) firstrow clear 
 	* mics variables to keep first
