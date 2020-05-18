@@ -52,6 +52,25 @@ program define mics_clean
 	replace_many `fixlocation' location location_replace
 	replace_many `fixsex' sex sex_replace
 
+	foreach var of varlist ethnicity {
+		replace `var' = subinstr(`var', " et ", " & ",.) 
+		replace `var' = subinstr(`var', " and ", " & ",.)
+		replace `var' = subinstr(`var', " ou ", "/",.)
+	}
+	replace region = subinstr(region, " ou ", "/",.)
+	
+	local vars location sex wealth region ethnicity religion
+	foreach var in `vars' {
+	capture sdecode `var', replace
+	capture tostring `var', replace
+	capture replace `var' = proper(`var')
+	}
+	
+	replace region = "Region CH" if region == "Region Ch"
+	replace region = "Region NE" if region == "Region Ne"
+	replace region = "Region SE" if region == "Region Se"
+	replace region = "DF Edo. de Mexico" if region == "Df Edo Mexico"
+	replace region = "FCT (Abuja)" if region == "Fct (Abuja)"
 
 	* FIX EDUCATION VARIABLES 
 	replace_many `fixed3' ed3 ed3_replace

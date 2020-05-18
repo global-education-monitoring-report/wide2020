@@ -6,7 +6,7 @@
 program define widetable
 	syntax, source(string) step(string) data_path(string) output_path(string) [nf(integer 300)]
 
-	
+	clear all
 	* error message 
 	if (`nf' < 2) {
 		display as error "`nf' no puede ser menor a 2"

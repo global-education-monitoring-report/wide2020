@@ -5,10 +5,6 @@
 program define dhs_read
 	args data_path nf
 
-		if (`nf'-1) > 172{
-			local nf 172
-		}
-	
 	* read IR and MR files to get ethnicity and religion
 	local modules ir mr 
 	cd "`data_path'/DHS/"
@@ -19,7 +15,7 @@ program define dhs_read
 		capture mkdir "`data_path'/DHS/temporal/`module'"
 				
 		findfile filenames.xlsx, path("`c(sysdir_personal)'/")
-		import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nf') clear 
+		import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow clear 
 		*import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow clear 
 		levelsof filepath, local(filepath) clean
 
@@ -62,7 +58,7 @@ program define dhs_read
 	
 		fs *.dta
 		append using `r(files)', force
-		gduplicates drop
+		*gduplicates drop
 		save "`data_path'/DHS/temporal/dhs_`module'.dta" , replace
 	}
 	
@@ -82,7 +78,12 @@ program define dhs_read
 	
 	* read pr files
 	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
-	import excel "`r(fn)'", sheet(dhs_pr_files) cellrange (:D`nf') firstrow clear 
+	if (`nf'-1) > 172{
+	import excel "`r(fn)'", sheet(dhs_pr_files) cellrange (:D172) firstrow clear 
+	} 
+	else{
+	import excel  "`r(fn)'", sheet(dhs_pr_files) firstrow cellrange (:D`nf') clear 
+	}
 	levelsof filepath, local(filepath) clean
 
 	* create local macros from dictionary
@@ -183,7 +184,7 @@ program define dhs_read
 		rename hhid hhid_original
 
 		* add religion and ethnicity
-		merge m:1 hh_id using "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
+		merge m:m hh_id using "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
 					
 		*save each file in temporal folder
 		compress 

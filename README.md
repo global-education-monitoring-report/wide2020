@@ -8,23 +8,11 @@ The main function of the package, `widetable`, imports DHS and MICS files, stand
 
 ## Prerequisites 
 
-You need to have the following commands installed: `catenate`, `fs`, `ftools`, `gtools` `moremata`, `replacestrvar`, `encodefrom`, `sdecode`, `tosql`, `tuples` and `usespss`.
+You need to have the following commands installed: `catenate`, `fs`, `gtools`, `replacestrvar`, `encodefrom`, `sdecode`, `tosql`, `tuples` and `usespss`.
 
 For example, to install the `fs` package you must run this line of code:
  
       ssc install fs
-
-
-To fix the `ftools` error "fcollapse fails with string by variables" try running
-
-         ftools, compile 
-     
-and then 
-
-        clear all
-
-The `fcollapse` function (from `ftools`) requires the `moremata` package for some the median and percentile stats.
-
 
 ## Installation 
 

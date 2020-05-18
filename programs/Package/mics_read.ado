@@ -9,13 +9,14 @@ program define mics_read
 	* create folder
 	capture mkdir "`data_path'/MICS/temporal"
 
-	if (`nf'-1) > 71{
-	  local nf 71
+	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
+	if (`nf'-1) > 69{
+	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D69) clear 
+	} 
+	else{
+	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nf') clear 
 	}
 	
-	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
-	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nf') clear 
-	*import excel "`'/filenames.xlsx", sheet(mics_hl_files) firstrow cellrange clear 
 	levelsof filepath, local(filepath) clean
 
 	* create local macros from dictionary
@@ -59,46 +60,46 @@ program define mics_read
 			generate year_folder = `3'
 			
 		*fix names
+		if (country == "Palestine" & year_folder == 2010) {
+			capture rename ed4a ed4b 
+			capture rename ed4 ed4a  
+			capture rename hlweight hhweight
+		}
+		if country == "Jamaica" {
+			capture rename hh6b hh7
+		}
+		if (country == "Mali" & year_folder == 2015) {
+			capture drop ed6a
+			capture rename ed6n ed6a
+			capture rename ed6c ed6b
+		}
+		if (country == "Mali" & year_folder == 2009) {
+			capture drop ethnicity
+			capture rename hc1c ethnicity 
+		}
+		if (country == "Panama" & year_folder == 2013) {
+			 capture drop religion
+			 capture rename hc1a religion
+		}
+		if (country == "TrinidadandTobago" & year_folder == 2011) {
+			 capture drop religion
+			 capture rename hl15 religion
+		}
+		if (country == "Uruguay" & year_folder == 2012) {
+			capture drop windex5 region hh7
+			capture rename windex5_5 windex5
+		}
+		if (country == "SaintLucia" & year_folder == 2012) {
+			capture drop windex5
+			capture rename windex51 windex5
+		}
+		
 		for X in any hh7a hh7r: capture rename X region 
 		for X in any region: capture rename X hh7
 		for X in any 4 6 8: capture rename edXa edXa 
 		for X in any 4 6 8: capture rename edXb edXb 
 		for X in any ethnie ethnicidad: capture rename X ethnicity
-			
-		if country=="Palestine" & year_folder==2010 {
-			capture rename ed4a ed4b 
-			capture rename ed4 ed4a  
-			capture rename hlweight hhweight
-		}
-		if country=="Jamaica" {
-			capture rename hh6b hh7
-		}
-		if country=="Mali" & year_folder==2015 {
-			drop ed6a
-			capture rename ed6n ed6a
-			capture rename ed6c ed6b
-		}
-		if (country == "Mali" & year_folder == 2009) {
-			 drop ethnicity 
-			 rename hc1c ethnicity 
-		}
-		if (country == "Panama" & year_folder == 2013) {
-			 drop religion
-			 rename hc1a religion
-		}
-		if (country == "TrinidadandTobago" & year_folder == 2011) {
-			 drop religion
-			 rename hl15 religion
-		}
-		if country=="Uruguay" & year_folder==2012 {
-		cap drop windex5
-		capture rename windex5_5 windex5
-		}
-		if country=="SaintLucia" & year_folder==2012 {
-		cap drop windex5
-		capture rename windex51 windex5
-		}
-							
+		
 		*create numerics variables 
 		for X in any ed4a ed4b ed6a ed6b ed8a schage: capture generate X_nr = X
 			
