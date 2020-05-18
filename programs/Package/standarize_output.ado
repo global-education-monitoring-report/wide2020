@@ -44,12 +44,12 @@ program define standarize_output
 	capture destring year, replace
 	findfile country_survey_year_uis.dta, path("`c(sysdir_personal)'/")
 	merge m:1 iso_code3 survey year using "`r(fn)'", keepusing(year_uis) keep(master match) nogenerate 
-	
+		
 	*drop edu2* edu4*
 	findfile country_iso_codes_names.dta, path("`c(sysdir_personal)'/")
 	merge m:1 iso_code3 using "`r(fn)'", keepusing(country)  keep(master match) nogenerate
-	 
+		 
 	hashsort iso_code category `categories_collapse'
-	order iso_code country year country_year survey category  `categories_collapse' `varlist_m' `varlist_no'
+	order iso_code country year country_year survey category `categories_collapse' `varlist_m' `varlist_no'
 
 end

@@ -9,7 +9,7 @@ program define mics_clean
 	local vars sex location ed3 ed4a ed4b ed5 ed6a ed6b ed7 ed8a date duration ethnicity region religion code_ed4a code_ed6a code_ed8a
 	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 	local dic `r(fn)'
-	
+		
 	foreach X in `vars'{
 		import excel "`dic'", sheet(`X') firstrow clear 
 		capture destring sex_replace, replace
@@ -51,6 +51,8 @@ program define mics_clean
 	replace_many `fixethnicity' ethnicity ethnicity_replace
 	replace_many `fixlocation' location location_replace
 	replace_many `fixsex' sex sex_replace
+	label define sex 0 "female" 1 "male"
+	label values sex sex
 
 	foreach var of varlist ethnicity {
 		replace `var' = subinstr(`var', " et ", " & ",.) 
@@ -86,12 +88,11 @@ program define mics_clean
 	for X in any ed4a ed6a ed8a: capture generate code_X = X_nr
 	tostring code_*, replace
 
-
 	* EDUCATION LEVEL
 	* merge with auxiliary data of education levels for ed4a, ed6a, ed8a
-	replace_many `fixcode_ed4a' code_ed4a code_ed4a_replace country year_folder
-	replace_many `fixcode_ed6a' code_ed6a code_ed6a_replace country year_folder 
-	replace_many `fixcode_ed8a' code_ed8a code_ed8a_replace country year_folder
+	replace_many `fixcode_ed4a' code_ed4a code_ed4a_replace country_year
+	replace_many `fixcode_ed6a' code_ed6a code_ed6a_replace country_year
+	replace_many `fixcode_ed8a' code_ed8a code_ed8a_replace country_year
 		
 	* convert to numeric code_*
 	destring code_*, replace

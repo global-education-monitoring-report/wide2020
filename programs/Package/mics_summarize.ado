@@ -30,7 +30,6 @@ program define mics_summarize
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
-		*fcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultm_`i'.dta", replace
 	}
@@ -38,7 +37,6 @@ program define mics_summarize
 	* total estimation
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
-		*fcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
 		gcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
 	}
@@ -61,9 +59,8 @@ program define mics_summarize
 	fs *.dta
 	append using `r(files)', force
 	
-	generate survey = "MICS"
-	
 	*standardizes summary dhs & mics
+	generate survey = "MICS"
 	standarize_output
 
 	save "`output_path'/MICS/mics_summarize_`today'.dta", replace

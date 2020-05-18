@@ -8,7 +8,6 @@ program define mics_read
 		
 	* create folder
 	capture mkdir "`data_path'/MICS/temporal"
-
 	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
 	if (`nf'-1) > 69{
 	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D69) clear 
@@ -17,8 +16,6 @@ program define mics_read
 	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nf') clear 
 	}
 	
-	levelsof filepath, local(filepath) clean
-
 	* create local macros from dictionary
 	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 	import excel "`r(fn)'", sheet(dictionary) firstrow clear 
@@ -32,7 +29,6 @@ program define mics_read
 	levelsof standard_name if numeric == 1 & keep == 1, local(micsvars_keepnum) clean
 	* mics string variables
 	levelsof standard_name if numeric == 0 & keep == 1, local(micsvars_keepstr) clean
-	
 	
 	cd "`data_path'/MICS"
 	
@@ -136,7 +132,7 @@ program define mics_read
 		*rename some variables 
 		findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 		capture renamefrom using "`r(fn)'", filetype(excel)  if(!missing(rename)) raw(standard_name) clean(rename) label(varlab_en) keepx
-							
+						
 		*compress and save each file in a temporal folder
 		compress 
 		save "`data_path'/MICS/temporal/`1'_`3'_hl", replace
