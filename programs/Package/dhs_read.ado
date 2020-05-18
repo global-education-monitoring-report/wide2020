@@ -181,8 +181,7 @@ program define dhs_read
 		
 		*Household ids
 		catenate hh_id = country_year cluster hv002 
-		rename hhid hhid_original
-
+		
 		* add religion and ethnicity
 		merge m:m hh_id using "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
 					
@@ -193,6 +192,7 @@ program define dhs_read
 
 
 	cd "`data_path'/DHS/temporal/"
+	erase "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta"
 	
 	* append all the datasets
 	fs *.dta
