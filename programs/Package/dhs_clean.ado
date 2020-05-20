@@ -55,12 +55,57 @@ program define dhs_clean
 	replace_many `fixcalendar' hv007 hv007_replace country_year hv006
 	replace_many `fixcalendar2' hv007 hv007_replace country_year 
 	
+	foreach var of varlist ethnicity {
+		replace `var' = subinstr(`var', " et ", " & ",.) 
+		replace `var' = subinstr(`var', " and ", " & ",.)
+		replace `var' = subinstr(`var', " ou ", "/",.)
+	}
+	replace region = subinstr(region, " ou ", "/",.)
+	
+	local vars location sex wealth region ethnicity religion
+	foreach var in `vars' {
+		capture sdecode `var', replace
+		capture tostring `var', replace
+		capture replace `var' = proper(`var')
+	}
+	
+	if country == "Philippines" { 
+		replace region = subinstr(region, "Ii ", "II ",.) 
+		replace region = subinstr(region, "Iii ", "III ",.) 
+		replace region = subinstr(region, "Iv ", "IV ",.) 
+		replace region = subinstr(region, "Iva ", "IVa ",.) 
+		replace region = subinstr(region, "Ivb ", "IVb ",.) 
+		replace region = subinstr(region, "Vi ", "VI ",.) 
+		replace region = subinstr(region, "Vii ", "VII ",.) 
+		replace region = subinstr(region, "Viii ", "VIII ",.) 
+		replace region = subinstr(region, "Ix ", "IX ",.) 
+		replace region = subinstr(region, "Xi ", "XI ",.) 
+		replace region = subinstr(region, "Xii ", "XII ",.) 
+		replace region = subinstr(region, "Xiii ", "XIII ",.) 
+	}
+	if country == "DominicanRepublic" {
+		replace region = subinstr(region, " Iii", " III",.) 
+		replace region = subinstr(region, " Ii", " II",.) 
+		replace region = subinstr(region, " Iv", " IV",.) 
+		replace region = subinstr(region, " Viii", " VIII",.)
+		replace region = subinstr(region, " Vii", " VII",.) 
+		replace region = subinstr(region, " Vi", " VI",.) 
+	}
+	
+	replace region = subinstr(region, "'S", "'s",.) 
+	replace region = subinstr(region, "'Z", "'z",.) 
+	replace region = subinstr(region, "'I", "'i",.) 
+	replace region = subinstr(region, "-E", "-e",.) 
+	replace region = "DRD" if region == "Drd" & country == "Tajikistan"
+	replace region = "NWFP" if region == "Nwfp"
+	replace region = "SNNPR" if region == "Snnpr"
+	
 	* For Peru, we have to drop the observations for years not included in that country_year
 	drop if inlist(hv007, 2003, 2004, 2005, 2006) & country_year == "Peru_2007" 
 	
 	 * Fix format of years
 	foreach num of numlist 0/9 {   
-		replace hv007=199`num' if hv007==9`num'
+		replace hv007 = 199`num' if hv007 == 9`num'
 	}
 	
 	*Missing in the day or month of interview
@@ -105,7 +150,7 @@ program define dhs_clean
  	label define location 0 "Rural" 1 "Urban"
 	label define sex 0 "Female" 1 "Male"
 	label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
-	for Z in any location sex wealth: label values Z Z
+	for Z in any location sex wealth: capture label values Z Z
 
 
 	compress 

@@ -8,7 +8,7 @@ The main function of the package, `widetable`, imports DHS and MICS files, stand
 
 ## Prerequisites 
 
-You need to have the following commands installed: `catenate`, `fs`, `gtools`, `replacestrvar`, `encodefrom`, `sdecode`, `tosql`, `tuples` and `usespss`.
+You need to have the following commands installed: `catenate`, `fs`, `gtools`, `replacestrvar`, `encodefrom`, `sdecode`, `tuples` and `usespss`.
 
 For example, to install the `fs` package you must run this line of code:
  
@@ -90,3 +90,36 @@ This is a basic example which shows you how to use the widetable function:
     widetable, source(both) step(all) data_path(`dpath') output_path(`opath')
     
 The result is a table with the indicators that is saved in the 'output' folder in 'dta' and 'csv' format called 'WIDE_mmddyyy', where *mm* refers to the month, *dd* to the day and *yyyy* refers to the year.    
+
+Also, you can run the function without seeing the intermediate results by typing: 
+
+      quitely widetable, source(both) step(all) data_path(`dpath') output_path(`opath')
+
+## Testing 
+
+The `widetests` function allow us to test the results. There are 15 pre-set tests.
+
+| nquery | Query description |
+|----------|-------------------------|
+|   1    | checks extreme values (completion) |
+|   2    | checks extreme values (completion) |
+|   3    | checks extreme values (completion) |
+|   4    | checks extreme values (completion by age group) |
+|   5    | checks extreme values (completion by age group) |
+|   6    | checks extreme values (completion by age group) |
+|   7    | checks extreme values (completion by age group) |
+|   8    | checks extreme values (school gap) |
+|   9    | checks extreme values (school gap) |
+|   10    | checks extreme values (school gap) |
+|   11    | checks extreme values (out of school by level) |
+|   12    | checks extreme values (out of school by level) |
+|   13    | compares among education levels within countries |
+|   14    | compares among education levels within countries |
+|   15    | checks intertemporal indicator variation by country |
+
+
+To execute the query number 5:
+
+    widetests, table(widetable) nquery(5)
+    
+Alternatively, it is possible to make these queries outside Stata is useful the "widetests.sql" file. 

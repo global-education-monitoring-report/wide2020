@@ -121,7 +121,7 @@ program define mics_read
 			
 		*create ids variables
 		catenate country_year  = country year_folder, p("_")
-		catenate hh_id 		   = country_year hh1 hh2, p(no) 
+		catenate hh_id 	       = country_year hh1 hh2, p(no) 
 		catenate individual_id = country_year hh1 hh2 hl1, p(no)
 			
 		*create variables doesnt exist 

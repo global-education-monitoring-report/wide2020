@@ -9,14 +9,14 @@ program define widetable
 	clear all
 	* error message 
 	if (`nf' < 2) {
-		display as error "`nf' no puede ser menor a 2"
+		display as error "`nf' can not be less than 2"
 	}
 	if ("`source'" != "mics" & "`source'" != "dhs" & "`source'"  != "both") {
-		display as error "‘source’ only could be 'mics', 'dhs' or 'both'"
+		display as error "‘source’ only can be 'mics', 'dhs' or 'both'"
 	} 
 
 	if "`step'" != "read" & "`step'" != "clean" & "`step'" != "calculate" & "`step'" != "summarize" & "`step'" != "all" {
-		display as error "‘step’ only could be 'read', 'clean', 'calculate', 'summarize' or 'all'"
+		display as error "‘step’ only can be 'read', 'clean', 'calculate', 'summarize' or 'all'"
 	}
  
 
@@ -33,6 +33,12 @@ program define widetable
 			dhs_clean `data_path' 
 			dhs_calculate `data_path' 
 			dhs_summarize `data_path' `output_path' 
+
+			local today : di %tdDNCY daily("$S_DATE", "DMY")
+			use "`output_path'/MICS/mics_summarize_`today'.dta", clear
+			append using "`output_path'/DHS/dhs_summarize_`today'.dta", force
+			save "`output_path'/widetable_`today'.dta", replace
+			export delimited "`output_path'/widetable_`today'.csv", replace
 		} 
 		else if "`step'" == "read" {
 			mics_read `data_path' `nf'
