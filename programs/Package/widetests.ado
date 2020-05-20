@@ -3,7 +3,7 @@
 * May 2020
 
 program define widetests
-    syntax, table(string) nquery(integer 300)
+    syntax, table(string) nquery(integer 1)
 
     *odbc load, table("wide") dsn("WIDE")
 	
@@ -36,53 +36,53 @@ program define widetests
 
 
 
-	if (nquery == 1) {
+	if nquery == 1 {
 	odbc load, exec("`query1'")
 	}
-	else if (nquery == 2) {
+	else if nquery == 2 {
 	odbc load, exec("`query2'")
 	}
-	else if (nquery == 3) {
+	else if nquery == 3 {
 	odbc load, exec("`query3'")
 	}
-	else if (nquery == 4) {	
+	else if nquery == 4 {	
 	odbc load, exec("`query4'")
 	}
-	else if (nquery == 5) {
+	else if nquery == 5 {
 	 odbc load, exec("`query5'")
 	}
-	else if (nquery == 6) {	
+	else if nquery == 6 {	
 	odbc load, exec("`query6'")
 	}
-	else if (nquery == 7) {
+	else if nquery == 7 {
 	odbc load, exec("`query7'") 
 	}
-	else if (nquery == 8) {
+	else if nquery == 8 {
 	odbc load, exec("`query8'")
 	}
-	else if (nquery == 9) {
+	else if nquery == 9 {
 	odbc load, exec("`query9'")
 	}
-	else if (nquery == 10) {
+	else if nquery == 10 {
 	odbc load, exec("`query10'")
 	}
-	else if (nquery == 11) {
+	else if nquery == 11 {
 	odbc load, exec("`query11'")
 	}
-	else if (nquery == 12) {
+	else if nquery == 12 {
 	odbc load, exec("`query12'")
 	}
-	else if (nquery == 13) {
+	else if nquery == 13 {
 	odbc load, exec("`query13'")
 	}
-	else if (nquery == 14) {
+	else if nquery == 14 {
 	odbc load, exec("`query14'")
 	}
-	else if (nquery == 15) {
+	else if nquery == 15 {
 	odbc load, exec("`query15'")
 	}
 	else {
-	display as error "‘nquery’ only can be an integer between 1 and 15"
+	display as error "`nquery’ only can be an integer between 1 and 15"
 	}
 
 end
