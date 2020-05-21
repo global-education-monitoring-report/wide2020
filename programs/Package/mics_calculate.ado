@@ -301,9 +301,7 @@ program define mics_calculate
 	replace eduout  = . if (attend == 1 & code_ed6a == .) | age == . | (inlist(code_ed6a,. , 98, 99) & eduout == 0)
 	replace eduout  = 1 if code_ed6a == 0 | ed3 == "no" 
 	*Code_ed6a=80/90 affects countries Nigeria 2011, Nigeria 2016, Mauritania 2015, SouthSudan 2010, Sudan 2010 2014
-	* level attended=not formal/not regular/not standard
 	replace eduout = 1 if code_ed6a == 80 
-	* level attended=khalwa/coranique (ex. Mauritania, SouthSudan, Sudan)
 	replace eduout = 1 if code_ed6a == 90 
 	*special cases
 	replace eduout = no_attend if country_year == "Nepal_2014"

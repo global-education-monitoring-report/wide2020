@@ -63,11 +63,18 @@ program define mics_clean
 	
 	local vars location sex wealth region ethnicity religion
 	foreach var in `vars' {
-	capture sdecode `var', replace
-	capture tostring `var', replace
-	capture replace `var' = proper(`var')
+		capture sdecode `var', replace
+		capture tostring `var', replace
+		capture replace `var' = proper(`var')
 	}
 	
+	foreach var in region religion ethnicity {
+		replace `var' = subinstr(`var', "'I", "'i",.) 
+		replace `var' = subinstr(`var', "-E", "-e",.) 
+		replace `var' = subinstr(`var', "'S", "'s",.) 
+		replace `var' = subinstr(`var', "'T", "'t",.) 
+		replace `var' = subinstr(`var', "'Z", "'z",.) 
+	}
 	replace region = "Region CH" if region == "Region Ch"
 	replace region = "Region NE" if region == "Region Ne"
 	replace region = "Region SE" if region == "Region Se"

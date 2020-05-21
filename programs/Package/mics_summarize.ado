@@ -1,4 +1,4 @@
-* mics_summarize: program to summarize the mics indicators (mean and total estimation)
+* mics_summarize: program to summarize the mics indicators
 * Version 3.0
 * April 2020
 
@@ -34,14 +34,14 @@ program define mics_summarize
 		save "resultm_`i'.dta", replace
 	}
 	
-	* total estimation
+	* count observations
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
-		gcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
+		gcollapse (count) `varlist_no', by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
 	}
 	
-	* mean and total
+	* mean and count
 	foreach i of numlist 0/6  12/18 20/21 31 41 {
 		use  "resultm_`i'.dta", clear
 		merge 1:1 country_year iso_code3 year adjustment `tuple`i'' using "resultc_`i'.dta", nogenerate

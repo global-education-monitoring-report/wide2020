@@ -62,7 +62,7 @@ program define dhs_clean
 	}
 	replace region = subinstr(region, " ou ", "/",.)
 	
-	local vars location sex wealth region ethnicity religion
+	local vars region ethnicity religion
 	foreach var in `vars' {
 		capture sdecode `var', replace
 		capture tostring `var', replace
@@ -92,10 +92,11 @@ program define dhs_clean
 		replace region = subinstr(region, " Vi", " VI",.) 
 	}
 	
-	replace region = subinstr(region, "'S", "'s",.) 
-	replace region = subinstr(region, "'Z", "'z",.) 
 	replace region = subinstr(region, "'I", "'i",.) 
 	replace region = subinstr(region, "-E", "-e",.) 
+	replace region = subinstr(region, "'S", "'s",.)
+	replace region = subinstr(region, "'T", "'t",.) 
+	replace region = subinstr(region, "'Z", "'z",.) 
 	replace region = "DRD" if region == "Drd" & country == "Tajikistan"
 	replace region = "NWFP" if region == "Nwfp"
 	replace region = "SNNPR" if region == "Snnpr"

@@ -34,7 +34,7 @@ program define dhs_read
 			tokenize "`file'", parse("/")
 			generate country = "`1'" 
 			generate year_folder = `3'
-			catenate country_year = country year_folder
+			catenate country_year = country year_folder, p("_")
 			catenate hh_id = country_year v001  v002
 			drop v150 v001 v002
 			
@@ -147,7 +147,7 @@ program define dhs_read
 		for X in any sex wealth location: rename X_n X
 		
 		*create ids variables
-		catenate country_year = country year_folder
+		catenate country_year = country year_folder, p("_")
 		
 		* Country dhs code
 		generate country_code_dhs = substr(hv000, 1, 2)

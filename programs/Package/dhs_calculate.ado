@@ -9,76 +9,18 @@ program define dhs_calculate
 	
 	use "`data_path'/DHS/dhs_clean.dta", clear
 	set more off
-	
-	if country_year == "RepublicofMoldova_2005"{
-		replace hv108 = hv107               if (hv106 == 0 | hv106 == 1)
-		replace hv108 = hv107 + years_prim  if hv106 == 2 
-		replace hv108 = hv107 + years_upsec if hv106 == 3
-		replace hv108 = 98                  if hv106 == 8 
-		replace hv108 = 99                  if hv106 == 9 
-	} 
-	else if  country_year == "Armenia_2005" {
-		*Changes to hv108 made in August 2019
-		replace hv108 = . 
-		replace hv108 = 0          if hv106 == 0 
-		replace hv108 = hv107      if hv106 == 1 
-		replace hv108 = hv107 + 5  if hv106 == 2 
-		replace hv108 = hv107 + 10 if hv106 == 3 
-	}
-	else if country_year == "Armenia_2010" {
-		replace hv108 = . 
-		replace hv108 = 0          if hv106 == 0 
-		replace hv108 = hv107      if hv106 == 1 | hv106 == 2 
-		replace hv108 = hv107 + 10 if hv106 == 3 
-	}
-	else if country_year == "Egypt_2008" | country_year == "Egypt_2014" {
-		replace hv108 = . 
-		replace hv108 = 0          if hv106 == 0 
-		replace hv108 = hv107      if hv106 == 1 
-		replace hv108 = hv107 + 6  if hv106 == 2 
-		replace hv108 = hv107 + 12 if hv106 == 3 
-	}
-	else if country_year == "Madagascar_2003" {
-		replace hv108 = . 
-		replace hv108 = 0          if hv106 == 0 
-		replace hv108 = hv107      if hv106 == 1 
-		replace hv108 = hv107 + 5  if hv106 == 2 
-		replace hv108 = hv107 + 12 if hv106 == 3
-	}
-	else if country_year == "Madagascar_2008" {
-		replace hv108 = . 
-		replace hv108 = 0          if hv106 == 0 
-		replace hv108 = hv107      if hv106 == 1 
-		replace hv108 = hv107 + 6  if hv106 == 2 
-		replace hv108 = hv107 + 13 if hv106 == 3  
-	}
-	else if country_year == "Zimbabwe_2005" {
-		replace hv108 = . 
-		replace hv108 = 0          if hv106 == 0  
-		replace hv108 = hv107      if hv106 == 1 
-		replace hv108 = hv107 + 7  if hv106 == 2 
-		replace hv108 = hv107 + 13 if hv106 == 3 
-	}
-	else {
-		replace hv108 = hv108
-	}
-	
-	* create eduyears, max of years as 30 
-	generate eduyears = hv108
-	replace eduyears = 30 if hv108 >= 30
-	replace eduyears = . if hv108 >= 90
 
 	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
 	* VERSION A:is directly with hv109; Version B uses years of education and duration
-	generate comp_prim_A = 0
-		replace comp_prim_A = 1 if hv109 >= 2
-		replace comp_prim_A = . if (hv109 == . | hv109 == 8 | hv109 == 9)
-	generate comp_upsec_A = 0
-		replace comp_upsec_A = 1 if hv109 >= 4 
-		replace comp_upsec_A = . if (hv109 == . | hv109 == 8 | hv109 == 9)
-	generate comp_higher_A = 0
-		replace comp_higher_A = 1 if hv109 >= 5 
-		replace comp_higher_A = . if (hv109 == . | hv109 == 8 | hv109 == 9)
+	*generate comp_prim_A = 0
+	*	replace comp_prim_A = 1 if hv109 >= 2
+	*	replace comp_prim_A = . if inlist(hv109, ., 8, 9)
+	*generate comp_upsec_A = 0
+	*	replace comp_upsec_A = 1 if hv109 >= 4 
+	*	replace comp_upsec_A = . if inlist(hv109, ., 8, 9)
+	*generate comp_higher_A = 0
+	*	replace comp_higher_A = 1 if hv109 >= 5 
+	*	replace comp_higher_A = . if inlist(hv109, ., 8, 9)
 
 	* VERSION B
 	* Mix of years of education completed (hv108) and duration of levels 
@@ -87,20 +29,65 @@ program define dhs_calculate
 		generate years_upsec	= prim_dur + lowsec_dur + upsec_dur
 		*gen years_higher	=prim_dur+lowsec_dur+upsec_dur+higher_dur
 
+
 	*Ages for completion
 		generate lowsec_age0 = prim_age0 + prim_dur
 		generate upsec_age0  = lowsec_age0 + lowsec_dur
 		for X in any prim lowsec upsec: generate X_age1 = X_age0 + X_dur-1
 
-	*Creating "B" variables
-	foreach X in prim lowsec upsec {
-		generate comp_`X'_B = 0
-		replace comp_`X'_B  = 1 if hv108 >= years_`X'
-		replace comp_`X'_B  = . if (hv108 == . | hv108 >= 90) 
-		replace comp_`X'_B  = 0 if (hv108 == 0 | hv109 == 0) 
-	}
+	replace hv108 = hv107               if (hv106 == 0 | hv106 == 1) & country_year == "RepublicofMoldova_2005"
+	replace hv108 = hv107 + years_prim  if hv106 == 2 & country_year == "RepublicofMoldova_2005"
+	replace hv108 = hv107 + years_upsec if hv106 == 3 & country_year == "RepublicofMoldova_2005"
+	replace hv108 = 98                  if hv106 == 8 & country_year == "RepublicofMoldova_2005"
+	replace hv108 = 99                  if hv106 == 9 & country_year == "RepublicofMoldova_2005"
 
-	replace comp_upsec_B = comp_upsec_A if country_year == "Egypt_2005" 
+	*Changes to hv108 made in August 2019
+	replace hv108 = . 	   if country_year == "Armenia_2005"
+	replace hv108 = 0          if hv106 == 0 & country_year == "Armenia_2005"
+	replace hv108 = hv107      if hv106 == 1 & country_year == "Armenia_2005"
+	replace hv108 = hv107 + 5  if hv106 == 2 & country_year == "Armenia_2005"
+	replace hv108 = hv107 + 10 if hv106 == 3 & country_year == "Armenia_2005"
+
+	replace hv108 = .          if country_year == "Armenia_2010"
+	replace hv108 = 0          if hv106 == 0 & country_year == "Armenia_2010"
+	replace hv108 = hv107      if (hv106 == 1 | hv106 == 2) & country_year == "Armenia_2010"
+	replace hv108 = hv107 + 10 if hv106 == 3 & country_year == "Armenia_2010"
+	
+	replace hv108 = .          if country_year == "Egypt_2008" | country_year == "Egypt_2014" 
+	replace hv108 = 0          if hv106 == 0 & (country_year == "Egypt_2008" | country_year == "Egypt_2014" )
+	replace hv108 = hv107      if hv106 == 1 & (country_year == "Egypt_2008" | country_year == "Egypt_2014" )
+	replace hv108 = hv107 + 6  if hv106 == 2 & (country_year == "Egypt_2008" | country_year == "Egypt_2014" )
+	replace hv108 = hv107 + 12 if hv106 == 3 & (country_year == "Egypt_2008" | country_year == "Egypt_2014" )
+	replace hv108 = . if country_year == "Madagascar_2003"
+	replace hv108 = 0          if hv106 == 0 & country_year == "Madagascar_2003"
+	replace hv108 = hv107      if hv106 == 1 & country_year == "Madagascar_2003"
+	replace hv108 = hv107 + 5  if hv106 == 2 & country_year == "Madagascar_2003"
+	replace hv108 = hv107 + 12 if hv106 == 3 & country_year == "Madagascar_2003"
+	
+	replace hv108 = . if country_year == "Madagascar_2008"
+	replace hv108 = 0          if hv106 == 0 & country_year == "Madagascar_2008"
+	replace hv108 = hv107      if hv106 == 1 & country_year == "Madagascar_2008"
+	replace hv108 = hv107 + 6  if hv106 == 2 & country_year == "Madagascar_2008"
+	replace hv108 = hv107 + 13 if hv106 == 3 & country_year == "Madagascar_2008"
+
+	replace hv108 = . if country_year == "Zimbabwe_2005"
+	replace hv108 = 0          if hv106 == 0 & country_year == "Zimbabwe_2005" 
+	replace hv108 = hv107      if hv106 == 1 & country_year == "Zimbabwe_2005"
+	replace hv108 = hv107 + 7  if hv106 == 2 & country_year == "Zimbabwe_2005"
+	replace hv108 = hv107 + 13 if hv106 == 3 & country_year == "Zimbabwe_2005"
+
+	foreach X in prim lowsec upsec {
+		generate comp_`X' = 0
+		replace comp_`X'  = 1 if hv108 >= years_`X'
+		replace comp_`X'  = . if (hv108 == . | hv108 >= 90) 
+		replace comp_`X'  = 0 if (hv108 == 0 | hv109 == 0) 
+	}
+	
+	replace comp_upsec = 0 if country_year == "Egypt_2005"
+	replace comp_upsec = 1 if hv109 >= 4  & country_year == "Egypt_2005"
+	replace comp_upsec = . if inlist(hv109, ., 8, 9) & country_year == "Egypt_2005"
+	
+	*replace comp_upsec_B = comp_upsec_A if country_year == "Egypt_2005" 
 
 	compress 
 	save "`data_path'/DHS/dhs_calculate.dta", replace
@@ -136,22 +123,22 @@ program define dhs_calculate
 	generate month_start_norm = month_start
 		
 	*Taking into account the days	
-		generate one = string(1)
-		for X in any norm max min: catenate s_school1_X = one month_start_X current_school_year, p("/")
-		*date of the interview created with the original info
-		catenate s_interview1 = hv016 hv006 hv007, p("/")  
+	generate one = string(1)
+	for X in any norm max min: catenate s_school1_X = one month_start_X current_school_year, p("/")
+	*date of the interview created with the original info
+	catenate s_interview1 = hv016 hv006 hv007, p("/")  
 
-		for X in any norm max min: generate date_school1_X = date(s_school1_X, "DMY", 2000) 
-		generate date_interview1 = date(s_interview1, "DMY", 2000)
+	for X in any norm max min: generate date_school1_X = date(s_school1_X, "DMY", 2000) 
+	generate date_interview1 = date(s_interview1, "DMY", 2000)
 		
 	*Without taking into account the days
-		for X in any norm max min: catenate s_school2_X = month_start_X current_school_year, p("/")
-		*date of the interview created with the original info
-		catenate s_interview2 = hv006 hv007, p("/") 
+	for X in any norm max min: catenate s_school2_X = month_start_X current_school_year, p("/")
+	*date of the interview created with the original info
+	catenate s_interview2 = hv006 hv007, p("/") 
 		
-		*official month of start... plus school year of reference
-		for X in any norm max min: generate date_school2_X = date(s_school2_X, "MY", 2000) 
-		generate date_interview2 = date(s_interview2, "MY", 2000)
+	*official month of start... plus school year of reference
+	for X in any norm max min: generate date_school2_X = date(s_school2_X, "MY", 2000) 
+	generate date_interview2 = date(s_interview2, "MY", 2000)
 
 	*Adjustment=1 if 50% or more of hh (the median) have difference of (month_interv-month_school)>=6 months.
 	*Median difference is >=6.
@@ -195,14 +182,13 @@ program define dhs_calculate
 	replace eduout = . if inlist(hv122, 8, 9) & eduout == 0 
 	replace eduout = 1 if hv122 == 0
 
-	* Completion indicators (version A & B) with age limits 
-	foreach Y in A B {
-		foreach X in prim upsec {
-			foreach AGE in ageU ageA {
-				generate comp_`X'_v2_`Y'_`AGE' = comp_`X'_`Y' if `AGE' >= `X'_age1 + 3 & `AGE' <= `X'_age1 + 5 
-			}
+	* Completion indicators with age limits 
+	foreach X in prim upsec {
+		foreach AGE in ageU ageA {
+			generate comp_`X'_v2_`AGE' = comp_`X' if `AGE' >= `X'_age1 + 3 & `AGE' <= `X'_age1 + 5 
 		}
 	}
+	
 
 	merge m:1 country_year using "`data_path'/DHS/dhs_adjustment.dta", keepusing(adj1_norm) keep(master match) nogenerate
 	rename adj1_norm adjustment
@@ -211,15 +197,10 @@ program define dhs_calculate
 	generate agestandard = ageU if adjustment == 0
 	replace agestandard = ageA if adjustment == 1
 
-	*Age limits 
-	foreach AGE in agestandard  {
-		for X in any prim upsec: generate comp_X_v2_A = comp_X_A if `AGE' >= X_age1 + 3 & `AGE' <= X_age1 + 5
-	}
-
 	*Dropping adjusted ages and the _ageU indicators (but keep ageU)
 	capture drop *ageA *_ageU
-	*keep the version B
-	for X in any prim lowsec upsec: rename comp_X_B comp_X
+	
+	*for X in any prim lowsec upsec: rename comp_X_B comp_X
 	*Age limits 
 	foreach AGE in agestandard  {
 		for X in any prim lowsec upsec: generate comp_X_v2=comp_X if `AGE'>=X_age1+3 & `AGE'<=X_age1+5
@@ -229,12 +210,15 @@ program define dhs_calculate
 		generate comp_lowsec_1524 = comp_lowsec if `AGE' >=15 & `AGE' <=24
 	}
 
-	*Dropping the A version (not going to be used)
-	capture drop *_A
+	*capture drop *_A
 
-	* FOR UIS request
 	generate comp_prim_aux = comp_prim   if agestandard >= lowsec_age1 + 3 & agestandard <= lowsec_age1 + 5
 	generate comp_lowsec_aux = comp_lowsec if agestandard >= upsec_age1 + 3 & agestandard <= upsec_age1 + 5
+	
+	* create eduyears, max of years as 30 
+	generate eduyears = hv108
+	replace eduyears = 30 if hv108 >= 30
+	replace eduyears = . if hv108 >= 90
 
 	*With age limits
 	generate eduyears_2024 = eduyears if agestandard >= 20 & agestandard <= 24
@@ -275,9 +259,9 @@ program define dhs_calculate
 	
 	local vars country_year year adjustment location sex wealth region ethnicity religion
 	foreach var in `vars' {
-	capture sdecode `var', replace
-	capture tostring `var', replace
-	capture replace `var' = proper(`var')
+		capture sdecode `var', replace
+		capture tostring `var', replace
+		capture replace `var' = proper(`var')
 	}
 	
 	rename ageU age
