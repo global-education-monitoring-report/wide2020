@@ -7,7 +7,8 @@ program define mics_summarize
 	
 	* automate file names using current date 
 	local today : di %tdDNCY daily("$S_DATE", "DMY")
-			
+	local time : di c(current_time)
+	
 	* create a temporal folder
 	cd "`output_path'"
 	capture mkdir "`output_path'/MICS/"
@@ -63,7 +64,7 @@ program define mics_summarize
 	generate survey = "MICS"
 	standarize_output
 
-	save "`output_path'/MICS/mics_summarize_`today'.dta", replace
-	export delimited "`output_path'/MICS/mics_summarize_`today'.csv", replace
+	save "`output_path'/MICS/mics_summarize_`today'_`time'.dta", replace
+	export delimited "`output_path'/MICS/mics_summarize_`today'_`time'.csv", replace
 	
 end

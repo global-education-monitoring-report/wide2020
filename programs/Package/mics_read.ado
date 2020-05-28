@@ -1,22 +1,34 @@
 * mics_read: program to read the MICS datasets and append all in one file
-* Version 3.0
-* April 2020
+* Version 3.1
+* May 2020
 
 program define mics_read
-	args data_path  nf
-
-		
+	args data_path nf country_name country_year
+	
 	* create folder
 	capture mkdir "`data_path'/MICS/temporal"
 	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
-	if (`nf'-1) > 69{
-	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D69) clear 
+	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow clear 
+	local nrow: di _N -1
+	
+	if (`nf' > `nrow') {
+		import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nrow') clear
 	} 
 	else{
-	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nf') clear 
+		import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nf') clear 
 	}
 	levelsof filepath, local(filepath) clean
-
+	
+	if ("`country_name'" != "") {
+			keep if folder_country == "`country_name'"
+			levelsof filepath, local(filepath) clean
+	}
+	if ("`country_name'" != "" & "`country_year'" != "") {
+			tostring folder_year, replace
+			keep if (folder_country == "`country_name'" & folder_year == "`country_year'")
+			levelsof filepath, local(filepath) clean
+	}
+		
 	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 	import excel "`r(fn)'", sheet(dictionary) firstrow clear 
 	* mics variables to keep first
@@ -37,7 +49,8 @@ program define mics_read
 
 		*read a file
 		use "`file'", clear
-		  
+		set more off 
+		
 		*lowercase all variables
 		capture rename *, lower
 		capture rename *_* **
@@ -138,19 +151,22 @@ program define mics_read
 		save "`data_path'/MICS/temporal/`1'_`3'_hl", replace
 	}
 
-	
 	* change dir to temporal folder
 	cd "`data_path'/MICS/temporal"
 	
 	* append all files
 	fs *.dta
+	local numfiles : word count "`r(files)'"
+	if (`numfiles') > 1 {
 	append using `r(files)', force
-
-	* remove temporal folder and files
-	capture rmdir "`data_path'/MICS/temporal"
-
-	* save all dataset in a single one
 	compress
 	save "`data_path'/MICS/mics_read.dta", replace
+	}
+	else {
+	save "`data_path'/MICS/mics_read.dta", replace
+	}
+	
+	* remove temporal folder and files
+	rmfiles , folder("`data_path'/MICS/temporal") match("*.dta") rmdirs
 
 end

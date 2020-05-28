@@ -7,7 +7,8 @@ program define dhs_summarize
 	
 	* automate file names using current date 
 	local today : di %tdDNCY daily("$S_DATE", "DMY")
-			
+	local time : di c(current_time)
+	
 	* combine categories 
 	local categories_collapse location sex wealth region ethnicity religion
 	tuples `categories_collapse'
@@ -64,8 +65,8 @@ program define dhs_summarize
 	*standardizes summary dhs & mics
 	standarize_output
 
-	save "`output_path'/DHS/dhs_summarize_`today'.dta", replace
-	export delimited "`output_path'/DHS/dhs_summarize_`today'.csv", replace
+	save "`output_path'/DHS/dhs_summarize_`today'_`time'.dta", replace
+	export delimited "`output_path'/DHS/dhs_summarize_`today'_`time'.csv", replace
 	
 
 end

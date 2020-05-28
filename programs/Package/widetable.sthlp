@@ -28,7 +28,12 @@
 {synopt:{opt data_path(string)}} indicates the raw data folder path. It is mandatory. {p_end}
 {synopt:{opt output_path(string)}} indicates the output table folder path. It is mandatory. {p_end}
 {syntab:Optional}
-{synopt:{opt nf(#)}}  Default value is 300.  All MICS and DHS files are read. {p_end}
+{synopt:{opt nf(#)}} Default value is 300.  All MICS and DHS files are read. {p_end}
+{synopt:{opt country_name(string)}} It only admits one country. {p_end}
+{synopt:{opt country_year(string)}} It only admits one year. It requires defining the 'country_name' {p_end}
+
+The arguments "nf" "country_name" and "country_year" are only used when step is "read". 
+
 {synoptline}
 {p2colreset}{...}
 {p 4 6 2}
@@ -94,7 +99,11 @@ To test the function it is recommended to use a value lower than 50.
 
 	.widetable, source(mics) step(read) data_path(`dpath') output_path(`opath') nf(50)
 
+Also, you can run the function only for one country, or for a specific country and year.
 
+	.widetable, source(mics) step(read) data_path(`dpath') output_path(`opath') country_name(Afghanistan)
+
+	.widetable, source(mics) step(read) data_path(`dpath') output_path(`opath') country_name(Uruguay) country_year(2012)
 {title:Author}
 {p}
 

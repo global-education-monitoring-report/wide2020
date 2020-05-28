@@ -8,9 +8,9 @@
 {viewerjumpto "Options" "widetests##options"}{...}
 {viewerjumpto "Remarks" "widetests##remarks"}{...}
 {viewerjumpto "Examples" "widetests##examples"}{...}
-{title:Title}
+{title:widetests}
 {phang}
-{bf:widetests} {hline 2} <Insert title>
+{bf:widetests} {hline 2} tests the results of widetable function using a series of SQL queries.
 
 {marker syntax}{...}
 {title:Syntax}
@@ -23,8 +23,8 @@
 {synopthdr}
 {synoptline}
 {syntab:Required }
-{synopt:{opt table(string)}}  {p_end}
-{synopt:{opt nquery(#)}}  Default value is 300.{p_end}
+{synopt:{opt table(string)}} Table name {p_end}
+{synopt:{opt nquery(#)}}  Test number to be run. Default value is 1.{p_end}
 {synoptline}
 {p2colreset}{...}
 {p 4 6 2}
@@ -46,7 +46,7 @@
 {title:Examples}
 {pstd}
 
-
+   . widetests table(tablename) nquery(1)
 {title:Author}
 {p}
 

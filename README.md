@@ -8,7 +8,7 @@ The main function of the package, `widetable`, imports DHS and MICS files, stand
 
 ## Prerequisites 
 
-You need to have the following commands installed: `catenate`, `fs`, `gtools`, `replacestrvar`, `encodefrom`, `sdecode`, `tuples` and `usespss`.
+You need to have the following commands installed: `catenate`, `fs`, `gtools`, `replacestrvar`, `encodefrom`, `rmfiles`, `sdecode`, `tuples` and `usespss`.
 
 For example, to install the `fs` package you must run this line of code:
  
