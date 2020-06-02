@@ -23,13 +23,14 @@ program define dhs_summarize
 	local varsby country_year iso_code3 year adjustment
 	
 	* create a temporal folder
+	cd "`output_path'"
+	capture mkdir "`output_path'/DHS/"
 	capture mkdir "`output_path'/DHS/temporal/"
 	cd "`output_path'/DHS/temporal"
 
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/DHS/dhs_calculate.dta", clear
-		*fcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultm_`i'.dta", replace
 	}
@@ -37,7 +38,6 @@ program define dhs_summarize
 	* total observations
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/DHS/dhs_calculate.dta", clear
-		*fcollapse (count) `varlist_no', by(`varsby' `tuple`i'') fast
 		gcollapse (count) `varlist_no', by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
 	}
