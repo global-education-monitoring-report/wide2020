@@ -10,19 +10,6 @@ program define dhs_calculate
 	use "`data_path'/DHS/dhs_clean.dta", clear
 	set more off
 
-	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
-	* VERSION A:is directly with hv109; Version B uses years of education and duration
-	*generate comp_prim_A = 0
-	*	replace comp_prim_A = 1 if hv109 >= 2
-	*	replace comp_prim_A = . if inlist(hv109, ., 8, 9)
-	*generate comp_upsec_A = 0
-	*	replace comp_upsec_A = 1 if hv109 >= 4 
-	*	replace comp_upsec_A = . if inlist(hv109, ., 8, 9)
-	*generate comp_higher_A = 0
-	*	replace comp_higher_A = 1 if hv109 >= 5 
-	*	replace comp_higher_A = . if inlist(hv109, ., 8, 9)
-
-	* VERSION B
 	* Mix of years of education completed (hv108) and duration of levels 
 		generate years_prim	= prim_dur
 		generate years_lowsec	= prim_dur + lowsec_dur
@@ -87,12 +74,9 @@ program define dhs_calculate
 	replace comp_upsec = 1 if hv109 >= 4  & country_year == "Egypt_2005"
 	replace comp_upsec = . if inlist(hv109, ., 8, 9) & country_year == "Egypt_2005"
 	
-	*replace comp_upsec_B = comp_upsec_A if country_year == "Egypt_2005" 
-
 	compress 
 	save "`data_path'/DHS/dhs_calculate.dta", replace
 	
-
 	* ADJUST SCHOOL YEAR
 	use "`data_path'/DHS/dhs_calculate.dta", clear
 	set more off

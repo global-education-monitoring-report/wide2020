@@ -4,8 +4,8 @@ The goal of WIDE package is to generate the statistics WIDE table.
 
 ## Description 
 
-The main function of the package, `widetable`, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators (access and completion) are obtained for each country and year of the survey, disaggregated by different variables of interest.
-
+The `widetable` package simplifies reading, cleaning and summarizing WIDE. The main function of the package, widetable, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators (access and completion) are obtained for  each country and year of the survey, disaggregated by different variables of interest.
+    
 ## Prerequisites 
 
 You need to have the following commands installed: `catenate`, `fs`, `gtools`, `replacestrvar`, `encodefrom`, `rmfiles`, `sdecode`, `tuples` and `usespss`.
@@ -28,21 +28,24 @@ To update all files associated with widetable type:
 
     adoupdate widetable, update
 
-During the installation, in addition to the ado-files, auxiliary tables are downloaded that are used in different functions and will be located in the same folder. 
+During the installation, in addition to the ado-files, **auxiliary tables** are downloaded that are used in different functions and will be located in the same folder. 
 
 These tables are used to standardize both MICS and DHS data. 
 
 | Table   | Description |
 |---------|-------------|
-|country_iso_codes_names | adds the iso code3 variable |
-|dictionary_setcode | selects the variables in each country dataset, standardizes the names and recodes several variables|
+|dhs_dictionary_setcode | selects the variables in each country dataset, standardizes the names and recodes several variables|
+|mics_dictionary_setcode | selects the variables in each country dataset, standardizes the names and recodes several variables|
 |filenames | lists the file paths to be read |
-|dhs_adjustment |                           |
-|current_school_year_MICS |                           |
-|current_school_year_DHS |                           |
-|UIS_duration_age_25072018 |                           |
-|month_start |  |
-| country_survey_year_uis | |
+|country_iso_codes_names | adds the iso code3 variable |
+|country_survey_year_uis| fixes survey year | 
+|current_school_year_MICS | fixes current school year |
+|current_school_year_DHS |  fixes current school year |
+|dhs_adjustment | adjusts dates  |
+|dhs_interview_dates | adjusts dates |
+|UIS_duration_age_* | adds levels duration  |
+|month_start |  adds month start school|
+
 
 ## Usage
 
@@ -71,13 +74,12 @@ For the proper functioning of the package the folder structure should be as foll
 
 ## Example
 
-The main function is widetable and have five arguments:
+The main function, `widetable`, has four mandatory arguments:
 
 - source: indicates which source must use ('dhs','mics' or 'both'). The option 'both' includes the other two.
 - step: indicates which process must run ('read', 'clean', 'calculate', 'summarize' or 'all'). The option 'all' includes all the above.
 - data_path: indicates the raw data folder path.  
-- output_path: indicates the output table folder path. 
-- nf: default value is 300. With this value all MICS and DHS files are read. To test the function it is recommended to use a value lower than 50.  
+- output_path: indicates the output table folder path.
 
 Defining the folder path, it is recommended to use slash (/) as separator instead of backslash (\\), regardless of the operating system. You can write the paths directly in the function or previously create a local macro:
 
@@ -94,6 +96,14 @@ The result is a table with the indicators that is saved in the 'output' folder i
 Also, you can run the function without seeing the intermediate results by typing: 
 
       quitely widetable, source(both) step(all) data_path(`dpath') output_path(`opath')
+
+It is also possible to define some **optional** arguments that allow to work on a reduced number of files.
+
+- nf: default value is 300. With this value all MICS and DHS files are read. To test the function it is recommended to use a value lower than 10.
+- country_name: to evaluate the function for a given country.
+- country_year: to evaluate the function for a given year. It requires defining the 'country_name'
+
+The arguments "nf", "country_name" and "country_year" are only used when step is "read". 
 
 ## Testing 
 

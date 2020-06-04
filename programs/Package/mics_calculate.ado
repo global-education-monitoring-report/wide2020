@@ -393,8 +393,10 @@ program define mics_calculate
 	for X in any prim_dur lowsec_dur upsec_dur prim_age0 : rename X X_comp
 
 		
-	*Durations for OUT-OF-SCHOOL & ATTENDANCE 
-	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
+	*Durations for OUT-OF-SCHOOL & ATTENDANCE
+	cd "`c(sysdir_personal)'/"
+	local uisfile : dir . files "UIS_duration_age_*.dta"
+	findfile `uisfile', path("`c(sysdir_personal)'/")
 	merge m:1 iso_code3 year using "`r(fn)'", keep(master match) nogenerate
 	drop lowsec_age_uis upsec_age_uis
 		

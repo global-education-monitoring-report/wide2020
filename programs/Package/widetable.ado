@@ -49,16 +49,15 @@ program define widetable
 			local micsrecent : word 1 of `micssorted'
 			cd `output_path'/DHS
 			local dhsfilelist : dir . files "*.dta"
-			local dhssorted : list sort dhsfilelist
-			local dhsrecent : word 1 of `dhssorted'
+			local dhsrecent : word `:list sizeof dhsfilelist' of `dhsfilelist'
 			tokenize `dhsrecent', parse("_")
-			local date "`3'"
-			local time "`5'"
+			local datetime "`5'"
+			local datetime : subinstr local datetime ".dta" "" 
 			
 			use "`output_path'/MICS/`micsrecent'", clear
 			append using "`output_path'/DHS/`dhsrecent'", force
-			save "`output_path'/widetable_`date'_`time'.dta", replace
-			export delimited "`output_path'/widetable_`date'_`time'.csv", replace
+			save "`output_path'/widetable_`datetime'.dta", replace
+			export delimited "`output_path'/widetable_`datetime'.csv", replace
 		} 
 		else if "`step'" == "read" {
 			mics_read `data_path' `nf' `country_name' `country_year'
@@ -82,16 +81,15 @@ program define widetable
 			local micsrecent : word 1 of `micssorted'
 			cd `output_path'/DHS
 			local dhsfilelist : dir . files "*.dta"
-			local dhssorted : list sort dhsfilelist
-			local dhsrecent : word 1 of `dhssorted'
+			local dhsrecent : word `:list sizeof dhsfilelist' of `dhsfilelist'
 			tokenize `dhsrecent', parse("_")
-			local date "`3'"
-			local time "`5'"
-			
+			local datetime "`5'"
+			local datetime : subinstr local datetime ".dta" "" 
+						
 			use "`output_path'/MICS/`micsrecent'", clear
 			append using "`output_path'/DHS/`dhsrecent'", force
-			save "`output_path'/widetable_`date'_`time'.dta", replace
-			export delimited "`output_path'/widetable_`date'_`time'.csv", replace
+			save "`output_path'/widetable_`datetime'.dta", replace
+			export delimited "`output_path'/widetable_`datetime'.csv", replace
 	
 		}
 		else {

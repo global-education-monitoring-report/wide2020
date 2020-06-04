@@ -6,8 +6,8 @@ program define mics_summarize
 	args data_path output_path 
 	
 	* automate file names using current date 
-	local today : di %tdDNCY daily("$S_DATE", "DMY")
-	local time : di c(current_time)
+	local today : di  %tdCY-N-D  daily("$S_DATE", "DMY")
+	local time : di subinstr(c(current_time),":", "", .)
 	
 	* create a temporal folder
 	cd "`output_path'"
@@ -31,6 +31,7 @@ program define mics_summarize
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
+		set more off
 		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultm_`i'.dta", replace
 	}
@@ -64,7 +65,7 @@ program define mics_summarize
 	generate survey = "MICS"
 	standarize_output
 
-	save "`output_path'/MICS/mics_summarize_`today'_`time'.dta", replace
-	export delimited "`output_path'/MICS/mics_summarize_`today'_`time'.csv", replace
+	save "`output_path'/MICS/mics_summarize_`today'T`time'.dta", replace
+	export delimited "`output_path'/MICS/mics_summarize_`today'T`time'.csv", replace
 	
 end

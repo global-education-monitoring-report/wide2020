@@ -9,6 +9,7 @@ program define dhs_clean
 	local vars sex location date duration ethnicity region religion hv122 hv109 calendar calendar2
 	findfile dhs_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 	local dic `r(fn)'
+	set more off
 	
 	foreach X in `vars'{
 		import excel "`dic'", sheet(`X') firstrow clear 
@@ -18,7 +19,9 @@ program define dhs_clean
 	}
 	
 	*fix some uis duration
-	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
+	cd "`c(sysdir_personal)'/"
+	local uisfile : dir . files "UIS_duration_age_*.dta"
+	findfile `uisfile', path("`c(sysdir_personal)'/")
 	use "`r(fn)'", clear
 	catenate country_year = country year, p("_")
 	
@@ -31,8 +34,8 @@ program define dhs_clean
 	tempfile fixduration_uis
 	save `fixduration_uis'
 	
-	findfile country_iso_codes_names.csv, path("`c(sysdir_personal)'/")
-	import delimited "`r(fn)'",  varnames(1) encoding(UTF-8) clear
+	findfile country_iso_codes_names.dta, path("`c(sysdir_personal)'/")
+	use "`r(fn)'", clear
 	keep country_name_dhs country_code_dhs iso_code3 
 	drop if country_code_dhs == ""
 	tempfile isocode

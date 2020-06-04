@@ -6,8 +6,8 @@ program define dhs_summarize
 	args data_path output_path
 	
 	* automate file names using current date 
-	local today : di %tdDNCY daily("$S_DATE", "DMY")
-	local time : di c(current_time)
+	local today : di  %tdCY-N-D  daily("$S_DATE", "DMY")
+	local time : di subinstr(c(current_time),":", "", .)
 	
 	* combine categories 
 	local categories_collapse location sex wealth region ethnicity religion
@@ -31,6 +31,7 @@ program define dhs_summarize
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/DHS/dhs_calculate.dta", clear
+		set more off
 		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultm_`i'.dta", replace
 	}
@@ -65,8 +66,8 @@ program define dhs_summarize
 	*standardizes summary dhs & mics
 	standarize_output
 
-	save "`output_path'/DHS/dhs_summarize_`today'_`time'.dta", replace
-	export delimited "`output_path'/DHS/dhs_summarize_`today'_`time'.csv", replace
+	save "`output_path'/DHS/dhs_summarize_`today'T`time'.dta", replace
+	export delimited "`output_path'/DHS/dhs_summarize_`today'T`time'.csv", replace
 	
 
 end

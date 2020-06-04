@@ -9,7 +9,8 @@ program define mics_clean
 	local vars sex location ed3 ed4a ed4b ed5 ed6a ed6b ed7 ed8a date duration ethnicity region religion code_ed4a code_ed6a code_ed8a
 	findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 	local dic `r(fn)'
-		
+	set more off	
+	
 	foreach X in `vars'{
 		import excel "`dic'", sheet(`X') firstrow clear 
 		capture destring sex_replace, replace
@@ -19,8 +20,9 @@ program define mics_clean
 	}
   
 	*isocodes
-	findfile country_iso_codes_names.csv, path("`c(sysdir_personal)'/")
-	import delimited "`r(fn)'",  varnames(1) encoding(UTF-8) clear
+	set more off
+	findfile country_iso_codes_names.dta, path("`c(sysdir_personal)'/")
+	use "`r(fn)'", clear
 	keep country_name_mics iso_code3
 	drop if country_name_mics == ""
 	rename country_name_mics country
@@ -28,7 +30,9 @@ program define mics_clean
 	save `isocode'
 
 	*fix some uis duration
-	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
+	cd "`c(sysdir_personal)'/"
+	local uisfile : dir . files "UIS_duration_age_*.dta"
+	findfile `uisfile', path("`c(sysdir_personal)'/")
 	use "`r(fn)'", clear
 	merge m:1 country year using `fixduration', keep(match master) 
 	replace prim_dur_uis   = prim_dur_replace[_n]   if _merge == 3 & prim_dur_replace   !=.
