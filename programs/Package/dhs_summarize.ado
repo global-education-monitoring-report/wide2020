@@ -58,12 +58,12 @@ program define dhs_summarize
 	}
 	
 	* append the results
+	clear all
 	fs *.dta
 	append using `r(files)', force
 	
-	generate survey = "DHS"
-	
 	*standardizes summary dhs & mics
+	generate survey = "DHS"
 	standarize_output
 
 	save "`output_path'/DHS/dhs_summarize_`today'T`time'.dta", replace

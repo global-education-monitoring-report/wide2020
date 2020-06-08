@@ -53,13 +53,12 @@ program define mics_read
 		
 		*lowercase all variables
 		capture rename *, lower
-		capture rename *_* **
+		capture rename *_* **		
 		
 		*select common variables between the dataset and the mics dictionary (1st column)
 		ds
 		local datavars `r(varlist)'
 		local common : list datavars & micsvars
-		*display "`common'"
 		keep `common'
 		ds
 		
@@ -95,8 +94,8 @@ program define mics_read
 			 capture rename hl15 religion
 		}
 		if (country == "Uruguay" & year_folder == 2012) {
-			capture drop windex5 region hh7
-			capture rename windex5_5 windex5
+			drop windex5 region hh7
+			rename windex55 windex5
 		}
 		if (country == "SaintLucia" & year_folder == 2012) {
 			capture drop windex5
@@ -108,7 +107,7 @@ program define mics_read
 		for X in any 4 6 8: capture rename edXa edXa 
 		for X in any 4 6 8: capture rename edXb edXb 
 		for X in any ethnie ethnicidad: capture rename X ethnicity
-		
+				
 		*create numerics variables 
 		for X in any ed4a ed4b ed6a ed6b ed8a schage: capture generate X_nr = X
 			
@@ -131,7 +130,12 @@ program define mics_read
 			capture replace  `var' = strltrim(`var')
 			capture replace  `var' = strrtrim(`var')
 		 }
-			
+
+		 if (country == "DominicanRepublic" & year_folder == 2014) {
+			 generate religion = ethnicity
+			 replace ethnicity = "" 
+		}
+				
 		*create ids variables
 		catenate country_year  = country year_folder, p("_")
 		catenate hh_id 	       = country_year hh1 hh2, p(no) 
@@ -153,18 +157,13 @@ program define mics_read
 
 	* change dir to temporal folder
 	cd "`data_path'/MICS/temporal"
-	
+    clear all
+    	
 	* append all files
 	fs *.dta
-	local numfiles : word count "`r(files)'"
-	if (`numfiles') > 1 {
 	append using `r(files)', force
 	compress
 	save "`data_path'/MICS/mics_read.dta", replace
-	}
-	else {
-	save "`data_path'/MICS/mics_read.dta", replace
-	}
 	
 	* remove temporal folder and files
 	rmfiles , folder("`data_path'/MICS/temporal") match("*.dta") rmdirs

@@ -32,7 +32,7 @@ program define mics_summarize
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
 		set more off
-		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
+		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast 
 		save "resultm_`i'.dta", replace
 	}
 	
@@ -44,9 +44,9 @@ program define mics_summarize
 	}
 	
 	* mean and count
-	foreach i of numlist 0/6  12/18 20/21 31 41 {
+	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use  "resultm_`i'.dta", clear
-		merge 1:1 country_year iso_code3 year adjustment `tuple`i'' using "resultc_`i'.dta", nogenerate
+		merge 1:1 country_year adjustment `tuple`i'' using "resultc_`i'.dta", nogenerate
 		generate category = "`tuple`i''"	
 	    save "result_`i'.dta", replace
 	}
@@ -58,6 +58,7 @@ program define mics_summarize
 	}
 
 	* append the results
+	clear all
 	fs *.dta
 	append using `r(files)', force
 	

@@ -67,14 +67,13 @@ program define dhs_read
 			}
 			
 			capture label drop _all
-			
 			compress
 			save "`data_path'/DHS/temporal/`module'/`1'_`3'", replace
 			
 		}
 		
 		cd "`data_path'/DHS/temporal/`module'/"
-	
+	    clear all
 		fs *.dta
 		append using `r(files)', force
 		*gduplicates drop
@@ -193,7 +192,6 @@ program define dhs_read
 		if (country_year == "Honduras_2005" | country_year == "Mali_2001" | country_year == "Peru_2012" | country_year == "Senegal_2005") {
 			if hvidx <= 9 {
 			catenate individual_id = country_year hhid zero hvidx 
-			*egen country_yr = concat(country year), punct() 
 			}
 			else {
 			catenate individual_id = country_year hhid hvidx 
@@ -223,18 +221,13 @@ program define dhs_read
 
 	cd "`data_path'/DHS/temporal/"
 	erase "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta"
-	
+	clear all
+
 	* append all the datasets
 	fs *.dta
-	local numfiles : word count "`r(files)'"
-	if (`numfiles') > 1 {
-		append using `r(files)', force
-		compress
-		save "`data_path'/DHS/dhs_read.dta", replace
-	}
-	else {
-		save "`data_path'/DHS/dhs_read.dta", replace
-	}
+	append using `r(files)', force
+	compress
+	save "`data_path'/DHS/dhs_read.dta", replace
 		
 	* remove temporal folder and files
 	rmfiles , folder("`data_path'/DHS/temporal/ir") match("*.dta") rmdirs

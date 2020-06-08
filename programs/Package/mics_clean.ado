@@ -55,8 +55,10 @@ program define mics_clean
 	replace_many `fixethnicity' ethnicity ethnicity_replace
 	replace_many `fixlocation' location location_replace
 	replace_many `fixsex' sex sex_replace
-	label define sex 0 "female" 1 "male"
-	label values sex sex
+    * labelling
+    label define sex 0 "Female" 1 "Male"
+	label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
+	for Z in any sex wealth: label values Z Z
 
 	foreach var of varlist ethnicity {
 		replace `var' = subinstr(`var', " et ", " & ",.) 
@@ -126,11 +128,6 @@ program define mics_clean
 	generate years_lowsec = prim_dur + lowsec_dur
 	generate years_upsec  = prim_dur + lowsec_dur + upsec_dur
 	generate years_higher = prim_dur + lowsec_dur + upsec_dur + higher_dur
-
-    * labelling
-    capture label define sex 0 "Female" 1 "Male"
-	capture label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
-	for Z in any sex wealth: capture label values Z Z
 	
 	* save data 	
 	compress

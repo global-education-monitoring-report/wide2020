@@ -30,7 +30,7 @@ program define mics_calculate
 	*GROUP 0*
 	replace eduyears = ed4b	 if group == 0
 	*GROUP 1*
-        replace eduyears = ed4b  if group == 1
+    replace eduyears = ed4b  if group == 1
 	replace eduyears = . if code_ed4 == 50 &  group == 1
 	 *GROUP 2*
  	replace eduyears = ed4b - 10 if ed4b >= 11 & ed4b <=16 & group == 2
@@ -152,8 +152,9 @@ program define mics_calculate
 	replace eduyears = 98 if ed4b == 98 | ed4b_label == "don't know"
 	replace eduyears = 99 if ed4b == 99 | inlist(ed4b_label, "missing", "doesn't answer", "missing/dk")
 	replace eduyears = 0 if ed4b == 0
-
-	
+	replace eduyears = . if eduyears >= 97
+	*replace eduyears = 30 if eduyears >= 30 & eduyears < 90
+		
 	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
 	generate lowsec_age0 = prim_age0 + prim_dur
 	generate upsec_age0  = lowsec_age0 + lowsec_dur
@@ -171,7 +172,7 @@ program define mics_calculate
 	foreach Z in prim lowsec upsec higher {
 		generate comp_`Z' = 0
 		replace comp_`Z' = 1 if eduyears >= years_`Z'
-		replace comp_`Z' = . if inlist(eduyears, 97, 98, 99)
+		replace comp_`Z' = . if inlist(eduyears, 97, 98, 99, .)
 		replace comp_`Z' = 0 if ed3 == "no"
 		replace comp_`Z' = 0 if code_ed4a == 0
 	}
@@ -218,7 +219,6 @@ program define mics_calculate
 
 	* replace missing in school year by the interview year
 	replace current_school_year = hh5y if current_school_year == .
-
 	catenate s_school    = month_start current_school_year, p("/")
 	catenate s_interview = hh5m hh5y, p("/") 
 
@@ -228,7 +228,7 @@ program define mics_calculate
 	generate date_interview = date(s_interview, "MY",2000)
 		
 	* fix the negative differences
-	replace current_school_year = current_school_year - 1 if date_interview - date_school < 0  
+	replace current_school_year = current_school_year - 1 if (date_interview - date_school) < 0  
 	*replace current_school_year=current_school_year+1 if (date2-date1>=12) 
 	drop s_* date_*
 	
@@ -308,7 +308,7 @@ program define mics_calculate
 	replace eduout = . if (ed6b == "missing" | ed6b == "don't know") & eduout == 0 & country_year == "Nepal_2014"
 	replace eduout = 1 if ed6b == "preschool" | ed3 == "no" & country_year == "Nepal_2014"
 	replace eduout = no_attend if country_year == "Barbados_2012"
-	replace eduout = . if (attend == 1 & code_ed6a == . & country_year == "Barbados_2012") 
+	replace eduout = . if attend == 1 & code_ed6a == . & country_year == "Barbados_2012"
 	replace eduout = . if inlist(code_ed6a, 98, 99) & eduout == 0 & country_year == "Barbados_2012"
 	replace eduout = . if ed6a_nr == 0 & country_year == "Barbados_2012"
 	replace eduout = 1 if ed3 == "no" & country_year == "Barbados_2012"

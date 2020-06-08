@@ -11,16 +11,16 @@ program define dhs_calculate
 	set more off
 
 	* Mix of years of education completed (hv108) and duration of levels 
-		generate years_prim	= prim_dur
-		generate years_lowsec	= prim_dur + lowsec_dur
-		generate years_upsec	= prim_dur + lowsec_dur + upsec_dur
-		*gen years_higher	=prim_dur+lowsec_dur+upsec_dur+higher_dur
+	generate years_prim	= prim_dur
+	generate years_lowsec	= prim_dur + lowsec_dur
+	generate years_upsec	= prim_dur + lowsec_dur + upsec_dur
+	*gen years_higher	=prim_dur+lowsec_dur+upsec_dur+higher_dur
 
 
 	*Ages for completion
-		generate lowsec_age0 = prim_age0 + prim_dur
-		generate upsec_age0  = lowsec_age0 + lowsec_dur
-		for X in any prim lowsec upsec: generate X_age1 = X_age0 + X_dur-1
+	generate lowsec_age0 = prim_age0 + prim_dur
+	generate upsec_age0  = lowsec_age0 + lowsec_dur
+	for X in any prim lowsec upsec: generate X_age1 = X_age0 + X_dur-1
 
 	replace hv108 = hv107               if (hv106 == 0 | hv106 == 1) & country_year == "RepublicofMoldova_2005"
 	replace hv108 = hv107 + years_prim  if hv106 == 2 & country_year == "RepublicofMoldova_2005"
@@ -141,7 +141,7 @@ program define dhs_calculate
 	}
 
 	hashsort country_year
-	gcollapse diff* adj* flag_month, by(country_year)		
+	gcollapse diff* adj* flag_month, by(country_year) fast		
 	save "`data_path'/DHS/dhs_adjustment.dta", replace
 	
 	* COMPUTE IF SOMEONE DOES NOT GO TO SCHOOL (education out)
@@ -201,9 +201,9 @@ program define dhs_calculate
 	
 	* create eduyears, max of years as 30 
 	generate eduyears = hv108
-	replace eduyears = 30 if hv108 >= 30
 	replace eduyears = . if hv108 >= 90
-
+	replace eduyears = 30 if hv108 >= 30  & hv108 < 90
+	
 	*With age limits
 	generate eduyears_2024 = eduyears if agestandard >= 20 & agestandard <= 24
 	foreach X in 2 4 {
