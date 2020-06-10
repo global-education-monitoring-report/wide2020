@@ -34,7 +34,7 @@ program define mics_clean
 	local uisfile : dir . files "UIS_duration_age_*.dta"
 	findfile `uisfile', path("`c(sysdir_personal)'/")
 	use "`r(fn)'", clear
-	merge m:1 country year using `fixduration', keep(match master) 
+	merge m:m iso_code3 year using `fixduration', keep(match master) 
 	replace prim_dur_uis   = prim_dur_replace[_n]   if _merge == 3 & prim_dur_replace   !=.
 	replace lowsec_dur_uis = lowsec_dur_replace[_n] if _merge == 3 & lowsec_dur_replace !=.
 	replace upsec_dur_uis  = upsec_dur_replace[_n]  if _merge == 3 & upsec_dur_replace  !=.
@@ -99,17 +99,34 @@ program define mics_clean
 
 	* generate code variables
 	for X in any ed4a ed6a ed8a: capture generate code_X = X_nr
-	tostring code_*, replace
-
+	
+	replace code_ed6a = 70 if ed6a_nr == 1 & country_year == "Palestine_2010"
+	replace code_ed6a = 22 if ed6a_nr == 2 & country_year == "Palestine_2010"
+	
 	* EDUCATION LEVEL
 	* merge with auxiliary data of education levels for ed4a, ed6a, ed8a
+	tostring code_*, replace
 	replace_many `fixcode_ed4a' code_ed4a code_ed4a_replace country_year
 	replace_many `fixcode_ed6a' code_ed6a code_ed6a_replace country_year
 	replace_many `fixcode_ed8a' code_ed8a code_ed8a_replace country_year
-		
-	* convert to numeric code_*
 	destring code_*, replace
-	for X in any ed4a ed6a ed8a: capture replace code_X = . if X >= 97
+		
+	replace code_ed4a = 40 if ed4b_nr == 43 & country_year == "Nigeria_2011"  
+	replace code_ed4a = 40 if ed4b_nr == 36 & country_year == "Nigeria_2016"  
+		
+	for X in any 4 6 8: replace code_edXa = 21 if edXa_nr == 4 & inlist(edXb_nr, 0, 1, 2, 3) & country_year == "Uruguay_2012"
+	for X in any 4 6 8: replace code_edXa = 22 if edXa_nr == 4 & inlist(edXb_nr, 4, 5, 6) & country_year == "Uruguay_2012"
+	
+	for X in any 4 6 8: replace code_edXa = 22 if edXa_nr == 4 & inlist(edXb_nr, 0, 1, 2, 3) & country_year == "Iraq_2011"
+	for X in any 4 6 8: replace code_edXa = 33 if edXa_nr == 4 & inlist(edXb_nr, 4, 5) & country_year == "Iraq_2011" 
+
+	for X in any 4 6 8: replace code_edXa = 22 if inlist(edXa_nr, 4, 5) & inlist(edXb_nr, 0, 1, 2) & country_year == "Kyrgyzstan_2014"
+	for X in any 4 6 8: replace code_edXa = 33 if inlist(edXa_nr, 4, 5) & inlist(edXb_nr, 3, 4) & country_year == "Kyrgyzstan_2014"	
+
+	for X in any ed4a ed6a ed8a: replace code_X = 97 if X=="inconsistent"
+	for X in any ed4a ed6a ed8a: replace code_X = 98 if X=="don't know"
+	for X in any ed4a ed6a ed8a: replace code_X = 99 if inlist(X, "missing", "doesn't answer", "missing/dk")
+    *for X in any ed4a ed6a ed8a: capture replace code_X = . if X >= 97 
 	
 	* merge with iso code3 table
 	merge m:1 country using "`isocode'", keep(match master) nogenerate

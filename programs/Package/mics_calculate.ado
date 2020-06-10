@@ -23,136 +23,136 @@ program define mics_calculate
 	rename ed4b ed4b_label
 	rename ed4b_nr ed4b
 	* Consider the ed4b == 94 as missing
-	replace ed4b = 99 if ed4b == 94
+	*replace ed4b = 99 if ed4b == 94
 	
 	* replace eduyears according to which group it belongs
+	replace eduyears = ed4b if group == 0
 	
-	*GROUP 0*
-	replace eduyears = ed4b	 if group == 0
-	*GROUP 1*
-    replace eduyears = ed4b  if group == 1
-	replace eduyears = . if code_ed4 == 50 &  group == 1
-	 *GROUP 2*
- 	replace eduyears = ed4b - 10 if ed4b >= 11 & ed4b <=16 & group == 2
+	replace eduyears = ed4b if group == 1
+	replace eduyears = . if code_ed4 == 50 & group == 1
+		
+	replace eduyears = ed4b - 10 if ed4b >= 11 & ed4b <= 16 & group == 2
 	replace eduyears = ed4b - 14 if ed4b >= 21 & ed4b <= 27 & group == 2
 	replace eduyears = ed4b - 17 if ed4b >= 31 & ed4b <= 35 & group == 2
-	replace eduyears = 0 if (ed4b_label == "moins d'un an au primaire" | ed4b_label == "moins d'un an au secondaire" | ed4b_label == "moins d'un an a l'universite") & group == 2
-	 *GROUP 3*
-	replace eduyears = ed4b if ed4b >= 0  & ed4b <= 20 & group == 3
+	replace eduyears = 0 if inlist(ed4b_label, "moins d'un an au primaire", "moins d'un an au secondaire", "moins d'un an a l'universite") & group == 2
+	
+	replace eduyears = ed4b if ed4b >= 0 & ed4b <= 20 & group == 3
 	replace eduyears = ed4b - 7 if ed4b >= 21 & ed4b <= 23 & group == 3
 	replace eduyears = ed4b - 18 if ed4b == 32 & group == 3
 	replace eduyears = ed4b - 27 if ed4b >= 41 & ed4b <= 43 & group == 3
 	replace eduyears = ed4b - 37 if ed4b >= 52 & ed4b <= 55 & group == 3
-	 *GROUP 4*
-	replace eduyears = 0 if ed4b >= 1  & ed4b <= 3 & group == 4
+	
+	replace eduyears = 0 if ed4b >= 1  & ed4b <= 3  & group == 4
 	replace eduyears = ed4b - 10 if ed4b >= 10 & ed4b <= 16 & group == 4
 	replace eduyears = ed4b - 14 if ed4b >= 20 & ed4b <= 26 & group == 4
-	replace eduyears = years_upsec if (ed4b == 30 | ed4b == 40) & group == 4
-	replace eduyears = years_upsec + 2 if ed4b == 31  & group == 4
-	replace eduyears = years_upsec + 3 if (ed4b == 32 | ed4b == 33) & group == 4
-	replace eduyears = years_upsec if ed4b == 40 & country_year == "Nigeria_2011" & group == 4
-	replace eduyears = years_higher if ed4b == 42   & group == 4
-	replace eduyears = years_higher + 2 if ed4b == 43  & group == 4
-	 *GROUP 5*
+	replace eduyears = years_upsec if inlist(ed4b, 30, 40) & group == 4
+	replace eduyears = years_upsec + 2 if inlist(ed4b, 31, 41) & group == 4
+	replace eduyears = years_upsec + 3 if inlist(ed4b, 32, 33) & group == 4
+	replace eduyears = years_higher if ed4b == 42 & group == 4
+	replace eduyears = years_higher + 2 if ed4b == 43 & group == 4
+	
 	replace eduyears = 0 if ed4b >= 1  & ed4b <= 3 & group == 5
 	replace eduyears = ed4b - 10 if ed4b >= 10 & ed4b <= 16 & group == 5
 	replace eduyears = ed4b - 14 if ed4b >= 20 & ed4b <= 26 & group == 5
-	replace eduyears = years_upsec if ed4b == 30  & group == 5
-	replace eduyears = years_upsec + 2 if (ed4b == 31 | ed4b == 34) & group == 5
-	replace eduyears = years_upsec + 3 if (ed4b == 32 | ed4b == 33) & group == 5
+	replace eduyears = years_upsec if ed4b == 30 & group == 5
+	replace eduyears = years_upsec + 2 if inlist(ed4b, 31, 34) & group == 5
+	replace eduyears = years_upsec + 3 if inlist(ed4b, 32, 33) & group == 5
 	replace eduyears = years_higher if ed4b == 35 & group == 5
-	replace eduyears = years_higher + 2 if ed4b == 36  & group == 5
-	 *GROUP 6*
+	replace eduyears = years_higher + 2 if ed4b == 36 & group == 5
+	
 	replace eduyears = ed4b - 10 if ed4b >= 11 & ed4b <= 15 & group == 6
 	replace eduyears = ed4b - 15 if ed4b >= 21 & ed4b <= 24 & group == 6
 	replace eduyears = ed4b - 21 if ed4b >= 31 & ed4b <= 33 & group == 6
 	replace eduyears = ed4b - 28 if ed4b >= 41 & ed4b <= 43 & group == 6
 	replace eduyears = ed4b - 38 if ed4b >= 51 & ed4b <= 57 & group == 6
-	 *GROUP 7*
-	replace code_ed4a = 1 if ed4b <= years_prim  & group == 7
+	
+	replace code_ed4a = 1 if ed4b <= years_prim & group == 7
 	replace code_ed4a = 2 if ed4b > years_prim  & ed4b <= years_upsec & group == 7
 	replace code_ed4a = 3 if ed4b > years_upsec & ed4b <. & ed4b < 97 & group == 7
 	replace code_ed4a = 0 if (ed3 == "currently attending kindergarten" | ed3 == "never attended school") & group == 7
-	replace eduyears = ed4b  if group == 7
-	 *GROUP 8*
- 	replace eduyears = ed4b if inlist(code_ed4a, 1, 21, 22) & group == 8
+	replace eduyears = ed4b if group == 7
+	
+	replace eduyears = ed4b if inlist(code_ed4a, 1, 21, 22) & group == 8
 	replace eduyears = years_upsec + 0.5*higher_dur if code_ed4a == 3 & group == 8
-	 *GROUP 9*
+	
 	replace code_ed4a = 50 if (ed4b == 10 | ed4b == 20) & group == 9
-	replace eduyears = ed4b - 10 if ed4b >= 11 & ed4b <= 17  & group == 9
-	replace eduyears = ed4b - 13 if ed4b >= 21 & ed4b <= 26  & group == 9
-	replace eduyears = years_upsec + 0.5*higher_dur if ed4b_label == "attended/currently attending higher education"  & group == 9
-	replace eduyears = years_higher if ed4b_label == "completed higher education"   & group == 9
+	replace eduyears = ed4b - 10 if ed4b >= 11 & ed4b <= 17 & group == 9
+	replace eduyears = ed4b - 13 if ed4b >= 21 & ed4b <= 26 & group == 9
+	replace eduyears = years_upsec + 0.5*higher_dur if ed4b_label == "attended/currently attending higher education" & group == 9
+	replace eduyears = years_higher if ed4b_label == "completed higher education" & group == 9
 	*replace eduyears=. if code_ed4a==50  
-	 *GROUP 10*
- 	replace eduyears = ed4b if inlist(code_ed4a, 1, 2, 21, 22, 23) & group == 10
+	
+	replace eduyears = ed4b if inlist(code_ed4a, 1, 2, 21, 22, 23) & group == 10
 	replace eduyears = ed4b + years_upsec if inlist(code_ed4a, 3, 32, 33) & group == 10
-	replace eduyears = ed4b + years_higher if code_ed4a == 40  & group == 10
+	replace eduyears = ed4b + years_higher if code_ed4a == 40 & group == 10
 	replace eduyears = ed4b + years_lowsec if code_ed4a == 24 & country_year == "Kazakhstan_2015" & group == 10
-	 *GROUP 11*
+	
 	replace eduyears = ed4b if inlist(ed4a_nr, 0, 1, 2, 3) & group == 11
 	replace eduyears = ed4b + years_lowsec if inlist(ed4a_nr, 4, 5) & inlist(ed4b, 0, 1, 2) & group == 11
 	replace eduyears = ed4b + years_upsec if inlist(ed4a_nr, 4, 5) & inlist(ed4b, 3, 4) & group == 11
 	replace eduyears = ed4b + years_upsec if ed4a_nr == 6 & group == 11
-	 *GROUP 12*
- 	replace eduyears = ed4b if inlist(code_ed4a, 1, 2, 21, 22) & group == 12
+	
+	replace eduyears = ed4b if inlist(code_ed4a, 1, 2, 21, 22) & group == 12
 	replace eduyears = ed4b + years_lowsec if code_ed4a == 24 & group == 12
-	replace eduyears = ed4b + years_upsec if code_ed4a == 3 & group == 12
-	 *GROUP 13*
- 	replace eduyears = ed4b if inlist(code_ed4a, 1, 2, 21) & group == 13
+	replace eduyears = ed4b + years_upsec if code_ed4a == 3 & group == 12 
+	
+	replace eduyears = ed4b if inlist(code_ed4a, 1, 2, 21) & group == 13
 	replace eduyears = ed4b + years_lowsec if inlist(code_ed4a, 22, 24) & group == 13
 	replace eduyears = ed4b + years_upsec if inlist(code_ed4a, 3, 32, 33) & group == 13
 	replace eduyears = ed4b + years_higher if code_ed4a == 40 & group == 13
-	 *GROUP 14*
+	
 	replace eduyears = ed4b if inlist(code_ed4a, 1, 60, 70) & group == 14
 	replace eduyears = ed4b + years_prim if inlist(code_ed4a, 2, 21, 23) & group == 14
 	replace eduyears = ed4b + years_lowsec if inlist(code_ed4a, 22, 24) & group == 14
 	replace eduyears = ed4b + years_upsec if inlist(code_ed4a, 3, 32, 33) & group == 14
-	replace eduyears = ed4b + years_higher if code_ed4a == 40 & group == 14
-	 *GROUP 15*
-	replace eduyears = ed4b + years_lowsec - 3 if code_ed4a == 22 & group == 15
-	 *GROUP 16*
- 	replace eduyears = ed4b if code_ed4a == 1 & group == 16 
+	replace eduyears = ed4b + years_higher if code_ed4a == 40  & group == 14
+	replace eduyears = ed4b + years_lowsec - 3 if (code_ed4a == 22 & country_year == "Thailand_2012")
+	replace eduyears = years_prim if (ed4b_label == "primary school of nfeep" & country_year == "Mongolia_2013")
+	replace eduyears = years_lowsec if (ed4b_label == "basic school of nfeep" & country_year == "Mongolia_2013")
+	replace eduyears = years_prim if (ed4b_label == "high school of nfeep" & country_year == "Mongolia_2013")
+	
+	replace eduyears = ed4b if code_ed4a == 1 & group == 16
 	replace eduyears = ed4b + years_prim if code_ed4a == 21 & group == 16
 	replace eduyears = ed4b + years_lowsec if inlist(code_ed4a, 22, 24) & group == 16
 	replace eduyears = ed4b + years_upsec if code_ed4a == 3 & group == 16
-	 *GROUP 17*
-	replace eduyears = ed4b if code_ed4a == 1 & group == 17
+	
+	replace eduyears = ed4b if code_ed4a == 1 & group == 17 
 	replace eduyears = ed4b + 8 if code_ed4a == 2 & group == 17
 	replace eduyears = ed4b + years_lowsec if code_ed4a == 3 & group == 17
-	 *GROUP 18*
+	
 	replace eduyears = ed4b if inlist(code_ed4a, 1, 21, 22) & group == 18
 	replace eduyears = ed4b + years_lowsec if code_ed4a == 24 & group == 18
 	replace eduyears = ed4b + years_upsec if inlist(code_ed4a, 3, 33) & group == 18
-	 *GROUP 19*
+	
 	replace eduyears = years_higher + 2 if code_ed4a == 40 & group == 19
-	 *GROUP 20*
- 	replace eduyears = ed4b if code_ed4a == 70 & group == 20
+	
+	replace eduyears = ed4b if code_ed4a == 70 & group == 20
 	replace eduyears = ed4b + years_prim if code_ed4a == 21 & group == 20
 	replace eduyears = ed4b + years_lowsec if code_ed4a == 22 & group == 20
 	replace eduyears = years_upsec + 0.5*higher_dur if code_ed4a == 3 & group == 20
 	replace eduyears = years_upsec + 0.2*higher_dur if code_ed4a == 32 & group == 20
 	replace eduyears = years_higher + 2 if code_ed4a == 40 & group == 20
-	 *GROUP 21*
- 	replace code_ed4a = 3 if inlist(ed4b_label, "bachelor", "diploma") & group == 21
+	
+	replace code_ed4a = 3 if inlist(ed4b_label, "bachelor", "diploma") & group == 21
 	replace code_ed4a = 40 if inlist(ed4b_label, "master", "> master") & group == 21
 	replace code_ed4a = 0 if  ed4b_label == "pre primary" & group == 21
 	replace eduyears = ed4b + 1 if group == 21
-	replace eduyears = 0 if ed4b_label == "no grade"  & group == 21
-	 *GROUP 22*
-	replace eduyears = ed4b if (ed4b >= 0 & ed4b <= 10) & group == 22
-	replace eduyears = 10 if ed4b_label == "slc" & group == 22
-	replace eduyears = years_upsec if ed4b_label == "plus 2 level" & group == 22
-	replace eduyears = years_higher if ed4b_label == "bachelor" & group == 22
-	replace eduyears = years_higher + 2	 if ed4b_label == "masters" & group == 22
-	replace eduyears = 0 if ed4b_label == "preschool" & group == 22
+	replace eduyears = 0 if ed4b_label == "no grade" & group == 21
+	
+	replace eduyears = ed4b if (ed4b >= 0 & ed4b <= 10) & group == 15
+	replace eduyears = 10 if ed4b_label == "slc" & group == 15
+	replace eduyears = years_upsec if ed4b_label == "plus 2 level" & group == 15
+	replace eduyears = years_higher if ed4b_label == "bachelor" & group == 15
+	replace eduyears = years_higher + 2	 if ed4b_label == "masters" & group == 15
+	replace eduyears = 0 if ed4b_label == "preschool" & group == 15
+	
 	 
 	* Recode for all country_years
 	replace eduyears = 97 if ed4b == 97 | ed4b_label == "inconsistent"
 	replace eduyears = 98 if ed4b == 98 | ed4b_label == "don't know"
 	replace eduyears = 99 if ed4b == 99 | inlist(ed4b_label, "missing", "doesn't answer", "missing/dk")
 	replace eduyears = 0 if ed4b == 0
-	replace eduyears = . if eduyears >= 97
+	replace eduyears = . if eduyears >= 99
 	*replace eduyears = 30 if eduyears >= 30 & eduyears < 90
 		
 	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
@@ -188,13 +188,12 @@ program define mics_calculate
 	}
 
 	* Recoding ED5: "Attended school during current school year?"
-	generate attend = 1 if ed5 == "yes" 
-	replace attend  = 0 if ed5 == "no"
+	generate attend = 1 if ed5 == "yes" | ed5_nr == 1
+	replace attend  = 0 if ed5 == "no" | ed5_nr == 0
 
 	* save data
 	compress
 	save "`data_path'/MICS/mics_calculate.dta", replace
-
 	
 	* ADJUST SCHOOL YEAR
 	use "`data_path'/MICS/mics_calculate.dta", clear
@@ -289,9 +288,6 @@ program define mics_calculate
 	replace attend_primary  = 0 if attend == 1 & code_ed6a == 0
 	replace attend_primary  = 0 if attend == 0
 		
-	* enrolment rate in pre-primary relative to the population, by single age
-	* can be created with attend_preschool, with no restriction of preschool before
-
 	* generate no_attend the attend complement
 	recode attend (1=0) (0=1), gen(no_attend)
 
@@ -312,10 +308,17 @@ program define mics_calculate
 	replace eduout = . if inlist(code_ed6a, 98, 99) & eduout == 0 & country_year == "Barbados_2012"
 	replace eduout = . if ed6a_nr == 0 & country_year == "Barbados_2012"
 	replace eduout = 1 if ed3 == "no" & country_year == "Barbados_2012"
-	replace attend = 0 if country_year == "Mauritania_2011" 
-	replace attend = 1 if ed5 == "yes" & country_year == "Mauritania_2011" 
-	replace attend = . if ed5 == "missing" & country_year == "Mauritania_2011" 
-
+	
+	generate attend_mauritania = 0
+    replace attend_mauritania = 1 if ed5 == "yes"
+    replace attend_mauritania = . if ed5 == "missing"
+    recode attend_mauritania (1=0) (0=1), gen(eduout_mauritania)
+    replace eduout_mauritania = . if inlist(code_ed6a, 98, 99) & eduout_mauritania == 0
+	replace eduout_mauritania = 1 if code_ed6a == 0 
+	replace eduout_mauritania = 1 if ed3 == "no"
+	replace eduout = eduout_mauritania if country_year == "Mauritania_2011"
+	drop eduout_mauritania
+	
 	* Merging with adjustment
 	merge m:1 country_year using "`data_path'/MICS/mics_adjustment.dta", keepusing(adj1_norm) nogenerate
 	rename adj1_norm adjustment
@@ -328,6 +331,7 @@ program define mics_calculate
 	replace schage = age if temp_count == 0 & adjustment == 0
 	replace schage = age-1 if temp_count == 0 & adjustment == 1
 	drop temp_count
+	*replace schage = age if schage==. 
 
 	*Age limits for completion and out of school
 	*Age limits 
@@ -364,7 +368,7 @@ program define mics_calculate
 	replace edu0  = 1 if eduyears == 0
 
 	foreach AGE in schage  {
-		generate edu0_prim=edu0 if `AGE' >= prim_age0 + 3 & `AGE'<=prim_age0 + 6
+		generate edu0_prim=edu0 if `AGE' >= prim_age0 + 3 & `AGE' <= prim_age0 + 6
 		*gen edu0_prim2=edu0 if `AGE'>=prim_age0+2 & `AGE'<=prim_age0+4
 		*gen edu0_prim3=edu0 if `AGE'>=prim_age0+4 & `AGE'<=prim_age0+8
 	}
@@ -437,8 +441,8 @@ program define mics_calculate
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	
 	foreach var in `vars' {
-	capture sdecode `var', replace
-	capture tostring `var', replace
+		capture sdecode `var', replace
+		capture tostring `var', replace
 	}
 		
 	* save data		

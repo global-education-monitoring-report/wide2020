@@ -41,7 +41,7 @@ The arguments "nf" "country_name" and "country_year" are only used when step is 
 {marker description}{...}
 {title:Description}
 {pstd}
-{bf:widetable} simplifies reading, cleaning and summarizing WIDE. The main function of the package, widetable, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators (access and completion) are obtained for each country and year of the survey, disaggregated by different variables of interest. 
+{bf:widetable} simplifies reading, cleaning and summarizing WIDE. The main function of the package, widetable, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators (access and completion)  are obtained for each country and year of the survey, disaggregated by different variables of interest. 
 
 {marker options}{...}
 {title:Options}

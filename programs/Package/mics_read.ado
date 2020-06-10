@@ -9,7 +9,7 @@ program define mics_read
 	capture mkdir "`data_path'/MICS/temporal"
 	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
 	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow clear 
-	local nrow: di _N -1
+	local nrow: di _N + 1
 	
 	if (`nf' > `nrow') {
 		import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nrow') clear
@@ -101,22 +101,31 @@ program define mics_read
 			capture drop windex5
 			capture rename windex51 windex5
 		}
+		if (country == "Palestine" & year_folder == 2014) {
+			for X in any 4 6 8: capture drop edXa edXb
+			for X in any 4 6 8: capture rename edXap edXa 
+			for X in any 4 6 8: capture rename edXbp edXb 
+			for X in any 4 6 8: capture drop edXap edXbp
+		}
 		
 		for X in any hh7a hh7r: capture rename X region 
 		for X in any region: capture rename X hh7
-		for X in any 4 6 8: capture rename edXa edXa 
-		for X in any 4 6 8: capture rename edXb edXb 
+		capture drop region
 		for X in any ethnie ethnicidad: capture rename X ethnicity
 				
 		*create numerics variables 
-		for X in any ed4a ed4b ed6a ed6b ed8a schage: capture generate X_nr = X
-			
+		for X in any ed4a ed4b ed5 ed6a ed6b ed8a ed8b schage: capture generate X_nr = X
+		for X in any ed4a_nr ed6a_nr ed8a_nr: capture recode X (8 = 98) (9 = 99)
+		
 		* drop schage missing values 
 		capture replace schage_nr = . if schage_nr >= 150
 		capture drop schage
 		capture rename schage_nr schage
 		
 		*decode and change strings values to lower case
+		ds
+		local datavars `r(varlist)'
+		local common : list datavars & micsvars
 		local common_decode : list common & micsvars_decode
 			
 		* remove special character and space in string variables

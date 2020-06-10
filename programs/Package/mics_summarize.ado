@@ -39,7 +39,7 @@ program define mics_summarize
 	* count observations
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
 		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
-		gcollapse (count) `varlist_no', by(`varsby' `tuple`i'') fast
+		gcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
 	}
 	
