@@ -20,10 +20,11 @@ program define dhs_read
 		local nrow: di _N + 1
 		
 		if (`nf' > `nrow') {
-			local nf `nrow'
+			import excel  "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nrow') clear
+		} 
+		else{
+			import excel  "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nf') clear 
 		}
-		
-		import excel "`r(fn)'", sheet(dhs_`module'_files) cellrange (:D`nf') firstrow clear 
 		levelsof filepath, local(filepath) clean
 		
 		if ("`country_name'" != "") {
@@ -60,7 +61,7 @@ program define dhs_read
 			foreach var of varlist v130 v131{ 
 				capture sdecode `var', replace
 				capture replace `var' = lower(`var')
-				capture replace_character
+				capture replace_character `var'
 				capture replace `var' = stritrim(`var')
 				capture replace `var' = strltrim(`var')
 				capture replace `var' = strrtrim(`var')

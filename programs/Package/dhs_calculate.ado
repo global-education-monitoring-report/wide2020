@@ -22,7 +22,7 @@ program define dhs_calculate
 	generate upsec_age0  = lowsec_age0 + lowsec_dur
 	for X in any prim lowsec upsec: generate X_age1 = X_age0 + X_dur-1
 
-	replace hv108 = hv107               if (hv106 == 0 | hv106 == 1) & country_year == "RepublicofMoldova_2005"
+	replace hv108 = hv107               if inlist(hv106, 0, 1) & country_year == "RepublicofMoldova_2005"
 	replace hv108 = hv107 + years_prim  if hv106 == 2 & country_year == "RepublicofMoldova_2005"
 	replace hv108 = hv107 + years_upsec if hv106 == 3 & country_year == "RepublicofMoldova_2005"
 	replace hv108 = 98                  if hv106 == 8 & country_year == "RepublicofMoldova_2005"
@@ -141,7 +141,7 @@ program define dhs_calculate
 	}
 
 	hashsort country_year
-	gcollapse diff* adj* flag_month, by(country_year) fast		
+	gcollapse diff* adj* flag_month, by(country_year)		
 	save "`data_path'/DHS/dhs_adjustment.dta", replace
 	
 	* COMPUTE IF SOMEONE DOES NOT GO TO SCHOOL (education out)
@@ -187,11 +187,11 @@ program define dhs_calculate
 	*for X in any prim lowsec upsec: rename comp_X_B comp_X
 	*Age limits 
 	foreach AGE in agestandard  {
-		for X in any prim lowsec upsec: generate comp_X_v2=comp_X if `AGE'>=X_age1+3 & `AGE'<=X_age1+5
-		generate comp_prim_1524 = comp_prim if `AGE' >=15 & `AGE' <=24
-		generate comp_upsec_2029 = comp_upsec if `AGE' >=20 & `AGE' <=29
+		for X in any prim lowsec upsec: generate comp_X_v2 = comp_X if `AGE' >= X_age1+3 & `AGE' <= X_age1+5
+		generate comp_prim_1524 = comp_prim if `AGE' >= 15 & `AGE' <= 24
+		generate comp_upsec_2029 = comp_upsec if `AGE' >= 20 & `AGE' <= 29
 		*gen comp_higher_2529=comp_higher if `AGE'>=25 & `AGE'<=29
-		generate comp_lowsec_1524 = comp_lowsec if `AGE' >=15 & `AGE' <=24
+		generate comp_lowsec_1524 = comp_lowsec if `AGE' >= 15 & `AGE' <= 24
 	}
 
 	*capture drop *_A
@@ -202,7 +202,7 @@ program define dhs_calculate
 	* create eduyears, max of years as 30 
 	generate eduyears = hv108
 	replace eduyears = . if hv108 >= 90
-	replace eduyears = 30 if hv108 >= 30  & hv108 < 90
+	replace eduyears = 30 if hv108 >= 30 & hv108 < 90
 	
 	*With age limits
 	generate eduyears_2024 = eduyears if agestandard >= 20 & agestandard <= 24
@@ -241,11 +241,10 @@ program define dhs_calculate
 	}
 	drop attend_higher
 	
-	local vars country_year year adjustment location sex wealth region ethnicity religion
+	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	foreach var in `vars' {
 		capture sdecode `var', replace
 		capture tostring `var', replace
-		capture replace `var' = proper(`var')
 	}
 	
 	rename ageU age

@@ -437,9 +437,8 @@ program define mics_calculate
 			generate `var'_no = `var'
 	}
 	
-	* neccesary for fcollapse in summary function
-	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	
+	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	foreach var in `vars' {
 		capture sdecode `var', replace
 		capture tostring `var', replace

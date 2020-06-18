@@ -70,6 +70,11 @@ program define dhs_clean
 		capture sdecode `var', replace
 		capture tostring `var', replace
 		capture replace `var' = proper(`var')
+		replace `var' = subinstr(`var', "'I", "'i",.) 
+		replace `var' = subinstr(`var', "-E", "-e",.) 
+		replace `var' = subinstr(`var', "'S", "'s",.)
+		replace `var' = subinstr(`var', "'T", "'t",.) 
+		replace `var' = subinstr(`var', "'Z", "'z",.) 
 	}
 	
 	if country == "Philippines" { 
@@ -95,11 +100,6 @@ program define dhs_clean
 		replace region = subinstr(region, " Vi", " VI",.) 
 	}
 	
-	replace region = subinstr(region, "'I", "'i",.) 
-	replace region = subinstr(region, "-E", "-e",.) 
-	replace region = subinstr(region, "'S", "'s",.)
-	replace region = subinstr(region, "'T", "'t",.) 
-	replace region = subinstr(region, "'Z", "'z",.) 
 	replace region = "DRD" if region == "Drd" & country == "Tajikistan"
 	replace region = "NWFP" if region == "Nwfp"
 	replace region = "SNNPR" if region == "Snnpr"
