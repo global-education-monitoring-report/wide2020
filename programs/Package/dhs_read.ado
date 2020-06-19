@@ -28,13 +28,13 @@ program define dhs_read
 		levelsof filepath, local(filepath) clean
 		
 		if ("`country_name'" != "") {
-			keep if folder_country == "`country_name'"
-			levelsof filepath, local(filepath) clean
+			capture keep if folder_country == "`country_name'"
+			capture levelsof filepath, local(filepath) clean
 		}
 		if ("`country_name'" != "" & "`country_year'" != "") {
-			tostring folder_year, replace
-			keep if (folder_country == "`country_name'" & folder_year == "`country_year'")
-			levelsof filepath, local(filepath) clean
+			capture tostring folder_year, replace
+			capture keep if (folder_country == "`country_name'" & folder_year == "`country_year'")
+			capture levelsof filepath, local(filepath) clean
 		}
 	
 	

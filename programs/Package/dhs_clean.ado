@@ -20,8 +20,9 @@ program define dhs_clean
 	
 	*fix some uis duration
 	cd "`c(sysdir_personal)'/"
-	local uisfile : dir . files "UIS_duration_age_*.dta"
-	findfile `uisfile', path("`c(sysdir_personal)'/")
+	*local uisfile : dir . files "UIS_duration_age_*.dta"
+	*findfile `uisfile', path("`c(sysdir_personal)'/")
+	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
 	use "`r(fn)'", clear
 	catenate country_year = country year, p("_")
 	
@@ -57,6 +58,14 @@ program define dhs_clean
 	replace_many `fixdate' hv006 hv006_replace country_year
 	replace_many `fixcalendar' hv007 hv007_replace country_year hv006
 	replace_many `fixcalendar2' hv007 hv007_replace country_year 
+	
+	generate temp1 = substr(religion, 1, 7)
+	replace religion = "pentecostal" if inlist(temp1, "penteco", "penteco")
+	replace religion = "protestant" if inlist(temp1, "protest", "prostes")
+	replace religion = "catholic" if temp1 == "roman c"
+	replace religion = "seventh-day adventist" if temp1 == "seventh"
+	replace religion = "traditional" if inlist(temp1, "taditio", "traditi")| religion == "tradicionalist"
+	drop temp1
 	
 	foreach var of varlist ethnicity {
 		replace `var' = subinstr(`var', " et ", " & ",.) 

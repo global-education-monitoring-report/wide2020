@@ -22,6 +22,10 @@ program define mics_calculate
 	generate eduyears = .
 	rename ed4b ed4b_label
 	rename ed4b_nr ed4b
+	
+	replace ed4b = 0 if code_ed4a == 0 & country_year == "Suriname_2018"
+	replace ed4b = ed4b-2 if code_ed4a == 1 & country_year == "Suriname_2018"
+
 	* Consider the ed4b == 94 as missing
 	*replace ed4b = 99 if ed4b == 94
 	
@@ -31,11 +35,10 @@ program define mics_calculate
 	replace eduyears = ed4b if group == 1
 	replace eduyears = . if code_ed4 == 50 & group == 1
 		
-	replace eduyears = ed4b - 10 if ed4b >= 11 & ed4b <= 16 & group == 2
-	replace eduyears = ed4b - 14 if ed4b >= 21 & ed4b <= 27 & group == 2
-	replace eduyears = ed4b - 17 if ed4b >= 31 & ed4b <= 35 & group == 2
-	replace eduyears = 0 if inlist(ed4b_label, "moins d'un an au primaire", "moins d'un an au secondaire", "moins d'un an a l'universite") & group == 2
-	
+	replace eduyears = ed4b - 10 if ed4b >= 10 & ed4b <= 16 & group == 2
+	replace eduyears = ed4b - 14 if ed4b >= 20 & ed4b <= 27 & group == 2
+	replace eduyears = ed4b - 17 if ed4b >= 30 & ed4b <= 35 & group == 2
+		
 	replace eduyears = ed4b if ed4b >= 0 & ed4b <= 20 & group == 3
 	replace eduyears = ed4b - 7 if ed4b >= 21 & ed4b <= 23 & group == 3
 	replace eduyears = ed4b - 18 if ed4b == 32 & group == 3
@@ -111,6 +114,13 @@ program define mics_calculate
 	replace eduyears = years_lowsec if (ed4b_label == "basic school of nfeep" & country_year == "Mongolia_2013")
 	replace eduyears = years_prim if (ed4b_label == "high school of nfeep" & country_year == "Mongolia_2013")
 	
+	replace eduyears = ed4b if (ed4b >= 0 & ed4b <= 10) & group == 15
+	replace eduyears = 10 if ed4b_label == "slc" & group == 15
+	replace eduyears = years_upsec if ed4b_label == "plus 2 level" & group == 15
+	replace eduyears = years_higher if ed4b_label == "bachelor" & group == 15
+	replace eduyears = years_higher + 2	 if ed4b_label == "masters" & group == 15
+	replace eduyears = 0 if ed4b_label == "preschool" & group == 15
+
 	replace eduyears = ed4b if code_ed4a == 1 & group == 16
 	replace eduyears = ed4b + years_prim if code_ed4a == 21 & group == 16
 	replace eduyears = ed4b + years_lowsec if inlist(code_ed4a, 22, 24) & group == 16
@@ -139,20 +149,19 @@ program define mics_calculate
 	replace eduyears = ed4b + 1 if group == 21
 	replace eduyears = 0 if ed4b_label == "no grade" & group == 21
 	
-	replace eduyears = ed4b if (ed4b >= 0 & ed4b <= 10) & group == 15
-	replace eduyears = 10 if ed4b_label == "slc" & group == 15
-	replace eduyears = years_upsec if ed4b_label == "plus 2 level" & group == 15
-	replace eduyears = years_higher if ed4b_label == "bachelor" & group == 15
-	replace eduyears = years_higher + 2	 if ed4b_label == "masters" & group == 15
-	replace eduyears = 0 if ed4b_label == "preschool" & group == 15
+	replace eduyears = ed4b if inlist(code_ed4a, 1, 60, 70) & group == 22	
+	replace eduyears = ed4b + years_prim if inlist(code_ed4a, 2, 21, 22) & group == 22	
+	replace eduyears = ed4b + years_lowsec if (code_ed4a == 24) & group == 22	  
+	replace eduyears = ed4b + years_upsec if inlist(code_ed4a, 3, 32, 33) & group == 22	
+	replace eduyears = ed4b + years_higher if (code_ed4a == 40) & group == 22	
 	
-	 
 	* Recode for all country_years
 	replace eduyears = 97 if ed4b == 97 | ed4b_label == "inconsistent"
 	replace eduyears = 98 if ed4b == 98 | ed4b_label == "don't know"
 	replace eduyears = 99 if ed4b == 99 | inlist(ed4b_label, "missing", "doesn't answer", "missing/dk")
 	replace eduyears = 0 if ed4b == 0
 	replace eduyears = . if eduyears >= 99
+	capture replace eduyears = eduyears - 1 if ed_completed == "no" & (eduyears <= 97)
 	*replace eduyears = 30 if eduyears >= 30 & eduyears < 90
 		
 	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
@@ -267,7 +276,6 @@ program define mics_calculate
 	}
 
 	hashsort country_year
-		
 	gcollapse diff* adj* flag_month, by(country_year) fast
 	save "`data_path'/MICS/mics_adjustment.dta", replace
 
@@ -368,7 +376,7 @@ program define mics_calculate
 	replace edu0  = 1 if eduyears == 0
 
 	foreach AGE in schage  {
-		generate edu0_prim=edu0 if `AGE' >= prim_age0 + 3 & `AGE' <= prim_age0 + 6
+		generate edu0_prim = edu0 if `AGE' >= prim_age0 + 3 & `AGE' <= prim_age0 + 6
 		*gen edu0_prim2=edu0 if `AGE'>=prim_age0+2 & `AGE'<=prim_age0+4
 		*gen edu0_prim3=edu0 if `AGE'>=prim_age0+4 & `AGE'<=prim_age0+8
 	}
@@ -396,12 +404,18 @@ program define mics_calculate
 
 	for X in any prim_dur lowsec_dur upsec_dur prim_age0 : rename X X_comp
 
-		
 	*Durations for OUT-OF-SCHOOL & ATTENDANCE
 	cd "`c(sysdir_personal)'/"
-	local uisfile : dir . files "UIS_duration_age_*.dta"
-	findfile `uisfile', path("`c(sysdir_personal)'/")
+	*local uisfile : dir . files "UIS_duration_age_*.dta"
+	*findfile `uisfile', path("`c(sysdir_personal)'/")
+	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
+	use "`r(fn)'", clear
+	rename year year_original
+	generate year = year_original
+	replace year = 2017 if year_original >= 2018
 	merge m:1 iso_code3 year using "`r(fn)'", keep(master match) nogenerate
+	drop year
+	rename year_original year
 	drop lowsec_age_uis upsec_age_uis
 		
 	for X in any prim_dur lowsec_dur upsec_dur: rename X_uis X_eduout

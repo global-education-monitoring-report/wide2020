@@ -113,6 +113,25 @@ program define mics_read
 		capture drop region
 		for X in any ethnie ethnicidad: capture rename X ethnicity
 				
+		if (year_folder >= 2017) {
+			*egen year_folder = median(hh5y)
+
+			drop ed3 ed7 
+			rename ed4 ed3
+			for X in any a b: rename ed5X ed4X
+
+			rename ed9 ed5
+			capture drop ed6a
+			for X in any a b: rename ed10X ed6X
+
+			rename ed15 ed7
+			for X in any a b: rename ed16X ed8X
+
+			rename ed8 ed3_check
+			rename ed6 ed_completed 
+			sdecode ed_completed, replace
+		}
+		
 		*create numerics variables 
 		for X in any ed4a ed4b ed5 ed6a ed6b ed8a ed8b schage: capture generate X_nr = X
 		for X in any ed4a_nr ed6a_nr ed8a_nr: capture recode X (8 = 98) (9 = 99)
@@ -153,11 +172,11 @@ program define mics_read
 		*create variables doesnt exist 
 		for X in any `micsvars_keepnum': capture generate X = .
 		for X in any `micsvars_keepstr': capture generate X = ""
-		order `micsvars_keep'
+		*order `micsvars_keep'
 
 		*rename some variables 
 		findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
-		capture renamefrom using "`r(fn)'", filetype(excel)  if(!missing(rename)) raw(standard_name) clean(rename) label(varlab_en) keepx
+		capture renamefrom using "`r(fn)'", filetype(excel) if(!missing(rename)) raw(standard_name) clean(rename) label(varlab_en) keepx
 						
 		*compress and save each file in a temporal folder
 		compress 

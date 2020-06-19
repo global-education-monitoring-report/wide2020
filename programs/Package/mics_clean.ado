@@ -31,8 +31,9 @@ program define mics_clean
 
 	*fix some uis duration
 	cd "`c(sysdir_personal)'/"
-	local uisfile : dir . files "UIS_duration_age_*.dta"
-	findfile `uisfile', path("`c(sysdir_personal)'/")
+	*local uisfile : dir . files "UIS_duration_age_*.dta"
+	*findfile `uisfile', path("`c(sysdir_personal)'/")
+	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
 	use "`r(fn)'", clear
 	merge m:m iso_code3 year using `fixduration', keep(match master) 
 	replace prim_dur_uis   = prim_dur_replace[_n]   if _merge == 3 & prim_dur_replace   !=.
@@ -123,8 +124,8 @@ program define mics_clean
 	for X in any 4 6 8: replace code_edXa = 22 if inlist(edXa_nr, 4, 5) & inlist(edXb_nr, 0, 1, 2) & country_year == "Kyrgyzstan_2014"
 	for X in any 4 6 8: replace code_edXa = 33 if inlist(edXa_nr, 4, 5) & inlist(edXb_nr, 3, 4) & country_year == "Kyrgyzstan_2014"	
 
-	for X in any ed4a ed6a ed8a: replace code_X = 97 if X=="inconsistent"
-	for X in any ed4a ed6a ed8a: replace code_X = 98 if X=="don't know"
+	for X in any ed4a ed6a ed8a: replace code_X = 97 if X == "inconsistent"
+	for X in any ed4a ed6a ed8a: replace code_X = 98 if X == "don't know"
 	for X in any ed4a ed6a ed8a: replace code_X = 99 if inlist(X, "missing", "doesn't answer", "missing/dk")
     *for X in any ed4a ed6a ed8a: capture replace code_X = . if X >= 97 
 	
@@ -133,7 +134,14 @@ program define mics_clean
 
 	* merge with information of duration of levels, school calendar, official age for primary, etc:
 	bys country_year: egen year = median(hh5y)
+	
+	*The durations for 2018 are not available, so I create a "fake year"
+	rename year year_original
+	generate year = year_original
+	replace year = 2017 if year_original >= 2018
 	merge m:1 iso_code3 year using "`fixduration_uis'", keep(match master)  nogenerate
+	drop year
+	rename year_original year
 	drop lowsec_age_uis upsec_age_uis 
 
 	for X in any prim_dur lowsec_dur upsec_dur: rename X_uis X
