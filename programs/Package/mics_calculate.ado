@@ -405,14 +405,14 @@ program define mics_calculate
 	for X in any prim_dur lowsec_dur upsec_dur prim_age0 : rename X X_comp
 
 	*Durations for OUT-OF-SCHOOL & ATTENDANCE
+	rename year year_original
+	generate year = year_original
+	replace year = 2017 if year_original >= 2018
 	cd "`c(sysdir_personal)'/"
 	*local uisfile : dir . files "UIS_duration_age_*.dta"
 	*findfile `uisfile', path("`c(sysdir_personal)'/")
 	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
-	use "`r(fn)'", clear
-	rename year year_original
-	generate year = year_original
-	replace year = 2017 if year_original >= 2018
+	*use "`r(fn)'", clear
 	merge m:1 iso_code3 year using "`r(fn)'", keep(master match) nogenerate
 	drop year
 	rename year_original year
@@ -450,7 +450,6 @@ program define mics_calculate
 	foreach var of varlist `varlist_m' {
 			generate `var'_no = `var'
 	}
-	
 	
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	foreach var in `vars' {
