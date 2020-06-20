@@ -7,8 +7,8 @@ program define widetable
 
 	clear all
 	* error message 
-	if (`nf' < 2) {
-		display as error "`nf' can not be less than 2"
+	if (`nf' < 1) {
+		display as error "`nf' can not be less than 1"
 		exit
 	}
 	if ("`source'" != "mics" & "`source'" != "dhs" & "`source'"  != "both") {
@@ -33,20 +33,19 @@ program define widetable
 	if "`source'" == "both" {
 		if "`step'" == "all" {
 			
-			mics_read `data_path' `nf' `country_name' `country_year'
-			mics_clean `data_path' 
-			mics_calculate `data_path' 
-			mics_summarize `data_path' `output_path'
+			mics_read `data_path' `output_path' `nf' `country_name' `country_year'
+			mics_clean `output_path' 
+			mics_calculate `output_path' 
+			mics_summarize `output_path'
 			
-			dhs_read `data_path' `nf' `country_name' `country_year'
-			dhs_clean `data_path' 
-			dhs_calculate `data_path' 
-			dhs_summarize `data_path' `output_path' 
+			dhs_read `data_path' `output_path' `nf' `country_name' `country_year'
+			dhs_clean `output_path' 
+			dhs_calculate `output_path' 
+			dhs_summarize `output_path' 
 
 			cd `output_path'/MICS
 			local micsfilelist : dir . files "*.dta"
-			local micssorted : list sort micsfilelist
-			local micsrecent : word 1 of `micssorted'
+			local micsrecent : word `:list sizeof micsfilelist' of `micsfilelist'
 			cd `output_path'/DHS
 			local dhsfilelist : dir . files "*.dta"
 			local dhsrecent : word `:list sizeof dhsfilelist' of `dhsfilelist'
@@ -60,25 +59,24 @@ program define widetable
 			export delimited "`output_path'/widetable_`datetime'.csv", replace
 		} 
 		else if "`step'" == "read" {
-			mics_read `data_path' `nf' `country_name' `country_year'
-			dhs_read `data_path' `nf' `country_name' `country_year'
+			mics_read `data_path' `output_path' `nf' `country_name' `country_year'
+			dhs_read `data_path' `output_path' `nf' `country_name' `country_year'
 		}
 		else if "`step'" == "clean" {
-			mics_clean `data_path' 
-			dhs_clean `data_path' 
+			mics_clean `output_path' 
+			dhs_clean `output_path' 
 		}
 		else if "`step'" == "calculate" {
-			mics_calculate `data_path' 
-			dhs_calculate `data_path' 
+			mics_calculate `output_path' 
+			dhs_calculate `output_path' 
 		}
 		else if  "`step'" == "summarize" {
-			mics_summarize `data_path' `output_path'
-			dhs_summarize `data_path' `output_path'
+			mics_summarize `output_path'
+			dhs_summarize `output_path'
 						
 			cd `output_path'/MICS
 			local micsfilelist : dir . files "*.dta"
-			local micssorted : list sort micsfilelist
-			local micsrecent : word 1 of `micssorted'
+			local micsrecent : word `:list sizeof micsfilelist' of `micsfilelist'
 			cd `output_path'/DHS
 			local dhsfilelist : dir . files "*.dta"
 			local dhsrecent : word `:list sizeof dhsfilelist' of `dhsfilelist'
@@ -98,22 +96,22 @@ program define widetable
 	}  
 	else if "`source'" == "mics" {
 		if "`step'" == "all" {
-			mics_read `data_path' `nf' `country_name' `country_year'
-			mics_clean `data_path' 
-			mics_calculate `data_path' 
-			mics_summarize `data_path' `output_path'
+			mics_read `data_path' `output_path' `nf' `country_name' `country_year'
+			mics_clean `output_path' 
+			mics_calculate `output_path' 
+			mics_summarize `output_path'
 		} 
 		else if "`step'" == "read" {
-			mics_read `data_path' `nf' `country_name' `country_year'
+			mics_read `data_path' `output_path' `nf' `country_name' `country_year'
 		}
 		else if "`step'" == "clean" {
-			mics_clean `data_path' 
+			mics_clean `output_path' 
 		}
 		else if "`step'" == "calculate" {
-			mics_calculate `data_path' 
+			mics_calculate `output_path' 
 		}
 		else if "`step'" == "summarize" {
-			mics_summarize `data_path' `output_path'
+			mics_summarize `output_path'
 		}
 		else {
 			
@@ -121,22 +119,22 @@ program define widetable
 	}	
 	else {
 		if "`step'" == "all" {
-			dhs_read `data_path' `nf' `country_name' `country_year'
-			dhs_clean `data_path' 
-			dhs_calculate `data_path' 
-			dhs_summarize `data_path' `output_path'
+			dhs_read `data_path' `output_path' `nf' `country_name' `country_year'
+			dhs_clean `output_path' 
+			dhs_calculate `output_path' 
+			dhs_summarize `output_path'
 		} 
 		else if "`step'" == "read" {
-			dhs_read `data_path'  `nf' `country_name' `country_year'
+			dhs_read `data_path'  `output_path' `nf' `country_name' `country_year'
 		}
 		else if "`step'" == "clean" {
-			dhs_clean `data_path' 
+			dhs_clean `output_path' 
 		}
 		else if "`step'" == "calculate" {
-			dhs_calculate `data_path' 
+			dhs_calculate `output_path' 
 		}
 		else if "`step'" == "summarize" {
-			dhs_summarize `data_path' `output_path'
+			dhs_summarize `output_path'
 		}
 		else {
 			

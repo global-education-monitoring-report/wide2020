@@ -3,21 +3,26 @@
 * April 2020
 
 program define dhs_read
-	args data_path nf country_name country_year
+	args data_path output_path nf country_name country_year
 
+	local nf = `nf'+1
 	* read IR and MR files to get ethnicity and religion
 	local modules ir mr 
-	cd "`data_path'/DHS/"
-	capture mkdir "`data_path'/DHS/temporal/"
-	
+	cd "`output_path'"
+	capture mkdir "`output_path'/DHS"
+	cd "`output_path'/DHS/"
+	capture mkdir "`output_path'/DHS/data"
+	cd "`output_path'/DHS/data/"
+	capture mkdir "`output_path'/DHS/data/temporal"
+
 	foreach module of local modules {
-		cd "`data_path'/DHS/"
-		capture mkdir "`data_path'/DHS/temporal/`module'"
+		cd "`output_path'/DHS/data/temporal/"
+		capture mkdir "`output_path'/DHS/data/temporal/`module'"
 		set more off
 		
 		findfile filenames.xlsx, path("`c(sysdir_personal)'/")
 		import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow clear 
-		local nrow: di _N + 1
+		local nrow: di _N
 		
 		if (`nf' > `nrow') {
 			import excel  "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nrow') clear
@@ -39,7 +44,7 @@ program define dhs_read
 	
 	
 		foreach file of local filepath {
-			
+			cd "`data_path'/DHS/"
 			*read a file
 			use *v001 *v002 *v130 *v131 *v150 using "`file'", clear
 			set more off
@@ -69,35 +74,35 @@ program define dhs_read
 			
 			capture label drop _all
 			compress
-			save "`data_path'/DHS/temporal/`module'/`1'_`3'", replace
+			save "`output_path'/DHS/data/temporal/`module'/`1'_`3'", replace
 			
 		}
 		
-		cd "`data_path'/DHS/temporal/`module'/"
+		cd "`output_path'/DHS/data/temporal/`module'/"
 	    clear all
 		fs *.dta
 		append using `r(files)', force
 		*gduplicates drop
-		save "`data_path'/DHS/temporal/dhs_`module'.dta" , replace
+		save "`output_path'/DHS/data/temporal/dhs_`module'.dta" , replace
 	}
 	
-	use "`data_path'/DHS/temporal/dhs_ir.dta", clear
-	append using "`data_path'/DHS/temporal/dhs_mr.dta"
+	use "`output_path'/DHS/data/temporal/dhs_ir.dta", clear
+	append using "`output_path'/DHS/data/temporal/dhs_mr.dta"
 	
-	erase "`data_path'/DHS/temporal/dhs_ir.dta"
-	erase "`data_path'/DHS/temporal/dhs_mr.dta"
+	erase "`output_path'/DHS/data/temporal/dhs_ir.dta"
+	erase "`output_path'/DHS/data/temporal/dhs_mr.dta"
 	
 	rename v130 religion
 	rename v131 ethnicity
 	
 	compress
-	save "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta", replace
+	save "`output_path'/DHS/data/temporal/dhs_religion_ethnicity.dta", replace
 
 	
 	* read pr files
 	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
 	import excel  "`r(fn)'", sheet(dhs_pr_files) firstrow clear 
-	local nrow: di _N + 1
+	local nrow: di _N
 	if (`nf' > `nrow') {
 		import excel  "`r(fn)'", sheet(dhs_pr_files) firstrow cellrange (:D`nrow') clear 
 	} 
@@ -213,27 +218,27 @@ program define dhs_read
 		catenate hh_id = country_year cluster hv002 
 		
 		* add religion and ethnicity
-		merge m:m hh_id using "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
+		merge m:m hh_id using "`output_path'/DHS/data/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
 					
 		*save each file in temporal folder
 		compress 
-		save "`data_path'/DHS/temporal/`1'_`3'_pr.dta", replace
+		save "`output_path'/DHS/data/temporal/`1'_`3'_pr.dta", replace
 }
 
-	cd "`data_path'/DHS/temporal/"
-	erase "`data_path'/DHS/temporal/dhs_religion_ethnicity.dta"
+	cd "`output_path'/DHS/data/temporal/"
+	erase "`output_path'/DHS/data/temporal/dhs_religion_ethnicity.dta"
 	clear all
 
 	* append all the datasets
 	fs *.dta
 	append using `r(files)', force
 	compress
-	save "`data_path'/DHS/dhs_read.dta", replace
+	save "`output_path'/DHS/data/dhs_read.dta", replace
 		
 	* remove temporal folder and files
-	rmfiles , folder("`data_path'/DHS/temporal/ir") match("*.dta") rmdirs
-	rmfiles , folder("`data_path'/DHS/temporal/mr") match("*.dta") rmdirs
-	rmfiles , folder("`data_path'/DHS/temporal") match("*.dta") rmdirs
+	rmfiles , folder("`output_path'/DHS/data/temporal/ir") match("*.dta") rmdirs
+	rmfiles , folder("`output_path'/DHS/data/temporal/mr") match("*.dta") rmdirs
+	rmfiles , folder("`output_path'/DHS/data/temporal") match("*.dta") rmdirs
 end
 
 

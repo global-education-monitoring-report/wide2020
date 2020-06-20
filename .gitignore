@@ -19,3 +19,4 @@ auxiliary_data/dhs_collapse_by_categories_v7.dta
 auxiliary_data/dhs_interview_dates.dta
 auxiliary_data/current_school_year_MICS.dta
 dhs2.sql
+output/widedata_2020-06-19T105524.sql

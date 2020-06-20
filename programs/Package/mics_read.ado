@@ -3,13 +3,20 @@
 * May 2020
 
 program define mics_read
-	args data_path nf country_name country_year
+	args data_path output_path nf country_name country_year
 	
+	local nf = `nf'+1
 	* create folder
-	capture mkdir "`data_path'/MICS/temporal"
+	cd "`output_path'"
+	capture mkdir "`output_path'/MICS"
+	cd "`output_path'/MICS"
+	capture mkdir "`output_path'/MICS/data"
+	cd "`output_path'/MICS/data"
+	capture mkdir "`output_path'/MICS/data/temporal"
 	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
 	import excel  "`r(fn)'", sheet(mics_hl_files) firstrow clear 
-	local nrow: di _N + 1
+	local nrow: di _N
+	
 	
 	if (`nf' > `nrow') {
 		import excel  "`r(fn)'", sheet(mics_hl_files) firstrow cellrange (:D`nrow') clear
@@ -180,20 +187,20 @@ program define mics_read
 						
 		*compress and save each file in a temporal folder
 		compress 
-		save "`data_path'/MICS/temporal/`1'_`3'_hl", replace
+		save "`output_path'/MICS/data/temporal/`1'_`3'_hl", replace
 	}
 
 	* change dir to temporal folder
-	cd "`data_path'/MICS/temporal"
+	cd "`output_path'/MICS/data/temporal"
     clear all
     	
 	* append all files
 	fs *.dta
 	append using `r(files)', force
 	compress
-	save "`data_path'/MICS/mics_read.dta", replace
+	save "`output_path'/MICS/data/mics_read.dta", replace
 	
 	* remove temporal folder and files
-	rmfiles , folder("`data_path'/MICS/temporal") match("*.dta") rmdirs
+	rmfiles , folder("`output_path'/MICS/data/temporal") match("*.dta") rmdirs
 
 end

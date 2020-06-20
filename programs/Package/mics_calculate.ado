@@ -3,7 +3,7 @@
 * April 2020
 
 program define mics_calculate 
-	args data_path 
+	args output_path 
 
 	* COMPUTE THE YEARS OF EDUCATION BY COUNTRY 
 
@@ -14,7 +14,7 @@ program define mics_calculate
 	save `group'
 	
 	* read the main data
-	use "`data_path'/MICS/mics_clean.dta", clear
+	use "`output_path'/MICS/data/mics_clean.dta", clear
 	set more off
 	merge m:1 country_year using `group', keep(match master) nogenerate
 	
@@ -202,10 +202,10 @@ program define mics_calculate
 
 	* save data
 	compress
-	save "`data_path'/MICS/mics_calculate.dta", replace
+	save "`output_path'/MICS/data/mics_calculate.dta", replace
 	
 	* ADJUST SCHOOL YEAR
-	use "`data_path'/MICS/mics_calculate.dta", clear
+	use "`output_path'/MICS/data/mics_calculate.dta", clear
 	set more off
 	
 	* current school year that ED question in MICS refers to
@@ -277,10 +277,10 @@ program define mics_calculate
 
 	hashsort country_year
 	gcollapse diff* adj* flag_month, by(country_year) fast
-	save "`data_path'/MICS/mics_adjustment.dta", replace
+	save "`output_path'/MICS/data/mics_adjustment.dta", replace
 
 	* COMPUTE IF SOMEONE DOES NOT GO TO SCHOOL (education out)
-	use "`data_path'/MICS/mics_calculate.dta", clear
+	use "`output_path'/MICS/data/mics_calculate.dta", clear
 	set more off
 
 	*Creating age groups for preschool
@@ -328,7 +328,7 @@ program define mics_calculate
 	drop eduout_mauritania
 	
 	* Merging with adjustment
-	merge m:1 country_year using "`data_path'/MICS/mics_adjustment.dta", keepusing(adj1_norm) nogenerate
+	merge m:1 country_year using "`output_path'/MICS/data/mics_adjustment.dta", keepusing(adj1_norm) nogenerate
 	rename adj1_norm adjustment
 	generate agestandard = ageU if adjustment == 0
 	replace agestandard = ageA if adjustment == 1
@@ -455,10 +455,11 @@ program define mics_calculate
 	foreach var in `vars' {
 		capture sdecode `var', replace
 		capture tostring `var', replace
+		capture replace `var' = "" if `var' == "."
 	}
 		
 	* save data		
 	compress
-	save "`data_path'/MICS/mics_calculate.dta", replace
+	save "`output_path'/MICS/data/mics_calculate.dta", replace
 
 end

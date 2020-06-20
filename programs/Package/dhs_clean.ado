@@ -3,7 +3,7 @@
 * April 2020
 
 program define dhs_clean
-	args data_path 
+	args output_path 
 	
 	*create auxiliary tempfiles from setcode table to fix values later
 	local vars sex location date duration ethnicity region religion hv122 hv109 calendar calendar2
@@ -43,7 +43,7 @@ program define dhs_clean
 	save `isocode'
 		
 	* read the master data
-	use "`data_path'/DHS/dhs_read.dta", clear
+	use "`output_path'/DHS/data/dhs_read.dta", clear
 	set more off
 
 	*Fixing categories and creating variables
@@ -167,6 +167,6 @@ program define dhs_clean
 
 
 	compress 
-	save "`data_path'/DHS/dhs_clean.dta", replace
+	save "`output_path'/DHS/data/dhs_clean.dta", replace
 
 end

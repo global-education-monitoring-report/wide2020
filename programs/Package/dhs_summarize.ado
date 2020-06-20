@@ -3,7 +3,7 @@
 * April 2020
 
 program define dhs_summarize
-	args data_path output_path
+	args output_path
 	
 	* automate file names using current date 
 	local today : di  %tdCY-N-D  daily("$S_DATE", "DMY")
@@ -23,14 +23,13 @@ program define dhs_summarize
 	local varsby country_year iso_code3 year adjustment
 	
 	* create a temporal folder
-	cd "`output_path'"
-	capture mkdir "`output_path'/DHS/"
+	cd "`output_path'/DHS/"
 	capture mkdir "`output_path'/DHS/temporal/"
 	cd "`output_path'/DHS/temporal"
 
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/DHS/dhs_calculate.dta", clear
+		use `keepvars' using "`output_path'/DHS/data/dhs_calculate.dta", clear
 		set more off
 		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast
 		save "resultm_`i'.dta", replace
@@ -38,7 +37,7 @@ program define dhs_summarize
 	
 	* total observations
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/DHS/dhs_calculate.dta", clear
+		use `keepvars' using "`output_path'/DHS/data/dhs_calculate.dta", clear
 		gcollapse (count) `varlist_no', by(`varsby' `tuple`i'') fast
 		save "resultc_`i'.dta", replace
 	}
@@ -68,6 +67,6 @@ program define dhs_summarize
 
 	save "`output_path'/DHS/dhs_summarize_`today'T`time'.dta", replace
 	export delimited "`output_path'/DHS/dhs_summarize_`today'T`time'.csv", replace
-	
+	rmfiles , folder("`output_path'/DHS/temporal") match("*.dta") rmdirs
 
 end

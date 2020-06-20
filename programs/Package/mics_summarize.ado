@@ -3,17 +3,16 @@
 * April 2020
 
 program define mics_summarize
-	args data_path output_path 
+	args output_path 
 	
 	* automate file names using current date 
 	local today : di  %tdCY-N-D  daily("$S_DATE", "DMY")
 	local time : di subinstr(c(current_time),":", "", .)
 	
 	* create a temporal folder
-	cd "`output_path'"
-	capture mkdir "`output_path'/MICS/"
+	cd "`output_path'/MICS/"
 	capture mkdir "`output_path'/MICS/temporal/"
-	cd "`output_path'/MICS/temporal"
+	cd "`output_path'/MICS/temporal/"
 	
 	* combine categories 
 	local categories_collapse location sex wealth region ethnicity religion
@@ -30,16 +29,16 @@ program define mics_summarize
 	
 	* mean estimation 
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
+		use `keepvars' using "`output_path'/MICS/data/mics_calculate.dta", clear
 		set more off
-		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') fast 
+		gcollapse (mean) `varlist_m' comp_prim_aux comp_lowsec_aux [aw = hhweight], by(`varsby' `tuple`i'') 
 		save "resultm_`i'.dta", replace
 	}
 	
 	* count observations
 	foreach i of numlist 0/6 12/18 20/21 31 41 {
-		use `keepvars' using "`data_path'/MICS/mics_calculate.dta", clear
-		gcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') fast
+		use `keepvars' using "`output_path'/MICS/data/mics_calculate.dta", clear
+		gcollapse (count) `varlist_no' [aw = hhweight], by(`varsby' `tuple`i'') 
 		save "resultc_`i'.dta", replace
 	}
 	
@@ -68,5 +67,5 @@ program define mics_summarize
 
 	save "`output_path'/MICS/mics_summarize_`today'T`time'.dta", replace
 	export delimited "`output_path'/MICS/mics_summarize_`today'T`time'.csv", replace
-	
+	*rmfiles , folder("`output_path'/MICS/temporal") match("*.dta") rmdirs
 end

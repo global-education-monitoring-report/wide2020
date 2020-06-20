@@ -3,7 +3,7 @@
 * April 2020
 
 program define mics_clean
-	args data_path  
+	args output_path
 
 	*create auxiliary tempfiles from setcode table to fix values later
 	local vars sex location ed3 ed4a ed4b ed5 ed6a ed6b ed7 ed8a date duration ethnicity region religion code_ed4a code_ed6a code_ed8a
@@ -45,7 +45,7 @@ program define mics_clean
 	save `fixduration_uis'
 
 	* read the master data
-	use "`data_path'/MICS/mics_read.dta", clear
+	use "`output_path'/MICS/data/mics_read.dta", clear
 	set more off
 
 	* FIX SEVERAL VARIABLES
@@ -156,6 +156,6 @@ program define mics_clean
 	
 	* save data 	
 	compress
-	save "`data_path'/MICS/mics_clean.dta", replace
+	save "`output_path'/MICS/data/mics_clean.dta", replace
 
 end
