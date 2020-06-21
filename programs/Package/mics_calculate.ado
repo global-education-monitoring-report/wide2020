@@ -90,10 +90,10 @@ program define mics_calculate
 	replace eduyears = ed4b + years_higher if code_ed4a == 40 & group == 10
 	replace eduyears = ed4b + years_lowsec if code_ed4a == 24 & country_year == "Kazakhstan_2015" & group == 10
 	
-	replace eduyears = ed4b if inlist(ed4a_nr, 0, 1, 2, 3) & group == 11
-	replace eduyears = ed4b + years_lowsec if inlist(ed4a_nr, 4, 5) & inlist(ed4b, 0, 1, 2) & group == 11
-	replace eduyears = ed4b + years_upsec if inlist(ed4a_nr, 4, 5) & inlist(ed4b, 3, 4) & group == 11
-	replace eduyears = ed4b + years_upsec if ed4a_nr == 6 & group == 11
+	capture replace eduyears = ed4b if inlist(ed4a_nr, 0, 1, 2, 3) & group == 11
+	capture replace eduyears = ed4b + years_lowsec if inlist(ed4a_nr, 4, 5) & inlist(ed4b, 0, 1, 2) & group == 11
+	capture replace eduyears = ed4b + years_upsec if inlist(ed4a_nr, 4, 5) & inlist(ed4b, 3, 4) & group == 11
+	capture replace eduyears = ed4b + years_upsec if ed4a_nr == 6 & group == 11
 	
 	replace eduyears = ed4b if inlist(code_ed4a, 1, 2, 21, 22) & group == 12
 	replace eduyears = ed4b + years_lowsec if code_ed4a == 24 & group == 12
@@ -197,8 +197,8 @@ program define mics_calculate
 	}
 
 	* Recoding ED5: "Attended school during current school year?"
-	generate attend = 1 if ed5 == "yes" | ed5_nr == 1
-	replace attend  = 0 if ed5 == "no" | ed5_nr == 0
+	capture generate attend = 1 if ed5 == "yes" | ed5_nr == 1
+	capture replace attend  = 0 if ed5 == "no" | ed5_nr == 0
 
 	* save data
 	compress
@@ -292,30 +292,30 @@ program define mics_calculate
 	label values age_group age_group
 
 	generate presch_before = 1 if (ed7 == "yes" | ed7 == "1") & code_ed8a == 0
-	generate attend_primary = 1 if attend == 1 & inlist(code_ed6a, 1, 60, 70)
-	replace attend_primary  = 0 if attend == 1 & code_ed6a == 0
-	replace attend_primary  = 0 if attend == 0
+	capture generate attend_primary = 1 if attend == 1 & inlist(code_ed6a, 1, 60, 70)
+	capture replace attend_primary  = 0 if attend == 1 & code_ed6a == 0
+	capture replace attend_primary  = 0 if attend == 0
 		
 	* generate no_attend the attend complement
-	recode attend (1=0) (0=1), gen(no_attend)
+	capture recode attend (1=0) (0=1), gen(no_attend)
 
 	* generate eduout
 	* missing when age, attendance or level of attendance (when goes to school) is missing / 1: goes to preschool. "out of school" if "ever attended school"=no 
-	generate eduout = no_attend
-	replace eduout  = . if (attend == 1 & code_ed6a == .) | age == . | (inlist(code_ed6a,. , 98, 99) & eduout == 0)
-	replace eduout  = 1 if code_ed6a == 0 | ed3 == "no" 
+	capture generate eduout = no_attend
+	capture replace eduout  = . if (attend == 1 & code_ed6a == .) | age == . | (inlist(code_ed6a,. , 98, 99) & eduout == 0)
+	capture replace eduout  = 1 if code_ed6a == 0 | ed3 == "no" 
 	*Code_ed6a=80/90 affects countries Nigeria 2011, Nigeria 2016, Mauritania 2015, SouthSudan 2010, Sudan 2010 2014
-	replace eduout = 1 if code_ed6a == 80 
-	replace eduout = 1 if code_ed6a == 90 
+	capture  replace eduout = 1 if code_ed6a == 80 
+	capture  replace eduout = 1 if code_ed6a == 90 
 	*special cases
-	replace eduout = no_attend if country_year == "Nepal_2014"
-	replace eduout = . if (ed6b == "missing" | ed6b == "don't know") & eduout == 0 & country_year == "Nepal_2014"
-	replace eduout = 1 if ed6b == "preschool" | ed3 == "no" & country_year == "Nepal_2014"
-	replace eduout = no_attend if country_year == "Barbados_2012"
-	replace eduout = . if attend == 1 & code_ed6a == . & country_year == "Barbados_2012"
-	replace eduout = . if inlist(code_ed6a, 98, 99) & eduout == 0 & country_year == "Barbados_2012"
-	replace eduout = . if ed6a_nr == 0 & country_year == "Barbados_2012"
-	replace eduout = 1 if ed3 == "no" & country_year == "Barbados_2012"
+	capture replace eduout = no_attend if country_year == "Nepal_2014"
+	capture replace eduout = . if (ed6b == "missing" | ed6b == "don't know") & eduout == 0 & country_year == "Nepal_2014"
+	capture replace eduout = 1 if ed6b == "preschool" | ed3 == "no" & country_year == "Nepal_2014"
+	capture replace eduout = no_attend if country_year == "Barbados_2012"
+	capture replace eduout = . if attend == 1 & code_ed6a == . & country_year == "Barbados_2012"
+	capture replace eduout = . if inlist(code_ed6a, 98, 99) & eduout == 0 & country_year == "Barbados_2012"
+	capture replace eduout = . if ed6a_nr == 0 & country_year == "Barbados_2012"
+	capture replace eduout = 1 if ed3 == "no" & country_year == "Barbados_2012"
 	
 	generate attend_mauritania = 0
     replace attend_mauritania = 1 if ed5 == "yes"
@@ -421,30 +421,34 @@ program define mics_calculate
 	for X in any prim_dur lowsec_dur upsec_dur: rename X_uis X_eduout
 	rename prim_age_uis prim_age0_eduout
 
-	generate lowsec_age0_eduout = prim_age0_eduout + prim_dur_eduout
-	generate upsec_age0_eduout  = lowsec_age0_eduout + lowsec_dur_eduout
-	for X in any prim lowsec upsec: generate X_age1_eduout = X_age0_eduout + X_dur_eduout - 1
+	capture generate lowsec_age0_eduout = prim_age0_eduout + prim_dur_eduout
+	capture generate upsec_age0_eduout  = lowsec_age0_eduout + lowsec_dur_eduout
+	for X in any prim lowsec upsec: capture generate X_age1_eduout = X_age0_eduout + X_dur_eduout - 1
 		
 	*Age limits for out of school
 	foreach X in prim lowsec upsec {
-		generate eduout_`X' = eduout if schage >= `X'_age0_eduout & schage <= `X'_age1_eduout
+		capture generate eduout_`X' = eduout if schage >= `X'_age0_eduout & schage <= `X'_age1_eduout
 	}
 
 	*Age limit for Attendance:
 	*-- PRESCHOOL 3
-	generate attend_preschool   = 1 if attend == 1 & code_ed6a == 0
-	replace attend_preschool    = 0 if attend == 1 & code_ed6a != 0
-	replace attend_preschool    = 0 if attend == 0
-	generate preschool_3        = attend_preschool if schage >= 3 & schage <= 4
-	generate preschool_1ybefore = attend_preschool if schage == prim_age0_eduout - 1
+	capture generate attend_preschool   = 1 if attend == 1 & code_ed6a == 0
+	capture replace attend_preschool    = 0 if attend == 1 & code_ed6a != 0
+	capture replace attend_preschool    = 0 if attend == 0
+	capture generate preschool_3        = attend_preschool if schage >= 3 & schage <= 4
+	capture generate preschool_1ybefore = attend_preschool if schage == prim_age0_eduout - 1
 
 	*-- HIGHER ED
 	generate high_ed       = 1 if inlist(code_ed6a, 3, 32, 33, 40)
-	generate attend_higher = 1 if attend == 1 & high_ed == 1
-	replace attend_higher  = 0 if attend == 1 & high_ed != 1
-	replace attend_higher  = 0 if attend == 0
-	generate attend_higher_1822 = attend_higher if schage >= 18 & schage <= 22
+	capture generate attend_higher = 1 if attend == 1 & high_ed == 1
+	capture replace attend_higher  = 0 if attend == 1 & high_ed != 1
+	capture replace attend_higher  = 0 if attend == 0
+	capture generate attend_higher_1822 = attend_higher if schage >= 18 & schage <= 22
 
+	foreach X in prim lowsec upsec {
+		capture generate eduout_`X' = . if country == "Cuba"
+	}
+	
 	* Create variables for count of observations
 	local varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec
 	foreach var of varlist `varlist_m' {

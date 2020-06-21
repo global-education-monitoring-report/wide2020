@@ -119,7 +119,16 @@ program define mics_read
 		for X in any region: capture rename X hh7
 		capture drop region
 		for X in any ethnie ethnicidad: capture rename X ethnicity
-				
+		
+		*create numerics variables 
+		for X in any ed4a ed4b ed5 ed6a ed6b ed8a ed8b schage: capture generate X_nr = X
+		for X in any ed4a_nr ed6a_nr ed8a_nr: capture recode X (8 = 98) (9 = 99)
+		
+		* drop schage missing values 
+		capture replace schage_nr = . if schage_nr >= 150
+		capture drop schage
+		capture rename schage_nr schage
+		
 		if (year_folder >= 2017) {
 			*egen year_folder = median(hh5y)
 
@@ -138,15 +147,6 @@ program define mics_read
 			rename ed6 ed_completed 
 			sdecode ed_completed, replace
 		}
-		
-		*create numerics variables 
-		for X in any ed4a ed4b ed5 ed6a ed6b ed8a ed8b schage: capture generate X_nr = X
-		for X in any ed4a_nr ed6a_nr ed8a_nr: capture recode X (8 = 98) (9 = 99)
-		
-		* drop schage missing values 
-		capture replace schage_nr = . if schage_nr >= 150
-		capture drop schage
-		capture rename schage_nr schage
 		
 		*decode and change strings values to lower case
 		ds
@@ -181,6 +181,10 @@ program define mics_read
 		for X in any `micsvars_keepstr': capture generate X = ""
 		*order `micsvars_keep'
 
+		if (country == "Cuba" | country == "Nepal") {
+			for X in any ed4a ed4b ed5 ed6a ed6b ed8a ed8b schage: capture generate X_nr = X
+		}
+		
 		*rename some variables 
 		findfile mics_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 		capture renamefrom using "`r(fn)'", filetype(excel) if(!missing(rename)) raw(standard_name) clean(rename) label(varlab_en) keepx

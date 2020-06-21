@@ -15,6 +15,9 @@ program define dhs_read
 	cd "`output_path'/DHS/data/"
 	capture mkdir "`output_path'/DHS/data/temporal"
 
+	if ("`country_name'" == "Nicaragua" | "`country_name'" == "VietNam" | "`country_name'" == "Yemen"){
+	local modules ir
+	}
 	foreach module of local modules {
 		cd "`output_path'/DHS/data/temporal/"
 		capture mkdir "`output_path'/DHS/data/temporal/`module'"
@@ -82,15 +85,14 @@ program define dhs_read
 	    clear all
 		fs *.dta
 		append using `r(files)', force
-		*gduplicates drop
-		save "`output_path'/DHS/data/temporal/dhs_`module'.dta" , replace
+		capture save "`output_path'/DHS/data/temporal/dhs_`module'.dta" , replace
 	}
 	
 	use "`output_path'/DHS/data/temporal/dhs_ir.dta", clear
-	append using "`output_path'/DHS/data/temporal/dhs_mr.dta"
+	capture append using "`output_path'/DHS/data/temporal/dhs_mr.dta"
 	
 	erase "`output_path'/DHS/data/temporal/dhs_ir.dta"
-	erase "`output_path'/DHS/data/temporal/dhs_mr.dta"
+	capture erase "`output_path'/DHS/data/temporal/dhs_mr.dta"
 	
 	rename v130 religion
 	rename v131 ethnicity
@@ -167,7 +169,7 @@ program define dhs_read
 			capture sdecode `var', replace
 			capture replace `var' = lower(`var')
 			* remove special character in values and labels
-			capture replace_character
+			capture replace_character `var'
 			capture replace `var' = stritrim(`var')
 			capture replace `var' = strltrim(`var')
 			capture replace `var' = strrtrim(`var')
@@ -237,7 +239,7 @@ program define dhs_read
 		
 	* remove temporal folder and files
 	rmfiles , folder("`output_path'/DHS/data/temporal/ir") match("*.dta") rmdirs
-	rmfiles , folder("`output_path'/DHS/data/temporal/mr") match("*.dta") rmdirs
+	capture rmfiles , folder("`output_path'/DHS/data/temporal/mr") match("*.dta") rmdirs
 	rmfiles , folder("`output_path'/DHS/data/temporal") match("*.dta") rmdirs
 end
 

@@ -65,6 +65,7 @@ program define mics_clean
 		replace `var' = subinstr(`var', " et ", " & ",.) 
 		replace `var' = subinstr(`var', " and ", " & ",.)
 		replace `var' = subinstr(`var', " ou ", "/",.)
+		replace `var' = subinstr(`var', " o ", "/",.)
 	}
 	replace region = subinstr(region, " ou ", "/",.)
 	
@@ -87,6 +88,8 @@ program define mics_clean
 	replace region = "Region SE" if region == "Region Se"
 	replace region = "DF Edo. de Mexico" if region == "Df Edo Mexico"
 	replace region = "FCT (Abuja)" if region == "Fct (Abuja)"
+	replace region = "Mid WesternTerai" if region == "Mid Westernterai"
+	replace region = "Far WesternTerai" if region == "Far Westernterai"
 
 	* FIX EDUCATION VARIABLES 
 	replace_many `fixed3' ed3 ed3_replace
@@ -101,8 +104,8 @@ program define mics_clean
 	* generate code variables
 	for X in any ed4a ed6a ed8a: capture generate code_X = X_nr
 	
-	replace code_ed6a = 70 if ed6a_nr == 1 & country_year == "Palestine_2010"
-	replace code_ed6a = 22 if ed6a_nr == 2 & country_year == "Palestine_2010"
+	capture replace code_ed6a = 70 if ed6a_nr == 1 & country_year == "Palestine_2010"
+	capture replace code_ed6a = 22 if ed6a_nr == 2 & country_year == "Palestine_2010"
 	
 	* EDUCATION LEVEL
 	* merge with auxiliary data of education levels for ed4a, ed6a, ed8a
@@ -115,14 +118,14 @@ program define mics_clean
 	replace code_ed4a = 40 if ed4b_nr == 43 & country_year == "Nigeria_2011"  
 	replace code_ed4a = 40 if ed4b_nr == 36 & country_year == "Nigeria_2016"  
 		
-	for X in any 4 6 8: replace code_edXa = 21 if edXa_nr == 4 & inlist(edXb_nr, 0, 1, 2, 3) & country_year == "Uruguay_2012"
-	for X in any 4 6 8: replace code_edXa = 22 if edXa_nr == 4 & inlist(edXb_nr, 4, 5, 6) & country_year == "Uruguay_2012"
+	for X in any 4 6 8: capture replace code_edXa = 21 if edXa_nr == 4 & inlist(edXb_nr, 0, 1, 2, 3) & country_year == "Uruguay_2012"
+	for X in any 4 6 8: capture replace code_edXa = 22 if edXa_nr == 4 & inlist(edXb_nr, 4, 5, 6) & country_year == "Uruguay_2012"
 	
-	for X in any 4 6 8: replace code_edXa = 22 if edXa_nr == 4 & inlist(edXb_nr, 0, 1, 2, 3) & country_year == "Iraq_2011"
-	for X in any 4 6 8: replace code_edXa = 33 if edXa_nr == 4 & inlist(edXb_nr, 4, 5) & country_year == "Iraq_2011" 
+	for X in any 4 6 8: capture replace code_edXa = 22 if edXa_nr == 4 & inlist(edXb_nr, 0, 1, 2, 3) & country_year == "Iraq_2011"
+	for X in any 4 6 8: capture replace code_edXa = 33 if edXa_nr == 4 & inlist(edXb_nr, 4, 5) & country_year == "Iraq_2011" 
 
-	for X in any 4 6 8: replace code_edXa = 22 if inlist(edXa_nr, 4, 5) & inlist(edXb_nr, 0, 1, 2) & country_year == "Kyrgyzstan_2014"
-	for X in any 4 6 8: replace code_edXa = 33 if inlist(edXa_nr, 4, 5) & inlist(edXb_nr, 3, 4) & country_year == "Kyrgyzstan_2014"	
+	for X in any 4 6 8: capture replace code_edXa = 22 if inlist(edXa_nr, 4, 5) & inlist(edXb_nr, 0, 1, 2) & country_year == "Kyrgyzstan_2014"
+	for X in any 4 6 8: capture replace code_edXa = 33 if inlist(edXa_nr, 4, 5) & inlist(edXb_nr, 3, 4) & country_year == "Kyrgyzstan_2014"	
 
 	for X in any ed4a ed6a ed8a: replace code_X = 97 if X == "inconsistent"
 	for X in any ed4a ed6a ed8a: replace code_X = 98 if X == "don't know"

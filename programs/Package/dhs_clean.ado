@@ -26,7 +26,7 @@ program define dhs_clean
 	use "`r(fn)'", clear
 	catenate country_year = country year, p("_")
 	
-	merge m:1 country_year using `fixduration', keep(match master) keepusing(*_replace)
+	merge m:m iso_code3 year using `fixduration', keep(match master) keepusing(*_replace)
 	replace prim_dur_uis   = prim_dur_replace[_n] if _merge == 3 & prim_dur_replace != .
 	replace lowsec_dur_uis = lowsec_dur_replace[_n] if _merge == 3 & lowsec_dur_replace != .
 	replace upsec_dur_uis  = upsec_dur_replace[_n] if _merge == 3 & upsec_dur_replace != .
@@ -79,8 +79,10 @@ program define dhs_clean
 		capture sdecode `var', replace
 		capture tostring `var', replace
 		capture replace `var' = proper(`var')
+		replace `var' = subinstr(`var', "'A", "'a",.) 
 		replace `var' = subinstr(`var', "'I", "'i",.) 
 		replace `var' = subinstr(`var', "-E", "-e",.) 
+		replace `var' = subinstr(`var', "'D", "'d",.)
 		replace `var' = subinstr(`var', "'S", "'s",.)
 		replace `var' = subinstr(`var', "'T", "'t",.) 
 		replace `var' = subinstr(`var', "'Z", "'z",.) 
