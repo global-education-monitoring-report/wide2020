@@ -16,19 +16,19 @@ program define standarize_output
 		drop if `X' == "" & category == "`X'"
 	}
 
-	for X in any sex wealth religion ethnicity region: cap drop if category == "location X" & (location == "" | X == "")
-	for X in any wealth religion ethnicity region: cap drop if category == "sex X" & (sex == "" | X == "")
-	for X in any region: cap drop if category == "wealth X" & (wealth == "" | X == "")
+	for X in any sex wealth religion ethnicity region: capture drop if category == "location X" & (location == "" | X == "")
+	for X in any wealth religion ethnicity region: capture drop if category == "sex X" & (sex == "" | X == "")
+	for X in any region: capture drop if category == "wealth X" & (wealth == "" | X == "")
 
 	drop if category == "location sex wealth" & (location == "" | sex == "" | wealth == "")
 	drop if category == "sex wealth region" & (sex == "" | wealth == "" | region == "")
 
 	replace category = proper(category)
 	split category, gen(c)
-	gen category_original = category
-	replace category = c1+" & "+c2 if c1! = "" & c2 != "" & c3 == ""
-	replace category = c1+" & "+c2+" & "+c3 if c1 != "" & c2 != "" & c3 != ""
-	drop c1 c2 c3 category_orig
+	generate category_original = category
+	capture replace category = c1+" & "+c2 if c1! = "" & c2 != "" & c3 == ""
+	capture replace category = c1+" & "+c2+" & "+c3 if c1 != "" & c2 != "" & c3 != ""
+	capture drop c1 c2 c3 category_orig
 
 	* to 100%
 	foreach var of varlist `vars100' {
