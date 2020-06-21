@@ -4,11 +4,11 @@ The goal of WIDE package is to generate the statistics WIDE table.
 
 ## Description 
 
-The `widetable` package simplifies reading, cleaning and summarizing WIDE. The main function of the package, widetable, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators (access and completion) are obtained for  each country and year of the survey, disaggregated by different variables of interest.
+The `wide` package simplifies reading, cleaning and summarizing WIDE. The main function of the package, widetable, imports DHS and MICS files, standardizes them and calculates educational variables. Finally, education indicators (access and completion) are obtained for  each country and year of the survey, disaggregated by different variables of interest.
     
 ## Prerequisites 
 
-You need to have the following commands installed: `catenate`, `fs`, `gtools`, `replacestrvar`, `encodefrom`, `rmfiles`, `sdecode`, `tuples` and `usespss`.
+You need to have the following commands installed: `catenate`, `fs`, `gtools`, `replacestrvar`, `encodefrom`, `rmfiles`, `sdecode`, `tosql`, `tuples` and `usespss`.
 
 For example, to install the `fs` package you must run this line of code:
  
@@ -85,13 +85,13 @@ Defining the folder path, it is recommended to use slash (/) as separator instea
 
     * Defines the path folder in a absolute way (replace the dots)
     local dpath /../WIDE/raw_data/
-    local opath /../WIDE/raw_data/output
+    local opath /../WIDE/output/
    
 This is a basic example which shows you how to use the widetable function:
 
     widetable, source(both) step(all) data_path(`dpath') output_path(`opath')
     
-The result is a table with the indicators that is saved in the 'output' folder in 'dta' and 'csv' format called 'WIDE_mmddyyy', where *mm* refers to the month, *dd* to the day and *yyyy* refers to the year.    
+The result is a table with the indicators that is saved in the 'output' folder in 'dta' and 'csv' format called 'WIDE_mmddyyyThhmmss', where *mm* refers to the month, *dd* to the day and *yyyy* refers to the year and *hhmmss** refers to the hour, minutes and second.    
 
 Also, you can run the function without seeing the intermediate results by typing: 
 
