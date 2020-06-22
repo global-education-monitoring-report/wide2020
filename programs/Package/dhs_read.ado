@@ -25,7 +25,7 @@ program define dhs_read
 		
 		findfile filenames.xlsx, path("`c(sysdir_personal)'/")
 		import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow clear 
-		local nrow: di _N
+		local nrow: di _N + 1
 		
 		if (`nf' > `nrow') {
 			import excel  "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nrow') clear
@@ -241,6 +241,8 @@ program define dhs_read
 	rmfiles , folder("`output_path'/DHS/data/temporal/ir") match("*.dta") rmdirs
 	capture rmfiles , folder("`output_path'/DHS/data/temporal/mr") match("*.dta") rmdirs
 	rmfiles , folder("`output_path'/DHS/data/temporal") match("*.dta") rmdirs
+	cd "`output_path'/DHS/data/"
+	rmdir "temporal"
 end
 
 

@@ -133,3 +133,14 @@ To execute the query number 5:
     widetests, table(widetable) nquery(5)
     
 Alternatively, it is possible to make these queries outside Stata is useful the "widetests.sql" file. 
+
+## Intermediate output
+
+The `widedata` function allow us to store the cleaned DHS and MICS microdata in an SQL file.
+
+    * Defines the path folder in a absolute way (replace the dots)
+    local mics ".../WIDE/output/MICS/data/mics_calculate.dta"
+    local dhs  ".../WIDE/output/DHS/data/dhs_calculate.dta"
+    local wide ".../WIDE/WIDE/output"
+
+    widedata, mics_data_path(`mics') dhs_data_path(`dhs') output_path(`wide') columns("all")

@@ -113,6 +113,7 @@ program define mics_calculate
 	replace eduyears = years_prim if (ed4b_label == "primary school of nfeep" & country_year == "Mongolia_2013")
 	replace eduyears = years_lowsec if (ed4b_label == "basic school of nfeep" & country_year == "Mongolia_2013")
 	replace eduyears = years_prim if (ed4b_label == "high school of nfeep" & country_year == "Mongolia_2013")
+	replace eduyears = years_higher + 2 if code_ed4a == 40 & country_year == "Sudan_2014"
 	
 	replace eduyears = ed4b if (ed4b >= 0 & ed4b <= 10) & group == 15
 	replace eduyears = 10 if ed4b_label == "slc" & group == 15
@@ -335,11 +336,12 @@ program define mics_calculate
 	capture drop *ageU *ageA 
 
 	*Confirming that schage is available (for example, it is not available for South Sudan 2010)
+	*replace schage = age if schage==. 
 	bys country_year: egen temp_count = count(schage)
 	replace schage = age if temp_count == 0 & adjustment == 0
 	replace schage = age-1 if temp_count == 0 & adjustment == 1
 	drop temp_count
-	*replace schage = age if schage==. 
+	
 
 	*Age limits for completion and out of school
 	*Age limits 

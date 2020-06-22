@@ -67,5 +67,7 @@ program define mics_summarize
 
 	save "`output_path'/MICS/mics_summarize_`today'T`time'.dta", replace
 	export delimited "`output_path'/MICS/mics_summarize_`today'T`time'.csv", replace
-	*rmfiles , folder("`output_path'/MICS/temporal") match("*.dta") rmdirs
+	rmfiles , folder("`output_path'/MICS/temporal") match("*.dta") rmdirs
+	cd "`output_path'/MICS/"
+	rmdir "temporal"
 end

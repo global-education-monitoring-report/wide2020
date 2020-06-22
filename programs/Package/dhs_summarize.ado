@@ -68,5 +68,7 @@ program define dhs_summarize
 	save "`output_path'/DHS/dhs_summarize_`today'T`time'.dta", replace
 	export delimited "`output_path'/DHS/dhs_summarize_`today'T`time'.csv", replace
 	rmfiles , folder("`output_path'/DHS/temporal") match("*.dta") rmdirs
-
+	cd "`output_path'/DHS/"
+	rmdir "temporal"
+	
 end
