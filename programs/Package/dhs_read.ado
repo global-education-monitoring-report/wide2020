@@ -237,12 +237,19 @@ program define dhs_read
 	compress
 	save "`output_path'/DHS/data/dhs_read.dta", replace
 		
+	set more off
+	clear
+	cd "`output_path'/DHS/data/"
+	unicode analyze "dhs_read.dta"
+	unicode encoding set ibm-912_P100-1995
+	unicode translate "dhs_read.dta"
+	
 	* remove temporal folder and files
 	rmfiles , folder("`output_path'/DHS/data/temporal/ir") match("*.dta") rmdirs
 	capture rmfiles , folder("`output_path'/DHS/data/temporal/mr") match("*.dta") rmdirs
 	rmfiles , folder("`output_path'/DHS/data/temporal") match("*.dta") rmdirs
 	cd "`output_path'/DHS/data/"
-	rmdir "temporal"
+	capture rmdir "temporal"
 end
 
 

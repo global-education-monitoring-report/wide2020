@@ -204,8 +204,15 @@ program define mics_read
 	compress
 	save "`output_path'/MICS/data/mics_read.dta", replace
 	
+	set more off
+	clear
+	cd "`output_path'/MICS/data/"
+	unicode analyze "mics_read.dta"
+	unicode encoding set ibm-912_P100-1995
+	unicode translate "mics_read.dta"
+	
 	* remove temporal folder and files
 	rmfiles , folder("`output_path'/MICS/data/temporal") match("*.dta") rmdirs
 	cd "`output_path'/MICS/data/"
-	rmdir "temporal"
+	capture rmdir "temporal"
 end
