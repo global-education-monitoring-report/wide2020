@@ -19,8 +19,9 @@ SELECT survey, country, year, category, round, eduout_lowsec FROM wide_05142020 
 SELECT survey, country, year, category, round, eduout_upsec FROM wide_05142020 WHERE eduout_upsec <= 0 OR eduout_upsec >= 100;
 
 /* comparison among education levels within countries */
-SELECT survey, country, year, category, comp_prim_v2, comp_lowsec_v2, comp_upsec_v2 FROM wide_05142020	 WHERE comp_prim_v2 <= comp_lowsec_v2 OR comp_lowsec_v2 <= comp_upsec_v2;
+SELECT survey, country, year, category, comp_prim_v2, comp_lowsec_v2, comp_upsec_v2 FROM wide_05142020 WHERE comp_prim_v2 <= comp_lowsec_v2 OR comp_lowsec_v2 <= comp_upsec_v2;
 SELECT survey, country, year, category, eduout_prim, eduout_lowsec, eduout_upsec FROM wide_05142020 WHERE eduout_prim >= eduout_lowsec OR eduout_lowsec >= eduout_upsec;
 
 /* intertemporal indicator variation by country */
-SELECT survey, country, year, category, comp_prim_v2 - LEAD(comp_prim_v2) OVER(PARTITION BY country ORDER BY year desc) AS diff FROM (SELECT * FROM wide_05142020 WHERE category = "total" ORDER BY country, year DESC)t;
+-- Comment on Oct/6/2020: Need to check below code. Previous version had a code error. 
+SELECT survey, country, year, category, comp_prim_v2 - LEAD(comp_prim_v2) - OVER(PARTITION BY country ORDER BY year desc) AS diff FROM (SELECT * FROM wide_05142020 WHERE category = "total" ORDER BY country, year DESC);
