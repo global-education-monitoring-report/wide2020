@@ -1,0 +1,33 @@
+This folder has all the Stata code to process national surveys for the Jan2021 update. 
+
+Country, year and survey type list follows
+
+Viet Nam	2015	WB survey
+Uruguay	2019	Household survey from NSO
+United Republic of Tanzania	2017-2018	Household survey from NSO
+South Sudan	2017	WB and NSO Impact Evaluation survey
+South Africa	2018	Household survey from NSO
+Sierra Leone	2018	Household survey from NSO
+Rwanda	2016-17	Household survey from NSO
+Russian Federation	2019	Household survey from academic institution
+Peru	2019	Household survey from NSO
+Paraguay	2018	Household survey from NSO
+Nigeria	2020	Household survey from NSO
+Niger	2014	Household survey from NSO
+Namibia	2015-16	Household survey from NSO
+Mozambique	2015	AIS survey
+Morocco	2014	Census 
+Mexico	2018	Household survey from NSO
+Mali	2020	Household survey from NSO
+Malawi	2016-17	WB survey
+Liberia	2016	Household survey from NSO
+Georgia	2019	Household survey from NSO
+El Salvador	2019	Household survey from NSO
+Ecuador	2018	Household survey from NSO
+Colombia	2019	Household survey from NSO
+China	2018 or 2016	CFPS
+Chile	2017	Household survey from NSO
+Brazil	2019	Household survey from NSO
+Bolivia, Plurinational States of	2019	Household survey from NSO
+Armenia	2018	Household survey from NSO
+Argentina	2019	Household survey from NSO
