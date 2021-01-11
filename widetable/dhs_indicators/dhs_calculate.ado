@@ -204,16 +204,6 @@ program define dhs_calculate
 	}
 	*******/COMPLETION********
 
-	*******HIGHER COMPLETION********
-
-	gen comp_higher_2529=1 if (agestandard>=25 & agestandard<=29) & hv106==3
-	gen comp_higher_3034=1 if (agestandard>=30 & agestandard<=34) & hv106==3
-	replace comp_higher_2529 = . if (agestandard>=25 & agestandard<=29) & (hv108 == . | hv108 >= 90) 
-	replace comp_higher_2529 = 0 if (agestandard>=25 & agestandard<=29) & (hv108 == 0 | hv109 == 0 ) 
-	replace comp_higher_3034 = . if (agestandard>=30 & agestandard<=29) & (hv108 == . | hv108 >= 90) 
-	replace comp_higher_3034 = 0 if (agestandard>=30 & agestandard<=34) & (hv108 == 0 | hv109 == 0 ) 
-	
-	*******/HIGHER COMPLETION********
 
 	*capture drop *_A
 //	turn this off because no longer needed
@@ -234,6 +224,32 @@ program define dhs_calculate
 			replace edu`X'_2024 = . if eduyears_2024 == .
 	}
 	*******/EDUYEARS AND LESS THAN 2/4 YEARS OF SCHOOLING********
+	
+		*******HIGHER COMPLETION********
+
+	foreach X in 2 4 {
+		generate comp_higher_`X'yrs = 0
+		replace comp_higher_`X'yrs = 1 if hv106 == 3
+		replace comp_higher_`X'yrs = 0 if hv109 == 0
+		replace comp_higher_`X'yrs = 0 if hv106 == 0 
+	}
+	replace comp_higher_2yrs = 1 if hv106==3
+	replace comp_higher_4yrs = 1 if hv106==3
+
+	replace comp_higher_2yrs = 1 if eduyears >= years_upsec + 2
+	replace comp_higher_4yrs = 1 if eduyears >= years_upsec + 4
+	
+	
+ 	*Ages for completion higher
+ 	foreach X in 2 4{
+ 		generate comp_higher_`X'yrs_2529 = comp_higher_`X'yrs if agestandard >= 25 & agestandard <= 29
+ 	}
+ 	foreach X in 4{
+ 		generate comp_higher_`X'yrs_3034 = comp_higher_`X'yrs if agestandard >= 30 & agestandard <= 34
+ 		drop comp_higher_`X'yrs 
+ 	}
+	
+	*******/HIGHER COMPLETION********
 
 	*******NEVER BEEN TO SCHOOL********
 	* Never been to school
@@ -303,7 +319,7 @@ program define dhs_calculate
 
 	
 	* Create variables for count of observations
-	local varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec edu0_prim comp_higher_2529 comp_higher_3034 attend_higher_1822 overage2plus literacy_1549
+	local varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec edu0_prim comp_higher_2yrs_2529 comp_higher_4yrs_2529 comp_higher_4yrs_3034 attend_higher_1822 overage2plus literacy_1549
 	
 	foreach var of varlist `varlist_m'  {
 			generate `var'_no = `var'
