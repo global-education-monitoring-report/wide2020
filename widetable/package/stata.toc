@@ -1,0 +1,4 @@
+v 0.0.1
+d 'WIDETABLE'
+d Stata package to generate the statistics WIDE table.
+p widetable
