@@ -10,11 +10,13 @@
 **No need to append, seemingly all variables are in one dataset. 
 
 *Calulating wealth variables
-
+clear
 use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Tanzania\Raw_dataset\HBS 2017-18 _Final_Poverty+Individual_Data.dta"
-egen indiv_income=rowtotal(S11_01__1 S11_01__2 S11_01__3 S11_01__4 S11_01__5 S11_01__6 S11_01__7 S11_01__8 S11_01__9 S11_01__10 S11_01__11 S11_01__12 S11_01__14 S11_01__15 S11_01__16 S11_01__94)
-bysort HHID: egen hhincome = total(indiv_income)
-xtile hhwealthindex = hhincome [aw=weight], nquantiles(5)
+// egen indiv_income=rowtotal(S11_01__1 S11_01__2 S11_01__3 S11_01__4 S11_01__5 S11_01__6 S11_01__7 S11_01__8 S11_01__9 S11_01__10 S11_01__11 S11_01__12 S11_01__14 S11_01__15 S11_01__16 S11_01__94)
+// bysort HHID: egen hhincome = total(indiv_income)
+// xtile hhwealthindex = hhincome [aw=weight], nquantiles(5)
+
+***actually this variable is just a dummy and not an amount. So we dont have wealth in this, despite it being in the questionnaire...
 
 save Tanzania_2017.dta, replace
 
@@ -33,7 +35,7 @@ local sex S1_2
 local urbanrural LOC // location
 local hhweight popweight //
 local age S1_4
-local wealth hhwealthindex
+// local wealth hhwealthindex
 local region REGION
 
 *Sex
@@ -50,10 +52,10 @@ lab var hhweight "HH weight"
 label var `age' "Age at the date of the interview"
 clonevar age=`age' 
 
-* Wealth
-rename `wealth' wealth
-label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
-label values wealth wealth
+// * Wealth
+// rename `wealth' wealth
+// label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
+// label values wealth wealth
 
 *Region fixing accents
 rename `region' region
@@ -65,7 +67,6 @@ recode location (1 = 0) (2 = 1)
 label define location 1 "Urban" 0 "Rural"
 label val location location
 
-compress
 cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Tanzania\Raw_dataset"
 save Tanzania_2017.dta, replace
 
@@ -384,7 +385,9 @@ save Tanzania_microdata.dta, replace
 *************PART 4: collapse / summarize ******************************************************************
 ************************************************************************************************************
 
-global categories_collapse location sex wealth region 
+use Tanzania_microdata.dta, clear
+
+global categories_collapse location sex region 
 global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024 preschool_1ybefore attend_higher_1822 comp_higher_2yrs_2529 comp_higher_4yrs_2529 comp_higher_4yrs_3034 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 overage2plus literacy *age0 *age1 *dur 
 global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no eduyears_2024_no preschool_1ybefore_no attend_higher_1822_no comp_higher_2yrs_2529_no comp_higher_4yrs_2529_no comp_higher_4yrs_3034_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no overage2plus_no literacy_no
 
@@ -392,28 +395,20 @@ tuples $categories_collapse, display
 /*
 tuples $categories_collapse, display
 tuple1: region
-tuple2: wealth
-tuple3: sex
-tuple4: location
-tuple5: wealth region
-tuple6: sex region
-tuple7: sex wealth
-tuple8: location region
-tuple9: location wealth
-tuple10: location sex
-tuple11: sex wealth region
-tuple12: location wealth region
-tuple13: location sex region
-tuple14: location sex wealth
-tuple15: location sex wealth region
+tuple2: sex
+tuple3: location
+tuple4: sex region
+tuple5: location region
+tuple6: location sex
+tuple7: location sex region
+
 */
 
 cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Tanzania\Raw_dataset"
 
-
 set more off
 set trace on
-foreach i of numlist 0/15 {
+foreach i of numlist 0/`ntuples' {
 	use Tanzania_microdata, clear
 	qui tuples $categories_collapse, display
 	collapse (mean) $varlist_m (count) $varlist_no [weight=hhweight], by(`tuple`i'')
@@ -429,7 +424,7 @@ set trace off
 cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Tanzania\Raw_dataset"
 use "result0.dta", clear
 gen t_0=1
-foreach i of numlist 0/15 {
+foreach i of numlist 0/`ntuples' {
  	append using "result`i'"
 }
 drop if t_0==1
@@ -445,44 +440,31 @@ gen survey="HBS"
 replace category="total" if category==""
 tab category
 
-global categories_collapse location sex wealth region 
-global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024 preschool_1ybefore attend_higher_1822 comp_higher_2yrs_2529 comp_higher_4yrs_2529 comp_higher_4yrs_3034 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 overage2plus literacy *age0 *age1 *dur 
-global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no eduyears_2024_no preschool_1ybefore_no attend_higher_1822_no comp_higher_2yrs_2529_no comp_higher_4yrs_2529_no comp_higher_4yrs_3034_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no overage2plus_no literacy_no
+global categories_collapse location sex region
+	
+	*-- Fixing for missing values in categories
+	for X in any $categories_collapse: decode X, gen(X_s)
+	for X in any $categories_collapse: drop X
+	for X in any $categories_collapse: ren X_s X
 
+	*Putting the names in the same format as the others
+	global categories_collapse location sex region
+	tuples $categories_collapse, display
+	
+	* DROP Categories that are not used:
+	drop if category=="location region"|category=="location sex region"|category=="location wealth region"|category=="location sex wealth region"
 
-*-- Fixing for missing values in categories
-for X in any wealth sex: decode X, gen(X_s)
-for X in any wealth sex: drop X
-for X in any wealth sex: ren X_s X
+	*Proper for all categories
+	foreach i of numlist 0/`ntuples' {
+	replace category=proper(category) if category=="`tuple`i''"
+	}
+		
+	
+	order iso_code3 country survey year category $categories_collapse $varlist_m $varlist_no 
+	tab category
+	for X in any $categories_collapse: tab X
 
-codebook $categories_collapse, tab(100)
-
-*Putting the names in the same format as the others
-*for X in any $categories_collapse total: replace category=proper(category) if category=="X"
-replace category="Location & Sex" if category=="location sex"
-replace category="Location & Sex & Wealth" if category=="location sex wealth"
-replace category="Location & Wealth" if category=="location wealth"
-replace category="Sex & Region" if category=="sex region"
-replace category="Sex & Wealth" if category=="sex wealth"
-replace category="Sex & Wealth & Region" if category=="sex wealth region"
-replace category="Wealth & Region" if category=="wealth region"
-
-* Categories that are not used:
-drop if category=="location region"|category=="location sex region"|category=="location wealth region"|category=="location sex wealth region"
-
-for X in any $categories_collapse: rename X, proper
-
-// *Now I throw away those that have large differences (per level)
-// merge m:1 country year using "$dir/comparisons/results.dta", keepusing(flag*) nogen
-// drop if flag_lfs==1
-// order iso_code3 country survey year category Sex Location Wealth Region comp_prim_v2* comp_lowsec_v2* comp_upsec_v2* comp_prim_1524* comp_lowsec_1524* comp_upsec_2029* preschool_1ybefore*
-// drop comp_lowsec_2024-flag_LFS_country
-// for X in any comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore: ren X X_m
-// order iso_code3 country survey year category Sex Location Wealth Region *_m *_no
-
-*order iso_code country year country_year survey category location sex wealth region ethnicity religion
-order iso_code2 iso_code3 country survey year country_year category Region Location Wealth Sex  
-save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Tanzania\indicators_Tanzania_2017.dta"
+save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Tanzania\indicators_Tanzania_2017.dta", replace
 
 
 

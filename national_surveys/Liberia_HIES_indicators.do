@@ -1,27 +1,31 @@
 **Adapting widetable for other surveys
-*THE MODEL OF THIS CODE IS TAKEN FROM EU_SILC_June2019.do MOSTLY
+*THE MODEL OF THIS CODE IS TAKEN FROM EU_SILC_June2016.do MOSTLY
 
 
 ************************************************************************************************************
 *************PART 1: merge surveys and categories calculations**********************************************
 ************************************************************************************************************
 
-*Calulating wealth variables
+clear
+cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Liberia"
+use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Liberia\AG_12.dta"
+destring hhid, replace
+merge 1:m hhid using HH_B.dta, gen(hhbmerge) 
+*not a perfect match 
+merge 1:1 hhid ind_id using HH_C.dta, gen(hhcmerge) 
+*almost perfect
+merge m:1 hhid using ALLHH_A_weighted.dta, gen(weightmerge) 
+*perfect
+merge 1:1 hhid ind_id using HH_E.dta, gen(hhemerge) 
+*almost perfect
+ 
 
-cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Peru"
-use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Peru\sumaria-2019.dta", clear
+*Calulating wealth variables}
 
-*Total net income of the households
+*Total net wage income
 xtile hhwealthindex = inghog2d [aw=factor07], nquantiles(5)
 
-**Join 3 modules
-*Merge that with module of education variables 
-merge 1:m nconglome conglome vivienda hogar using enaho01a-2019-300.dta, nogen
-*Perfect match!
-*Add personal variables (age, sex) but keep match only
-merge 1:1 nconglome conglome vivienda hogar codperso using enaho01-2019-200.dta, keep(match) nogen
-
-save Peru_2019.dta, replace
+save Liberia_2016.dta, replace
 
 
 
@@ -30,10 +34,10 @@ save Peru_2019.dta, replace
 ************************************************************************************************************
 
 
-cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Peru"
-use Peru_2019, clear 
+cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Liberia"
+use Liberia_2016, clear 
 
-local country Peru 
+local country Liberia 
 local sex p207
 local urbanrural estrato // location
 local hhweight factor07 //
@@ -75,8 +79,8 @@ label define location 1 "Urban" 0 "Rural"
 label val location location
 
 compress
-cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Peru"
-save Peru_2019.dta, replace
+cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Liberia"
+save Liberia_2016.dta, replace
 
 
 
@@ -84,14 +88,14 @@ save Peru_2019.dta, replace
 *************PART 3: all indicators (clean and calculate) **************************************************
 ************************************************************************************************************
 
-cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Peru"
-use Peru_2019, clear 
+cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Liberia"
+use Liberia_2016, clear 
 
-gen country_year="Peru"+"_"+"2019"
+gen country_year="Liberia"+"_"+"2016"
 gen year=2017
 gen iso_code2="PE"
 gen iso_code3="PER"
-gen country = "PERU"
+gen country = "Liberia"
 gen survey="ENAHO"
 
 merge m:1 iso_code3 year using "C:\ado\personal\UIS_duration_age_01102020.dta", keepusing(prim_age_uis prim_dur_uis lowsec_dur_uis upsec_dur_uis) keep(match) nogen
@@ -185,7 +189,7 @@ tab mes
 
 *According to some web: 
 *Dates:  The school year begins in March. 
-*https://elcomercio.pe/peru/ano-escolar-2019-comienzan-clases-pais-noticia-593820-noticia/
+*https://elcomercio.pe/Liberia/ano-escolar-2016-comienzan-clases-pais-noticia-593820-noticia/
 
 *Adjustment=1 if 50% or more of hh (the median) have difference of (month_interv-month_school)>=6 months.
 *Median difference is >=6.
@@ -314,8 +318,8 @@ gen `var'_no=`var'
 }
 
 compress
-cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Peru"
-save Peru_microdata.dta, replace
+cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Liberia"
+save Liberia_microdata.dta, replace
 
 ************************************************************************************************************
 *************PART 4: collapse / summarize ******************************************************************
@@ -345,13 +349,13 @@ tuple14: location sex wealth
 tuple15: location sex wealth region
 */
 
-cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Peru"
+cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Liberia"
 
 
 set more off
 set trace on
 foreach i of numlist 0/15 {
-	use Peru_microdata, clear
+	use Liberia_microdata, clear
 	qui tuples $categories_collapse, display
 	collapse (mean) $varlist_m (count) $varlist_no [weight=hhweight], by(`tuple`i'')
 	gen category="`tuple`i''"	
@@ -363,7 +367,7 @@ set trace off
 *****************************************************************************************
 
 * Appending the results
-cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Peru"
+cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Liberia"
 use "result0.dta", clear
 gen t_0=1
 foreach i of numlist 0/15 {
@@ -372,12 +376,12 @@ foreach i of numlist 0/15 {
 drop if t_0==1
 drop t_0
 
-gen year="2019"
-gen country_year="Peru"+"_"+year
+gen year="2016"
+gen country_year="Liberia"+"_"+year
 destring year, replace
 gen iso_code2="PE"
 gen iso_code3="PER"
-gen country = "Peru"
+gen country = "Liberia"
 gen survey="ENAHO"
 replace category="total" if category==""
 tab category
@@ -419,5 +423,5 @@ for X in any $categories_collapse: rename X, proper
 
 *order iso_code country year country_year survey category location sex wealth region ethnicity religion
 order iso_code2 iso_code3 country survey year country_year category Region Location Wealth Sex  
-save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Peru\indicators_Peru_2019.dta", replace
+save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Liberia\indicators_Liberia_2016.dta", replace
 

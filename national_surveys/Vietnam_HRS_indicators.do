@@ -24,7 +24,7 @@ clear
 use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Vietnam\hrs_individual_master_file.dta"
 merge 1:1 pro_code dist_code com_code vill_code hhcode matv using "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Vietnam\hrs_muc2.dta" , nogen
 merge m:1 pro_code dist_code com_code vill_code hhcode using "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Vietnam\wealthindex.dta" , nogen
-save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Vietnam\Vietnam_2015.dta"
+save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Vietnam\Vietnam_2015.dta", replace
 
 
 
@@ -39,9 +39,9 @@ use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surve
 local country Vietnam 
 local sex m1c2_indi
 local urbanrural area
-local hhweight hhwealthindex
+local hhweight hhwt
 local age m2_tuoi
-local wealth hhwt
+local wealth hhwealthindex
 local region pro_code
 
 *Sex
@@ -64,7 +64,8 @@ label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 
 label values wealth wealth
 
 *Region fixing accents
-gen region=`region'
+rename `region' region
+label values region pro_code
 
 *Location (urban-rural)
 rename `urbanrural' location
@@ -79,6 +80,12 @@ save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surv
 ************************************************************************************************************
 *************PART 3: all indicators (clean and calculate) **************************************************
 ************************************************************************************************************
+
+clear
+use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Vietnam\Vietnam_2015.dta", clear
+
+gen iso_code3="VNM"
+gen year=2015
 
 merge m:1 iso_code3 year using "C:\ado\personal\UIS_duration_age_01102020.dta", keepusing(prim_age_uis prim_dur_uis lowsec_dur_uis upsec_dur_uis) keep(match) nogen
 for X in any prim_dur lowsec_dur upsec_dur: ren X_uis X
@@ -166,15 +173,16 @@ replace eduyears=23 if inlist(m2c1, 9) & m2c2!=-99 // phd assuming 4y phd after 
 
 *DATA COLLECTION DAYS OF THE SURVEY
 *According to the Survey Report - Household Registration Survey 2015, supervision took place between 
-*
+*Page 53
+*Between 6-2015 and 7-2015
 
 *According to google search: In Vietnam, a school year is divided into two semesters: the first begins in late August and ends in December, while the second begins right after the first, which is about late January and lasts until the end of May.
 
 *Adjustment=1 if 50% or more of hh (the median) have difference of (month_interv-month_school)>=6 months.
 *Median difference is >=6.
-*100% of hh have 6 months of difference or more
+*0% of hh have 6 months of difference or more
 
-gen schage = age-1 
+gen schage = age
 
 ***
 ***Mean years of education: eduyears_2024
@@ -188,7 +196,7 @@ generate eduyears_2024 = eduyears if schage >= 20 & schage <= 24
 *(i) as 3–4 year olds and NOT THIS
 *(ii) 1 year before the official entrance age to primary. THIS
 
-gen preschool=1 if P1088==1
+gen preschool=1 if m2c5==0
 gen before1y=1 if age==prim_age0-1
 gen presch1ybefore=preschool if before1y==1
 drop before1y
@@ -196,14 +204,19 @@ drop before1y
 ren presch1ybefore preschool_1ybefore
 
 *P8586: "Attended school during current school year?"
-generate attend = 1 if P8586 == 1
-replace attend  = 0 if P8586 == 2
+generate attend = 1 if  m2c3 == 1
+replace attend  = 0 if  m2c3 == 3
+replace attend  = 1 if  m2c3 == 2 //on summer vacation 
+replace attend  = 1 if  m2c4 == 2 & m2c3 == 2 //on summer vacation but not attended last year
+
+*problem: on summer vacation on 'currently attending' question
+*there is a yn question on attending in the last 12 months, will use the NO value of that 
 recode attend (1=0) (0=1), gen(no_attend)
 
 ***
 ****Higher education attendance: attend_higher_1822
 ***
-generate high_ed = 1 if inlist(P1088, 5, 6, 7, 8)
+generate high_ed = 1 if inlist(m2c5, 5, 6, 7, 8, 9)
 *use level attending now 
 capture generate attend_higher = 1 if attend == 1 & high_ed == 1
 capture replace attend_higher  = 0 if attend == 1 & high_ed != 1
@@ -215,7 +228,7 @@ capture generate attend_higher_1822 = attend_higher if schage >= 18 & schage <= 
 ***
 * missing when age, attendance or level of attendance (when goes to school) is missing / 1: goes to preschool. "out of school" if "ever attended school"=no 
 generate eduout = no_attend
-capture replace eduout  = . if (attend == 1 & P1088 == .) | age == . 
+capture replace eduout  = . if (attend == 1 & highestlevelattended == .) | age == . 
 capture replace eduout  = 1 if P1088 == 1  
 
 *this from UIS_duration_age_01102020.dta
@@ -236,9 +249,8 @@ for X in any prim lowsec upsec: capture generate X_age1_eduout = X_age0_eduout +
 ***
 ***NEVER BEEN TO SCHOOL: edu0_prim
 ***
-generate edu0 = 0 if inlist(P8587, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)
-replace edu0  = 1 if inlist(P8587, 1)
-replace edu0  = 1 if inlist(P1088, 1)
+generate edu0 = 0 if inlist(m2c1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+replace edu0  = 1 if inlist(m2c1, 0)
 replace edu0  = 1 if eduyears == 0
 
 generate edu0_prim = edu0 if schage >= prim_age0 + 3 & schage <= prim_age0 + 6
@@ -246,7 +258,7 @@ generate edu0_prim = edu0 if schage >= prim_age0 + 3 & schage <= prim_age0 + 6
 *Completion of higher
 	foreach X in 2 4 {
 		generate comp_higher_`X'yrs = 0
-		replace comp_higher_`X'yrs = . if inlist(P8587, ., 1 )
+		replace comp_higher_`X'yrs = . if inlist(highestlevelattended, ., 0 )
 	}
 
 	replace comp_higher_2yrs = 1 if eduyears >= years_upsec + 2
@@ -271,14 +283,23 @@ generate edu0_prim = edu0 if schage >= prim_age0 + 3 & schage <= prim_age0 + 6
 	}
 
 
-
-foreach var in comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 {
+*Over-age primary school attendance
+*Percentage of children in primary school who are two years or more older than the official age for grade.
+gen overage2plus= 0 if attend==1 & inlist(m2c5, 1)
+*There are 6 years of primary
+	local i=0
+    foreach grade of numlist 1/6 {
+				local i=`i'+1
+				replace overage2plus=1 if m2c6==`grade' & schage>prim_age0+1+`i' & overage2plus!=. 
+                 }
+	
+foreach var in comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024 preschool_1ybefore comp_higher_4yrs_3034 comp_higher_2yrs_2529 comp_higher_4yrs_2529 attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 overage2plus {
 gen `var'_no=`var'
 }
 
 compress
-cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia"
-save Colombia_microdata.dta
+cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Vietnam"
+save Vietnam_microdata.dta, replace
 
 
 ************************************************************************************************************
@@ -286,8 +307,8 @@ save Colombia_microdata.dta
 ************************************************************************************************************
 
 global categories_collapse location sex wealth region 
-global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024  *age0 *age1 *dur 
-global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no preschool_1ybefore_no attend_higher_1822_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no
+global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore  comp_higher_4yrs_3034 comp_higher_2yrs_2529 comp_higher_4yrs_2529 attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 overage2plus *age0 *age1 *dur 
+global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no preschool_1ybefore_no  comp_higher_2yrs_2529_no comp_higher_4yrs_2529_no comp_higher_4yrs_3034_no attend_higher_1822_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no overage2plus_no
 
 tuples $categories_collapse, display
 /*
@@ -313,7 +334,7 @@ tuple15: location sex wealth region
 set more off
 set trace on
 foreach i of numlist 0/15 {
-	use Colombia_microdata, clear
+	use Vietnam_microdata, clear
 	qui tuples $categories_collapse, display
 	collapse (mean) $varlist_m (count) $varlist_no [weight=hhweight], by(`tuple`i'')
 	gen category="`tuple`i''"	
@@ -325,7 +346,7 @@ set trace off
 *****************************************************************************************
 
 * Appending the results
-cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia"
+cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Vietnam"
 use "result0.dta", clear
 gen t_0=1
 foreach i of numlist 0/15 {
@@ -344,48 +365,32 @@ gen survey="HRS"
 replace category="total" if category==""
 tab category
 
+	global categories_collapse location sex wealth region
+	
+	*-- Fixing for missing values in categories
+	for X in any $categories_collapse: decode X, gen(X_s)
+	for X in any $categories_collapse: drop X
+	for X in any $categories_collapse: ren X_s X
 
+	*Putting the names in the same format as the others
+	global categories_collapse location sex wealth region
+	tuples $categories_collapse, display
+	
+	* DROP Categories that are not used:
+	drop if category=="location region"|category=="location sex region"|category=="location wealth region"|category=="location sex wealth region"
 
-*-- Fixing for missing values in categories
-for X in any wealth sex: decode X, gen(X_s)
-for X in any wealth sex: drop X
-for X in any wealth sex: ren X_s X
+	*Proper for all categories
+	foreach i of numlist 0/`ntuples' {
+	replace category=proper(category) if category=="`tuple`i''"
+	}
+		
+	
+	order iso_code3 country survey year category $categories_collapse $varlist_m $varlist_no 
+		
+	tab category
+	for X in any $categories_collapse: tab X
 
-codebook $categories_collapse, tab(100)
-
-for X in any $categories_collapse: drop if category=="X" & X==""
-for X in any sex wealth region: drop if category=="location X" & (location==""|X=="")
-for X in any wealth region: drop if category=="sex X" & (sex==""|X=="")
-for X in any region: drop if category=="wealth X" & (wealth==""|X=="")
-
-drop if category=="location sex wealth" & (location==""|sex==""|wealth=="")
-drop if category=="sex wealth region" & (sex==""|wealth==""|region=="")
-drop if category=="location sex wealth region"
-
-*Putting the names in the same format as the others
-for X in any $categories_collapse total: replace category=proper(category) if category=="X"
-replace category="Location & Sex" if category=="location sex"
-replace category="Location & Sex & Wealth" if category=="location sex wealth"
-replace category="Location & Wealth" if category=="location wealth"
-replace category="Sex & Region" if category=="sex region"
-replace category="Sex & Wealth" if category=="sex wealth"
-replace category="Sex & Wealth & Region" if category=="sex wealth region"
-replace category="Wealth & Region" if category=="wealth region"
-
-* Categories that are not used:
-drop if category=="location region"|category=="location sex region"|category=="location wealth region"
-
-for X in any $categories_collapse: rename X, proper
-
-// *Now I throw away those that have large differences (per level)
-// merge m:1 country year using "$dir/comparisons/results.dta", keepusing(flag*) nogen
-// drop if flag_lfs==1
-// order iso_code3 country survey year category Sex Location Wealth Region comp_prim_v2* comp_lowsec_v2* comp_upsec_v2* comp_prim_1524* comp_lowsec_1524* comp_upsec_2029* preschool_1ybefore*
-// drop comp_lowsec_2024-flag_LFS_country
-// for X in any comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore: ren X X_m
-// order iso_code3 country survey year category Sex Location Wealth Region *_m *_no
-
-save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\indicators_Colombia_2019.dta", replace
+save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Vietnam\indicators_Vietnam_2019.dta", replace
 
 
 

@@ -7,13 +7,14 @@
 set more off
 
 **
+clear
 use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\Fuerza de trabajo.dta"
 egen personalincome=rsum( P8624 P6595S1 P6605S1 P6623S1 P6615S1 P8626S1 P8628S1 P8630S1 P8631S1 P8642S1)
 drop if personal==0
 collapse (sum) personalincome [aw= FEX_C ], by( DIRECTORIO SECUENCIA_P) cw
 rename personalincome householdincome
 xtile hhwealthindex = householdincome, nquantiles(5)
-save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\wealthindex.dta"
+save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\wealthindex.dta", replace
 **
 
 
@@ -33,12 +34,12 @@ save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surv
 *************PART 2: rename and define category variables **************************************************
 ************************************************************************************************************
 
-
-use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\Colombia_2019.dta",  clear
+clear
+use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\Colombia_2019.dta",  
 
 
 local country Colombia 
-local sex P781S2
+local sex P6020
 local urbanrural CLASE
 local hhweight FEX_C
 local age P6040
@@ -67,6 +68,7 @@ label values wealth wealth
 *Region fixing accents
 gen region=`region'
 label define REGION 1 "Caribe" 2 "Oriental" 3 "Central" 4 "Pacífica (sin valle)" 5 "Bogotá" 6 "Antioquia" 7 "Valle del Cauca" 8 "San Andrés" 9 "Orinoquía - Amazonía", replace
+label values region REGION
 
 *Location (urban-rural)
 rename `urbanrural' location
@@ -75,12 +77,17 @@ label define location 1 "Urban" 0 "Rural"
 label val location location
 
 compress
-*save ""C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\Colombia_2019.dta", replace
+save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\Colombia_2019.dta", replace
 
 
 ************************************************************************************************************
 *************PART 3: all indicators (clean and calculate) **************************************************
 ************************************************************************************************************
+clear
+use "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\Colombia_2019.dta",  
+
+gen iso_code3="COL"
+gen year=2018
 
 merge m:1 iso_code3 year using "C:\ado\personal\UIS_duration_age_01102020.dta", keepusing(prim_age_uis prim_dur_uis lowsec_dur_uis upsec_dur_uis) keep(match) nogen
 for X in any prim_dur lowsec_dur upsec_dur: ren X_uis X
@@ -103,13 +110,11 @@ ren prim_age_uis prim_age0
 *Levels: 0=preschool, 1=primary, 2=lowsec, 3=upsec/general educ/vocational educ, //
 *        4=post sec non tertiary/general educ/vocat educ; 5=short cycle tertiary, 6=bachelor; 7=master, 8=phd 
 local highestlevelattended P8587
-local levelattendingcurrentyear P1088
 *pe020 es levelattendingcurrentyear
 *pe040 es  highestlevelattended
 *See ICSED mapping file for correspondence
 
 recode `highestlevelattended' (1=0) (3=1) (4=2) (5=3) (6=3) (7=4) (8=3) (9=4) (10=3) (11=6) (12=6) (13=7) , gen(highestlevelattended)
-recode `levelattendingcurrentyear' (100=1) (200=2) (300/354=3) (400/450=4) (500=5) (600=6) (700=7) (800=8), gen(levelattendingcurrentyear)
 
 
 ***Completion variables:  comp_prim_v2 comp_lowsec_v2 comp_upsec_v2  comp_prim_1524 comp_lowsec_1524 comp_upsec_2029
@@ -145,7 +150,6 @@ replace eduyears=P8587S1 if (P8587==3|P8587==4|P8587==5) // primaria secundaria 
 replace eduyears=years_higher+P8587S1 if inlist(P8587, 6, 7, 8, 9, 10, 11) // tecnicos no magister 
 replace eduyears=years_higher+5 if P8587==12 // posgrado sin titulo
 replace eduyears=years_higher+5 if P8587==13 // posgrado con titulo
-
 
 
 *DATA COLLECTION DAYS OF THE SURVEY
@@ -255,15 +259,23 @@ generate edu0_prim = edu0 if schage >= prim_age0 + 3 & schage <= prim_age0 + 6
 		replace edu`X'_2024  = . if eduyears_2024 == .
 	}
 
+***********OVER-AGE PRIMARY ATTENDANCE**************
+		
+	gen overage2plus = 0 if attend==1 & P1088==2
+	local primgrades 1 2 3 4 5
+	local i=0
+    foreach grade of local primgrades {
+				local i=`i'+1
+				replace overage2plus=1 if P1088S1==`grade' & schage>prim_age0+1+`i' & overage2plus!=.
+		}
 
-
-foreach var in comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 {
+foreach var in comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 comp_higher_4yrs_3034 comp_higher_2yrs_2529 comp_higher_4yrs_2529 overage2plus {
 gen `var'_no=`var'
 }
 
 compress
 cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia"
-save Colombia_microdata.dta
+save Colombia_microdata.dta, replace
 
 
 ************************************************************************************************************
@@ -271,8 +283,10 @@ save Colombia_microdata.dta
 ************************************************************************************************************
 
 global categories_collapse location sex wealth region 
-global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024  *age0 *age1 *dur 
-global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no preschool_1ybefore_no attend_higher_1822_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no
+global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 comp_higher_4yrs_3034 comp_higher_2yrs_2529 comp_higher_4yrs_2529 overage2plus
+ *age0 *age1 *dur 
+global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no preschool_1ybefore_no attend_higher_1822_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no  comp_higher_2yrs_2529_no comp_higher_4yrs_2529_no comp_higher_4yrs_3034_no overage2plus_no
+
 
 tuples $categories_collapse, display
 /*
@@ -329,46 +343,30 @@ gen survey="ECV"
 replace category="total" if category==""
 tab category
 
+global categories_collapse location sex wealth region
+	
+	*-- Fixing for missing values in categories
+	for X in any $categories_collapse: decode X, gen(X_s)
+	for X in any $categories_collapse: drop X
+	for X in any $categories_collapse: ren X_s X
 
+	*Putting the names in the same format as the others
+	global categories_collapse location sex wealth region
+	tuples $categories_collapse, display
+	
+	* DROP Categories that are not used:
+	drop if category=="location region"|category=="location sex region"|category=="location wealth region"|category=="location sex wealth region"
 
-*-- Fixing for missing values in categories
-for X in any wealth sex: decode X, gen(X_s)
-for X in any wealth sex: drop X
-for X in any wealth sex: ren X_s X
+	*Proper for all categories
+	foreach i of numlist 0/`ntuples' {
+	replace category=proper(category) if category=="`tuple`i''"
+	}
+		
+	
+	order iso_code3 country survey year category $categories_collapse $varlist_m $varlist_no 
+	tab category
+	for X in any $categories_collapse: tab X
 
-codebook $categories_collapse, tab(100)
-
-for X in any $categories_collapse: drop if category=="X" & X==""
-for X in any sex wealth region: drop if category=="location X" & (location==""|X=="")
-for X in any wealth region: drop if category=="sex X" & (sex==""|X=="")
-for X in any region: drop if category=="wealth X" & (wealth==""|X=="")
-
-drop if category=="location sex wealth" & (location==""|sex==""|wealth=="")
-drop if category=="sex wealth region" & (sex==""|wealth==""|region=="")
-drop if category=="location sex wealth region"
-
-*Putting the names in the same format as the others
-for X in any $categories_collapse total: replace category=proper(category) if category=="X"
-replace category="Location & Sex" if category=="location sex"
-replace category="Location & Sex & Wealth" if category=="location sex wealth"
-replace category="Location & Wealth" if category=="location wealth"
-replace category="Sex & Region" if category=="sex region"
-replace category="Sex & Wealth" if category=="sex wealth"
-replace category="Sex & Wealth & Region" if category=="sex wealth region"
-replace category="Wealth & Region" if category=="wealth region"
-
-* Categories that are not used:
-drop if category=="location region"|category=="location sex region"|category=="location wealth region"
-
-for X in any $categories_collapse: rename X, proper
-
-// *Now I throw away those that have large differences (per level)
-// merge m:1 country year using "$dir/comparisons/results.dta", keepusing(flag*) nogen
-// drop if flag_lfs==1
-// order iso_code3 country survey year category Sex Location Wealth Region comp_prim_v2* comp_lowsec_v2* comp_upsec_v2* comp_prim_1524* comp_lowsec_1524* comp_upsec_2029* preschool_1ybefore*
-// drop comp_lowsec_2024-flag_LFS_country
-// for X in any comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore: ren X X_m
-// order iso_code3 country survey year category Sex Location Wealth Region *_m *_no
 
 save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Colombia\indicators_Colombia_2019.dta", replace
 

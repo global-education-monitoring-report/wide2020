@@ -319,9 +319,18 @@ generate edu0_prim = edu0 if schage >= prim_age0 + 3 & schage <= prim_age0 + 6
 		replace edu`X'_2024  = . if eduyears_2024 == .
 	}
 
+	***********OVER-AGE PRIMARY ATTENDANCE**************
+		
+	gen overage2plus = 0 if attend==1 & J72_18A==1
+	local primgrades 1 2 3 4
+	local i=0
+    foreach grade of local primgrades {
+				local i=`i'+1
+				replace overage2plus=1 if J70_1==`grade' & schage>prim_age0+1+`i' & overage2plus!=.
+				replace overage2plus=1 if K3_1==`grade' & schage>prim_age0+1+`i' & overage2plus!=.
+                 }
 
-
-foreach var in comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 {
+foreach var in comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec comp_higher_4yrs_3034 comp_higher_2yrs_2529 comp_higher_4yrs_2529 edu0_prim edu2_2024 edu4_2024 {
 gen `var'_no=`var'
 }
 
@@ -338,8 +347,8 @@ cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other survey
 use Russia_microdata.dta, clear
 
 global categories_collapse location sex wealth region 
-global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024  *age0 *age1 *dur 
-global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no preschool_1ybefore_no attend_higher_1822_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no
+global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec comp_higher_2yrs_2529 comp_higher_4yrs_2529 edu0_prim edu2_2024 edu4_2024  *age0 *age1 *dur 
+global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no preschool_1ybefore_no attend_higher_1822_no  comp_higher_2yrs_2529_no comp_higher_4yrs_2529_no comp_higher_4yrs_3034_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no
 
 tuples $categories_collapse, display
 /*
@@ -394,42 +403,28 @@ drop t_0
 	gen country = "Russian-Federation"
 	gen survey="HSE"
 	replace category="total" if category==""
-	tab category
 
-
-
+	global categories_collapse location sex wealth region
+	
 	*-- Fixing for missing values in categories
-	for X in any wealth sex: decode X, gen(X_s)
-	for X in any wealth sex: drop X
-	for X in any wealth sex: ren X_s X
-
-	codebook $categories_collapse, tab(100)
-
-	global categories_collapse location sex wealth region 
-
+	for X in any $categories_collapse: decode X, gen(X_s)
+	for X in any $categories_collapse: drop X
+	for X in any $categories_collapse: ren X_s X
 
 	*Putting the names in the same format as the others
-	for X in any $categories_collapse total: replace category=proper(category) if category=="X"
-	replace category="Location & Sex" if category=="location sex"
-	replace category="Location & Sex & Wealth" if category=="location sex wealth"
-	replace category="Location & Wealth" if category=="location wealth"
-	replace category="Sex & Region" if category=="sex region"
-	replace category="Sex & Wealth" if category=="sex wealth"
-	replace category="Sex & Wealth & Region" if category=="sex wealth region"
-	replace category="Wealth & Region" if category=="wealth region"
-
-	* Categories that are not used:
+	global categories_collapse location sex wealth region
+	tuples $categories_collapse, display
+	
+	* DROP Categories that are not used:
 	drop if category=="location region"|category=="location sex region"|category=="location wealth region"|category=="location sex wealth region"
 
-	for X in any $categories_collapse: rename X, proper
-
-	// *Now I throw away those that have large differences (per level)
-	// merge m:1 country year using "$dir/comparisons/results.dta", keepusing(flag*) nogen
-	// drop if flag_lfs==1
-	// order iso_code3 country survey year category Sex Location Wealth Region comp_prim_v2* comp_lowsec_v2* comp_upsec_v2* comp_prim_1524* comp_lowsec_1524* comp_upsec_2029* preschool_1ybefore*
-	// drop comp_lowsec_2024-flag_LFS_country
-	// for X in any comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore: ren X X_m
-	// order iso_code3 country survey year category Sex Location Wealth Region *_m *_no
+	*Proper for all categories
+	foreach i of numlist 0/`ntuples' {
+	replace category=proper(category) if category=="`tuple`i''"
+	}
+		
+	
+	order iso_code3 country survey year category $categories_collapse $varlist_m $varlist_no 
 
 	cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Russia"
 	save indicators_Russia_2019.dta, replace

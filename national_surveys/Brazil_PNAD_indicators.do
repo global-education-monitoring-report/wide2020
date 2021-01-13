@@ -355,14 +355,26 @@ for X in any prim lowsec upsec: capture generate X_age1_eduout = X_age0_eduout +
 // gen `var'_no=`var'
 // }
 
+ ***********OVER-AGE PRIMARY ATTENDANCE**************
+		
+	gen overage2plus = 0 if attend==1 & V3003A==3
+	local primgrades 1 2 3 4 5
+	local i=0
+    foreach grade of local primgrades {
+				local i=`i'+1
+				replace overage2plus=1 if V3006==`grade' & schage>prim_age0+1+`i' & overage2plus!=.
+		}
+		
+	*****************************************************
 
-foreach var in comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024   eduout_prim eduout_lowsec eduout_upsec  edu2_2024 edu4_2024 {
+
+foreach var in comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024  comp_higher_4yrs_3034 comp_higher_2yrs_2529 comp_higher_4yrs_2529 overage2plus   eduout_prim eduout_lowsec eduout_upsec  edu2_2024 edu4_2024 {
 gen `var'_no=`var'
 }
 
 compress
 cd "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Brazil"
-save Brazil_microdata.dta
+save Brazil_microdata.dta, replace
 
 
 ************************************************************************************************************
@@ -370,8 +382,9 @@ save Brazil_microdata.dta
 ************************************************************************************************************
 
 global categories_collapse location sex wealth region ethnicity
-global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029   eduout_prim eduout_lowsec eduout_upsec  edu2_2024 edu4_2024  *age0 *age1 *dur 
-global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduout_prim_no eduout_lowsec_no eduout_upsec_no  edu2_2024_no edu4_2024_no
+global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029   eduout_prim eduout_lowsec eduout_upsec  comp_higher_4yrs_3034 comp_higher_2yrs_2529 comp_higher_4yrs_2529 overage2plus edu2_2024 edu4_2024  *age0 *age1 *dur 
+global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no eduout_prim_no eduout_lowsec_no eduout_upsec_no  edu2_2024_no edu4_2024_no comp_higher_2yrs_2529_no comp_higher_4yrs_2529_no comp_higher_4yrs_3034_no overage2plus_no
+ 
 
 // global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore attend_higher_1822 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024  *age0 *age1 *dur 
 // global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no comp_upsec_2029_no preschool_1ybefore_no attend_higher_1822_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no
@@ -444,50 +457,43 @@ gen iso_code3="BRA"
 gen country = "Brazil"
 gen survey="PNAD"
 replace category="total" if category==""
-tab category
+	
+	
+// 	label define UF 1 "Rondônia" 2 "Acre" 3 "Amazonas" 4 "Roraima" 5 "Pará" 6 "Amapá" 7 "Tocantins" 8 "Maranhão" 9 "Piauí" 10 "Ceará" 11 "Rio Grande do Norte" 12 "Paraíba" 13 "Pernambuco" 14 "Alagoas" 15 "Sergipe" 16 "Bahia" 17 "Minas Gerais" 18 "Espírito Santo" 19 "Rio de Janeiro" 20 "São Paulo" 21 "Paraná" 22 "Santa Catarina" 23 "Rio Grande do Sul" 24 "Mato Grosso do Sul" 25 "Mato Grosso" 26 "Goiás" 27 "Distrito Federal", replace
+// 	label define V2010 1 "Branca" 2 "Preta" 3 "Amarela" 4 "Parda" 5 "Indígena" 6 "Ignorado", replace
+// 	label values region UF
+// 	label values ethnicity V2010
+//
+// 	decode region, gen(region_s)
+// 	decode ethnicity, gen (ethnicity_s)
+//	
+		global categories_collapse location sex wealth region ethnicity
 
+	*-- Fixing for missing values in categories
+	*for X in any $categories_collapse: decode X, gen(X_s)
+	for X in any $categories_collapse: drop X
+	for X in any $categories_collapse: ren X_s X
 
+	*Putting the names in the same format as the others
+	global categories_collapse location sex wealth region ethnicity
+	tuples $categories_collapse, display
+	
+	* DROP Categories that are not used:
+	drop if category=="location region"|category=="location sex region"|category=="location wealth region"|category=="location sex wealth region"
 
-*-- Fixing for missing values in categories
-for X in any wealth sex: decode X, gen(X_s)
-for X in any wealth sex: drop X
-for X in any wealth sex: ren X_s X
+	*Proper for all categories
+	foreach i of numlist 0/`ntuples' {
+	replace category=proper(category) if category=="`tuple`i''"
+	}
+		
+	
+	order iso_code3 country survey year category $categories_collapse $varlist_m $varlist_no 
+	tab category
+	for X in any $categories_collapse: tab X
 
-codebook $categories_collapse, tab(100)
+				 
 
-for X in any $categories_collapse: drop if category=="X" & X==""
-for X in any sex wealth region: drop if category=="location X" & (location==""|X=="")
-for X in any wealth region: drop if category=="sex X" & (sex==""|X=="")
-for X in any region: drop if category=="wealth X" & (wealth==""|X=="")
-
-drop if category=="location sex wealth" & (location==""|sex==""|wealth=="")
-drop if category=="sex wealth region" & (sex==""|wealth==""|region=="")
-drop if category=="location sex wealth region"
-
-*Putting the names in the same format as the others
-for X in any $categories_collapse total: replace category=proper(category) if category=="X"
-replace category="Location & Sex" if category=="location sex"
-replace category="Location & Sex & Wealth" if category=="location sex wealth"
-replace category="Location & Wealth" if category=="location wealth"
-replace category="Sex & Region" if category=="sex region"
-replace category="Sex & Wealth" if category=="sex wealth"
-replace category="Sex & Wealth & Region" if category=="sex wealth region"
-replace category="Wealth & Region" if category=="wealth region"
-
-* Categories that are not used:
-drop if category=="location region"|category=="location sex region"|category=="location wealth region"
-
-for X in any $categories_collapse: rename X, proper
-
-// *Now I throw away those that have large differences (per level)
-// merge m:1 country year using "$dir/comparisons/results.dta", keepusing(flag*) nogen
-// drop if flag_lfs==1
-// order iso_code3 country survey year category Sex Location Wealth Region comp_prim_v2* comp_lowsec_v2* comp_upsec_v2* comp_prim_1524* comp_lowsec_1524* comp_upsec_2029* preschool_1ybefore*
-// drop comp_lowsec_2024-flag_LFS_country
-// for X in any comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore: ren X X_m
-// order iso_code3 country survey year category Sex Location Wealth Region *_m *_no
-
-save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Brazil\indicators_Brazil_2019.dta"
+save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Brazil\indicators_Brazil_2019.dta", replace
 
 
 
