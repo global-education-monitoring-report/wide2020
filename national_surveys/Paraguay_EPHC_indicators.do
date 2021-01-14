@@ -465,49 +465,43 @@ drop t_0
 gen year="2019"
 gen country_year="Paraguay"+"_"+year
 destring year, replace
-gen iso_code2="PE"
-gen iso_code3="PER"
+gen iso_code2="PY"
+gen iso_code3="PRY"
 gen country = "Paraguay"
-gen survey="ENAHO"
+gen survey="EPHC"
 replace category="total" if category==""
-tab category
 
-global categories_collapse location sex wealth region 
-global varlist_m comp_lowsec_2024 comp_upsec_2024 comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 eduyears_2024 preschool_1ybefore attend_higher_1822 comp_higher_2yrs_2529 comp_higher_4yrs_2529 comp_higher_4yrs_3034 eduout_prim eduout_lowsec eduout_upsec edu0_prim edu2_2024 edu4_2024 overage2plus literacy *age0 *age1 *dur 
-global varlist_no comp_lowsec_2024_no comp_upsec_2024_no comp_prim_v2_no comp_lowsec_v2_no comp_upsec_v2_no comp_prim_1524_no comp_lowsec_1524_no eduyears_2024_no preschool_1ybefore_no attend_higher_1822_no comp_higher_2yrs_2529_no comp_higher_4yrs_2529_no comp_higher_4yrs_3034_no eduout_prim_no eduout_lowsec_no eduout_upsec_no edu0_prim_no edu2_2024_no edu4_2024_no overage2plus_no literacy_no
+global categories_collapse location sex wealth region
+	
+	*-- Fixing for missing values in categories
+	for X in any $categories_collapse: decode X, gen(X_s)
+	for X in any $categories_collapse: drop X
+	for X in any $categories_collapse: ren X_s X
+
+	*Putting the names in the same format as the others
+	global categories_collapse location sex wealth region
+	tuples $categories_collapse, display
+	
+	* DROP Categories that are not used:
+	drop if category=="location region"|category=="location sex region"|category=="location wealth region"|category=="location sex wealth region"
+
+	*Proper for all categories
+	foreach i of numlist 0/`ntuples' {
+	replace category=proper(category) if category=="`tuple`i''"
+	}
+		
+	
+	order iso_code3 country survey year category $categories_collapse $varlist_m $varlist_no 
+	tab category
+	for X in any $categories_collapse: tab X 
+	
+	drop if wealth=="" & category=="Wealth" 
+	drop if wealth=="" & category=="Wealth Region" 
+	drop if wealth=="" & category=="Sex Wealth Region" 
+	drop if wealth=="" & category=="Sex Wealth"
+	drop if wealth=="" & category=="Location Sex Wealth" 
+	drop if wealth=="" & category=="Location Wealth" 
 
 
-*-- Fixing for missing values in categories
-for X in any wealth sex: decode X, gen(X_s)
-for X in any wealth sex: drop X
-for X in any wealth sex: ren X_s X
-
-codebook $categories_collapse, tab(100)
-
-*Putting the names in the same format as the others
-*for X in any $categories_collapse total: replace category=proper(category) if category=="X"
-replace category="Location & Sex" if category=="location sex"
-replace category="Location & Sex & Wealth" if category=="location sex wealth"
-replace category="Location & Wealth" if category=="location wealth"
-replace category="Sex & Region" if category=="sex region"
-replace category="Sex & Wealth" if category=="sex wealth"
-replace category="Sex & Wealth & Region" if category=="sex wealth region"
-replace category="Wealth & Region" if category=="wealth region"
-
-* Categories that are not used:
-drop if category=="location region"|category=="location sex region"|category=="location wealth region"|category=="location sex wealth region"
-
-for X in any $categories_collapse: rename X, proper
-
-// *Now I throw away those that have large differences (per level)
-// merge m:1 country year using "$dir/comparisons/results.dta", keepusing(flag*) nogen
-// drop if flag_lfs==1
-// order iso_code3 country survey year category Sex Location Wealth Region comp_prim_v2* comp_lowsec_v2* comp_upsec_v2* comp_prim_1524* comp_lowsec_1524* comp_upsec_2029* preschool_1ybefore*
-// drop comp_lowsec_2024-flag_LFS_country
-// for X in any comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 preschool_1ybefore: ren X X_m
-// order iso_code3 country survey year category Sex Location Wealth Region *_m *_no
-
-*order iso_code country year country_year survey category location sex wealth region ethnicity religion
-order iso_code2 iso_code3 country survey year country_year category Region Location Wealth Sex  
 save "C:\Users\taiku\Documents\GEM UNESCO MBR\Datasets to update WIDE\Other surveys\Paraguay\indicators_Paraguay_2019.dta", replace
 
