@@ -156,15 +156,15 @@ pisa_m <- ilsa_sum(pvnames = "MATH",
                    survey = "PISA",
                    prefix = "m")
 
-# pisa_s <- ilsa_sum(pvnames = "SCIE", 
-#                    cutoff = c(409.54),
-#                    config = pisa_conf,
-#                    data = pisa,
-#                    year = 2018,
-#                    level = "Upper secondary",
-#                    grade = NA,
-#                    survey = "PISA",
-#                    prefix = "s")
+pisa_s <- ilsa_sum(pvnames = "SCIE",
+                   cutoff = c(334.94, 409.54, 484.14, 558.73),
+                   config = pisa_conf,
+                   data = pisa,
+                   year = 2018,
+                   level = "Upper secondary",
+                   grade = NA,
+                   survey = "PISA",
+                   prefix = "s")
 
 # Fix column names
 # 
