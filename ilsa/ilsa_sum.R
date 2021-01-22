@@ -41,10 +41,17 @@ total_n <- cbind(melt(id.vars= "COUNTRY",
 
 
 ## by one group
+
 one_ach <- lapply(vars, function(x) {
-    df = intsvy.ben.pv(pvnames = pvnames, 
+  
+  mydata <- data[complete.cases(data[, x]), ];
+  mymiss <- aggregate(list(n=mydata[["COUNTRY"]]), mydata[c("COUNTRY", x)], length);
+  mydata <- merge(mydata, mymiss, all.x=TRUE);
+  mydata <- mydata[mydata$n>5, ]; # remove intersections with less than 5 groups (for run)
+  
+  df = intsvy.ben.pv(pvnames = pvnames, 
                      cutoff = cutoff, by = c("COUNTRY", x), 
-                     data = data[complete.cases(data[, x]), ], config = config);
+                     data = mydata, config = config);
   df$category = x;
   df})
 

@@ -135,9 +135,10 @@ timss <- timss %>%
 #                                 labels = c(1:5),
 #                                 include.lowest=TRUE))
 
+
 # Math performance
 timss4_19_m <- ilsa_sum(pvnames = "ASMMAT", 
-                    cutoff =   c(400, 475, 550, 600),
+                    cutoff =   c(400, 475, 550, 625),
                     config = timss4_conf,
                     data = timss,
                     year = 2019,
@@ -149,7 +150,7 @@ timss4_19_m <- ilsa_sum(pvnames = "ASMMAT",
 
 # Science performance
 timss4_19_s <- ilsa_sum(pvnames = "ASSSCI", 
-                        cutoff =   c(400, 475, 550, 600),
+                        cutoff =   c(400, 475, 550, 625),
                         config = timss4_conf,
                         data = timss,
                         year = 2019,
@@ -173,14 +174,11 @@ timss <- timssg8.select.merge(folder= dir,
                                          "BSBG05C", "BSBG05D", "BSBG05E", "BSDGEDUP"), 
                               school= c("BCBG05B"))
 
-
-
 # Grouping variables
 
 timss$IDCNTRYL <- cnt[match(timss$IDCNTRY, cnt$iso_num), "country"]
 timss$COUNTRY <- cnt[match(timss$IDCNTRY, cnt$iso_num), "iso_code3"]
 timss$COUNTRY <- ifelse(is.na(timss$COUNTRY), timss$IDCNTRYL, timss$COUNTRY)
-
 
 timss <- droplevels(timss[!is.na(timss$COUNTRY), ])
 
@@ -276,13 +274,14 @@ timss <- timss %>%
                       labels = c(1:5),
                       include.lowest=TRUE))
 
+
 # Math performance
 timss8_19_m <- ilsa_sum(pvnames = "BSMMAT", 
-                        cutoff =   c(400, 475, 550, 600),
+                        cutoff =   c(400, 475, 550, 625),
                         config = timss8_conf,
                         data = timss,
                         year = 2019,
-                        level = "Primary",
+                        level = "Lower secondary",
                         grade = 8,
                         survey = "TIMSS",
                         prefix = "m")
@@ -290,11 +289,11 @@ timss8_19_m <- ilsa_sum(pvnames = "BSMMAT",
 
 # Science performance
 timss8_19_s <- ilsa_sum(pvnames = "BSSSCI", 
-                        cutoff =   c(400, 475, 550, 600),
+                        cutoff =   c(400, 475, 550, 625),
                         config = timss8_conf,
                         data = timss,
                         year = 2019,
-                        level = "Primary",
+                        level = "Lower secondary",
                         grade = 8,
                         survey = "TIMSS",
                         prefix = "s")
