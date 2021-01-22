@@ -1,296 +1,299 @@
-"iso_code3","iso_num","country","iso_code2","pasec","Country.x","ISO","Country.y","Code"
-"",NA,NA,NA,NA,NA,NA,"Channel Islands",830
-"ABW",533,"Aruba","AW","",NA,NA,"Aruba",533
-"AFG",4,"Afghanistan","AF","",NA,NA,"Afghanistan",4
-"AGO",24,"Angola","AO","",NA,NA,"Angola",24
-"AIA",660,"Anguilla","AI","",NA,NA,"Anguilla",660
-"ALA",248,"Åland Islands","AX","",NA,NA,"Aland Islands",248
-"ALB",8,"Albania","AL","",NA,NA,"Albania",8
-"AND",20,"Andorra","AD","",NA,NA,"Andorra",20
-"ANT",530,"Netherlands Antilles","AN","",NA,NA,NA,NA
-"ARE",784,"United Arab Emirates","AE","","United Arab Emirates","ARE","United Arab Emirates",784
-"ARG",32,"Argentina","AR","","Argentina","ARG","Argentina",32
-"ARM",51,"Armenia","AM","","Armenia","ARM","Armenia",51
-"ASM",16,"American Samoa","AS","",NA,NA,"American Samoa",16
-"ATA",10,"Antarctica","AQ","",NA,NA,NA,NA
-"ATF",260,"French Southern Territories","TF","",NA,NA,NA,NA
-"ATG",28,"Antigua and Barbuda","AG","",NA,NA,"Antigua and Barbuda",28
-"AUS",36,"Australia","AU","","Australia","AUS","Australia",36
-"AUT",40,"Austria","AT","","Austria","AUT","Austria",40
-"AZE",31,"Azerbaijan","AZ","","Azerbaijan","AZE","Azerbaijan",31
-"BDI",108,"Burundi","BI","BURUNDI",NA,NA,"Burundi",108
-"BEL",56,"Belgium","BE","",NA,NA,"Belgium",56
-"BEN",204,"Benin","BJ","BENIN",NA,NA,"Benin",204
-"BES",NA,"Bonaire, Saint Eustatius and Saba",NA,NA,NA,NA,"Bonaire, Saint Eustatius and Saba",535
-"BFA",854,"Burkina Faso","BF","BURKINA FASO",NA,NA,"Burkina Faso",854
-"BGD",50,"Bangladesh","BD","",NA,NA,"Bangladesh",50
-"BGR",100,"Bulgaria","BG","","Bulgaria","BGR","Bulgaria",100
-"BHR",48,"Bahrain","BH","","Bahrain","BHR","Bahrain",48
-"BHS",44,"Bahamas","BS","",NA,NA,"Bahamas",44
-"BIH",70,"Bosnia and Herzegovina","BA","","Bosnia and Herzegovina","BIH","Bosnia and Herzegovina",70
-"BLM",652,"Saint Barthélemy","BL","",NA,NA,"Saint-Barthelemy",652
-"BLR",112,"Belarus","BY","",NA,NA,"Belarus",112
-"BLZ",84,"Belize","BZ","","Belize","BLZ","Belize",84
-"BMU",60,"Bermuda","BM","",NA,NA,"Bermuda",60
-"BOL",68,"Bolivia, Plurinational State of","BO","",NA,NA,"Bolivia",68
-"BRA",76,"Brazil","BR","",NA,NA,"Brazil",76
-"BRB",52,"Barbados","BB","",NA,NA,"Barbados",52
-"BRN",96,"Brunei Darussalam","BN","",NA,NA,"Brunei Darussalam",96
-"BTN",64,"Bhutan","BT","",NA,NA,"Bhutan",64
-"BVT",74,"Bouvet Island","BV","",NA,NA,NA,NA
-"BWA",72,"Botswana","BW","","Botswana","BWA","Botswana",72
-"CAF",140,"Central African Republic","CF","",NA,NA,"Central African Republic",140
-"CAN",124,"Canada","CA","","Canada","CAN","Canada",124
-"CCK",166,"Cocos (Keeling) Islands","CC","",NA,NA,NA,NA
-"CHE",756,"Switzerland","CH","",NA,NA,"Switzerland",756
-"CHL",152,"Chile","CL","","Chile","CHL","Chile",152
-"CHN",156,"China","CN","",NA,NA,NA,NA
-"CIV",384,"Côte d'Ivoire","CI","COTE D'IVOIRE",NA,NA,"Cote d'Ivoire",384
-"CMR",120,"Cameroon","CM","CAMEROUN",NA,NA,"Cameroon",120
-"COD",180,"Congo, the Democratic Republic of the","CD","",NA,NA,"Democratic Republic of the Congo",180
-"COG",178,"Congo","CG","CONGO",NA,NA,"Congo",178
-"COK",184,"Cook Islands","CK","",NA,NA,"Cook Islands",184
-"COL",170,"Colombia","CO","","Colombia","COL","Colombia",170
-"COM",174,"Comoros","KM","",NA,NA,"Comoros",174
-"CPV",132,"Cape Verde","CV","",NA,NA,"Cape Verde",132
-"CRI",188,"Costa Rica","CR","",NA,NA,"Costa Rica",188
-"CUB",192,"Cuba","CU","",NA,NA,"Cuba",192
-"CUW",NA,"Curacao",NA,NA,NA,NA,"Curacao",531
-"CXR",162,"Christmas Island","CX","",NA,NA,NA,NA
-"CYM",136,"Cayman Islands","KY","",NA,NA,"Cayman Islands",136
-"CYP",196,"Cyprus","CY","","Cyprus","CYP","Cyprus",196
-"CZE",203,"Czech Republic","CZ","","Czech Republic","CZE","Czech Republic",203
-"DEU",276,"Germany","DE","","Germany","DEU","Germany",276
-"DJI",262,"Djibouti","DJ","",NA,NA,"Djibouti",262
-"DMA",212,"Dominica","DM","",NA,NA,"Dominica",212
-"DNK",208,"Denmark","DK","","Denmark","DNK","Denmark",208
-"DOM",214,"Dominican Republic","DO","",NA,NA,"Dominican Republic",214
-"DZA",12,"Algeria","DZ","","Algeria","DZA","Algeria",12
-"ECU",218,"Ecuador","EC","",NA,NA,"Ecuador",218
-"EGY",818,"Egypt","EG","","Egypt","EGY","Egypt",818
-"ERI",232,"Eritrea","ER","",NA,NA,"Eritrea",232
-"ESH",732,"Western Sahara","EH","",NA,NA,"Western Sahara",732
-"ESP",724,"Spain","ES","","Spain","ESP","Spain",724
-"EST",233,"Estonia","EE","",NA,NA,"Estonia",233
-"ETH",231,"Ethiopia","ET","",NA,NA,"Ethiopia",231
-"FIN",246,"Finland","FI","","Finland","FIN","Finland",246
-"FJI",242,"Fiji","FJ","",NA,NA,"Fiji",242
-"FLK",238,"Falkland Islands (Malvinas)","FK","",NA,NA,"Falkland Islands (Malvinas)",238
-"FRA",250,"France","FR","","France","FRA","France",250
-"FRO",234,"Faroe Islands","FO","",NA,NA,"Faeroe Islands",234
-"FSM",583,"Micronesia, Federated States of","FM","",NA,NA,"Micronesia (Federated States of)",583
-"GAB",266,"Gabon","GA","",NA,NA,"Gabon",266
-"GBR",826,"United Kingdom","GB","",NA,NA,"United Kingdom",826
-"GEO",268,"Georgia","GE","","Georgia","GEO","Georgia",268
-"GGY",831,"Guernsey","GG","",NA,NA,"Guernsey",831
-"GHA",288,"Ghana","GH","","Ghana","GHA","Ghana",288
-"GIB",292,"Gibraltar","GI","",NA,NA,"Gibraltar",292
-"GIN",324,"Guinea","GN","",NA,NA,"Guinea",324
-"GLP",312,"Guadeloupe","GP","",NA,NA,"Guadeloupe",312
-"GMB",270,"Gambia","GM","",NA,NA,"Gambia",270
-"GNB",624,"Guinea-Bissau","GW","",NA,NA,"Guinea-Bissau",624
-"GNQ",226,"Equatorial Guinea","GQ","",NA,NA,"Equatorial Guinea",226
-"GRC",300,"Greece","GR","","Greece","GRC","Greece",300
-"GRD",308,"Grenada","GD","",NA,NA,"Grenada",308
-"GRL",304,"Greenland","GL","",NA,NA,"Greenland",304
-"GTM",320,"Guatemala","GT","",NA,NA,"Guatemala",320
-"GUF",254,"French Guiana","GF","",NA,NA,"French Guiana",254
-"GUM",316,"Guam","GU","",NA,NA,"Guam",316
-"GUY",328,"Guyana","GY","",NA,NA,"Guyana",328
-"HKG",344,"Hong Kong","HK","","Hong Kong SAR","HKG","China, Hong Kong",344
-"HMD",334,"Heard Island and McDonald Islands","HM","",NA,NA,NA,NA
-"HND",340,"Honduras","HN","","Honduras","HND","Honduras",340
-"HRV",191,"Croatia","HR","","Croatia","HRV","Croatia",191
-"HTI",332,"Haiti","HT","",NA,NA,"Haiti",332
-"HUN",348,"Hungary","HU","","Hungary","HUN","Hungary",348
-"IDN",360,"Indonesia","ID","","Indonesia","IDN","Indonesia",360
-"IMN",833,"Isle of Man","IM","",NA,NA,"Isle of Man",833
-"IND",356,"India","IN","",NA,NA,"India",356
-"IOT",86,"British Indian Ocean Territory","IO","",NA,NA,NA,NA
-"IRL",372,"Ireland","IE","","Ireland","IRL","Ireland",372
-"IRN",364,"Iran, Islamic Republic of","IR","","Iran, Islamic Rep. of","IRN","Iran",364
-"IRQ",368,"Iraq","IQ","",NA,NA,"Iraq",368
-"ISL",352,"Iceland","IS","","Iceland","ISL","Iceland",352
-"ISR",376,"Israel","IL","","Israel","ISR","Israel",376
-"ITA",380,"Italy","IT","","Italy","ITA","Italy",380
-"JAM",388,"Jamaica","JM","",NA,NA,"Jamaica",388
-"JEY",832,"Jersey","JE","",NA,NA,"Jersey",832
-"JOR",400,"Jordan","JO","","Jordan","JOR","Jordan",400
-"JPN",392,"Japan","JP","","Japan","JPN","Japan",392
-"KAZ",398,"Kazakhstan","KZ","","Kazakhstan","KAZ","Kazakhstan",398
-"KEN",404,"Kenya","KE","",NA,NA,"Kenya",404
-"KGZ",417,"Kyrgyzstan","KG","",NA,NA,"Kyrgyzstan",417
-"KHM",116,"Cambodia","KH","",NA,NA,"Cambodia",116
-"KIR",296,"Kiribati","KI","",NA,NA,"Kiribati",296
-"KNA",659,"Saint Kitts and Nevis","KN","",NA,NA,"Saint Kitts and Nevis",659
-"KOR",410,"Korea, Republic of","KR","","Korea,Rep.of","KOR","Republic of Korea",410
-"KWT",414,"Kuwait","KW","","Kuwait","KWT","Kuwait",414
-"LAO",418,"Lao People's Democratic Republic","LA","",NA,NA,"Lao People's Democratic Republic",418
-"LBN",422,"Lebanon","LB","","Lebanon","LBN","Lebanon",422
-"LBR",430,"Liberia","LR","",NA,NA,"Liberia",430
-"LBY",434,"Libyan Arab Jamahiriya","LY","",NA,NA,"Libya",434
-"LCA",662,"Saint Lucia","LC","",NA,NA,"Saint Lucia",662
-"LIE",438,"Liechtenstein","LI","",NA,NA,"Liechtenstein",438
-"LKA",144,"Sri Lanka","LK","",NA,NA,"Sri Lanka",144
-"LSO",426,"Lesotho","LS","",NA,NA,"Lesotho",426
-"LTU",440,"Lithuania","LT","","Lithuania","LTU","Lithuania",440
-"LUX",442,"Luxembourg","LU","","Luxembourg","LUX","Luxembourg",442
-"LVA",428,"Latvia","LV","","Latvia","LVA","Latvia",428
-"MAC",446,"Macao","MO","","Macao SAR","MAC","China, Macao",446
-"MAF",663,"Saint Martin (French part)","MF","",NA,NA,"Saint-Martin (French part)",663
-"MAR",504,"Morocco","MA","","Morocco","MAR","Morocco",504
-"MCO",492,"Monaco","MC","",NA,NA,"Monaco",492
-"MDA",498,"Moldova, Republic of","MD","","Moldova, Rep. of","MDA","Republic of Moldova",498
-"MDG",450,"Madagascar","MG","",NA,NA,"Madagascar",450
-"MDV",462,"Maldives","MV","",NA,NA,"Maldives",462
-"MEX",484,"Mexico","MX","",NA,NA,"Mexico",484
-"MHL",584,"Marshall Islands","MH","",NA,NA,"Marshall Islands",584
-"MKD",807,"Macedonia, the former Yugoslav Republic of","MK","","Macedonia, Rep. of","MKD","The former Yugoslav Republic of Macedonia",807
-"MLI",466,"Mali","ML","",NA,NA,"Mali",466
-"MLT",470,"Malta","MT","","Malta","MLT","Malta",470
-"MMR",104,"Myanmar","MM","",NA,NA,"Myanmar",104
-"MNE",499,"Montenegro","ME","",NA,NA,"Montenegro",499
-"MNG",496,"Mongolia","MN","","Mongolia","MNG","Mongolia",496
-"MNP",580,"Northern Mariana Islands","MP","",NA,NA,"Northern Mariana Islands",580
-"MOZ",508,"Mozambique","MZ","",NA,NA,"Mozambique",508
-"MRT",478,"Mauritania","MR","",NA,NA,"Mauritania",478
-"MSR",500,"Montserrat","MS","",NA,NA,"Montserrat",500
-"MTQ",474,"Martinique","MQ","",NA,NA,"Martinique",474
-"MUS",480,"Mauritius","MU","",NA,NA,"Mauritius",480
-"MWI",454,"Malawi","MW","",NA,NA,"Malawi",454
-"MYS",458,"Malaysia","MY","","Malaysia","MYS","Malaysia",458
-"MYT",175,"Mayotte","YT","",NA,NA,"Mayotte",175
-"NAM",516,"Namibia",NA,"",NA,NA,"Namibia",516
-"NCL",540,"New Caledonia","NC","",NA,NA,"New Caledonia",540
-"NER",562,"Niger","NE","NIGER",NA,NA,"Niger",562
-"NFK",574,"Norfolk Island","NF","",NA,NA,"Norfolk Island",574
-"NGA",566,"Nigeria","NG","",NA,NA,"Nigeria",566
-"NIC",558,"Nicaragua","NI","",NA,NA,"Nicaragua",558
-"NIU",570,"Niue","NU","",NA,NA,"Niue",570
-"NLD",528,"Netherlands","NL","","Netherlands","NLD","Netherlands",528
-"NOR",578,"Norway","NO","","Norway","NOR","Norway",578
-"NPL",524,"Nepal","NP","",NA,NA,"Nepal",524
-"NRU",520,"Nauru","NR","",NA,NA,"Nauru",520
-"NZL",554,"New Zealand","NZ","","New Zealand","NZL","New Zealand",554
-"OMN",512,"Oman","OM","","Oman","OMN","Oman",512
-"PAK",586,"Pakistan","PK","",NA,NA,"Pakistan",586
-"PAN",591,"Panama","PA","",NA,NA,"Panama",591
-"PCN",612,"Pitcairn","PN","",NA,NA,"Pitcairn",612
-"PER",604,"Peru","PE","",NA,NA,"Peru",604
-"PHL",608,"Philippines","PH","",NA,NA,"Philippines",608
-"PLW",585,"Palau","PW","",NA,NA,"Palau",585
-"PNG",598,"Papua New Guinea","PG","",NA,NA,"Papua New Guinea",598
-"POL",616,"Poland","PL","","Poland","POL","Poland",616
-"PRI",630,"Puerto Rico","PR","",NA,NA,"Puerto Rico",630
-"PRK",408,"Korea, Democratic People's Republic of","KP","",NA,NA,"Democratic People's Republic of Korea",408
-"PRT",620,"Portugal","PT","","Portugal","PRT","Portugal",620
-"PRY",600,"Paraguay","PY","",NA,NA,"Paraguay",600
-"PSE",275,"Palestinian Territory, Occupied","PS","","Palestinian","PSE","State of Palestine",275
-"PYF",258,"French Polynesia","PF","",NA,NA,"French Polynesia",258
-"QAR",NA,"Dubai (UAE)",NA,NA,NA,NA,"Dubai (UAE)",784
-"QAT",634,"Qatar","QA","","Qatar","QAT","Qatar",634
-"QCN",NA,"Shanghai-China",NA,NA,NA,NA,"Shanghai-China",156
-"QRS",NA,"Perm(Russian Federation)",NA,NA,NA,NA,"Perm(Russian Federation)",NA
-"QUA",NA,"Florida (USA)",NA,NA,NA,NA,"Florida (USA)",NA
-"QUB",NA,"Connecticut (USA)",NA,NA,NA,NA,"Connecticut (USA)",NA
-"QUC",NA,"Massachusetts (USA)",NA,NA,NA,NA,"Massachusetts (USA)",NA
-"REU",638,"Réunion","RE","",NA,NA,"Reunion",638
-"ROU",642,"Romania","RO","","Romania","ROM","Romania",642
-"RUS",643,"Russian Federation","RU","","Russian Federation","RUS","Russian Federation",643
-"RWA",646,"Rwanda","RW","",NA,NA,"Rwanda",646
-"SARK",NA,"Sark",NA,NA,NA,NA,"Sark",680
-"SAU",682,"Saudi Arabia","SA","","Saudi Arabia","SAU","Saudi Arabia",682
-"SDN",736,"Sudan","SD","",NA,NA,"Sudan",729
-"SEN",686,"Senegal","SN","SENEGAL",NA,NA,"Senegal",686
-"SGP",702,"Singapore","SG","","Singapore","SGP","Singapore",702
-"SGS",239,"South Georgia and the South Sandwich Islands","GS","",NA,NA,NA,NA
-"SHN",654,"Saint Helena, Ascension and Tristan da Cunha","SH","",NA,NA,"Saint Helena",654
-"SJM",744,"Svalbard and Jan Mayen","SJ","",NA,NA,"Svalbard and Jan Mayen Islands",744
-"SLB",90,"Solomon Islands","SB","",NA,NA,"Solomon Islands",90
-"SLE",694,"Sierra Leone","SL","",NA,NA,"Sierra Leone",694
-"SLV",222,"El Salvador","SV","","El Salavador","SLV","El Salvador",222
-"SMR",674,"San Marino","SM","",NA,NA,"San Marino",674
-"SOM",706,"Somalia","SO","",NA,NA,"Somalia",706
-"SPM",666,"Saint Pierre and Miquelon","PM","",NA,NA,"Saint Pierre and Miquelon",666
-"SRB",688,"Serbia","RS","","Serbia","SRB","Serbia",688
-"SSD",NA,"South Sudan",NA,NA,NA,NA,"South Sudan",728
-"STP",678,"Sao Tome and Principe","ST","",NA,NA,"Sao Tome and Principe",678
-"SUR",740,"Suriname","SR","",NA,NA,"Suriname",740
-"SVK",703,"Slovakia","SK","","Slovak Republic","SVK","Slovakia",703
-"SVN",705,"Slovenia","SI","","Slovenia","SVN","Slovenia",705
-"SWE",752,"Sweden","SE","","Sweden","SWE","Sweden",752
-"SWZ",748,"Swaziland","SZ","",NA,NA,"Swaziland",748
-"SXM",NA,"Sint Maarten (Dutch part)",NA,NA,NA,NA,"Sint Maarten (Dutch part)",534
-"SYC",690,"Seychelles","SC","",NA,NA,"Seychelles",690
-"SYR",760,"Syrian Arab Republic","SY","","Syrian Arab Rep.","SYR","Syrian Arab Republic",760
-"TAP",NA,"Chinese Taipei",NA,NA,NA,NA,"Chinese Taipei",158
-"TCA",796,"Turks and Caicos Islands","TC","",NA,NA,"Turks and Caicos Islands",796
-"TCD",148,"Chad","TD","TCHAD",NA,NA,"Chad",148
-"TGO",768,"Togo","TG","TOGO",NA,NA,"Togo",768
-"THA",764,"Thailand","TH","","Thailand","THA","Thailand",764
-"TJK",762,"Tajikistan","TJ","",NA,NA,"Tajikistan",762
-"TKL",772,"Tokelau","TK","",NA,NA,"Tokelau",772
-"TKM",795,"Turkmenistan","TM","",NA,NA,"Turkmenistan",795
-"TLS",626,"Timor-Leste","TL","",NA,NA,"Timor-Leste",626
-"TON",776,"Tonga","TO","",NA,NA,"Tonga",776
-"TTO",780,"Trinidad and Tobago","TT","","Trinidad and Tobago","TTO","Trinidad and Tobago",780
-"TUN",788,"Tunisia","TN","","Tunisia","TUN","Tunisia",788
-"TUR",792,"Turkey","TR","","Turkey","TUR","Turkey",792
-"TUV",798,"Tuvalu","TV","",NA,NA,"Tuvalu",798
-"TWN",158,"Taiwan, Province of China","TW","","Chinese Taipei","TWN",NA,NA
-"TZA",834,"Tanzania, United Republic of","TZ","",NA,NA,"United Republic of Tanzania",834
-"UGA",800,"Uganda","UG","",NA,NA,"Uganda",800
-"UKR",804,"Ukraine","UA","","Ukraine","UKR","Ukraine",804
-"UMI",581,"United States Minor Outlying Islands","UM","",NA,NA,NA,NA
-"URY",858,"Uruguay","UY","",NA,NA,"Uruguay",858
-"USA",840,"United States","US","","United States","USA","United States of America",840
-"UZB",860,"Uzbekistan","UZ","",NA,NA,"Uzbekistan",860
-"VAT",336,"Holy See (Vatican City State)","VA","",NA,NA,"Holy See",336
-"VCT",670,"Saint Vincent and the Grenadines","VC","",NA,NA,"Saint Vincent and the Grenadines",670
-"VEN",862,"Venezuela, Bolivarian Republic of","VE","",NA,NA,"Venezuela (Bolivarian Republic of)",862
-"VGB",92,"Virgin Islands, British","VG","",NA,NA,"British Virgin Islands",92
-"VIR",850,"Virgin Islands, U.S.","VI","",NA,NA,"United States Virgin Islands",850
-"VNM",704,"Viet Nam","VN","",NA,NA,"Viet Nam",704
-"VUT",548,"Vanuatu","VU","",NA,NA,"Vanuatu",548
-"WLF",876,"Wallis and Futuna","WF","",NA,NA,"Wallis and Futuna Islands",876
-"WSM",882,"Samoa","WS","",NA,NA,"Samoa",882
-"YEM",887,"Yemen","YE","","Yemen","YEM","Yemen",887
-"YUG",NA,"Yugoslavia",NA,NA,NA,NA,"Yugoslavia",891
-"ZAF",710,"South Africa","ZA","","South Africa","ZAF","South Africa",710
-"ZMB",894,"Zambia","ZM","",NA,NA,"Zambia",894
-"ZWE",716,"Zimbabwe","ZW","",NA,NA,"Zimbabwe",716
-NA,724005,"Madrid, Spain",NA,NA,"Madrid, Spain","EMA",NA,NA
-NA,6887,"Yemen 6",NA,NA,"Yemen 6","YE6",NA,NA
-NA,927,"Scotland",NA,NA,"Scotland","SCO",NA,NA
-NA,928,"Northern Ireland",NA,NA,"Northern Ireland","NIR",NA,NA
-NA,956,"Belgium (Flemish)",NA,NA,"Belgium (Flemish)","BFL",NA,NA
-NA,957,"Belgium (French)",NA,NA,"Belgium (French)","BFR",NA,NA
-NA,3724,"Basque Country, Spain",NA,NA,"Basque Country, Spain","BSQ",NA,NA
-NA,5784,"Norway (4 th grade)",NA,NA,"Norway (4 th grade)","NO4",NA,NA
-NA,6504,"Morocco 6",NA,NA,"Morocco 6","MA6",NA,NA
-NA,10800,"Colorado, US",NA,NA,"Colorado, US","UCO",NA,NA
-NA,7105,"Eng/Afr/Zulu – RSA (5)",NA,NA,"Eng/Afr/Zulu – RSA (5)","ZA5",NA,NA
-NA,7842,"Abu Dhabi, UAE",NA,NA,"Abu Dhabi, UAE","AAD",NA,NA
-NA,9132,"Canada, Ontario",NA,NA,"Canada, Ontario","COT",NA,NA
-NA,9133,"Canada, Quebec",NA,NA,"Canada, Quebec","CQU",NA,NA
-NA,9134,"Canada, Alberta",NA,NA,"Canada, Alberta","CAB",NA,NA
-NA,9135,"Canada, British Columbia",NA,NA,"Canada, British Columbia","CBC",NA,NA
-NA,9136,"Canada, Nova Scotia",NA,NA,"Canada, Nova Scotia","CNS",NA,NA
-NA,9470,"Maltese-Malta",NA,NA,"Maltese-Malta","MLN",NA,NA
-NA,9578,"Norway (5th grade)",NA,NA,"Norway (5th grade)","NO5",NA,NA
-NA,10400,"Alabama, US",NA,NA,"Alabama, US","UAL",NA,NA
-NA,10900,"Connecticut, US",NA,NA,"Connecticut, US","UCT",NA,NA
-NA,11100,"California, US",NA,NA,"California, US","UCA",NA,NA
-NA,12500,"Massachusetts, US",NA,NA,"Massachusetts, US","UMA",NA,NA
-NA,12500,"Massachusetts, US",NA,NA,"Massachusetts, US","UMA",NA,NA
-NA,12700,"Minnesota, US",NA,NA,"Minnesota, US","UMN",NA,NA
-NA,12700,"Minnesota, US",NA,NA,"Minnesota, US","UMN",NA,NA
-NA,13700,"North Carolina, US",NA,NA,"North Carolina, US","UNC",NA,NA
-NA,72401,"Andalusia, Spain",NA,NA,"Andalusia, Spain","EAN",NA,NA
-NA,643001,"Moscow City, Russian Fed.",NA,NA,"Moscow City, Russian Fed.","RMO",NA,NA
-NA,11200,"Florida, US",NA,NA,"Florida, US","UFL",NA,NA
-NA,11800,"Indiana, US",NA,NA,"Indiana, US","UIN",NA,NA
-NA,926,"England",NA,NA,"England","ENG",NA,NA
-NA,7841,"Dubai,UAE",NA,NA,"Dubai,UAE","ADU",NA,NA
-NA,9352,"Iceland (5th grade)",NA,NA,"Iceland (5th grade)","IS5",NA,NA
-NA,32001,"Buenos Aires, Argentina",NA,NA,"Buenos Aires, Argentina","ABA",NA,NA
+iso_code3,iso_num,country,iso_code2,pasec,Country.x,ISO,Country.y,Code
+NA,NA,NA,NA,NA,NA,NA,Channel Islands,830
+ABW,533,Aruba,AW,,NA,NA,Aruba,533
+AFG,4,Afghanistan,AF,,NA,NA,Afghanistan,4
+AGO,24,Angola,AO,,NA,NA,Angola,24
+AIA,660,Anguilla,AI,,NA,NA,Anguilla,660
+ALA,248,Åland Islands,AX,,NA,NA,Aland Islands,248
+ALB,8,Albania,AL,,NA,NA,Albania,8
+AND,20,Andorra,AD,,NA,NA,Andorra,20
+ANT,530,Netherlands Antilles,AN,,NA,NA,NA,NA
+ARE,784,United Arab Emirates,AE,,United Arab Emirates,ARE,United Arab Emirates,784
+ARG,32,Argentina,AR,,Argentina,ARG,Argentina,32
+ARM,51,Armenia,AM,,Armenia,ARM,Armenia,51
+ASM,16,American Samoa,AS,,NA,NA,American Samoa,16
+ATA,10,Antarctica,AQ,,NA,NA,NA,NA
+ATF,260,French Southern Territories,TF,,NA,NA,NA,NA
+ATG,28,Antigua and Barbuda,AG,,NA,NA,Antigua and Barbuda,28
+AUS,36,Australia,AU,,Australia,AUS,Australia,36
+AUT,40,Austria,AT,,Austria,AUT,Austria,40
+AZE,31,Azerbaijan,AZ,,Azerbaijan,AZE,Azerbaijan,31
+BDI,108,Burundi,BI,BURUNDI,NA,NA,Burundi,108
+BEL,56,Belgium,BE,,NA,NA,Belgium,56
+BEN,204,Benin,BJ,BENIN,NA,NA,Benin,204
+BES,NA,"Bonaire, Saint Eustatius and Saba",NA,NA,NA,NA,"Bonaire, Saint Eustatius and Saba",535
+BFA,854,Burkina Faso,BF,BURKINA FASO,NA,NA,Burkina Faso,854
+BGD,50,Bangladesh,BD,,NA,NA,Bangladesh,50
+BGR,100,Bulgaria,BG,,Bulgaria,BGR,Bulgaria,100
+BHR,48,Bahrain,BH,,Bahrain,BHR,Bahrain,48
+BHS,44,Bahamas,BS,,NA,NA,Bahamas,44
+BIH,70,Bosnia and Herzegovina,BA,,Bosnia and Herzegovina,BIH,Bosnia and Herzegovina,70
+BLM,652,Saint Barthélemy,BL,,NA,NA,Saint-Barthelemy,652
+BLR,112,Belarus,BY,,NA,NA,Belarus,112
+BLZ,84,Belize,BZ,,Belize,BLZ,Belize,84
+BMU,60,Bermuda,BM,,NA,NA,Bermuda,60
+BOL,68,"Bolivia, Plurinational State of",BO,,NA,NA,Bolivia,68
+BRA,76,Brazil,BR,,NA,NA,Brazil,76
+BRB,52,Barbados,BB,,NA,NA,Barbados,52
+BRN,96,Brunei Darussalam,BN,,NA,NA,Brunei Darussalam,96
+BTN,64,Bhutan,BT,,NA,NA,Bhutan,64
+BVT,74,Bouvet Island,BV,,NA,NA,NA,NA
+BWA,72,Botswana,BW,,Botswana,BWA,Botswana,72
+CAF,140,Central African Republic,CF,,NA,NA,Central African Republic,140
+CAN,124,Canada,CA,,Canada,CAN,Canada,124
+CCK,166,Cocos (Keeling) Islands,CC,,NA,NA,NA,NA
+CHE,756,Switzerland,CH,,NA,NA,Switzerland,756
+CHL,152,Chile,CL,,Chile,CHL,Chile,152
+CHN,156,China,CN,,NA,NA,NA,NA
+CIV,384,Côte d'Ivoire,CI,COTE D'IVOIRE,NA,NA,Cote d'Ivoire,384
+CMR,120,Cameroon,CM,CAMEROUN,NA,NA,Cameroon,120
+COD,180,"Congo, the Democratic Republic of the",CD,,NA,NA,Democratic Republic of the Congo,180
+COG,178,Congo,CG,CONGO,NA,NA,Congo,178
+COK,184,Cook Islands,CK,,NA,NA,Cook Islands,184
+COL,170,Colombia,CO,,Colombia,COL,Colombia,170
+COM,174,Comoros,KM,,NA,NA,Comoros,174
+CPV,132,Cape Verde,CV,,NA,NA,Cape Verde,132
+CRI,188,Costa Rica,CR,,NA,NA,Costa Rica,188
+CUB,192,Cuba,CU,,NA,NA,Cuba,192
+CUW,NA,Curacao,NA,NA,NA,NA,Curacao,531
+CXR,162,Christmas Island,CX,,NA,NA,NA,NA
+CYM,136,Cayman Islands,KY,,NA,NA,Cayman Islands,136
+CYP,196,Cyprus,CY,,Cyprus,CYP,Cyprus,196
+CZE,203,Czech Republic,CZ,,Czech Republic,CZE,Czech Republic,203
+DEU,276,Germany,DE,,Germany,DEU,Germany,276
+DJI,262,Djibouti,DJ,,NA,NA,Djibouti,262
+DMA,212,Dominica,DM,,NA,NA,Dominica,212
+DNK,208,Denmark,DK,,Denmark,DNK,Denmark,208
+DOM,214,Dominican Republic,DO,,NA,NA,Dominican Republic,214
+DZA,12,Algeria,DZ,,Algeria,DZA,Algeria,12
+ECU,218,Ecuador,EC,,NA,NA,Ecuador,218
+EGY,818,Egypt,EG,,Egypt,EGY,Egypt,818
+ERI,232,Eritrea,ER,,NA,NA,Eritrea,232
+ESH,732,Western Sahara,EH,,NA,NA,Western Sahara,732
+ESP,724,Spain,ES,,Spain,ESP,Spain,724
+EST,233,Estonia,EE,,NA,NA,Estonia,233
+ETH,231,Ethiopia,ET,,NA,NA,Ethiopia,231
+FIN,246,Finland,FI,,Finland,FIN,Finland,246
+FJI,242,Fiji,FJ,,NA,NA,Fiji,242
+FLK,238,Falkland Islands (Malvinas),FK,,NA,NA,Falkland Islands (Malvinas),238
+FRA,250,France,FR,,France,FRA,France,250
+FRO,234,Faroe Islands,FO,,NA,NA,Faeroe Islands,234
+FSM,583,"Micronesia, Federated States of",FM,,NA,NA,Micronesia (Federated States of),583
+GAB,266,Gabon,GA,,NA,NA,Gabon,266
+NA,710003,"Gauteng, RSA (9)",,,,,,
+NA,710004,"Western Cape, RSA (9)",,,,,,
+GBR,826,United Kingdom,GB,,NA,NA,United Kingdom,826
+GEO,268,Georgia,GE,,Georgia,GEO,Georgia,268
+GGY,831,Guernsey,GG,,NA,NA,Guernsey,831
+GHA,288,Ghana,GH,,Ghana,GHA,Ghana,288
+GIB,292,Gibraltar,GI,,NA,NA,Gibraltar,292
+GIN,324,Guinea,GN,,NA,NA,Guinea,324
+GLP,312,Guadeloupe,GP,,NA,NA,Guadeloupe,312
+GMB,270,Gambia,GM,,NA,NA,Gambia,270
+GNB,624,Guinea-Bissau,GW,,NA,NA,Guinea-Bissau,624
+GNQ,226,Equatorial Guinea,GQ,,NA,NA,Equatorial Guinea,226
+GRC,300,Greece,GR,,Greece,GRC,Greece,300
+GRD,308,Grenada,GD,,NA,NA,Grenada,308
+GRL,304,Greenland,GL,,NA,NA,Greenland,304
+GTM,320,Guatemala,GT,,NA,NA,Guatemala,320
+GUF,254,French Guiana,GF,,NA,NA,French Guiana,254
+GUM,316,Guam,GU,,NA,NA,Guam,316
+GUY,328,Guyana,GY,,NA,NA,Guyana,328
+HKG,344,Hong Kong,HK,,Hong Kong SAR,HKG,"China, Hong Kong",344
+HMD,334,Heard Island and McDonald Islands,HM,,NA,NA,NA,NA
+HND,340,Honduras,HN,,Honduras,HND,Honduras,340
+HRV,191,Croatia,HR,,Croatia,HRV,Croatia,191
+HTI,332,Haiti,HT,,NA,NA,Haiti,332
+HUN,348,Hungary,HU,,Hungary,HUN,Hungary,348
+IDN,360,Indonesia,ID,,Indonesia,IDN,Indonesia,360
+IMN,833,Isle of Man,IM,,NA,NA,Isle of Man,833
+IND,356,India,IN,,NA,NA,India,356
+IOT,86,British Indian Ocean Territory,IO,,NA,NA,NA,NA
+IRL,372,Ireland,IE,,Ireland,IRL,Ireland,372
+IRN,364,"Iran, Islamic Republic of",IR,,"Iran, Islamic Rep. of",IRN,Iran,364
+IRQ,368,Iraq,IQ,,NA,NA,Iraq,368
+ISL,352,Iceland,IS,,Iceland,ISL,Iceland,352
+ISR,376,Israel,IL,,Israel,ISR,Israel,376
+ITA,380,Italy,IT,,Italy,ITA,Italy,380
+JAM,388,Jamaica,JM,,NA,NA,Jamaica,388
+JEY,832,Jersey,JE,,NA,NA,Jersey,832
+JOR,400,Jordan,JO,,Jordan,JOR,Jordan,400
+JPN,392,Japan,JP,,Japan,JPN,Japan,392
+KAZ,398,Kazakhstan,KZ,,Kazakhstan,KAZ,Kazakhstan,398
+KEN,404,Kenya,KE,,NA,NA,Kenya,404
+KGZ,417,Kyrgyzstan,KG,,NA,NA,Kyrgyzstan,417
+KHM,116,Cambodia,KH,,NA,NA,Cambodia,116
+KIR,296,Kiribati,KI,,NA,NA,Kiribati,296
+KNA,659,Saint Kitts and Nevis,KN,,NA,NA,Saint Kitts and Nevis,659
+KOR,410,"Korea, Republic of",KR,,"Korea,Rep.of",KOR,Republic of Korea,410
+KSV,411,Kosovo,,,,,,
+KWT,414,Kuwait,KW,,Kuwait,KWT,Kuwait,414
+LAO,418,Lao People's Democratic Republic,LA,,NA,NA,Lao People's Democratic Republic,418
+LBN,422,Lebanon,LB,,Lebanon,LBN,Lebanon,422
+LBR,430,Liberia,LR,,NA,NA,Liberia,430
+LBY,434,Libyan Arab Jamahiriya,LY,,NA,NA,Libya,434
+LCA,662,Saint Lucia,LC,,NA,NA,Saint Lucia,662
+LIE,438,Liechtenstein,LI,,NA,NA,Liechtenstein,438
+LKA,144,Sri Lanka,LK,,NA,NA,Sri Lanka,144
+LSO,426,Lesotho,LS,,NA,NA,Lesotho,426
+LTU,440,Lithuania,LT,,Lithuania,LTU,Lithuania,440
+LUX,442,Luxembourg,LU,,Luxembourg,LUX,Luxembourg,442
+LVA,428,Latvia,LV,,Latvia,LVA,Latvia,428
+MAC,446,Macao,MO,,Macao SAR,MAC,"China, Macao",446
+MAF,663,Saint Martin (French part),MF,,NA,NA,Saint-Martin (French part),663
+MAR,504,Morocco,MA,,Morocco,MAR,Morocco,504
+MCO,492,Monaco,MC,,NA,NA,Monaco,492
+MDA,498,"Moldova, Republic of",MD,,"Moldova, Rep. of",MDA,Republic of Moldova,498
+MDG,450,Madagascar,MG,,NA,NA,Madagascar,450
+MDV,462,Maldives,MV,,NA,NA,Maldives,462
+MEX,484,Mexico,MX,,NA,NA,Mexico,484
+MHL,584,Marshall Islands,MH,,NA,NA,Marshall Islands,584
+MKD,807,"Macedonia, the former Yugoslav Republic of",MK,,"Macedonia, Rep. of",MKD,The former Yugoslav Republic of Macedonia,807
+MLI,466,Mali,ML,,NA,NA,Mali,466
+MLT,470,Malta,MT,,Malta,MLT,Malta,470
+MMR,104,Myanmar,MM,,NA,NA,Myanmar,104
+MNE,499,Montenegro,ME,,NA,NA,Montenegro,499
+MNG,496,Mongolia,MN,,Mongolia,MNG,Mongolia,496
+MNP,580,Northern Mariana Islands,MP,,NA,NA,Northern Mariana Islands,580
+MOZ,508,Mozambique,MZ,,NA,NA,Mozambique,508
+MRT,478,Mauritania,MR,,NA,NA,Mauritania,478
+MSR,500,Montserrat,MS,,NA,NA,Montserrat,500
+MTQ,474,Martinique,MQ,,NA,NA,Martinique,474
+MUS,480,Mauritius,MU,,NA,NA,Mauritius,480
+MWI,454,Malawi,MW,,NA,NA,Malawi,454
+MYS,458,Malaysia,MY,,Malaysia,MYS,Malaysia,458
+MYT,175,Mayotte,YT,,NA,NA,Mayotte,175
+NAM,516,Namibia,NA,,NA,NA,Namibia,516
+NCL,540,New Caledonia,NC,,NA,NA,New Caledonia,540
+NER,562,Niger,NE,NIGER,NA,NA,Niger,562
+NFK,574,Norfolk Island,NF,,NA,NA,Norfolk Island,574
+NGA,566,Nigeria,NG,,NA,NA,Nigeria,566
+NIC,558,Nicaragua,NI,,NA,NA,Nicaragua,558
+NIU,570,Niue,NU,,NA,NA,Niue,570
+NLD,528,Netherlands,NL,,Netherlands,NLD,Netherlands,528
+NOR,578,Norway,NO,,Norway,NOR,Norway,578
+NPL,524,Nepal,NP,,NA,NA,Nepal,524
+NRU,520,Nauru,NR,,NA,NA,Nauru,520
+NZL,554,New Zealand,NZ,,New Zealand,NZL,New Zealand,554
+OMN,512,Oman,OM,,Oman,OMN,Oman,512
+PAK,586,Pakistan,PK,,NA,NA,Pakistan,586
+PAN,591,Panama,PA,,NA,NA,Panama,591
+PCN,612,Pitcairn,PN,,NA,NA,Pitcairn,612
+PER,604,Peru,PE,,NA,NA,Peru,604
+PHL,608,Philippines,PH,,NA,NA,Philippines,608
+PLW,585,Palau,PW,,NA,NA,Palau,585
+PNG,598,Papua New Guinea,PG,,NA,NA,Papua New Guinea,598
+POL,616,Poland,PL,,Poland,POL,Poland,616
+PRI,630,Puerto Rico,PR,,NA,NA,Puerto Rico,630
+PRK,408,"Korea, Democratic People's Republic of",KP,,NA,NA,Democratic People's Republic of Korea,408
+PRT,620,Portugal,PT,,Portugal,PRT,Portugal,620
+PRY,600,Paraguay,PY,,NA,NA,Paraguay,600
+PSE,275,"Palestinian Territory, Occupied",PS,,Palestinian,PSE,State of Palestine,275
+PYF,258,French Polynesia,PF,,NA,NA,French Polynesia,258
+QAR,NA,Dubai (UAE),NA,NA,NA,NA,Dubai (UAE),784
+QAT,634,Qatar,QA,,Qatar,QAT,Qatar,634
+QCN,NA,Shanghai-China,NA,NA,NA,NA,Shanghai-China,156
+QRS,NA,Perm(Russian Federation),NA,NA,NA,NA,Perm(Russian Federation),NA
+QUA,NA,Florida (USA),NA,NA,NA,NA,Florida (USA),NA
+QUB,NA,Connecticut (USA),NA,NA,NA,NA,Connecticut (USA),NA
+QUC,NA,Massachusetts (USA),NA,NA,NA,NA,Massachusetts (USA),NA
+REU,638,Réunion,RE,,NA,NA,Reunion,638
+ROU,642,Romania,RO,,Romania,ROM,Romania,642
+RUS,643,Russian Federation,RU,,Russian Federation,RUS,Russian Federation,643
+RWA,646,Rwanda,RW,,NA,NA,Rwanda,646
+SARK,NA,Sark,NA,NA,NA,NA,Sark,680
+SAU,682,Saudi Arabia,SA,,Saudi Arabia,SAU,Saudi Arabia,682
+SDN,736,Sudan,SD,,NA,NA,Sudan,729
+SEN,686,Senegal,SN,SENEGAL,NA,NA,Senegal,686
+SGP,702,Singapore,SG,,Singapore,SGP,Singapore,702
+SGS,239,South Georgia and the South Sandwich Islands,GS,,NA,NA,NA,NA
+SHN,654,"Saint Helena, Ascension and Tristan da Cunha",SH,,NA,NA,Saint Helena,654
+SJM,744,Svalbard and Jan Mayen,SJ,,NA,NA,Svalbard and Jan Mayen Islands,744
+SLB,90,Solomon Islands,SB,,NA,NA,Solomon Islands,90
+SLE,694,Sierra Leone,SL,,NA,NA,Sierra Leone,694
+SLV,222,El Salvador,SV,,El Salavador,SLV,El Salvador,222
+SMR,674,San Marino,SM,,NA,NA,San Marino,674
+SOM,706,Somalia,SO,,NA,NA,Somalia,706
+SPM,666,Saint Pierre and Miquelon,PM,,NA,NA,Saint Pierre and Miquelon,666
+SRB,688,Serbia,RS,,Serbia,SRB,Serbia,688
+SSD,NA,South Sudan,NA,NA,NA,NA,South Sudan,728
+STP,678,Sao Tome and Principe,ST,,NA,NA,Sao Tome and Principe,678
+SUR,740,Suriname,SR,,NA,NA,Suriname,740
+SVK,703,Slovakia,SK,,Slovak Republic,SVK,Slovakia,703
+SVN,705,Slovenia,SI,,Slovenia,SVN,Slovenia,705
+SWE,752,Sweden,SE,,Sweden,SWE,Sweden,752
+SWZ,748,Swaziland,SZ,,NA,NA,Swaziland,748
+SXM,NA,Sint Maarten (Dutch part),NA,NA,NA,NA,Sint Maarten (Dutch part),534
+SYC,690,Seychelles,SC,,NA,NA,Seychelles,690
+SYR,760,Syrian Arab Republic,SY,,Syrian Arab Rep.,SYR,Syrian Arab Republic,760
+TAP,NA,Chinese Taipei,NA,NA,NA,NA,Chinese Taipei,158
+TCA,796,Turks and Caicos Islands,TC,,NA,NA,Turks and Caicos Islands,796
+TCD,148,Chad,TD,TCHAD,NA,NA,Chad,148
+TGO,768,Togo,TG,TOGO,NA,NA,Togo,768
+THA,764,Thailand,TH,,Thailand,THA,Thailand,764
+TJK,762,Tajikistan,TJ,,NA,NA,Tajikistan,762
+TKL,772,Tokelau,TK,,NA,NA,Tokelau,772
+TKM,795,Turkmenistan,TM,,NA,NA,Turkmenistan,795
+TLS,626,Timor-Leste,TL,,NA,NA,Timor-Leste,626
+TON,776,Tonga,TO,,NA,NA,Tonga,776
+TTO,780,Trinidad and Tobago,TT,,Trinidad and Tobago,TTO,Trinidad and Tobago,780
+TUN,788,Tunisia,TN,,Tunisia,TUN,Tunisia,788
+TUR,792,Turkey,TR,,Turkey,TUR,Turkey,792
+TUV,798,Tuvalu,TV,,NA,NA,Tuvalu,798
+TWN,158,"Taiwan, Province of China",TW,,Chinese Taipei,TWN,NA,NA
+TZA,834,"Tanzania, United Republic of",TZ,,NA,NA,United Republic of Tanzania,834
+UGA,800,Uganda,UG,,NA,NA,Uganda,800
+UKR,804,Ukraine,UA,,Ukraine,UKR,Ukraine,804
+UMI,581,United States Minor Outlying Islands,UM,,NA,NA,NA,NA
+URY,858,Uruguay,UY,,NA,NA,Uruguay,858
+USA,840,United States,US,,United States,USA,United States of America,840
+UZB,860,Uzbekistan,UZ,,NA,NA,Uzbekistan,860
+VAT,336,Holy See (Vatican City State),VA,,NA,NA,Holy See,336
+VCT,670,Saint Vincent and the Grenadines,VC,,NA,NA,Saint Vincent and the Grenadines,670
+VEN,862,"Venezuela, Bolivarian Republic of",VE,,NA,NA,Venezuela (Bolivarian Republic of),862
+VGB,92,"Virgin Islands, British",VG,,NA,NA,British Virgin Islands,92
+VIR,850,"Virgin Islands, U.S.",VI,,NA,NA,United States Virgin Islands,850
+VNM,704,Viet Nam,VN,,NA,NA,Viet Nam,704
+VUT,548,Vanuatu,VU,,NA,NA,Vanuatu,548
+WLF,876,Wallis and Futuna,WF,,NA,NA,Wallis and Futuna Islands,876
+WSM,882,Samoa,WS,,NA,NA,Samoa,882
+YEM,887,Yemen,YE,,Yemen,YEM,Yemen,887
+YUG,NA,Yugoslavia,NA,NA,NA,NA,Yugoslavia,891
+ZAF,710,South Africa,ZA,,South Africa,ZAF,South Africa,710
+ZMB,894,Zambia,ZM,,NA,NA,Zambia,894
+ZWE,716,Zimbabwe,ZW,,NA,NA,Zimbabwe,716
+NA,724005,"Madrid, Spain",NA,NA,"Madrid, Spain",EMA,NA,NA
+NA,6887,Yemen 6,NA,NA,Yemen 6,YE6,NA,NA
+NA,927,Scotland,NA,NA,Scotland,SCO,NA,NA
+NA,928,Northern Ireland,NA,NA,Northern Ireland,NIR,NA,NA
+NA,956,Belgium (Flemish),NA,NA,Belgium (Flemish),BFL,NA,NA
+NA,957,Belgium (French),NA,NA,Belgium (French),BFR,NA,NA
+NA,3724,"Basque Country, Spain",NA,NA,"Basque Country, Spain",BSQ,NA,NA
+NA,5784,Norway (4 th grade),NA,NA,Norway (4 th grade),NO4,NA,NA
+NA,6504,Morocco 6,NA,NA,Morocco 6,MA6,NA,NA
+NA,10800,"Colorado, US",NA,NA,"Colorado, US",UCO,NA,NA
+NA,7105,Eng/Afr/Zulu – RSA (5),NA,NA,Eng/Afr/Zulu – RSA (5),ZA5,NA,NA
+NA,7842,"Abu Dhabi, UAE",NA,NA,"Abu Dhabi, UAE",AAD,NA,NA
+NA,9132,"Canada, Ontario",NA,NA,"Canada, Ontario",COT,NA,NA
+NA,9133,"Canada, Quebec",NA,NA,"Canada, Quebec",CQU,NA,NA
+NA,9134,"Canada, Alberta",NA,NA,"Canada, Alberta",CAB,NA,NA
+NA,9135,"Canada, British Columbia",NA,NA,"Canada, British Columbia",CBC,NA,NA
+NA,9136,"Canada, Nova Scotia",NA,NA,"Canada, Nova Scotia",CNS,NA,NA
+NA,9470,Maltese-Malta,NA,NA,Maltese-Malta,MLN,NA,NA
+NA,9578,Norway (5th grade),NA,NA,Norway (5th grade),NO5,NA,NA
+NA,10400,"Alabama, US",NA,NA,"Alabama, US",UAL,NA,NA
+NA,10900,"Connecticut, US",NA,NA,"Connecticut, US",UCT,NA,NA
+NA,11100,"California, US",NA,NA,"California, US",UCA,NA,NA
+NA,12500,"Massachusetts, US",NA,NA,"Massachusetts, US",UMA,NA,NA
+NA,12500,"Massachusetts, US",NA,NA,"Massachusetts, US",UMA,NA,NA
+NA,12700,"Minnesota, US",NA,NA,"Minnesota, US",UMN,NA,NA
+NA,12700,"Minnesota, US",NA,NA,"Minnesota, US",UMN,NA,NA
+NA,13700,"North Carolina, US",NA,NA,"North Carolina, US",UNC,NA,NA
+NA,72401,"Andalusia, Spain",NA,NA,"Andalusia, Spain",EAN,NA,NA
+NA,643001,"Moscow City, Russian Fed.",NA,NA,"Moscow City, Russian Fed.",RMO,NA,NA
+NA,11200,"Florida, US",NA,NA,"Florida, US",UFL,NA,NA
+NA,11800,"Indiana, US",NA,NA,"Indiana, US",UIN,NA,NA
+NA,926,England,NA,NA,England,ENG,NA,NA
+NA,7841,"Dubai,UAE",NA,NA,"Dubai,UAE",ADU,NA,NA
+NA,9352,Iceland (5th grade),NA,NA,Iceland (5th grade),IS5,NA,NA
+NA,32001,"Buenos Aires, Argentina",NA,NA,"Buenos Aires, Argentina",ABA,NA,NA
