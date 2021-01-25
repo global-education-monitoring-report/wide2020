@@ -22,6 +22,9 @@ vars <- intersect(names(data), vars)
 ## pv1 label name for n calculation
 pv1 <- grep(pvnames, names(data), value = TRUE)[1]
 
+# remove data with missing in DV
+data <- data[complete.cases(data[, pv1]), ]
+
 ## binary level indicator based on pv1
 ach_level <- paste0("level", 1:length(cutoff))
 
