@@ -46,26 +46,26 @@ set trace off
 
 * Set the directories (change this path depending on your data located)
 * Make sure to run "step" code and below "path" code together! 
-local dpath "/Users/sunminlee/Desktop/gemr/wide_etl/raw_data"
-local opath "/Users/sunminlee/Desktop/gemr/wide_etl/output"
+local dpath "/Users/sunminlee/Desktop/input"
+local opath "/Users/sunminlee/Desktop/output"
 
 ** DHS - EACH Step **
-* Run the first step "read" from "mics" survey (using mics_read.ado)
+* Run the first step "read" from "DHS" survey (using dhs_read.ado)
 set trace on
 widetable, source(dhs) step(read) data_path(`dpath') output_path(`opath') nf(1)
 set trace off
 
-* Run the second step "clean" from "mics" survey (using mics_clean.ado)
+* Run the second step "clean" from "DHS" survey (using dhs_clean.ado)
 set trace on
 widetable, source(dhs) step(clean) data_path(`dpath') output_path(`opath') nf(1)
 set trace off 
 
-* Run the third step "calculate" from "mics" survey (using mics_calculate.ado)
+* Run the third step "calculate" from "DHS" survey (using dhs_calculate.ado)
 set trace on
 widetable, source(dhs) step(calculate) data_path(`dpath') output_path(`opath') nf(1)
 set trace off 
 
-* Run the fourth step "summarize" from "mics" survey (using mics_summarize.ado)
+* Run the fourth step "summarize" from "DHS" survey (using dhs_summarize.ado)
 set trace on
 widetable, source(dhs) step(summarize) data_path(`dpath') output_path(`opath') nf(1)
 set trace off 
