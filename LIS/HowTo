@@ -1,0 +1,27 @@
+****QUICK userguide to LISSY, the system to access LIS (and other) surveys****
+
+LISSY is accessed through https://webui.lisdatacenter.org/
+Credentials are sent by email after registration at http://www.lisdatacenter.org/lis-luli-frontend-webapp/app/request-account-identification
+
+*Particular method for indicator calculation
+
+TL;DR: Run country-specific code in LISSY (this is called a Job in the platform), then obtain the .txt of the listing (recent jobs tab). 
+       Use the txt_to_database.do to obtain the dataset changing the file location and the names of category variables of that particular survey. 
+
+LISSY is a platform where you can send your Stata/R/SPSS/SAS code and obtain in txt and pdf format a record the results window. 
+No datasets can be downloaded, so pretty much everything must be checked through tabulations or 'codebook'-like commands. 
+The new code has been designed so that the listing (the 'output') of LISSY shows all the indicators in a line-by-line basis so that they can be transformed later. 
+There are other minor changes into the category variables so that they are strings and the conversion to the dataset is straightforward. 
+Once logged in to LISSY, you have to select the project (LIS, LWS, or ERFLIS depending on the dataset), the package (Stata/R/SPSS/SAS), and name the job. 
+Then move from 'Edit job' to 'Recent jobs' on the top left corner, and select the last line with a green check (if it's not finished it will show a clock). 
+Before you download the .txt , check on the listing tab to see if the code run correctly (check that the final lines are not an error number). 
+If all is well click on the blue diskette and save a zipfile that contains the listing and extract that file, for example "listing_job_810208.txt"
+
+Now it's time to use actual Stata. Open txt_to_database.do in the do-editor and replace the file location and the names of category variables. 
+Run the code and it should produce a Stata dataset that looks like widetable output.
+Browse the output and check the result :)
+
+Few extra notes:
+Despite the harmonization, for education variables categories are not the same across countries so the recode to obtain indicators must be revised. 
+To help with this task, use exploring_datasets.do and replace the list of surveys in line 3 with the code of the surveys of interest. 
+
