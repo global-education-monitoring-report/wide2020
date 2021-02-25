@@ -1,5 +1,5 @@
 This is a README file that guides developing UNESCO GEMR R package "gemRtools".  
-@ Date: Feb 20, 2021 (Updated: Feb 21, 2021)  
+@ Date: Feb 20, 2021 (Updated: Feb 24, 2021)  
 @ Contact: Sunmin Lee (sm.lee@unesco.org), Bilal Barakat (bf.barakat@unesco.org)   
 <br/>  
 ***  
@@ -10,7 +10,6 @@ This is a README file that guides developing UNESCO GEMR R package "gemRtools".
 As of updated date, the package includes following functions:
 * test_function 
 <br/>  
-*** 
 <br/>
 
 ## Developing "gemRtools" Step by Step
