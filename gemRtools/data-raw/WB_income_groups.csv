@@ -1,0 +1,219 @@
+iso3c,income_level_iso3c,income_group,income_subgroup
+ABW,HIC,High,NA
+AFG,LIC,Low,NA
+AGO,LMC,Middle,Lower middle
+ALB,UMC,Middle,Upper middle
+AND,HIC,High,NA
+ARE,HIC,High,NA
+ARG,UMC,Middle,Upper middle
+ARM,UMC,Middle,Upper middle
+ASM,UMC,Middle,Upper middle
+ATG,HIC,High,NA
+AUS,HIC,High,NA
+AUT,HIC,High,NA
+AZE,UMC,Middle,Upper middle
+BDI,LIC,Low,NA
+BEL,HIC,High,NA
+BEN,LMC,Middle,Lower middle
+BFA,LIC,Low,NA
+BGD,LMC,Middle,Lower middle
+BGR,UMC,Middle,Upper middle
+BHR,HIC,High,NA
+BHS,HIC,High,NA
+BIH,UMC,Middle,Upper middle
+BLR,UMC,Middle,Upper middle
+BLZ,UMC,Middle,Upper middle
+BMU,HIC,High,NA
+BOL,LMC,Middle,Lower middle
+BRA,UMC,Middle,Upper middle
+BRB,HIC,High,NA
+BRN,HIC,High,NA
+BTN,LMC,Middle,Lower middle
+BWA,UMC,Middle,Upper middle
+CAF,LIC,Low,NA
+CAN,HIC,High,NA
+CHE,HIC,High,NA
+CHI,HIC,High,NA
+CHL,HIC,High,NA
+CHN,UMC,Middle,Upper middle
+CIV,LMC,Middle,Lower middle
+CMR,LMC,Middle,Lower middle
+COD,LIC,Low,NA
+COG,LMC,Middle,Lower middle
+COL,UMC,Middle,Upper middle
+COM,LMC,Middle,Lower middle
+CPV,LMC,Middle,Lower middle
+CRI,UMC,Middle,Upper middle
+CUB,UMC,Middle,Upper middle
+CUW,HIC,High,NA
+CYM,HIC,High,NA
+CYP,HIC,High,NA
+CZE,HIC,High,NA
+DEU,HIC,High,NA
+DJI,LMC,Middle,Lower middle
+DMA,UMC,Middle,Upper middle
+DNK,HIC,High,NA
+DOM,UMC,Middle,Upper middle
+DZA,LMC,Middle,Lower middle
+ECU,UMC,Middle,Upper middle
+EGY,LMC,Middle,Lower middle
+ERI,LIC,Low,NA
+ESP,HIC,High,NA
+EST,HIC,High,NA
+ETH,LIC,Low,NA
+FIN,HIC,High,NA
+FJI,UMC,Middle,Upper middle
+FRA,HIC,High,NA
+FRO,HIC,High,NA
+FSM,LMC,Middle,Lower middle
+GAB,UMC,Middle,Upper middle
+GBR,HIC,High,NA
+GEO,UMC,Middle,Upper middle
+GHA,LMC,Middle,Lower middle
+GIB,HIC,High,NA
+GIN,LIC,Low,NA
+GMB,LIC,Low,NA
+GNB,LIC,Low,NA
+GNQ,UMC,Middle,Upper middle
+GRC,HIC,High,NA
+GRD,UMC,Middle,Upper middle
+GRL,HIC,High,NA
+GTM,UMC,Middle,Upper middle
+GUM,HIC,High,NA
+GUY,UMC,Middle,Upper middle
+HKG,HIC,High,NA
+HND,LMC,Middle,Lower middle
+HRV,HIC,High,NA
+HTI,LIC,Low,NA
+HUN,HIC,High,NA
+IDN,UMC,Middle,Upper middle
+IMN,HIC,High,NA
+IND,LMC,Middle,Lower middle
+IRL,HIC,High,NA
+IRN,UMC,Middle,Upper middle
+IRQ,UMC,Middle,Upper middle
+ISL,HIC,High,NA
+ISR,HIC,High,NA
+ITA,HIC,High,NA
+JAM,UMC,Middle,Upper middle
+JOR,UMC,Middle,Upper middle
+JPN,HIC,High,NA
+KAZ,UMC,Middle,Upper middle
+KEN,LMC,Middle,Lower middle
+KGZ,LMC,Middle,Lower middle
+KHM,LMC,Middle,Lower middle
+KIR,LMC,Middle,Lower middle
+KNA,HIC,High,NA
+KOR,HIC,High,NA
+KWT,HIC,High,NA
+LAO,LMC,Middle,Lower middle
+LBN,UMC,Middle,Upper middle
+LBR,LIC,Low,NA
+LBY,UMC,Middle,Upper middle
+LCA,UMC,Middle,Upper middle
+LIE,HIC,High,NA
+LKA,LMC,Middle,Lower middle
+LSO,LMC,Middle,Lower middle
+LTU,HIC,High,NA
+LUX,HIC,High,NA
+LVA,HIC,High,NA
+MAC,HIC,High,NA
+MAF,HIC,High,NA
+MAR,LMC,Middle,Lower middle
+MCO,HIC,High,NA
+MDA,LMC,Middle,Lower middle
+MDG,LIC,Low,NA
+MDV,UMC,Middle,Upper middle
+MEX,UMC,Middle,Upper middle
+MHL,UMC,Middle,Upper middle
+MKD,UMC,Middle,Upper middle
+MLI,LIC,Low,NA
+MLT,HIC,High,NA
+MMR,LMC,Middle,Lower middle
+MNE,UMC,Middle,Upper middle
+MNG,LMC,Middle,Lower middle
+MNP,HIC,High,NA
+MOZ,LIC,Low,NA
+MRT,LMC,Middle,Lower middle
+MUS,HIC,High,NA
+MWI,LIC,Low,NA
+MYS,UMC,Middle,Upper middle
+NAM,UMC,Middle,Upper middle
+NCL,HIC,High,NA
+NER,LIC,Low,NA
+NGA,LMC,Middle,Lower middle
+NIC,LMC,Middle,Lower middle
+NLD,HIC,High,NA
+NOR,HIC,High,NA
+NPL,LMC,Middle,Lower middle
+NRU,HIC,High,NA
+NZL,HIC,High,NA
+OMN,HIC,High,NA
+PAK,LMC,Middle,Lower middle
+PAN,HIC,High,NA
+PER,UMC,Middle,Upper middle
+PHL,LMC,Middle,Lower middle
+PLW,HIC,High,NA
+PNG,LMC,Middle,Lower middle
+POL,HIC,High,NA
+PRI,HIC,High,NA
+PRK,LIC,Low,NA
+PRT,HIC,High,NA
+PRY,UMC,Middle,Upper middle
+PSE,LMC,Middle,Lower middle
+PYF,HIC,High,NA
+QAT,HIC,High,NA
+ROU,HIC,High,NA
+RUS,UMC,Middle,Upper middle
+RWA,LIC,Low,NA
+SAU,HIC,High,NA
+SDN,LIC,Low,NA
+SEN,LMC,Middle,Lower middle
+SGP,HIC,High,NA
+SLB,LMC,Middle,Lower middle
+SLE,LIC,Low,NA
+SLV,LMC,Middle,Lower middle
+SMR,HIC,High,NA
+SOM,LIC,Low,NA
+SRB,UMC,Middle,Upper middle
+SSD,LIC,Low,NA
+STP,LMC,Middle,Lower middle
+SUR,UMC,Middle,Upper middle
+SVK,HIC,High,NA
+SVN,HIC,High,NA
+SWE,HIC,High,NA
+SWZ,LMC,Middle,Lower middle
+SXM,HIC,High,NA
+SYC,HIC,High,NA
+SYR,LIC,Low,NA
+TCA,HIC,High,NA
+TCD,LIC,Low,NA
+TGO,LIC,Low,NA
+THA,UMC,Middle,Upper middle
+TJK,LIC,Low,NA
+TKM,UMC,Middle,Upper middle
+TLS,LMC,Middle,Lower middle
+TON,UMC,Middle,Upper middle
+TTO,HIC,High,NA
+TUN,LMC,Middle,Lower middle
+TUR,UMC,Middle,Upper middle
+TUV,UMC,Middle,Upper middle
+TWN,HIC,High,NA
+TZA,LMC,Middle,Lower middle
+UGA,LIC,Low,NA
+UKR,LMC,Middle,Lower middle
+URY,HIC,High,NA
+USA,HIC,High,NA
+UZB,LMC,Middle,Lower middle
+VCT,UMC,Middle,Upper middle
+VEN,UMC,Middle,Upper middle
+VGB,HIC,High,NA
+VIR,HIC,High,NA
+VNM,LMC,Middle,Lower middle
+VUT,LMC,Middle,Lower middle
+WSM,UMC,Middle,Upper middle
+XKX,UMC,Middle,Upper middle
+YEM,LIC,Low,NA
+ZAF,UMC,Middle,Upper middle
+ZMB,LMC,Middle,Lower middle
+ZWE,LMC,Middle,Lower middle
