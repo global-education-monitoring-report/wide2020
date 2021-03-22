@@ -471,7 +471,6 @@ program define mics_standardize
 	
 	*******/OUT OF SCHOOL**********
 
-	
 	save "`output_path'/MICS/data/mics_standardize.dta", replace
 	*Now run the code to attach and merge the literacy variables
 	
