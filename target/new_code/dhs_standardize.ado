@@ -267,7 +267,6 @@ program define dhs_standardize
 	*******/LITERACY**********
 
 	drop round_dhs lowsec_age_uis upsec_age_uis
-
 	
 	compress
 	save  "`output_path'/DHS/data/dhs_standardize.dta", replace
