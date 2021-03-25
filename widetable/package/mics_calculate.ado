@@ -514,7 +514,7 @@ program define mics_calculate
  	}
  	foreach X in 4{
  		generate comp_higher_`X'yrs_3034 = comp_higher_`X'yrs if schage >= 30 & schage <= 34
- 		drop comp_higher_`X'yrs 
+ 		*drop comp_higher_`X'yrs 
  	}
 
 	*******/TERTIARY COMPLETION RATE**********
@@ -536,12 +536,12 @@ program define mics_calculate
 	*MICS 5 and older version
 				 if (year_folder < 2017) {
 	gen overage2plus= 0 if attend_primary==1
-	gen primarygrades=ed6b if code_ed6a==1 & ed6b<90
+	gen primarygrades=ed6b if code_ed6a==1 &  inlist(ed6b, "1", "2", "3", "4", "5", "6", "7", "8","9")
 	levelsof primarygrades, local(primgrades) clean
 	local i=0
     foreach grade of local primgrades {
 				local i=`i'+1
-				replace overage2plus=1 if ed6b==`grade' & schage>prim_age0+1+`i'
+				replace overage2plus=1 if ed6b=="`grade'" & schage>prim_age0+1+`i'
                  }
 				 }
 

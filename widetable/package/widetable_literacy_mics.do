@@ -116,9 +116,27 @@ append using allWM.dta
 *Merge is done with id vars + date of the interview
 *Togo has 2 duplicates, with empty identifiers for the line number. No observation has info on literacy, so we get rid of that. 
 duplicates drop country year hh1 hh2 hl1 partofcountry, force
+
+*This homogenizes the year variable for merge
+
+capture confirm string var year
+if _rc==0 {
 destring year, replace
-di "merge output of literacy variable is"
-merge 1:1 country year hh1 hh2 hl1 partofcountry using "C:\WIDE\output\MICS\data\mics_calculate.dta", gen(litmerge)
+}
+else {
+}
+
+*This is foolproof for some country group with no subregions
+
+    capture confirm variable partofcountry
+    if !_rc {
+	merge 1:1 country year hh1 hh2 hl1 partofcountry using "C:\WIDE\output\MICS\data\mics_calculate.dta", nogenerate
+    }
+    else {
+    merge 1:1 country year hh1 hh2 hl1 using "C:\WIDE\output\MICS\data\mics_calculate.dta", nogenerate
+    }
+
+
 
 
 

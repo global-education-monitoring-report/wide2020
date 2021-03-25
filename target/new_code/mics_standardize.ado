@@ -1,4 +1,4 @@
-* mics_calculate: program to calculate years of education, education completion and education out
+* mics_standardize: program to calculate a standard dataset ready to 
 * Version 2.0
 * April 2020
 
@@ -231,6 +231,7 @@ program define mics_standardize
 	replace eduyears = . if eduyears >= 99
 	capture replace eduyears = eduyears - 1 if ed_completed == "no" & (eduyears <= 97)
 	replace eduyears = 30 if eduyears >= 30 & eduyears < 90
+	
 
 		
 	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
@@ -256,6 +257,18 @@ program define mics_standardize
 		replace comp_`Z' = 0 if ed3 == "no"
  		replace comp_`Z' = 0 if code_ed4a == 0
  	}
+	
+		*******TERTIARY COMPLETION RATE**********
+	*Completion of higher
+	foreach X in 2 4 {
+		generate comp_higher_`X'yrs = 0
+		*replace comp_higher_`X'yrs = 1	if eduyears >= years_upsec + `X'
+		replace comp_higher_`X'yrs = . if inlist(eduyears, ., 97, 98, 99)
+		replace comp_higher_`X'yrs = 0 if ed3 == "no"  
+		replace comp_higher_`X'yrs = 0 if code_ed4a == 0 
+	}
+	replace comp_higher_2yrs = 1 if eduyears >= years_upsec + 2
+	replace comp_higher_4yrs = 1 if eduyears >= years_upsec + 4
 		
 
 	* Recoding ED5: "Attended school during current school year?"
@@ -401,6 +414,8 @@ program define mics_standardize
 	capture replace eduout = . if inlist(code_ed6a, 98, 99) & eduout == 0 & country_year == "Barbados_2012"
 	capture replace eduout = . if ed6a_nr == 0 & country_year == "Barbados_2012"
 	capture replace eduout = 1 if ed3 == "no" & country_year == "Barbados_2012"
+	
+	
 //	
 // 	generate attend_mauritania = 0
 //     replace attend_mauritania = 1 if ed5 == "yes"
@@ -454,8 +469,8 @@ program define mics_standardize
 	
 	*******/OUT OF SCHOOL**********
 
-	
 	save "`output_path'/MICS/data/mics_standardize.dta", replace
+	
 	*Now run the code to attach and merge the literacy variables
 	
 	cd "`c(sysdir_personal)'/"
@@ -470,6 +485,15 @@ program define mics_standardize
 		capture tostring `var', replace
 		capture replace `var' = "" if `var' == "."
 	}
+	
+	generate edu0 = 0 if ed3 == "yes"
+	replace edu0  = 1 if ed3 == "no"
+	replace edu0  = 1 if code_ed4a == 0
+	replace edu0  = 1 if eduyears == 0
+	
+	*getting rid of unnecesary variables
+	drop MWB14	WB14	old_ed3	old_ed4	old_ed5a	old_ed5b	old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a	old_ed10b	old_ed15	old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace	lowsec_dur_replace	upsec_dur_replace	prim_age_replace	overage2plus 
+
 		
 	* save data		
 	compress
