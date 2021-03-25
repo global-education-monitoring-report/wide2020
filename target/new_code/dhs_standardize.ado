@@ -242,7 +242,6 @@ program define dhs_standardize
 	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv122 hv123 hv124 years_*
 
 
-	drop attend_higher
 	*******/ATTEND HIGHER AND EDUOUT********
 
 	
@@ -268,8 +267,10 @@ program define dhs_standardize
 	*******/LITERACY**********
 
 	drop round_dhs lowsec_age_uis upsec_age_uis
+	gen survey="DHS"
 	
 	compress
+	
 	save  "`output_path'/DHS/data/dhs_standardize.dta", replace
 	display "You can find the file in `output_path'/DHS/data/"
 

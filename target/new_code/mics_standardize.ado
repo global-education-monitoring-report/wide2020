@@ -159,6 +159,7 @@ program define mics_standardize
 	replace eduyears = ed4b + years_upsec if inlist(code_ed4a, 3, 32, 33) & group == 22	
 	replace eduyears = ed4b + years_higher if (code_ed4a == 40) & group == 22	
 	
+		
 	/*
 	0 "preschool" 1 "primary" 2 "secondary" 3 "higher" 98 "don't know" 99 "missing/doesn't answer" ///
 	21 "lower secondary" 23 "voc/tech/prof as lowsec" ///
@@ -278,6 +279,7 @@ program define mics_standardize
 	* save data
 	compress
 	save "`output_path'/MICS/data/mics_standardize.dta", replace
+	
 	
 	* ADJUST SCHOOL YEAR
 	use "`output_path'/MICS/data/mics_standardize.dta", clear
@@ -441,7 +443,7 @@ program define mics_standardize
 	replace schage = age-1 if temp_count == 0 & adjustment == 1
 	drop temp_count
 	
-	
+		
 	*******OUT OF SCHOOL**********
 	for X in any prim_dur lowsec_dur upsec_dur prim_age0 : rename X X_comp
 
@@ -465,16 +467,25 @@ program define mics_standardize
 	capture generate lowsec_age0_eduout = prim_age0_eduout + prim_dur_eduout
 	capture generate upsec_age0_eduout  = lowsec_age0_eduout + lowsec_dur_eduout
 	for X in any prim lowsec upsec: capture generate X_age1_eduout = X_age0_eduout + X_dur_eduout - 1
+	
 		
 	
 	*******/OUT OF SCHOOL**********
+	
+	*******HIGHER EDUCATION ATTENDANCE**********
+	generate high_ed       = 1 if inlist(code_ed6a, 3, 32, 33, 40, 41, 42)
+	capture generate attend_higher = 1 if attend == 1 & high_ed == 1
+	capture replace attend_higher  = 0 if attend == 1 & high_ed != 1
+	capture replace attend_higher  = 0 if attend == 0
+	*******/HIGHER EDUCATION ATTENDANCE**********
+	
 
 	save "`output_path'/MICS/data/mics_standardize.dta", replace
 	
 	*Now run the code to attach and merge the literacy variables
 	
 	cd "`c(sysdir_personal)'/"
-	do widetable_literacy_mics
+	do widetable_literacy_mics_std
 	***FINISH LITERACY CALCULATION***
 	replace literacy_1549 = 1 if eduyears >= years_lowsec
 
@@ -491,9 +502,12 @@ program define mics_standardize
 	replace edu0  = 1 if code_ed4a == 0
 	replace edu0  = 1 if eduyears == 0
 	
+	rename prim_age0_eduout prim_age0
+	
 	*getting rid of unnecesary variables
-	drop MWB14	WB14	old_ed3	old_ed4	old_ed5a	old_ed5b	old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a	old_ed10b	old_ed15	old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace	lowsec_dur_replace	upsec_dur_replace	prim_age_replace	overage2plus 
+	drop MWB14	WB14	old_ed3	old_ed4	old_ed5a	old_ed5b	old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a	old_ed10b	old_ed15	old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace	lowsec_dur_replace	upsec_dur_replace	prim_age_replace	 
 
+	gen survey="MICS"
 		
 	* save data		
 	compress
