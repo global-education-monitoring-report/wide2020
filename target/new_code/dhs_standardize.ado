@@ -254,6 +254,7 @@ program define dhs_standardize
 	}
 	
 	rename ageU age
+	gen schage=agestandard
 	
 	*******LITERACY**********
 	*Literacy
