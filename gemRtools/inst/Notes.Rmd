@@ -1,0 +1,14 @@
+---
+title: "Notes"
+output: html_document
+---
+
+- The existence of an ISO-3 code does not automatically mean it's an actual country! In particular, "ATA" = Antarctica!
+
+- Careful with the ISO-**2** code for Namibia, which is "NA". This may be read as missing by R if not handled properly!
+
+
+
+# For upload to the WIDE website
+
+- Exclude subnational 
