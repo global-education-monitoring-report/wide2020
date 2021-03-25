@@ -51,7 +51,6 @@ data$edu0_prim = with(data, ifelse(condition == FALSE, NA,
 
 
 # CALCULATE: Completion in higher education
-# Note: These indicators are only available in MICS (check with Bilal, Marcela)
 condition <- with(data, schage >= 25 & schage <= 29)
 data$comp_higher_2yrs_2529 = with(data, ifelse(condition == FALSE, NA,
                                    ifelse(comp_higher_2yrs == 1, 1, 0)))
@@ -64,8 +63,8 @@ data$comp_higher_4yrs_3034 = with(data, ifelse(condition == FALSE, NA,
 
 
 # CALCULATE: Out of school by education level
-# primary
-condition <- with(data, schage >= prim_age0_eduout & schage <= prim_age1_eduout)
+# primary (Note: variable "prim_age0_eduout" is replaced by "prim_age0")
+condition <- with(data, schage >= prim_age0 & schage <= prim_age1_eduout)
 data$eduout_prim = with(data, ifelse(condition == FALSE, NA,
                                    ifelse(eduout == 1, 1, 0)))
 # lower secondary
@@ -79,18 +78,24 @@ data$eduout_upsec = with(data, ifelse(condition == FALSE, NA,
 
 
 # CALCULATE: Attendance in preschool
-# Note: These indicators are only available in MICS (check with Bilal, Marcela)
-condition <- with(data, schage >= 3 & schage <= 4)
-data$preschool_3 = with(data, ifelse(condition == FALSE, NA,
-                                   ifelse(attend_preschool == 1, 1, 0)))
+# Note: These indicators are only available in MICS
+if (data$survey[1] == "MICS") {
+  condition <- with(data, schage >= 3 & schage <= 4)
+  data$preschool_3 = with(data, ifelse(condition == FALSE, NA, ifelse(attend_preschool == 1, 1, 0)))
+} else {
+  print("This indicator is only available in MICS")
+}
 
-condition <- with(data, schage == prim_age0_eduout - 1)
-data$preschool_1ybefore = with(data, ifelse(condition == FALSE, NA,
-                                   ifelse(attend_preschool == 1, 1, 0)))
+# Note: variable "prim_age0_eduout" is replaced by "prim_age0"
+if (data$survey[1] == "MICS") {
+  condition <- with(data, schage == prim_age0 - 1)
+  data$preschool_1ybefore = with(data, ifelse(condition == FALSE, NA, ifelse(attend_preschool == 1, 1, 0)))
+} else {
+  print("This indicator is only available in MICS")
+}
 
 
 # CALCULATE: Attendance in higher education
-# note: include variable "attend_higher" in DHS standardize (Marcela)
 condition <- with(data, schage >= 18 & schage <= 22)
 data$attend_higher_1822 = with(data, ifelse(condition == FALSE, NA,
                                             ifelse(attend_higher == 1, 1, 0)))
@@ -99,9 +104,10 @@ data$attend_higher_1822 = with(data, ifelse(condition == FALSE, NA,
 #### NOTE: Include new "overage", "literacy", "household_edu" in CALCUALTE #####
 
 
-# Export data into .csv
-# Sunmin NOTE: Change into relative path later. Check w/ Bilal and Marcela which format (.csv) to store
-write.csv(data, "Desktop/gemr/new_etl/wide_calculate.csv", row.names = FALSE)
+# Export data as .rds format
+# Sunmin NOTE: Change into relative path later. 
+saveRDS(data, file="Desktop/gemr/new_etl/wide_calculate_MICS.rds")
+saveRDS(data, file="Desktop/gemr/new_etl/wide_calculate_DHS.rds")
 
 
 ###### Extra code that is useful for checking ######
@@ -111,3 +117,9 @@ write.csv(data, "Desktop/gemr/new_etl/wide_calculate.csv", row.names = FALSE)
 
 # view selected variables
 #View(data[c("schage", "prim_age1", "comp_prim", "comp_prim_v2")]) 
+
+# export data as .csv format
+#write.csv(data, "Desktop/gemr/new_etl/wide_calculate.csv", row.names = FALSE)
+
+# to read (import) .rds file as a dataframe
+#df <- readRDS("Desktop/gemr/new_etl/wide_calculate.rds")
