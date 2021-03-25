@@ -130,10 +130,10 @@ else {
 
     capture confirm variable partofcountry
     if !_rc {
-	merge 1:1 country year hh1 hh2 hl1 partofcountry using "C:\WIDE\output\MICS\data\mics_calculate.dta", nogenerate
+	merge 1:1 country year hh1 hh2 hl1 partofcountry using "C:\WIDE\output\MICS\data\mics_calculate.dta", nogenerate  keep(match using) 
     }
     else {
-    merge 1:1 country year hh1 hh2 hl1 using "C:\WIDE\output\MICS\data\mics_calculate.dta", nogenerate
+    merge 1:1 country year hh1 hh2 hl1 using "C:\WIDE\output\MICS\data\mics_calculate.dta", nogenerate  keep(match using) 
     }
 
 
