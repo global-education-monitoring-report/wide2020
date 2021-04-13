@@ -2,7 +2,7 @@
 # ver. March 24, 2021 (under development)
 # Contact: Sunmin Lee, Marcela Barrios Rivera, Bilal Barakat
 
-# Load libraries (please install package beforehand)
+# Load libraries (please install packages beforehand)
 library(haven)
 
 # Read and view WIDE standardized microdata from STATA .dta format
@@ -106,8 +106,7 @@ data$attend_higher_1822 = with(data, ifelse(condition == FALSE, NA,
 
 # Export data as .rds format
 # Sunmin NOTE: Change into relative path later. 
-saveRDS(data, file="Desktop/gemr/new_etl/wide_calculate_MICS.rds")
-saveRDS(data, file="Desktop/gemr/new_etl/wide_calculate_DHS.rds")
+saveRDS(data, file="Desktop/gemr/new_etl/wide_calculate.rds")
 
 
 ###### Extra code that is useful for checking ######
