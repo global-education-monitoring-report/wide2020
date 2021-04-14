@@ -313,13 +313,13 @@ program define dhs_calculate
 	*2 able to read only parts or whole sentence
 	*3 no card with required language
 	*4 blind/visually impaired
-	gen literacy_1549=literacy if age >= 15 & age <= 49
-	replace literacy_1549=1 if eduyears >= years_lowsec
+	gen literacy_1524=literacy if age >= 15 & age <= 24
+	replace literacy_1524=1 if eduyears >= years_lowsec & (age >= 15 & age <= 24)
 	*******/LITERACY**********
 
 	
 	* Create variables for count of observations
-	local varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec edu0_prim comp_higher_2yrs_2529 comp_higher_4yrs_2529 comp_higher_4yrs_3034 attend_higher_1822 overage2plus literacy_1549
+	local varlist_m comp_prim_v2 comp_lowsec_v2 comp_upsec_v2 comp_prim_1524 comp_lowsec_1524 comp_upsec_2029 eduyears_2024 edu2_2024 edu4_2024 eduout_prim eduout_lowsec eduout_upsec edu0_prim comp_higher_2yrs_2529 comp_higher_4yrs_2529 comp_higher_4yrs_3034 attend_higher_1822 overage2plus literacy_1524
 	
 	foreach var of varlist `varlist_m'  {
 			generate `var'_no = `var'
