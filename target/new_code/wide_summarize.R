@@ -1,5 +1,5 @@
 # wide_summarize.R: Following scripts read WIDE calculate microdata and summarize into indicators
-# ver. April 14, 2021 (under development)
+# ver. April 21, 2021 (under development)
 # Contact: Sunmin Lee, Marcela Barrios Rivera, Bilal Barakat
 
 # Load libraries (please install packages beforehand)
@@ -13,57 +13,91 @@ library(readr)
 # mics_calculate <- read_dta("Desktop/gemr/wide_etl/output/MICS/data/mics_calculate.dta") # testing with Benin 2014 (remove later)
 # View(mics_calculate)
 wide_calculate <- readRDS("Desktop/gemr/new_etl/wide_calculate.rds")
-View(wide_calculate)
-
-# Duplicate variables and change name for summarizing (count)
-wide_calculate$comp_prim_v2_no = wide_calculate$comp_prim_v2
-wide_calculate$comp_lowsec_v2_no = wide_calculate$comp_lowsec_v2
-wide_calculate$comp_upsec_v2_no = wide_calculate$comp_upsec_v2
+#View(wide_calculate)
 
 
-#################################
-##### Summarizing by groups #####
-#################################
+################################################################################
+############################ Summarizing by groups #############################
+################################################################################
 
-# Variables to summarize by mean and 
-vars_mean <- c("comp_prim_v2", "comp_lowsec_v2", "comp_upsec_v2")
-vars_count <- c("comp_prim_v2_no", "comp_lowsec_v2_no", "comp_upsec_v2_no")
+# sunmin note: few variables are missing from wide_calculate (ask Marcela and Bilal)
 
-# Group by "ethnicity" and summarize by "mean, count"
-# note: working (mean results are slightly different from stata code - check with Marcela and Bilal)
-wide_calculate_weighted <- wide_calculate %>% mutate_at(vars(vars_mean), funs(. * hhweight)) # mean is weighted by variable "hhweight"
-data_summarize1 <- wide_calculate_weighted %>% group_by(ethnicity) %>% summarise_at(c(vars_mean), mean, na.rm = TRUE) # summarize by mean
-data_summarize1_no <- wide_calculate %>% group_by(ethnicity) %>% summarise_at(c(vars_count), sum, na.rm = TRUE) # summarize by count
-data_summarize1 <- inner_join(data_summarize1, data_summarize1_no) # join two (mean and count) data frames
-data_summarize1 <- cbind(category = "Ethnicity", data_summarize1) # include category
-View(data_summarize1)
+# Define the function summarizing by groups
+function_summarize <- function(x, y, z) {
+  data_summarize <- wide_calculate %>% group_by({{x}}, {{y}}, {{z}}) %>% summarise(comp_prim_v2_mean = weighted.mean(comp_prim_v2, hhweight, na.rm=TRUE),
+                                                                          comp_lowsec_v2_mean = weighted.mean(comp_lowsec_v2, hhweight, na.rm=TRUE),
+                                                                          comp_upsec_v2_mean = weighted.mean(comp_upsec_v2, hhweight, na.rm=TRUE),
+                                                                          comp_prim_1524_mean = weighted.mean(comp_prim_1524, hhweight, na.rm=TRUE),
+                                                                          comp_lowsec_1524_mean = weighted.mean(comp_lowsec_1524, hhweight, na.rm=TRUE),
+                                                                          comp_upsec_2029_mean = weighted.mean(comp_upsec_2029, hhweight, na.rm=TRUE),
+                                                                          comp_higher_2yrs_2529_mean = weighted.mean(comp_higher_2yrs_2529, hhweight, na.rm=TRUE),
+                                                                          comp_higher_4yrs_2529_mean = weighted.mean(comp_higher_4yrs_2529, hhweight, na.rm=TRUE),
+                                                                          #eduyears_2024_mean = weighted.mean(eduyears_2024, hhweight, na.rm=TRUE),
+                                                                          #edu2_2024_mean = weighted.mean(edu2_2024, hhweight, na.rm=TRUE),
+                                                                          #edu4_2024_mean = weighted.mean(edu4_2024, hhweight, na.rm=TRUE),
+                                                                          edu0_prim_mean = weighted.mean(edu0_prim, hhweight, na.rm=TRUE),
+                                                                          eduout_prim_mean = weighted.mean(eduout_prim, hhweight, na.rm=TRUE),
+                                                                          eduout_lowsec_mean = weighted.mean(eduout_lowsec, hhweight, na.rm=TRUE),
+                                                                          eduout_upsec_mean = weighted.mean(eduout_upsec, hhweight, na.rm=TRUE),
+                                                                          attend_higher_1822_mean = weighted.mean(attend_higher_1822, hhweight, na.rm=TRUE),
+                                                                          #overage2plus_mean = weighted.mean(overage2plus, hhweight, na.rm=TRUE),
+                                                                          literacy_1549_mean = weighted.mean(literacy_1549, hhweight, na.rm=TRUE),
+                                                                          comp_prim_v2_no = sum(!is.na(comp_prim_v2)),
+                                                                          comp_lowsec_v2_no = sum(!is.na(comp_lowsec_v2)),
+                                                                          comp_upsec_v2_no = sum(!is.na(comp_upsec_v2)),
+                                                                          comp_prim_1524_no = sum(!is.na(comp_prim_1524)),
+                                                                          comp_lowsec_1524_no = sum(!is.na(comp_lowsec_1524)),
+                                                                          comp_upsec_1524_no = sum(!is.na(comp_upsec_2029)),
+                                                                          comp_higher_2yrs_2529_no = sum(!is.na(comp_higher_2yrs_2529)),
+                                                                          comp_higher_4yrs_2529_no = sum(!is.na(comp_higher_4yrs_2529)),
+                                                                          comp_higher_4yrs_3034_no = sum(!is.na(comp_higher_4yrs_3034)),
+                                                                          #eduyears_2024_no = sum(!is.na(eduyears_2024)),
+                                                                          #edu2_2024_no = sum(!is.na(edu2_2024)),
+                                                                          #edu4_2024_no = sum(!is.na(edu4_2024)),
+                                                                          edu0_prim_no = sum(!is.na(edu0_prim)),
+                                                                          eduout_prim_no = sum(!is.na(eduout_prim)),
+                                                                          eduout_lowsec_no = sum(!is.na(eduout_lowsec)),
+                                                                          eduout_upsec_no = sum(!is.na(eduout_upsec)),
+                                                                          attend_higher_1822_no = sum(!is.na(attend_higher_1822)),
+                                                                          #overage2plus_no = sum(!is.na(overage2plus)),
+                                                                          literacy_1549_no = sum(!is.na(literacy_1549)),
+                                                                     )
+}
 
-# Group by "ethnicity, location" and summarize by "mean, count"
-wide_calculate_weighted <- wide_calculate %>% mutate_at(vars(vars_mean), funs(. * hhweight)) # mean is weighted by variable "hhweight"
-data_summarize2 <- wide_calculate_weighted %>% group_by(ethnicity, location) %>% summarise_at(c(vars_mean), mean, na.rm = TRUE) # summarize by mean
-data_summarize2_no <- wide_calculate %>% group_by(ethnicity, location) %>% summarise_at(c(vars_count), sum, na.rm = TRUE) # summarize by count
-data_summarize2 <- inner_join(data_summarize2, data_summarize2_no) # join two (mean and count) data frames
-data_summarize2 <- cbind(category = "Ethnicity & Location", data_summarize2) # include category
-View(data_summarize2)
 
-# Group by "ethnicity, sex" and summarize by "mean, count"
-wide_calculate_weighted <- wide_calculate %>% mutate_at(vars(vars_mean), funs(. * hhweight)) # mean is weighted by variable "hhweight"
-data_summarize3 <- wide_calculate_weighted %>% group_by(ethnicity, sex) %>% summarise_at(c(vars_mean), mean, na.rm = TRUE) # summarize by mean
-data_summarize3_no <- wide_calculate %>% group_by(ethnicity, sex) %>% summarise_at(c(vars_count), sum, na.rm = TRUE) # summarize by count
-data_summarize3 <- inner_join(data_summarize3, data_summarize3_no) # join two (mean and count) data frames
-data_summarize3 <- cbind(category = "Ethnicity & Sex", data_summarize3) # include category
-View(data_summarize3)
+# Call the function and include category name
+data_summarize1 <- cbind(category = "Ethnicity", function_summarize(ethnicity))
+data_summarize2 <- cbind(category = "Location", function_summarize(location))
+data_summarize3 <- cbind(category = "Location & Ethnicity", function_summarize(location, ethnicity))
+data_summarize4 <- cbind(category = "Location & Sex", function_summarize(location, sex))
+data_summarize5 <- cbind(category = "Location & Sex & Wealth", function_summarize(location, sex, wealth))
+data_summarize6 <- cbind(category = "Location & Wealth", function_summarize(location, wealth))
+data_summarize7 <- cbind(category = "Region", function_summarize(region))
+data_summarize8 <- cbind(category = "Sex", function_summarize(sex))
+data_summarize9 <- cbind(category = "Sex & Ethnicity", function_summarize(sex, ethnicity))
+data_summarize10 <- cbind(category = "Sex & Region", function_summarize(sex, region))
+data_summarize11 <- cbind(category = "Sex & Wealth", function_summarize(sex, wealth))
+data_summarize12 <- cbind(category = "Sex & Wealth & Region", function_summarize(sex, wealth, region))
+data_summarize13 <- cbind(category = "Sex & Wealth & Region", function_summarize(sex, wealth, region))
+data_summarize14 <- cbind(category = "Wealth", function_summarize(wealth))
+data_summarize15 <- cbind(category = "Wealth & Region", function_summarize(wealth, region))
+# sunmin todo - include total
+
+#View(data_summarize1)
 
 
-################################
-##### Join all data frames #####
-################################
+################################################################################
+######################## Join all summarized data frames #######################
+################################################################################
 
 # List all summarized data frames
-list_summarized <- list(data_summarize1, data_summarize2, data_summarize3) # update this part when there is new category!
+list_summarize <- list(data_summarize1, data_summarize2, data_summarize3, data_summarize4,
+                       data_summarize5, data_summarize6, data_summarize7, data_summarize8,
+                       data_summarize9, data_summarize10, data_summarize11, data_summarize12,
+                       data_summarize13, data_summarize14, data_summarize15) # update this part when there is a new category!
 
 # Join all summarized data frames
-data_summarize_join <- Reduce(full_join, list_summarized)
+data_summarize_join <- Reduce(full_join, list_summarize)
 View(data_summarize_join)
 
 # Include base data frame with default variables and slice the length matching the number of rows in data_summarize_join 
@@ -76,8 +110,14 @@ df_base_join <- merge(df_base, data_summarize_join, by = "row.names")
 View(df_base_join)
 
 # Reorder final data frame
-data_order <- c("iso_code3", "country", "survey", "year", "country_year", "category", "ethnicity", "location", 
-                "comp_prim_v2", "comp_lowsec_v2", "comp_upsec_v2", "comp_prim_v2_no", "comp_lowsec_v2_no", "comp_upsec_v2_no")
+data_order <- c("iso_code3", "country", "survey", "year", "country_year", "category", "location", "sex", "wealth", "region", "ethnicity",  
+                "comp_prim_v2_mean", "comp_lowsec_v2_mean", "comp_upsec_v2_mean", "comp_prim_1524_mean", "comp_lowsec_1524_mean", "comp_upsec_2029_mean",
+                "comp_higher_2yrs_2529_mean", "comp_higher_4yrs_2529_mean", 
+                "edu0_prim_mean", "eduout_prim_mean", "eduout_lowsec_mean", "eduout_upsec_mean", "attend_higher_1822_mean",
+                "literacy_1549_mean", "comp_prim_v2_no", "comp_lowsec_v2_no", "comp_upsec_v2_no", "comp_prim_1524_no", 
+                "comp_lowsec_1524_no", "comp_upsec_1524_no", "comp_higher_2yrs_2529_no", "comp_higher_4yrs_2529_no", "comp_higher_4yrs_3034_no",
+                "edu0_prim_no", "eduout_prim_no", "eduout_lowsec_no", "eduout_upsec_no",
+                "attend_higher_1822_no", "literacy_1549_no")
 wide_summarize <- df_base_join[, data_order]
 View(wide_summarize)
 
@@ -88,80 +128,8 @@ saveRDS(wide_summarize, file="Desktop/gemr/new_etl/wide_summarize.rds")
 
 
 
-
-
-####################################################
-### BELOW TESTING CODE #######
-####################################################
-#library(collapse) # Refer to https://github.com/SebKrantz/collapse
-
-# # select few variables to summarize
-# df_select <- select(mics_calculate, ethnicity, comp_prim_v2, comp_lowsec_v2, comp_upsec_v2)
-# View(df_select)
-# 
-# 
-# # summarize using dplyr
-# df_summarize <- df_select %>% group_by(ethnicity) %>% summarise_all(funs(mean))
-# View(df_summarize)
-# 
-# # this is working
-# df_summarize <- df_select %>% group_by(ethnicity) %>% summarise_at(c("comp_prim_v2", "comp_lowsec_v2"), mean, na.rm = TRUE)
-# View(df_summarize)
-# 
-# 
-# # collapse using collapse package
-# df_collapse <- collap(df_select, ethnicity ~ comp_prim_v2, FUN = list(fmean))
-# View(df_collapse)
-# 
-# collapse <- collap(micro_data, literacy_1549 ~ comp_prim, FUN = list(fmean))
-# collapse
-# 
-# # testing - multiple group
-# library(tidyr)
-# data_summarize_3 <- mics_calculate %>% group_by(c(ethnicity, location)) %>% summarise_at(c("comp_prim_v2", "comp_lowsec_v2", "comp_upsec_v2"), mean, na.rm = TRUE)
-# View(data_summarize_3)
-# 
-# test <- mics_calculate %>% unite(measurevar, ethnicity, location, remove=FALSE) %>% gather(key, val, comp_prim_v2) %>% group_by((val) %>% summarise((mean(comp_prim_v2))))
-# 
-# test <- mics_calculate %>% group_by(ethnicity, location) %>% summarise_at(c("comp_prim_v2", "comp_lowsec_v2", "comp_upsec_v2"), mean, na.rm = TRUE)
-
-
-# joining test
-# for (i in 1:length(list_summarized)){
-#   data_summarize_join <- data_summarize[i] %>% full_join(data_summarize[i+1])
-#   View(data_summarize_join)
-# }
-# 
-# # Join base and summarize data frames
-# df_base_join <- df_base %>% inner_join(data_summarize_1, by = "for_join")
-# View(df_base_join)
-# 
-# df_test2 <- right_join(df_base, data_summarize_1)
-# View(df_test2)
-# 
-# df_test <- merge(x = df_base, y = data_summarize_1, by = NULL)
-# View(df_test)
-# 
-# df_test <- merge(x = df_base, y = data_summarize_1, by = NULL, all.x = TRUE)
-# View(df_test)
-# 
-# df_test3 <- merge(df_base, data_summarize_1, all.y=TRUE)
-# View(df_test3)
-
-
-# #df_base <- select(mics_calculate, iso_code3, country, year, country_year, survey, year_uis)
-# df_base <- select(mics_calculate, iso_code3, country, year, country_year) # delete this later - survey, year_uis is not included in old stata dataset
-# #slice(df_base, nrow(data_summarize_join))
-# #df_base %>% slice_head(n = nrow(data_summarize_join))
-# df_base <- df_base %>% slice(1:nrow(data_summarize_join))
-# View(df_base)
-
-# data_summarize1 <- data_summarize1 %>% mutate_at(vars(vars_mean), .funs=funs(. * 100)) # multiply results by 100
-# 
-# 
-# # testing
-# data_summarize1 <- mics_calculate_weighted %>% group_by(ethnicity) %>% summarise_at(c(vars_mean), funs(mean), na.rm = TRUE) # summarize by mean
-# data_summarize1 <- mics_calculate_weighted %>% group_by(ethnicity) %>% mutate(count = n()) %>% group_by(ethnicity, count) %>% summarise_at(c(vars_mean), mean, na.rm = TRUE)
-# 
-# library(epiDisplay)
-# tab1(wide_calculate$comp_prim_v2, sort.group = "decreasing", cum.percent = TRUE)
+###### Extra code that is useful for checking ######
+# frequency table
+#library(epiDisplay)
+#tab1(wide_calculate$comp_prim_v2, sort.group = "decreasing", cum.percent = TRUE)
+#tabpct(wide_calculate$ethnicity, wide_calculate$comp_prim_v2, decimal = 1, percent = "both")
