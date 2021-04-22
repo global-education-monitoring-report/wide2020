@@ -6,6 +6,7 @@
 // ******!!!! INSTALL FIRST !!!!
 // *this searches files given a pattern, install it first
 // findit filelist 
+// findit usespss 
 
 *******************************************
 *PART 1: for ALL MICS THAT HAVE THE DATASET
@@ -77,10 +78,10 @@ filelist, dir("C:\WIDE\raw_data") pattern("fs*.sav") save("fs_datasets.dta") rep
 
  use "`save1'", clear
          forvalues i=2/`obs' {
-           append using "`save`i''"
+           append using "`save`i''", force
          }
 ***Keep FOUNDATIONAL LEARNING SKILLS module 
-keep country year hh1 hh2 hl1 FL*
+keep country year HH1 HH2 LN FS1 FS2 FS3 FS4 FL*
 compress
 cd "C:\WIDE\output\MICS\newmodules_temp"
 save allFS.dta, replace
@@ -92,16 +93,19 @@ append using allCH.dta
 
 *Up to this it collects all these modules
 
-//
-//
-// **Merge approach is not 
-// ***MERGE DATASET WITH MICRODATA FILE***
-// *Merge is done with id vars + date of the interview
-// *Togo has 2 duplicates, with empty identifiers for the line number. No observation has info on literacy, so we get rid of that. 
-// duplicates drop country year hh1 hh2 hl1 partofcountry, force
-//
-// *This homogenizes the year variable for merge
-//
+
+***MERGE DATASET WITH MICRODATA FILE***
+*the following should work well with both mics_calculate and mics_standardize, just double check the country list 
+*Merge is done with id vars: HH1 HH2 LN for all**.dta and hh1 hh2 hl1 for mics_calculate.dta
+
+*renaming to coincide with widetable pre-output
+rename HH1 hh1
+rename HH2 hh2
+rename LN hl1
+
+merge 1:1 country year hh1 hh2 hl1 using "C:\WIDE\output\MICS\data\mics_calculate.dta"
+
+
 // capture confirm string var year
 // if _rc==0 {
 // destring year, replace
@@ -109,17 +113,9 @@ append using allCH.dta
 // else {
 // }
 //
-// *This is foolproof for some country group with no subregions
-//
-//     capture confirm variable partofcountry
-//     if !_rc {
-// 	merge 1:1 country year hh1 hh2 hl1 partofcountry using "C:\WIDE\output\MICS\data\mics_calculate.dta", nogenerate  keep(match using) 
-//     }
-//     else {
-//     merge 1:1 country year hh1 hh2 hl1 using "C:\WIDE\output\MICS\data\mics_calculate.dta", nogenerate  keep(match using) 
-//     }
-//
-//
+// merge 1:1 country year hh1 hh2 hl1 using "C:\WIDE\output\MICS\data\mics_clean.dta"
+
+
 
 
 
