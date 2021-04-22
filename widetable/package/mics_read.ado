@@ -78,10 +78,21 @@ program define mics_read
  		if (year_folder >= 2017) {
 		for X in any ed1 ed2a ed3 ed4 ed5a ed5b ed6 ed7 ed8 ed9 ed10a ed10b ed11 ed12 ed13a ed13b ed13c ed13d ed13x ed13z ed13nr ed14 ed15 ed16a ed16b: capture rename X old_X
  		gen ed3 = old_ed4
+			capture confirm variable ed4a
+    if !_rc {
+    }
+    else {
  		gen ed4a = old_ed5a
+    }
 		gen ed4b = old_ed5b
  		gen ed5 = old_ed9
+		
+		capture confirm variable ed6a
+    if !_rc {
+    }
+    else {
  		gen ed6a = old_ed10a
+    }
  		*gen ed6b = old_ed10b
 		gen ed7 = old_ed15
 		gen ed8a = old_ed16a
