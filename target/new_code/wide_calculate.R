@@ -1,15 +1,12 @@
 # wide_calculate.R: Following scripts read WIDE standardized microdata and calculate indicators
-# ver. March 24, 2021 (under development)
+# ver. April 29, 2021 (under development)
 # Contact: Sunmin Lee, Marcela Barrios Rivera, Bilal Barakat
 
 # Load libraries (please install packages beforehand)
 library(haven)
 
 # Read and view WIDE standardized microdata from STATA .dta format
-# Sunmin NOTE: Delete one later and change into relative path
-data <- read_dta("Desktop/gemr/new_etl/mics_standardize_small.dta") # change this path (MICS)
-View(data)
-data <- read_dta("Desktop/gemr/new_etl/dhs_standardize_small.dta") # change this path (DHS) 
+data <- read_dta("Desktop/gemr/new_etl/dhs_standardize_small_multi.dta") # change this path
 View(data)
 
 
@@ -101,11 +98,22 @@ data$attend_higher_1822 = with(data, ifelse(condition == FALSE, NA,
                                             ifelse(attend_higher == 1, 1, 0)))
 
 
-#### NOTE: Include new "overage", "literacy", "household_edu" in CALCUALTE #####
+# CALCULATE: Education years for age between 20 and 24
+condition <- with(data, schage >= 20 & schage <= 24)
+data$eduyears_2024 = with(data, ifelse(condition == FALSE, NA,
+                                            ifelse(eduyears == 1, 1, 0)))
+
+# todo: check edu4_2024 formula with Marcela. Original calculation is questionable.
+#data$edu4_2024 = with(data, ifelse(eduyears_2024 < 4, 1, 0))
+
+
+## TODO:
+# include "overage2plus", "country" in DHS standardize - Marcela working
+# change into "literacy_1524" in MICS standardize - Marcela working
+# calculate "household_edu" - Sunmin working
 
 
 # Export data as .rds format
-# Sunmin NOTE: Change into relative path later. 
 saveRDS(data, file="Desktop/gemr/new_etl/wide_calculate.rds")
 
 
@@ -122,3 +130,7 @@ saveRDS(data, file="Desktop/gemr/new_etl/wide_calculate.rds")
 
 # to read (import) .rds file as a dataframe
 #df <- readRDS("Desktop/gemr/new_etl/wide_calculate.rds")
+
+# group by variable
+#library(dplyr)
+#data %>% group_by(country) %>% summarize(n())
