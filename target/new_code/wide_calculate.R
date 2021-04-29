@@ -6,7 +6,7 @@
 library(haven)
 
 # Read and view WIDE standardized microdata from STATA .dta format
-data <- read_dta("Desktop/gemr/new_etl/dhs_standardize_small_multi.dta") # change this path
+data <- read_dta("Desktop/gemr/new_etl/mics_standardize_small_multi.dta") # change this path
 View(data)
 
 
@@ -103,12 +103,13 @@ condition <- with(data, schage >= 20 & schage <= 24)
 data$eduyears_2024 = with(data, ifelse(condition == FALSE, NA,
                                             ifelse(eduyears == 1, 1, 0)))
 
-# todo: check edu4_2024 formula with Marcela. Original calculation is questionable.
-#data$edu4_2024 = with(data, ifelse(eduyears_2024 < 4, 1, 0))
+condition <- with(data, schage >= 20 & schage <= 24)
+data$edu4_2024 = with(data, ifelse(condition == FALSE, NA,
+                                       ifelse(edu4 == 1, 1, 0)))
 
 
 ## TODO:
-# include "overage2plus", "country" in DHS standardize - Marcela working
+# include "overage2plus", "country", "edu4" in DHS standardize - Marcela working
 # change into "literacy_1524" in MICS standardize - Marcela working
 # calculate "household_edu" - Sunmin working
 
