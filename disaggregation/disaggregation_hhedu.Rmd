@@ -1,0 +1,132 @@
+---
+title: "mics_disaggregation_learner"
+author: "Sunmin Lee", "Marcela Barrios Rivera", "Bilal Barakat"
+date: "Apr/29/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+## R Markdown
+Note: This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+
+```{r load packages}
+library(dplyr)
+library(readr)
+library(haven)
+```
+
+# Import WIDE standardized micro data (change this path to your working directory!)
+In this experiment, DHS survey from Benin 2014 is used. 
+
+```{r import data}
+setwd("/Users/sunminlee/Desktop/gemr/disaggregation") # change this path
+data <- read_dta("/Users/sunminlee/Desktop/gemr/disaggregation/mics_calculate_literacy_hh-edu.dta") # change this path
+#View(data)
+```
+
+# Calculate completion by education level
+
+Calculate completion 
+
+```{r Calculate completion with different education level}
+# CALCULATE: Completion by education level
+# primary
+condition <- with(data, schage >= prim_age1+3 & schage <= prim_age1+5) # age limits condition
+data$comp_prim_v2 = with(data, ifelse(condition == FALSE, NA, # if age condition is FALSE, return NA
+                                          ifelse(comp_prim == 1, 1, 0))) # else if age condition is TRUE & comp_prim=1, return 1, otherwise (i.e. condition is TRUE & comp_prim=0), return 0
+# lower secondary
+condition <- with(data, schage >= lowsec_age1+3 & schage <= lowsec_age1+5)
+data$comp_lowsec_v2 = with(data, ifelse(condition == FALSE, NA,
+                                            ifelse(comp_lowsec == 1, 1, 0)))
+# upper secondary
+condition <- with(data, schage >= upsec_age1+3 & schage <= upsec_age1+5)
+data$comp_upsec_v2 = with(data, ifelse(condition == FALSE, NA,
+                                           ifelse(comp_upsec == 1, 1, 0)))
+```
+
+Summarize by total (default)
+
+```{r Summarize completion by total}
+# Define the function summarizing by groups
+function_summarize <- function(x, y, z) {
+  data_summarize <- data %>% group_by({{x}}, {{y}}, {{z}}) %>% summarise(comp_prim_v2_mean = weighted.mean(comp_prim_v2, hhweight, na.rm=TRUE),
+                                                                          comp_lowsec_v2_mean = weighted.mean(comp_lowsec_v2, hhweight, na.rm=TRUE),
+                                                                          comp_upsec_v2_mean = weighted.mean(comp_upsec_v2, hhweight, na.rm=TRUE))}
+
+# Call the function and include category name
+data$total <- "Total" # include "Total" variable to group by total
+data_summarize0 <- cbind(category = "Total", function_summarize(total))
+View(data_summarize0)
+```
+
+# New case 1 - Summarize by hh_edu1 
+hh_edu1: At least one adult of the family has completed primary
+
+```{r Summarize completion by hh_edu1}
+# Call the function and include category name
+data_summarize1 <- cbind(category = "hh_edu1", function_summarize(hh_edu1))
+View(data_summarize1)
+```
+
+# New case 2 - Summarize by hh_edu2
+hh_edu2: At least one adult of the family has completed lower secondary
+
+```{r Summarize completion by hh_edu2}
+# Call the function and include category name
+data_summarize2 <- cbind(category = "hh_edu2", function_summarize(hh_edu2))
+View(data_summarize2)
+```
+
+# New case 3 - Summarize by hh_edu3
+hh_edu3: Most educated male in the family has at least primary
+
+```{r Summarize completion by hh_edu3}
+# Call the function and include category name
+data_summarize3 <- cbind(category = "hh_edu3", function_summarize(hh_edu3))
+View(data_summarize3)
+```
+
+# New case 4 - Summarize by hh_edu4
+hh_edu4: Most educated female in the family has at least primary
+
+```{r Summarize completion by hh_edu4}
+# Call the function and include category name
+data_summarize4 <- cbind(category = "hh_edu4", function_summarize(hh_edu4))
+View(data_summarize4)
+```
+
+# New case 5 - Summarize by hh_edu5
+hh_edu5: Most educated male in the family has at least lower secondary
+
+```{r Summarize completion by hh_edu5}
+# Call the function and include category name
+data_summarize5 <- cbind(category = "hh_edu5", function_summarize(hh_edu5))
+View(data_summarize5)
+```
+
+# New case 6 - Summarize by hh_edu6
+hh_edu6: Most educated female in the family has at least lower secondary
+
+```{r Summarize completion by hh_edu6}
+# Call the function and include category name
+data_summarize6 <- cbind(category = "hh_edu6", function_summarize(hh_edu6))
+View(data_summarize6)
+```
+
+# Compare all results
+
+```{r}
+# List all summarized data frames
+list_summarize <- list(data_summarize1, data_summarize2, data_summarize3, data_summarize4,
+                       data_summarize5, data_summarize6, data_summarize0)
+
+# Join all summarized data frames
+data_summarize_join <- Reduce(full_join, list_summarize)
+data_summarize_final <- data_summarize_join[, c("category", "total", "hh_edu1", "hh_edu2", "hh_edu3", "hh_edu4", "hh_edu5", "hh_edu6",
+                                                "comp_prim_v2_mean", "comp_lowsec_v2_mean", "comp_upsec_v2_mean")]
+View(data_summarize_final)
+write.csv(data_summarize_final, "/Users/sunminlee/Desktop/gemr/disaggregation/mics_calculate_literacy_hh-edu.csv", row.names = FALSE)
+```
+
