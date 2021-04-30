@@ -20,14 +20,14 @@ wide_aggregate_by_cats <- function(gf, cs) {
     category <- "Total"
   } else {
     cats     <- syms(cs)
-    category <- paste(sort(cats), collapse = ' & ')
+    category <- paste(sort(cs), collapse = ' & ')
   }
   
   df %>%
     group_by(!!! cats, country, year, survey, variable) %>%
     summarise(
       value = weighted.mean(value, weight, na.rm = TRUE),
-      weight = sum(weight, na.rm = TRUE),
+      #weight = sum(weight, na.rm = TRUE),
       count = sum(!is.na(value)),
     ) %>%
     na.omit %>%
