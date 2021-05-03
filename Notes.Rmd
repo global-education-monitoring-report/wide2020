@@ -1,0 +1,26 @@
+---
+title: "Notes"
+output: html_document
+---
+
+- The existence of an ISO-3 code does not automatically mean it's an actual country! In particular, "ATA" = Antarctica!
+
+- Careful with the ISO-**2** code for Namibia, which is "NA". This may be read as missing by R if not handled properly!
+
+- Ethiopia uses a different calendar with a 7-8 year offset!
+
+- For determining whether an age adjustment is necessary, assume school starts on the 1st day of the starting month, and adjust if more than 50% of individuals were interviewed more than 6 months past this start date, based on interview month and year. Nepal, Afghanistan and Thailand also have different calendars, but the offset is so large that it should be obvious when the national calendar is used. N.b. in individual cases, e.g. Kyrgyzstan MICS 2005, an adjustment based on the de facto age distribution may be more appropriate.
+
+- Some surveys reference a specific school year rather than the "current" one, and interviews may be conducted even after said school year has finished and the next one started. I.e. time since start of the reference school year may exceed 1 year.
+
+- Check for non-binary categories in gender and location (beyond urban/rural) variables.
+
+- Religion/ethnicity may only be available for household head. For WIDE we impute to rest of household.
+
+- National schooling levels may be split between ISCED/SDG levels by grade. E.g. for Iraq MICS 2011, 'Diploma' grades 1-3 are upper secondary, grades 4-5 are post-secondary.
+
+- Sometimes the raw data have a systematic error. E.g. in Armenia DHS 2005, the variable hv108 “education in single years”has a mistake and reports one year less than it is supposed to.
+
+# For upload to the WIDE website
+
+- Exclude subnational 

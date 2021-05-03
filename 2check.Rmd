@@ -1,0 +1,15 @@
+---
+title: "Things to check in WIDE pipeline"
+output: html_document
+---
+
+- [ ] individuals with zero education years at schooling level above primary get assigned years corresponding to last grade of level below and completion of the level below
+- [ ] "never attended" implies zero years and no completion, even if those are coded as "missing" in the raw data (but also if they are inconsistent with never having attended)
+- [ ] how are inconsistencies b/w attainment and years of schooling (relative to level duration) settled?
+- [ ] non-WIDE variables to include from MICS: adult support for learning, developmentally on track, functional difficulties, foundational learning
+- [ ] Nepal upper secondary in MICS (2014) to suppress because two final grades are conflated
+- [ ] Likewise suppress Nepal 2011 and 2016 DHS upper secondary (same issue?)
+- [ ] check consistent 0-1 vs 0-100 scaling
+- [ ] check MICS 6 Child Functioning Module disability disaggregation is calculated. Note availability of distinct fsweight!
+- [ ] Switch primary OOS definition so that children in pre-primary are *not* OOS (may already be included as eduout_aux?)
+
