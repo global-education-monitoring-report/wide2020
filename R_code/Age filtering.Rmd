@@ -1,0 +1,133 @@
+---
+title: "Age filtering"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+path2uisdata <- '~/UNESCO/GEM Report - Data Repository/UIS2021/'
+```
+
+## Motivation
+
+Many characteristics, such as whether a given level of schooling has been completed, are of potential interest for *all* individuals in household survey data, but only specific age groups should enter the calculation of defined indicators such as the completion rate.
+
+Since the age restriction is part of the indicator calculation, not a property of the observations, the most general approach is to keep the characteristic without age restriction in the microdata, and only restrict as part of the indicator summary calculation. 
+
+In addition, the good software engineering principle of separating logic from data 
+
+A practical implementation of an approach that meets both goals, i.e. ‘just in time’ age restriction and separation of age range definition (logic) from the specific country-year specific age parameters (data) is outlined in this document.
+
+## The goal
+
+Working backwards, suppose we had a table `indicator_age_scope` containing the ages that are in scope for a given indicator in a given country and year, structured as follows:
+
+```
+ iso3c  year indicator     age
+ ABC    2010 eduout_prim     6
+ ABC    2010 eduout_prim     7
+ ABC    2010 eduout_prim     8
+ ABC    2010 eduout_prim     9
+ ABC    2010 eduout_lsec    10
+ ABC    2010 eduout_lsec    11
+ ...    ...  ...            ...
+```
+
+The age restriction could then be applied with a single line of code for all indicators at once:
+
+```{r, eval=FALSE, include=TRUE}
+wide_summarydata <- 
+  wide_microdata_long %>% 
+  semi_join(indicator_age_scope, by = c('iso3c', 'year', 'indicator', 'age')) %>% 
+  wide_summarize()
+
+```
+
+If for a specific analysis we did want an indicator variable in the microdata that indicates who is in scope, this can be added interactively once a trivial helper function is defined:
+
+```{r, eval=FALSE, include=TRUE}
+
+add_age_scope <- function(df, scope) {
+  left_join(df, mutate(scope, inscope = TRUE), 
+            by = c('iso3c', 'year', 'indicator', 'age')) %>% 
+  mutate(inscope = replace_na(inscope, FALSE))
+}
+
+wide_microdata_scoped <- add_age_scope(wide_microdata_long, indicator_age_scope)
+
+```
+
+## Implementation
+
+A first step is to **import the relevant parameters for each country-year dyad** from the UIS bulk data download file. A minimal non-redundant set consists of primary entry age plus duration of primary, lower secondary, and upper secondary respectively. From this, all necessary age ranges (e.g. primary school age, 3 to 5 years above final grade of lower secondary, etc.) can be derived.
+
+```{r, echo=TRUE, include=FALSE}
+# fetch minimum school structure data from UIS bulk data download file
+# not computationally efficient, but concise and transparent
+school_structure <- 
+  vroom::vroom(paste0(path2uisdata, 'NATMON/NATMON_DATA_NATIONAL.csv'), na = '') %>%
+  pivot_wider(names_from = 'INDICATOR_ID', values_from = 'VALUE') %>% 
+  select(
+    iso3c = COUNTRY_ID, year = YEAR,
+    prim_entryage = `299905`, 
+    prim_duration = `299932`, 
+    lsec_duration = `999976`, 
+    usec_duration = `999978`) %>% 
+  # to do: extrapolate to bring coverage to all years for all countries
+  na.omit %>% 
+  filter(iso3c != 'VAT') %>% # exclude Vatican, which has zero school durations
+  identity  
+```
+
+```{r, echo=TRUE, include=TRUE}
+print(school_structure)
+```
+
+We define a generic helper function that turns the above structural information into the target structure for `indicator_age_scope`, using the function with the age range definition for a given indicator:
+
+```{r, echo=TRUE}
+expand_ages <- function(df, expansion_fun) {
+  df %>%
+  group_by(iso3c, year) %>% 
+  group_modify(~ expansion_fun(.x$prim_entryage, .x$prim_duration, .x$lsec_duration, .x$usec_duration)) %>%
+  ungroup
+}
+```
+
+Given such functions defining indicator-specific age ranges, `indicator_age_scope` can be built by applying them in turn and stacking the results:
+
+```{r, echo=TRUE}
+expand_attendance_ages <- function(p0, pd, lsd, usd) {
+  tibble(
+    indicator = paste('eduout', rep.int(c('prim', 'lsec', 'usec'), c(pd, lsd, usd)), sep = '_'),
+    age       = p0:(p0 + pd + lsd + usd - 1))
+}
+
+expand_completion_ages <- function(p0, pd, lsd, usd, offset = 3:5) {
+  tibble(
+    indicator = paste('comp', rep(c('prim', 'lsec', 'usec'), each = 3), 'v2', sep = '_'),
+    age       = as.vector(outer(offset, cumsum(c(p0 + pd - 1, lsd, usd)), "+")))
+}
+
+expand_literacy_ages <- function(...) {
+  tibble(
+    indicator = 'literacy_1524',
+    age       = 15:24)
+}
+
+indicator_age_scope <- 
+  bind_rows(
+    expand_ages(school_structure, expand_attendance_ages),
+    expand_ages(school_structure, expand_completion_ages),
+    expand_ages(school_structure, expand_literacy_ages)
+    )
+
+print(indicator_age_scope)
+```
+
+Remaining to be done:
+
+- [ ] test and fine-tune articulation with WIDE microdata format, i.e. exact indicator names, correct age variable etc.
+- [ ] add `expand_*_ages` function for remaining indicators
+
