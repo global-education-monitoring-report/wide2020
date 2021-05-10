@@ -1,11 +1,11 @@
 Folder contains functions (*.R) and data (*.csv) in WIDE MPL (minimum proficiency level) format:
 
-update_mpl            pisa 2018 (reading, maths, science), pirls 2016, pasec 2014 (reading, maths and science)
+update_mpl            pisa 2018 (reading, maths, science), pirls 2016
 pirls_mpl             pirls 2006 and pirls 2011 data
 timss19_mpl           timss 2019 (grade 4, grade 8, maths and science)
 timss_mpl             timss 2011 and 2015 (grade 4, grade 8, maths and science)
 pisa_mpl              pisa 2012 and 2015 (reading, science, and maths)
 sea-plm_mpl           sea-mpl 2019 (reading and maths)
-pasec_mpl             pasec 2019 (reading and maths, grade 2 and 6)
+pasec_mpl             pasec 2014 and 2019 (reading and maths, grade 2 and 6)
 iso_code.csv          iso_code3 key variable 
 ilsa_sum              function to calculate MPL in WIDE format
