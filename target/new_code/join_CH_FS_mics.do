@@ -19,7 +19,7 @@
 clear
 cd "C:\WIDE\raw_data\MICS"
 
-*Search for all those that have a wm.dta file and append them into a single dataset
+*Search for all those that have a ch.dta file and append them into a single dataset
 filelist, dir("C:\WIDE\raw_data") pattern("ch*.sav") save("ch_datasets.dta") replace
        use "ch_datasets.dta", clear
          local obs = _N
@@ -49,13 +49,13 @@ compress
 cd "C:\WIDE\output\MICS\newmodules_temp"
 save allCH.dta, replace
 
+**********************
 ***JOIN DATASETS: FS***
 
 *change location to where dataset raw files are
-*	cd "`data_path'"
 cd "C:\WIDE\raw_data\MICS"
 
-*Search for all those that have a wm.dta file and append them into a single dataset
+*Search for all those that have a fs.sav file and append them into a single dataset
 filelist, dir("C:\WIDE\raw_data") pattern("fs*.sav") save("fs_datasets.dta") replace
         
          use "fs_datasets.dta", clear
@@ -81,15 +81,15 @@ filelist, dir("C:\WIDE\raw_data") pattern("fs*.sav") save("fs_datasets.dta") rep
            append using "`save`i''", force
          }
 ***Keep FOUNDATIONAL LEARNING SKILLS module 
-keep country year HH1 HH2 LN FS1 FS2 FS3 FS4 FL*
+keep country year HH1 HH2 LN FS1 FS2 FS3 FS4 FL* 
 compress
 cd "C:\WIDE\output\MICS\newmodules_temp"
 save allFS.dta, replace
 
 ***JOIN LITERACY FILES***
 cd "C:\WIDE\output\MICS\newmodules_temp"
-use allFS.dta
-append using allCH.dta
+// use allFS.dta
+// append using allCH.dta
 
 *Up to this it collects all these modules
 
@@ -98,12 +98,17 @@ append using allCH.dta
 *the following should work well with both mics_calculate and mics_standardize, just double check the country list 
 *Merge is done with id vars: HH1 HH2 LN for all**.dta and hh1 hh2 hl1 for mics_calculate.dta
 
-*renaming to coincide with widetable pre-output
+**Some year fixes to make merge possible in some countries
+replace year="2018" if country=="DRCongo"
+replace year="2019" if country=="CentralAfricanRepublic"
+replace year="2019" if country=="Guinea-Bissau"
+
+// *renaming to coincide with widetable pre-output
 rename HH1 hh1
 rename HH2 hh2
 rename LN hl1
 
-merge 1:1 country year hh1 hh2 hl1 using "C:\WIDE\output\MICS\data\mics_calculate.dta"
+merge 1:1 country year hh1 hh2 hl1 using "C:\WIDE\output\MICS\data\mics_standardize.dta"
 
 
 // capture confirm string var year
