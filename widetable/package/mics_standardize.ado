@@ -516,9 +516,11 @@ program define mics_standardize
 	*Now run the code to attach and merge the literacy variables
 	
 	cd "`c(sysdir_personal)'/"
+	destring year, replace
 	do widetable_literacy_mics_std
 	***FINISH LITERACY CALCULATION***
 	replace literacy_1549 = 1 if eduyears >= years_lowsec
+	gen literacy_1524=literacy_1549 if age >= 15 & age <= 24
 
 		
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
@@ -539,9 +541,56 @@ program define mics_standardize
 	
 	rename prim_age0_eduout prim_age0
 	
-	*getting rid of unnecesary variables
-	drop MWB14	WB14 old_ed3 old_ed4 old_ed5a old_ed5b old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a old_ed10b	old_ed15 old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace lowsec_dur_replace	upsec_dur_replace	prim_age_replace	 
+	**Household education**
+	
+	* "Household Education 1": At least one adult of the family has completed primary 
+	egen hh_edu1 = max(comp_prim), by(hh_id)
 
+	* "Household Education 2": At least one adult of the family has completed lower secondary
+	egen hh_edu2 = max(comp_lowsec), by(hh_id) 
+
+	* "Household Education 3": Most educated male in the family has at least primary
+	gen male_comp_prim = comp_prim if sex=="Male"
+	egen hh_edu3 = max(male_comp_prim), by(hh_id)
+	drop male_comp_prim
+
+	* "Household Education 4": Most educated female in the family has at least primary
+	gen female_comp_prim = comp_prim if sex=="Female"
+	egen hh_edu4 = max(female_comp_prim), by(hh_id)
+	drop female_comp_prim
+
+	* "Household Education 5": Most educated male in the family has at least lower secondary
+	gen male_comp_lowsec = comp_lowsec if sex=="Male"
+	egen hh_edu5 = max(male_comp_lowsec), by(hh_id)
+	drop male_comp_lowsec
+
+	* "Household Education 6": Most educated female in the family has at least lower secondary
+	gen female_comp_lowsec = comp_lowsec if sex=="Female"
+	egen hh_edu6 = max(female_comp_lowsec), by(hh_id)
+	drop female_comp_lowsec
+	
+	* "Household Education 7": Most educated adult (25+ years old) in the family has at least lower secondary
+	gen adult_comp_lowsec = comp_lowsec if age >= 25 
+	egen hh_edu7 = max(adult_comp_lowsec), by(hh_id)
+	drop adult_comp_lowsec
+	
+	* "Household Education 8": Literate adult (25+ years old) in the family 
+	egen hh_edu8 = max(literacy_1549), by(hh_id)
+		
+	**/Household education**
+	
+	save "`output_path'/MICS/data/mics_standardize.dta", replace
+	
+	**Adding CH and FS modules
+*	cd "`c(sysdir_personal)'/"
+*	do join_CH_FS_mics
+	
+	
+	*getting rid of unnecesary variables and ordering
+	drop MWB14 WB14 old_ed3 old_ed4 old_ed5a old_ed5b old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a old_ed10b	old_ed15 old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace lowsec_dur_replace	upsec_dur_replace	prim_age_replace	 
+	order MMT1 MMT2 MMT3 MMT4 MMT5 MMT6A MMT6B MMT6C MMT6D MMT6E MMT6F MMT6G MMT6H MMT6I MMT9 MMT10 MMT11 MMT12 MMT11A MMT13 MMT3A MMT4A MMT4BA MMT4BB MMT4BC MMT4BE MMT4BG MMT4BH MMT6 MMT7 MMT8 MMT4B MMT14 MMT15 MT1 MT2 MT3 MT4 MT5 MT6A MT6B MT6C MT6D MT6E MT6F MT6G MT6H MT6I MT9 MT10 MT11 MT12 MT10A MT11A MT13 MT3A MT4A MT4BA MT4BB MT4BC MT4BE MT4BG MT4BH MT6 MT7 MT8 MT4B MT14 MT15, last
+	order hh1 hh2 hl1 country year ethnicity religion sex age location region wealth, first
+	
 	gen survey="MICS"
 		
 	* save data		

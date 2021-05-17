@@ -201,6 +201,11 @@ program define dhs_standardize
 	replace eduyears = . if hv108 >= 90
 	replace eduyears = 30 if hv108 >= 30 & hv108 < 90
 	
+	foreach X in 4 {
+		generate edu`X' = 0
+			replace edu`X' = 1 if eduyears < `X'
+			replace edu`X' = . if eduyears == .
+	}
 	
 	*******/EDUYEARS AND LESS THAN 2/4 YEARS OF SCHOOLING********
 	
@@ -244,6 +249,18 @@ program define dhs_standardize
 
 
 	*******/ATTEND HIGHER AND EDUOUT********
+	
+	*******OVER AGE PRIMARY ATTENDANCE**********
+	*Over-age primary school attendance
+	*Percentage of children in primary school who are two years or more older than the official age for grade.
+	gen overage2plus= 0 if attend==1 & inlist(hv122, 1)
+	levelsof prim_dur, local(primyears)
+	local i=0
+    foreach grade of numlist 1/`primyears' {
+				local i=`i'+1
+				replace overage2plus=1 if hv123==`grade' & agestandard>prim_age0+1+`i' & overage2plus!=. 
+                 }
+	*******/OVER AGE PRIMARY ATTENDANCE**********
 
 	
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
