@@ -4,8 +4,8 @@
 # apply the existing wide_calculate function to these, either jointly or sequentially,
 # depending on whether joint processing is deemed feasible based either on number or size of the files
 
-path2standardised <- "" # enter path
-path2calculated <- ""   # enter path
+path2standardised <- "wide_standardize/" # enter path
+path2calculated <- "wide_calculate/"   # enter path
 
 parallel_survey_limit_number <- 20  #
 parallel_survey_limit_size   <- 2   # in GB
