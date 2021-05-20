@@ -2,10 +2,10 @@
 ***********MICS UPDATE**************************
 ************14-05-2021**************************
 
-*******************************************************************
-*This new module follows a new logic in the update of MICS surveys:
-*TO ONLY UPDATE NEW DATASETS, ON A SEQUENTIAL BASIS****************
-*******************************************************************
+***********************************************************************
+*This new module follows a new logic in the update of MICS/DHS surveys:
+*TO ONLY UPDATE NEW DATASETS, ON A SEQUENTIAL BASIS********************
+***********************************************************************
 
 **FIRST STEP: SCAN THE RAW DATA directory and get a list of Country Year Survey
 
@@ -49,52 +49,30 @@ save updatelist.dta
 
 
 **Now call MICS/DHS_standardize RECURSIVELY
-
 levelsof country_year_mics, local(micssurveys)
 foreach survey of local micssurveys {
          di "Now processing" " `survey'"
-         *First generate the filenames.xlsx 
-		 use updatelist.dta if country_year=="`survey'", clear
-		 rename country folder_country
-		 rename year folder_year
-		 gen filename="hl.dta"
-		 egen filepath=concat(folder_country folder_year filename), punct(/)
-		 keep folder_country folder_year filename filepath
-		 export excel using "C:\ado\personal\filenames.xls", firstrow(variables) replace
-		 *Now run widetable with one survey
+         *Directly run mics_standardize_standalone with one survey
 		local dpath "C:\WIDE\raw_data"
 		local opath "C:\WIDE\output"
-		widetable, source(mics) step(standardize) data_path(`dpath') output_path(`opath') nf(1)
-		cd "C:\Users\taiku\UNESCO\GEM Report - wide_standardize"
-		save "std_`survey'.dta"
+		tokenize "`survey'", parse(_)
+		mics_standardize_standalone,  data_path(`dpath') output_path(`opath') country_name("`1'") country_year("`3'") 
 		clear
      }
 	 
 
-levelsof country_year_mics, local(micssurveys)
+	 set trace on
+levelsof country_year_dhs, local(dhssurveys)
 foreach survey of local dhssurveys {
          di "Now processing" " `survey'"
-         *First generate the filenames.xlsx 
-		 use updatelist.dta if country_year=="`survey'", clear
-		 rename country folder_country
-		 rename year folder_year
-		 foreach module in mr ir pr { // need to make this compatible to DHS with less than 3 modules...
-				merge 1:1 country year using "dhs_filenames.dta", keep(match)
-				gen lowerfilename=lower(filename)
-				keep if strpos(lowerfilename, "`module'")
-				drop lowerfilename
-				egen filepath=concat(folder_country folder_year filename), punct(/)
-				export excel using "C:\ado\personal\filenames.xls", sheet("dhs_`module'_files") firstrow(variables) replace
-		 }
-		 *Now run widetable with one survey
+         *Directly run widetable with one survey
 		local dpath "C:\WIDE\raw_data"
 		local opath "C:\WIDE\output"
-		widetable, source(dhs) step(standardize) data_path(`dpath') output_path(`opath') nf(1)
-		cd "C:\Users\taiku\UNESCO\GEM Report - wide_standardize"
-		save "std_`survey'.dta"
+		tokenize "`survey'", parse(_)
+		dhs_standardize_standalone,  data_path(`dpath') output_path(`opath')  country_name("`1'") country_year("`3'")
 		clear
      }
-	 
+set trace off	 
 
 
 
