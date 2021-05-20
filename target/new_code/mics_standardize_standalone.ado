@@ -544,18 +544,18 @@ program define mics_standardize_standalone
 	replace eduyears=16 if code_ed4a==3 & ed4b==15 & country_year=="Qatar_2012" // PHD
 	replace eduyears=16 if code_ed4a==3 & ed4b==16 & country_year=="Qatar_2012" // Other
 	
- 	replace eduyears=13 if code_ed4a==3 & ed4b==13 & old_ed6==1 & country_year=="Bangladesh_2019"
- 	replace eduyears=14 if code_ed4a==3 & ed4b==14 & old_ed6==1 & country_year=="Bangladesh_2019"
- 	replace eduyears=15 if code_ed4a==3 & ed4b==15 & old_ed6==1 & country_year=="Bangladesh_2019"
- 	replace eduyears=16 if code_ed4a==3 & ed4b==16 & old_ed6==1 & country_year=="Bangladesh_2019"
- 	replace eduyears=18 if code_ed4a==3 & ed4b==17 & old_ed6==1 & country_year=="Bangladesh_2019"
- 	replace eduyears=18 if code_ed4a==3 & ed4b==18 & old_ed6==1 & country_year=="Bangladesh_2019"
- 	replace eduyears=12 if code_ed4a==3 & ed4b==13 & old_ed6==2 & country_year=="Bangladesh_2019"
- 	replace eduyears=13 if code_ed4a==3 & ed4b==14 & old_ed6==2 & country_year=="Bangladesh_2019"
- 	replace eduyears=14 if code_ed4a==3 & ed4b==15 & old_ed6==2 & country_year=="Bangladesh_2019"
- 	replace eduyears=15 if code_ed4a==3 & ed4b==16 & old_ed6==2 & country_year=="Bangladesh_2019"
- 	replace eduyears=17 if code_ed4a==3 & ed4b==17 & old_ed6==2 & country_year=="Bangladesh_2019"
- 	replace eduyears=17 if code_ed4a==3 & ed4b==18 & old_ed6==2 & country_year=="Bangladesh_2019"
+//  	replace eduyears=13 if code_ed4a==3 & ed4b==13 & old_ed6==1 & country_year=="Bangladesh_2019"
+//  	replace eduyears=14 if code_ed4a==3 & ed4b==14 & old_ed6==1 & country_year=="Bangladesh_2019"
+//  	replace eduyears=15 if code_ed4a==3 & ed4b==15 & old_ed6==1 & country_year=="Bangladesh_2019"
+//  	replace eduyears=16 if code_ed4a==3 & ed4b==16 & old_ed6==1 & country_year=="Bangladesh_2019"
+//  	replace eduyears=18 if code_ed4a==3 & ed4b==17 & old_ed6==1 & country_year=="Bangladesh_2019"
+//  	replace eduyears=18 if code_ed4a==3 & ed4b==18 & old_ed6==1 & country_year=="Bangladesh_2019"
+//  	replace eduyears=12 if code_ed4a==3 & ed4b==13 & old_ed6==2 & country_year=="Bangladesh_2019"
+//  	replace eduyears=13 if code_ed4a==3 & ed4b==14 & old_ed6==2 & country_year=="Bangladesh_2019"
+//  	replace eduyears=14 if code_ed4a==3 & ed4b==15 & old_ed6==2 & country_year=="Bangladesh_2019"
+//  	replace eduyears=15 if code_ed4a==3 & ed4b==16 & old_ed6==2 & country_year=="Bangladesh_2019"
+//  	replace eduyears=17 if code_ed4a==3 & ed4b==17 & old_ed6==2 & country_year=="Bangladesh_2019"
+//  	replace eduyears=17 if code_ed4a==3 & ed4b==18 & old_ed6==2 & country_year=="Bangladesh_2019"
 
 	replace eduyears=ed4b+years_prim-5 if code_ed4a==21 & country_year=="Kosovo_Comms_2019"
 	replace eduyears=ed4b+years_prim-9 if code_ed4a==22 & country_year=="Kosovo_Comms_2019"
@@ -940,7 +940,7 @@ program define mics_standardize_standalone
 	
 	
 	*getting rid of unnecesary variables and ordering
-	drop MWB14 WB14 old_ed3 old_ed4 old_ed5a old_ed5b old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a old_ed10b	old_ed15 old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace lowsec_dur_replace	upsec_dur_replace	prim_age_replace	 
+	capture drop MWB14 WB14 old_ed3 old_ed4 old_ed5a old_ed5b old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a old_ed10b	old_ed15 old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace lowsec_dur_replace	upsec_dur_replace	prim_age_replace	 
 	order MMT1 MMT2 MMT3 MMT4 MMT5 MMT6A MMT6B MMT6C MMT6D MMT6E MMT6F MMT6G MMT6H MMT6I MMT9 MMT10 MMT11 MMT12 MMT11A MMT13 MMT3A MMT4A MMT4BA MMT4BB MMT4BC MMT4BE MMT4BG MMT4BH MMT6 MMT7 MMT8 MMT4B MMT14 MMT15 MT1 MT2 MT3 MT4 MT5 MT6A MT6B MT6C MT6D MT6E MT6F MT6G MT6H MT6I MT9 MT10 MT11 MT12 MT10A MT11A MT13 MT3A MT4A MT4BA MT4BB MT4BC MT4BE MT4BG MT4BH MT6 MT7 MT8 MT4B MT14 MT15, last
 	order hh1 hh2 hl1 country year ethnicity religion sex age location region wealth, first
 	

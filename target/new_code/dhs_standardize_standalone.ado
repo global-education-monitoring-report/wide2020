@@ -691,9 +691,9 @@ program define dhs_standardize_standalone
 	
 	compress
 	
-	cd "C:\Users\taiku\UNESCO\GEM Report - wide_standardize\MICS"
-	save "`country_name'_`country_year'_DHS", replace
-	display "You can find the standardize file in C:\Users\taiku\UNESCO\GEM Report - wide_standardize\MICS"
+	cd "C:\Users\taiku\UNESCO\GEM Report - wide_standardize\DHS"
+	save "`country_name'_`country_year'_DHS.dta", replace
+	display "You can find the standardize file in C:\Users\taiku\UNESCO\GEM Report - wide_standardize\DHS"
 
 	
 end
