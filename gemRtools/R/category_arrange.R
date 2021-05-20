@@ -12,18 +12,19 @@ library(stringr)
 library(purrr)
 
 
-category <- c("ethnicity", "location", "location & ethnicity", "location & religion",
-              "location & sex", "location & sex & wealth", "location & wealth",
-              "region", "religion", "sex", "sex & ethnicity", "sex & region",
+# test category (please uncomment this when calling a function in different dataset)
+category <- c("ethnicity", "location", "location and ethnicity", "location & religion",
+              "location  &  sex", "location & sex & wealth", "location & wealth",
+              "region", "religion", "sex", "sex & ethnicity", "sex and region",
               "sex & religion", "sex & wealth", "sex & wealth & region", "total",
               "wealth", "wealth & region")
 
 
-# arrange categories by alphabetical order and convert first letter into uppercase
+# Split categories by pattern ("&" and "and"), remove extra spaces, arrange by alphabetical order, and convert first letter into uppercase
 category_arrange <- function(category) {
-  str_split(category, " & ") %>%
-  map(sort) %>%
-  map_chr(paste, collapse = " & ") %>%
-  str_to_title()
+  split1 <- str_split(category, " & ") %>% map(str_squish) %>% map(sort) %>% map_chr(paste, collapse = " & ")
+  #print(split1)
+  split2 <- str_split(split1, " and ") %>% map(str_squish) %>% map(sort) %>% map_chr(paste, collapse = " & ") %>% str_to_title()
+  #print(split2)
 }
 
