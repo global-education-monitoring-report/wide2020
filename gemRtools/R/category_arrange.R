@@ -21,6 +21,9 @@ category <- c("ethnicity", "location", "location & ethnicity", "location & relig
 
 # arrange categories by alphabetical order and convert first letter into uppercase
 category_arrange <- function(category) {
-  str_split(category, " & ") %>% map(sort) %>% map_chr(paste, collapse = " & ") %>% str_to_title()
+  str_split(category, " & ") %>%
+  map(sort) %>%
+  map_chr(paste, collapse = " & ") %>%
+  str_to_title()
 }
 
