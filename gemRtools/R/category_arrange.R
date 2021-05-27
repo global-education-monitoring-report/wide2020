@@ -1,7 +1,7 @@
 #' A Category Arrange Helper Function
 #'
 #' This function takes a vector of categories and rearranges them in alphabetical order
-#' ver. May 20 2021
+#' ver. May 26 2021
 #' @param category Vector of categories to be arranged.
 #' @keywords wide
 #' @export
@@ -20,11 +20,10 @@ category <- c("ethnicity", "location", "location and ethnicity", "location & rel
               "wealth", "wealth & region")
 
 
-# Split categories by pattern ("&" and "and"), remove extra spaces, arrange by alphabetical order, and convert first letter into uppercase
+# Replace category pattern into "&", remove extra spaces, arrange by alphabetical order, and convert first letter into uppercase
 category_arrange <- function(category) {
-  split1 <- str_split(category, " & ") %>% map(str_squish) %>% map(sort) %>% map_chr(paste, collapse = " & ")
-  #print(split1)
-  split2 <- str_split(split1, " and ") %>% map(str_squish) %>% map(sort) %>% map_chr(paste, collapse = " & ") %>% str_to_title()
-  #print(split2)
+  category1 <- category %>% map(str_squish) %>% str_replace_all(c("and" = "&")) %>% str_to_title()
+  category2 <- str_split(category1, " & ") %>% map(sort) %>% map_chr(paste, collapse = " & ")
+  category2
 }
 
