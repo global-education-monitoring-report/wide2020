@@ -3,11 +3,10 @@
 * May 2021
 
 program define mics_standardize_standalone
-	syntax, data_path(string) output_path(string) country_name(string) country_year(string) [nf(integer 300)]
+	syntax, data_path(string) output_path(string) country_code(string) country_year(string) 
 
 	*****************************READ OR DATASET INTAKE**********************************
 	
-	local nf = `nf'+1
 	* create folder
 	cd "`output_path'"
 	capture mkdir "`output_path'/MICS"
@@ -29,14 +28,23 @@ program define mics_standardize_standalone
 	* mics string variables
 	levelsof standard_name if numeric == 0 & keep == 1, local(micsvars_keepstr) clean
 		
+	*isocodes-country names with and without spaces
+	set more off
+	findfile country_iso_codes_names.dta, path("`c(sysdir_personal)'/")
+	use "`r(fn)'", clear
+	keep country country_name_mics iso_code3
+	drop if country_name_mics == ""
+	tempfile isocode
+	save `isocode'
 	
 		*read a file: now it depends on the country-year input 
-		
-		use "`data_path'\\MICS\\`country_name'\\`country_year'\hl.dta", clear
-				*will change into
-		*use "`data_path'/`country_name'_`country_year'_MICS/hl.dta", clear
+		*Old directory system
+		*use "`data_path'\\MICS\\`country_name'\\`country_year'\hl.dta", clear
+		*New directory system
+		use "`data_path'\\`country_code'_`country_year'_MICS\hl.dta", clear
 		set more off 
 		
+				
 		*lowercase all variables
 		capture rename *, lower
 		capture rename *_* **		
@@ -49,8 +57,12 @@ program define mics_standardize_standalone
 		ds
 		
 		*generate variables with file name
-			generate country = "`country_name'" 
-			generate year_folder = `country_year'
+		* merge with iso code3 table
+		gen iso_code3="`country_code'"
+		merge m:1 iso_code3 using "`isocode'", keep(match) nogenerate
+		rename country complete_country_name
+		rename country_name_mics country
+		generate year_folder = `country_year'
 			
 		***IMPORTANT!!!! RENAME OF VARIABLES FOR MICS 6 SURVEYS only
  		if (year_folder >= 2017) {
@@ -207,15 +219,7 @@ program define mics_standardize_standalone
 		save `fix`X''
 	}
   
-	*isocodes
-	set more off
-	findfile country_iso_codes_names.dta, path("`c(sysdir_personal)'/")
-	use "`r(fn)'", clear
-	keep country_name_mics iso_code3
-	drop if country_name_mics == ""
-	rename country_name_mics country
-	tempfile isocode
-	save `isocode'
+	
 
 	*fix some uis duration
 	cd "`c(sysdir_personal)'/"
@@ -945,12 +949,8 @@ program define mics_standardize_standalone
 	order hh1 hh2 hl1 country year ethnicity religion sex age location region wealth, first
 	
 	gen survey="MICS"
-		
-	* save data		
 	compress
-	cd "C:\Users\taiku\UNESCO\GEM Report - wide_standardize\MICS"
-	*This directory might change too
-	save "`country_name'_`country_year'_MICS", replace
-	display "You can find the standardize file in C:\Users\taiku\UNESCO\GEM Report - wide_standardize\MICS"
-
+	* No saving, this will be done in update.ado		
+	
+	
 end

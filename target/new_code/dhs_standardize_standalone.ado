@@ -3,7 +3,7 @@
 * May 2021
 
 program define dhs_standardize_standalone
-	syntax, data_path(string) output_path(string) country_name(string) country_year(string) 
+	syntax, data_path(string) output_path(string) country_code(string) country_year(string) 
 
 	*We need to merge IR, MR and PR files for each survey
 	
@@ -14,7 +14,14 @@ program define dhs_standardize_standalone
 	capture mkdir "`output_path'/DHS/data"
 	cd "`output_path'/DHS/data/"
 	capture mkdir "`output_path'/DHS/data/temporal"
-
+	
+	findfile country_iso_codes_names.dta, path("`c(sysdir_personal)'/")
+	use "`r(fn)'", clear
+	keep country_name_dhs country_code_dhs country iso_code3 
+	tempfile isocode
+	save `isocode'
+	
+	
 	local modules IR MR 
 	* read IR and MR files to get ethnicity and religion
 	if ("`country_name'" == "Nicaragua" | "`country_name'" == "VietNam" | "`country_name'" == "Yemen"){
@@ -25,29 +32,8 @@ program define dhs_standardize_standalone
 		capture mkdir "`output_path'/DHS/data/temporal/`module'"
 		set more off
 		
-// 		findfile filenames.xlsx, path("`c(sysdir_personal)'/")
-// 		import excel "`r(fn)'", sheet(dhs_`module'_files) firstrow clear 
-// 		local nrow: di _N + 1
-// 				if (`nf' > `nrow') {
-// 			import excel  "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nrow') clear
-// 		} 
-// 		else{
-// 			import excel  "`r(fn)'", sheet(dhs_`module'_files) firstrow cellrange (:D`nf') clear 
-// 		}
-// 		levelsof filepath, local(filepath) clean
-// 		display "`filepath'"
-//				
-// 		if ("`country_name'" != "") {
-// 			capture keep if folder_country == "`country_name'"
-// 			capture levelsof filepath, local(filepath) clean
-// 		}
-// 		if ("`country_name'" != "" & "`country_year'" != "") {
-// 			capture tostring folder_year, replace
-// 			capture keep if (folder_country == "`country_name'" & folder_year == "`country_year'")
-// 			capture levelsof filepath, local(filepath) clean
-// 		}
-//		
-			cd  "`data_path'\\DHS\\`country_name'\\`country_year'"
+			*Old directory style
+			cd  "`data_path'\\`country_code'_`country_year'_DHS\"
 			local thefile : dir . files "??`module'????.DTA" 
 			di `"`thefile'"'
 			
@@ -62,10 +48,10 @@ program define dhs_standardize_standalone
 			* only keep the household head
 			keep if v150 == 1 
 			
-			generate country = "`country_name'" 
-			generate year_folder = `country_year'
-			catenate country_year = country year_folder, p("_")
-			catenate hh_id = country_year v001  v002
+// 			generate country = "`country_name'" 
+// 			generate year_folder = `country_year'
+// 			catenate country_year = country year_folder, p("_")
+			catenate hh_id = v001  v002
 			drop v150 v001 v002
 			
 			foreach var of varlist v130 v131{ 
@@ -96,32 +82,7 @@ program define dhs_standardize_standalone
 	compress
 	save "`output_path'/DHS/data/temporal/dhs_religion_ethnicity.dta", replace
 	
-	* read pr files
-// 	findfile filenames.xlsx, path("`c(sysdir_personal)'/")
-// 	import excel  "`r(fn)'", sheet(dhs_pr_files) firstrow clear 
-	
-// 	local nrow: di _N
-// 	if (`nf' > `nrow') {
-// 		import excel  "`r(fn)'", sheet(dhs_pr_files) firstrow cellrange (:D`nrow') clear 
-// 	} 
-// 	else{
-// 		import excel  "`r(fn)'", sheet(dhs_pr_files) firstrow cellrange (:D`nf') clear 
-// 	}
-// 	levelsof filepath, local(filepath) clean
-// 	display "`filepath'"
-//	
-//	
-// 	if ("`country_name'" != "") {
-// 			keep if folder_country == "`country_name'"
-// 			levelsof filepath, local(filepath) clean
-// 	}
-// 	if ("`country_name'" != "" & "`country_year'" != "") {
-// 			tostring folder_year, replace
-// 			keep if (folder_country == "`country_name'" & folder_year == "`country_year'")
-// 			levelsof filepath, local(filepath) clean
-// 	}
 
-	
 	* create local macros from dictionary
 	findfile dhs_dictionary_setcode.xlsx, path("`c(sysdir_personal)'/")
 	import excel "`r(fn)'", sheet(dictionary) firstrow clear 
@@ -133,7 +94,7 @@ program define dhs_standardize_standalone
 	levelsof name if keep == 1, local(dhsvars_keep) clean 
 	
 	
-	cd  "`data_path'\\DHS\\`country_name'\\`country_year'"
+			cd  "`data_path'\\`country_code'_`country_year'_DHS\"
 			local prfile : dir . files "??pr????.DTA" 
 			di `"`prfile'"' //substitutes first instance for Target filename pattern
 	
@@ -152,8 +113,8 @@ program define dhs_standardize_standalone
 		ds
 		
 		*generate variables with file name
-		generate country = "`country_name'" 
-		generate year_folder = `country_year'
+// 		generate country = "`country_name'" 
+// 		generate year_folder = `country_year'
 
 		*create variables doesnt exist 
 		for X in any `dhsvars_keep': capture generate X = .
@@ -181,11 +142,17 @@ program define dhs_standardize_standalone
 		for X in any sex wealth location: drop X
 		for X in any sex wealth location: rename X_n X
 		
+		gen iso_code3="`country_code'"
+		merge m:1 iso_code3 using "`isocode'", keep(match) nogenerate
+		rename country complete_country_name
+		rename country_name_dhs country
+		generate year_folder = `country_year'
+		
 		*create ids variables
 		catenate country_year = country year_folder, p("_")
 		
-		* Country dhs code
-		generate country_code_dhs = substr(hv000, 1, 2)
+// 		* Country dhs code
+// 		generate country_code_dhs = substr(hv000, 1, 2)
 
 		*Round of DHS
 		generate round_dhs = substr(hv000, 3, 1)
@@ -214,7 +181,7 @@ program define dhs_standardize_standalone
 		drop zero
 		
 		*Household ids
-		catenate hh_id = country_year cluster hv002 
+		catenate hh_id = cluster hv002 
 		
 		* add religion and ethnicity
 		merge m:m hh_id using "`output_path'/DHS/data/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion literacy) keep(master match) nogenerate
@@ -688,12 +655,8 @@ program define dhs_standardize_standalone
 
 	drop round_dhs lowsec_age_uis upsec_age_uis
 	gen survey="DHS"
-	
+	*get useful local
 	compress
 	
-	cd "C:\Users\taiku\UNESCO\GEM Report - wide_standardize\DHS"
-	save "`country_name'_`country_year'_DHS.dta", replace
-	display "You can find the standardize file in C:\Users\taiku\UNESCO\GEM Report - wide_standardize\DHS"
-
 	
 end
