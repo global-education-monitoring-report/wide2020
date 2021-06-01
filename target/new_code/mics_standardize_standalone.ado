@@ -37,14 +37,13 @@ program define mics_standardize_standalone
 	tempfile isocode
 	save `isocode'
 	
-		*read a file: now it depends on the country-year input 
+		*read the file: now it depends on the country-year input 
 		*Old directory system
 		*use "`data_path'\\MICS\\`country_name'\\`country_year'\hl.dta", clear
 		*New directory system
 		use "`data_path'\\`country_code'_`country_year'_MICS\hl.dta", clear
 		set more off 
-		
-				
+					
 		*lowercase all variables
 		capture rename *, lower
 		capture rename *_* **		
@@ -56,9 +55,10 @@ program define mics_standardize_standalone
 		keep `common' 
 		ds
 		
+		
 		*generate variables with file name
-		* merge with iso code3 table
-		gen iso_code3="`country_code'"
+		* merge with iso code3 table, BUT CAPITALIZE OR WON'T MATCH
+		gen iso_code3=upper("`country_code'")
 		merge m:1 iso_code3 using "`isocode'", keep(match) nogenerate
 		rename country complete_country_name
 		rename country_name_mics country
@@ -148,12 +148,14 @@ program define mics_standardize_standalone
 		capture replace schage_nr = . if schage_nr >= 150
 		capture drop schage
 		capture rename schage_nr schage
+			
 		
 		*decode and change strings values to lower case
 		ds
 		local datavars `r(varlist)'
 		local common : list datavars & micsvars
 		local common_decode : list common & micsvars_decode
+		
 			
 		* remove special character and space in string variables
 		foreach var of varlist `common_decode'{ 
@@ -176,11 +178,14 @@ program define mics_standardize_standalone
 		catenate country_year  = country year_folder, p("_")
 		catenate hh_id 	       = country_year hh1 hh2, p(no) 
 		catenate individual_id = country_year hh1 hh2 hl1, p(no)
-			
+		
+		
 		*create variables doesnt exist 
 		for X in any `micsvars_keepnum': capture generate X = .
 		for X in any `micsvars_keepstr': capture generate X = ""
 		*order `micsvars_keep'
+		
+		
 
 		if (country == "Cuba" | country == "Nepal") {
 			for X in any ed4a ed4b ed5 ed6a ed6b ed8a ed8b schage: capture generate X_nr = X
@@ -199,6 +204,7 @@ program define mics_standardize_standalone
 		}
 		
 		compress 
+		
 	
 	save "`output_path'/MICS/data/mics_read.dta", replace
 	
@@ -312,8 +318,8 @@ program define mics_standardize_standalone
 	replace_many `fixcode_ed8a' code_ed8a code_ed8a_replace country_year
 	destring code_*, replace
 		
-	replace code_ed4a = 40 if ed4b_nr == 43 & country_year == "Nigeria_2011"  
-	replace code_ed4a = 40 if ed4b_nr == 36 & country_year == "Nigeria_2016"  
+	capture replace code_ed4a = 40 if ed4b_nr == 43 & country_year == "Nigeria_2011"  
+	capture replace code_ed4a = 40 if ed4b_nr == 36 & country_year == "Nigeria_2016"  
 		
 	for X in any 4 6 8: capture replace code_edXa = 21 if edXa_nr == 4 & inlist(edXb_nr, 0, 1, 2, 3) & country_year == "Uruguay_2012"
 	for X in any 4 6 8: capture replace code_edXa = 22 if edXa_nr == 4 & inlist(edXb_nr, 4, 5, 6) & country_year == "Uruguay_2012"
@@ -330,10 +336,10 @@ program define mics_standardize_standalone
     *for X in any ed4a ed6a ed8a: capture replace code_X = . if X >= 97 
 	
 	* merge with iso code3 table
-	merge m:1 country using "`isocode'", keep(match master) nogenerate
+	*merge m:1 country using "`isocode'", keep(match master) nogenerate
 	
 	* merge with information of duration of levels, school calendar, official age for primary, etc:
-	bys country_year: egen year = median(hh5y)
+	egen year = median(hh5y)
 	
 	*The durations for 2018 are not available, so I create a "fake year"
 	rename year year_original
@@ -872,14 +878,399 @@ program define mics_standardize_standalone
 	
 	*Now run the code to attach and merge the literacy variables
 	
-	cd "`c(sysdir_personal)'/"
 	destring year, replace
-	do widetable_literacy_mics_std
-	***FINISH LITERACY CALCULATION***
-	replace literacy_1549 = 1 if eduyears >= years_lowsec
-	gen literacy_1524=literacy_1549 if age >= 15 & age <= 24
+	
+**************************** 	Adding extra modules section
 
-		
+*WM Module check and merge
+cd "`data_path'\\`country_code'_`country_year'_MICS\"
+
+capture confirm file wm.dta 
+if _rc == 0 {
+use "wm.dta", clear
+gen iso_code3=upper("`country_code'")
+generate year_folder = `country_year'
+capture rename ln LN 
+		   capture confirm variable LN 
+				if !_rc {	
+				}
+					else {
+					*Special case for Mexico 2015, and other surveys
+					   capture rename WM4 LN 
+						}
+		   
+		   *First check if literacy variable exists, if not, delete that file 
+		   capture confirm variable WB14
+			if _rc == 0 {
+		   	*Adding this to check for the MASS MEDIA AND ICT module and capture it if variables exist
+			 capture confirm variable MT2 
+				if !_rc {
+							di "Both literacy and mass media exist "
+							keep iso_code3 year_folder HH1 HH2 LN WB14 WM6D WM6M WM6Y MT*
+							***RECODE ABLE TO READ TEST VAR***
+							recode WB14 (1 = 0) (2 3 = 1) (4 6 9 = .), gen(literacy_1549)
+							*keep identifyer vars and literacy
+							  capture confirm variable LN
+										if !_rc {
+										rename LN hl1, replace
+										}
+										else {
+										rename ln hl1, replace
+										}
+
+							rename HH1 hh1, replace
+							rename HH2 hh2, replace
+							rename WM6Y hh5y, replace
+							capture rename WAGE age, replace
+							gen sex="Female"
+
+							capture confirm variable partofcountry
+								if !_rc {
+								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry WB14 literacy_1549 MT*
+								}
+								else {
+								keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy_1549 MT*
+								}
+				compress
+					capture confirm variable partofcountry
+					if !_rc {
+					merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+					save "`output_path'/MICS/data/mics_standardize.dta", replace
+					}
+					else {
+					merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+					save "`output_path'/MICS/data/mics_standardize.dta", replace
+										}
+						}
+						
+					else {
+							di "Only literacy exists, keeping " "`f'"
+							keep iso_code3 year_folder HH1 HH2 LN WB14 WM6D WM6M WM6Y 
+							***RECODE ABLE TO READ TEST VAR***
+							recode WB14 (1 = 0) (2 3 = 1) (4 6 9 = .), gen(literacy_1549)
+							*keep identifyer vars and literacy
+							  capture confirm variable LN
+										if !_rc {
+										rename LN hl1, replace
+										}
+										else {
+										rename ln hl1, replace
+										}
+							rename HH1 hh1, replace
+							rename HH2 hh2, replace
+							capture rename WAGE age, replace
+							gen sex="Female"
+
+							capture confirm variable partofcountry
+								if !_rc {
+								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry WB14 literacy_1549 
+								}
+								else {
+								keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy_1549 
+								}
+							compress
+							tempfile wm_selection
+							save "`wm_selection'"
+							capture confirm variable partofcountry
+								if !_rc {
+								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+								save "`output_path'/MICS/data/mics_standardize.dta", replace
+								}
+								else {
+								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+								save "`output_path'/MICS/data/mics_standardize.dta", replace
+									}
+			
+							}
+				   }
+		else {
+		 	  *Adding this in case only mass media ict exists
+			 capture confirm variable MT2 
+				if !_rc {
+							keep iso_code3 year_folder HH1 HH2 LN MT* 
+							*keep identifyer vars and literacy
+							  capture confirm variable LN
+										if !_rc {
+										rename LN hl1, replace
+										}
+										else {
+										rename ln hl1, replace
+										}
+
+							rename HH1 hh1, replace
+							rename HH2 hh2, replace
+							capture rename WAGE age, replace
+							gen sex="Female"
+
+							capture confirm variable partofcountry
+								if !_rc {
+								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry MT*
+								}
+								else {
+								keep iso_code3 year_folder sex hh1 hh2 hl1 MT*
+								}
+							compress
+							tempfile wm_selection
+							save "`wm_selection'"
+							capture confirm variable partofcountry
+								if !_rc {
+								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+								save "`output_path'/MICS/data/mics_standardize.dta", replace
+								}
+								else {
+								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+								save "`output_path'/MICS/data/mics_standardize.dta", replace
+									}
+													}
+					else {
+							di "Clearing because neither literacy nor mass media/ict variables exists."
+							clear
+							}
+			
+			}
+			
+				
+
+					}
+			
+         
+else { 
+    di "Women module not available in this survey"
+} 
+
+*end of wm extraction
+
+*****************************************
+
+*Mn module search and merge
+  
+cd "`data_path'\\`country_code'_`country_year'_MICS\"
+  
+capture confirm file mn.dta 
+if _rc == 0 {
+use "mn.dta", clear
+gen iso_code3=upper("`country_code'")
+generate year_folder = `country_year'
+   capture rename ln LN 
+		   capture confirm variable MWB14
+			if _rc == 0 {
+			di "Something exists, keeping " "`f'"
+		    *Adding this to check for the MASS MEDIA AND ICT module and capture it if variables exist
+			 capture confirm variable MMT2 
+				if !_rc {
+							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MMT*
+							
+						}
+					else {
+							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4
+						}
+					recode MWB14 (1 = 0) (2 3 = 1) (4 9 = .), gen(literacy_1549)
+					capture confirm variable LN
+								if !_rc {
+								rename LN hl1, replace
+								}
+								else {
+								capture rename ln hl1, replace
+								capture rename HL1 hh1, replace
+								}
+					rename HH1 hh1, replace
+					rename HH2 hh2, replace
+					rename MWM6D hh5d, replace
+					rename MWM6M hh5m, replace
+					rename MWM6Y hh5y, replace
+					rename MWB4 age
+					gen sex="Male"
+					capture duplicates drop iso_code3 year_folder hh1 hh2 hl1 , force
+					compress
+					tempfile mn_selection
+					save "`mn_selection'"
+					capture confirm variable partofcountry
+						if !_rc {
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+						}
+						else {
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+ 		  		   }
+				   }
+		else {
+		 	  *Adding this in case only mass media ict exists
+			 capture confirm variable MMT2 
+				if !_rc {
+							keep iso_code3 year_folder HH1 HH2 LN MMT*
+							compress
+							  capture confirm variable LN
+								if !_rc {
+								rename LN hl1, replace
+								}
+								else {
+								rename ln hl1, replace
+								}
+							gen sex="Male"
+							rename HH1 hh1, replace
+							rename HH2 hh2, replace
+							capture duplicates drop iso_code3 year_folder hh1 hh2 hl1 , force
+							tempfile mn_selection
+							save "`mn_selection'"
+							capture confirm variable partofcountry
+								if !_rc {
+								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+								save "`output_path'/MICS/data/mics_standardize.dta", replace
+								}
+								else {
+								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+								save "`output_path'/MICS/data/mics_standardize.dta", replace
+													}
+					else {
+							di "Clearing because neither literacy nor mass media/ict variables exists in " "`f'"
+							clear
+								}
+			
+			}
+				
+					}
+			
+         }
+		 
+
+
+else { 
+    di "Men module not available in this survey"
+} 
+*end of mn extraction
+
+****************
+
+*begin of ch extraction 
+cd "`data_path'\\`country_code'_`country_year'_MICS\"
+  
+capture confirm file ch.dta 
+if _rc == 0 {
+use "ch.dta", clear
+gen iso_code3=upper("`country_code'")
+generate year_folder = `country_year'
+   capture rename ln LN 
+		   *Check for EARLY CHILDHOOD DEVELOPMENT module (EC questions)
+		   capture confirm variable EC1
+			if _rc == 0 {
+					capture confirm variable LN
+								if !_rc {
+								rename LN hl1, replace
+								}
+								else {
+								capture rename ln hl1, replace
+								capture rename HL1 hl1, replace
+								*Mexico 2015
+								capture rename UF4 hl1, replace
+
+								}
+					rename HH1 hh1, replace
+					rename HH2 hh2, replace
+					keep iso_code3 year_folder hh1 hh2 hl1 EC*
+					compress
+					tempfile ch_selection
+					save "`ch_selection'"
+					capture confirm variable partofcountry
+						if !_rc {
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+						}
+						else {
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+							}
+				   }
+		else {
+							di "Clearing because Early Childhood Development submodule is not there"
+							clear
+								}
+			
+			}
+				
+	   
+		 
+else { 
+    di "CH (children under the age of 5) module not available in this survey"
+} 
+
+*end of ch extraction
+
+***************************
+
+*begin of fs extraction
+cd "`data_path'\\`country_code'_`country_year'_MICS\"
+  
+capture confirm file fs.dta 
+if _rc == 0 {
+use "fs.dta", clear
+gen iso_code3=upper("`country_code'")
+generate year_folder = `country_year'
+   capture rename ln LN 
+		   *Check for FOUNDATIONAL LEARNING SKILLS sub-module 
+		   capture confirm variable FL1
+			if _rc == 0 {
+					capture rename ln LN
+					capture confirm variable LN
+								if !_rc {
+								rename LN hl1, replace
+								}
+								else {
+								capture rename ln hl1, replace
+								capture rename HL1 hl1, replace
+								}
+					rename HH1 hh1, replace
+					rename HH2 hh2, replace
+					keep iso_code3 year_folder hh1 hh2 hl1 FL*
+					compress
+					tempfile fs_selection
+					save "`fs_selection'"
+					capture confirm variable partofcountry
+						if !_rc {
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+						}
+						else {
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+							}
+				   }
+		else {
+							di "Clearing because Foundational Learning Skills submodule is not available"
+							clear
+								}
+			
+			}
+				
+	   
+		 
+else { 
+    di "FS (children ages 5-17) module not available in this survey"
+} 
+
+*end of FS extraction
+
+capture confirm variable hh1
+if !_rc {
+                       di "at least one extra module added"
+               }
+               else {
+                       di "no extra modules were added"
+					   use "`output_path'/MICS/data/mics_standardize.dta", clear
+
+               }
+
+
+**************************** 	end of do widetable_literacy_mics_std***
+
+
+	***FINISH LITERACY CALCULATION***
+	capture confirm variable literacy_1549
+if !_rc {
+		replace literacy_1549 = 1 if eduyears >= years_lowsec
+		gen literacy_1524=literacy_1549 if age >= 15 & age <= 24
+               }
+              		
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	foreach var in `vars' {
 		capture sdecode `var', replace
@@ -932,20 +1323,19 @@ program define mics_standardize_standalone
 	drop adult_comp_lowsec
 	
 	* "Household Education 8": Literate adult (25+ years old) in the family 
+		capture confirm variable literacy_1549
+	if !_rc {
 	egen hh_edu8 = max(literacy_1549), by(hh_id)
+               }
 		
 	**/Household education**
 	
 	save "`output_path'/MICS/data/mics_standardize.dta", replace
 	
-	**Adding CH and FS modules
-*	cd "`c(sysdir_personal)'/"
-*	do join_CH_FS_mics
-	
 	
 	*getting rid of unnecesary variables and ordering
 	capture drop MWB14 WB14 old_ed3 old_ed4 old_ed5a old_ed5b old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a old_ed10b	old_ed15 old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace lowsec_dur_replace	upsec_dur_replace	prim_age_replace	 
-	order MMT1 MMT2 MMT3 MMT4 MMT5 MMT6A MMT6B MMT6C MMT6D MMT6E MMT6F MMT6G MMT6H MMT6I MMT9 MMT10 MMT11 MMT12 MMT11A MMT13 MMT3A MMT4A MMT4BA MMT4BB MMT4BC MMT4BE MMT4BG MMT4BH MMT6 MMT7 MMT8 MMT4B MMT14 MMT15 MT1 MT2 MT3 MT4 MT5 MT6A MT6B MT6C MT6D MT6E MT6F MT6G MT6H MT6I MT9 MT10 MT11 MT12 MT10A MT11A MT13 MT3A MT4A MT4BA MT4BB MT4BC MT4BE MT4BG MT4BH MT6 MT7 MT8 MT4B MT14 MT15, last
+	capture order MMT1 MMT2 MMT3 MMT4 MMT5 MMT6A MMT6B MMT6C MMT6D MMT6E MMT6F MMT6G MMT6H MMT6I MMT9 MMT10 MMT11 MMT12 MMT11A MMT13 MMT3A MMT4A MMT4BA MMT4BB MMT4BC MMT4BE MMT4BG MMT4BH MMT6 MMT7 MMT8 MMT4B MMT14 MMT15 MT1 MT2 MT3 MT4 MT5 MT6A MT6B MT6C MT6D MT6E MT6F MT6G MT6H MT6I MT9 MT10 MT11 MT12 MT10A MT11A MT13 MT3A MT4A MT4BA MT4BB MT4BC MT4BE MT4BG MT4BH MT6 MT7 MT8 MT4B MT14 MT15, last
 	order hh1 hh2 hl1 country year ethnicity religion sex age location region wealth, first
 	
 	gen survey="MICS"
