@@ -21,8 +21,7 @@ program define dhs_standardize_standalone
 	tempfile isocode
 	save `isocode'
 	
-	
-	local modules IR MR 
+	local modules ir mr 
 	* read IR and MR files to get ethnicity and religion
 	if ("`country_name'" == "Nicaragua" | "`country_name'" == "VietNam" | "`country_name'" == "Yemen"){
 	local modules ir
@@ -32,41 +31,46 @@ program define dhs_standardize_standalone
 		capture mkdir "`output_path'/DHS/data/temporal/`module'"
 		set more off
 		
-			*Old directory style
+			*NEW directory style
 			cd  "`data_path'\\`country_code'_`country_year'_DHS\"
 			local thefile : dir . files "??`module'????.DTA" 
-			di `"`thefile'"'
+			di `thefile'
+			*This if to avoid problems where one module is not available
+				if strpos("`thefile'", "dta") == 0 { 
+				**read a file
+							use *v001 *v002 *v130 *v131 *v150 *v155 using `thefile', clear
+							set more off
+							
+							rename *, lower
+							for X in any v001 v002 v130 v131 v150 v155: capture rename mX X
+							for X in any v001 v002 v130 v131 v150 v155 : capture generate X=.
+							
+							* only keep the household head
+							keep if v150 == 1 
+							
+							catenate hh_id = v001 v002
+							drop v150 v001 v002
+							
+							foreach var of varlist v130 v131{ 
+								capture sdecode `var', replace
+								capture replace `var' = lower(`var')
+								capture replace_character `var'
+								capture replace `var' = stritrim(`var')
+								capture replace `var' = strltrim(`var')
+								capture replace `var' = strrtrim(`var')
+							}
+							
+							capture label drop _all
+							compress
+							
+						capture save "`output_path'/DHS/data/temporal/dhs_`module'.dta" , replace
+												} 
+				else {
+						di "There is no " "`module'" " module available for this survey."
+						clear			
+				} 
 			
-			*read a file
-			use *v001 *v002 *v130 *v131 *v150 *v155 using `thefile', clear
-			set more off
 			
-			rename *, lower
-			for X in any v001 v002 v130 v131 v150 v155: capture rename mX X
-			for X in any v001 v002 v130 v131 v150 v155 : capture generate X=.
-			
-			* only keep the household head
-			keep if v150 == 1 
-			
-// 			generate country = "`country_name'" 
-// 			generate year_folder = `country_year'
-// 			catenate country_year = country year_folder, p("_")
-			catenate hh_id = v001  v002
-			drop v150 v001 v002
-			
-			foreach var of varlist v130 v131{ 
-				capture sdecode `var', replace
-				capture replace `var' = lower(`var')
-				capture replace_character `var'
-				capture replace `var' = stritrim(`var')
-				capture replace `var' = strltrim(`var')
-				capture replace `var' = strrtrim(`var')
-			}
-			
-			capture label drop _all
-			compress
-			
-		capture save "`output_path'/DHS/data/temporal/dhs_`module'.dta" , replace
 	}
 	
 	use "`output_path'/DHS/data/temporal/dhs_ir.dta", clear
@@ -112,10 +116,6 @@ program define dhs_standardize_standalone
 		keep `common'
 		ds
 		
-		*generate variables with file name
-// 		generate country = "`country_name'" 
-// 		generate year_folder = `country_year'
-
 		*create variables doesnt exist 
 		for X in any `dhsvars_keep': capture generate X = .
 		order `dhsvars_keep'
@@ -142,7 +142,7 @@ program define dhs_standardize_standalone
 		for X in any sex wealth location: drop X
 		for X in any sex wealth location: rename X_n X
 		
-		gen iso_code3="`country_code'"
+		gen iso_code3=upper("`country_code'")
 		merge m:1 iso_code3 using "`isocode'", keep(match) nogenerate
 		rename country complete_country_name
 		rename country_name_dhs country
@@ -655,7 +655,6 @@ program define dhs_standardize_standalone
 
 	drop round_dhs lowsec_age_uis upsec_age_uis
 	gen survey="DHS"
-	*get useful local
 	compress
 	
 	
