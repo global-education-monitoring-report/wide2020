@@ -50,8 +50,17 @@ read_function <- function(iso3, year, survey, path) {
     datalist[[f]] <- filter_function(mydata)
   }
 
-  # merge all data tables as a data frame and VIEW
-  merge_data <- ldply(datalist, data.frame)
-  View(merge_data)
+  # merge all data tables as a data frame
+  ldply(datalist, data.frame)
 }
 
+read_survey <- function(file, filter_fun = identity) {
+  if (file.exists(file)) filter_fun(haven::read_dta(print(file)))
+}
+
+read_surveys <- function(iso3, year, survey, path = "", ...) {
+  # make file names using combination of input vectors
+  files <- paste0(path, levels(interaction(iso3, year, survey, sep='_')), ".dta")
+
+  map_dfr(files, read_survey, ...)
+}
