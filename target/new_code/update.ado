@@ -64,11 +64,10 @@ foreach survey of local process_list_dhs {
          *Directly run widetable with one survey
 			tokenize "`survey'", parse(_)
 		dhs_standardize_standalone,  data_path(`dpath') output_path(`opath')  country_code("`1'") country_year("`3'")
-		levelsof iso_code3, local(isocode)
-		capture mkdir  "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`1'_`3'_DHS"
-		cd "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_DHS"
+		local isocode=upper("`1'")
+		capture mkdir  "C:\Users\taiku\UNESCO\GEM Report - WIDE Data NEW\2_standardised\\`isocode'_`3'_DHS"
+		cd "C:\Users\taiku\UNESCO\GEM Report - WIDE Data NEW\2_standardised\\`isocode'_`3'_DHS"
 		save "std_`isocode'_`3'.dta", replace
-		display "You can find the standardized file in C:\Users\taiku\UNESCO\GEM Report - WIDE Data NEW\2_standardised\"
 		clear
      }
 set trace off	 
