@@ -36,8 +36,12 @@ program define dhs_standardize_standalone
 			local thefile : dir . files "??`module'????.DTA" 
 			di `thefile'
 			*This if to avoid problems where one module is not available
-				if strpos("`thefile'", "dta") == 0 { 
-				**read a file
+				if missing(`"`thefile'"') { 
+				di "There is no " "`module'" " module available for this survey."
+						clear
+												} 
+				else {
+						**read a file
 							use *v001 *v002 *v130 *v131 *v150 *v155 using `thefile', clear
 							set more off
 							
@@ -64,19 +68,16 @@ program define dhs_standardize_standalone
 							compress
 							
 						capture save "`output_path'/DHS/data/temporal/dhs_`module'.dta" , replace
-												} 
-				else {
-						di "There is no " "`module'" " module available for this survey."
-						clear			
+									
 				} 
 			
 			
 	}
 	
-	use "`output_path'/DHS/data/temporal/dhs_ir.dta", clear
+	capture use "`output_path'/DHS/data/temporal/dhs_ir.dta", clear
 	capture append using "`output_path'/DHS/data/temporal/dhs_mr.dta"
 	
-	erase "`output_path'/DHS/data/temporal/dhs_ir.dta"
+	capture erase "`output_path'/DHS/data/temporal/dhs_ir.dta"
 	capture erase "`output_path'/DHS/data/temporal/dhs_mr.dta"
 	
 	rename v130 religion
