@@ -1,6 +1,6 @@
 This is a README file that guides developing UNESCO GEMR R package "gemRtools".  
-@ Date: Feb 20, 2021 (Updated: Feb 24, 2021)  
-@ Contact: Sunmin Lee (sm.lee@unesco.org), Bilal Barakat (bf.barakat@unesco.org)   
+@ Date: Feb 20, 2021 (Updated: May 31, 2021)  
+@ Contact: Sunmin Lee, Marcela Barrios Rivera, Bilal Barakat  
 <br/>  
 ***  
 
@@ -8,9 +8,12 @@ This is a README file that guides developing UNESCO GEMR R package "gemRtools".
 >The R package "gemRtools" developed by UNESCO GEMR team includes several functions that helps to manipulate data.   
 
 As of updated date, the package includes following functions:
-* test_function 
+* test_function
+* read_function
+* val_function
+* category_arrange
+* update_income_groups 
 <br/>  
-<br/>
 
 ## Developing "gemRtools" Step by Step
 ### Step 1. Install and load development packages

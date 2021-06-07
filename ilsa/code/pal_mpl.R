@@ -3,6 +3,10 @@
 library("tidyverse")
 library("haven")
 library("reshape2")
+library("janitor")
+library("ggplot2")
+library("stringr")
+library("ggpubr")
 
 # Pakistan (very close)
 
@@ -89,52 +93,22 @@ moz_pal <- mutate(moz_pal, math = recode(as.numeric(f5_1_matematicaniveisbasicos
 
 
 # Append datasets
-vars <- c("math", "read", "grade", "Sex", "Location", "iso_code3", "year", "weight")
+dvs <- c("math", "read")
+ids <- c("iso_code3", "year")
+groups <- c("grade", "Sex", "Location")
+
+vars <- c(dvs, ids, groups, "weight")
 df <- lapply(mget(grep("_pal$", ls(), value = TRUE)), function(x) x[vars])
 df <- do.call(dplyr::bind_rows, df)
 df <- filter(df, grade %in% c(3, 5))
 df <- df[complete.cases(df[, c("math", "read")]), ]
 
 # Calculate
-
-# total
-total <- df %>%
-  group_by(year, iso_code3, grade) %>%
-  summarise(math = weighted.mean(math==1, w = weight, na.rm= TRUE), 
-            read = weighted.mean(read==1, w=weight, na.rm=TRUE),
-            category = "Total",
-            n = n())
-
-# one group
-sex <- df %>%
-  group_by(year, iso_code3, grade, Sex) %>%
-  summarise(math = weighted.mean(math==1, w = weight, na.rm= TRUE), 
-            read = weighted.mean(read==1, w=weight, na.rm=TRUE),
-            category = "Sex",
-            n = n())
-
-location <- df %>%
-  group_by(year, iso_code3, grade, Location) %>%
-  summarise(math = weighted.mean(math==1, w = weight, na.rm= TRUE), 
-            read = weighted.mean(read==1, w=weight, na.rm=TRUE),
-            category = "Location",
-            n = n())
-
-
-# Two groups
-two <- df %>%
-  group_by(year, iso_code3, grade, Location, Sex) %>%
-  summarise(math = weighted.mean(math==1, w = weight, na.rm= TRUE), 
-            read = weighted.mean(read==1, w=weight, na.rm=TRUE),
-            category = "Sex & Location",
-            n = n())
-
-
-pal <- do.call(dplyr::bind_rows, list(total, sex, location, two))
-
+pal <- wide_bind(df, dvs, ids, groups)
 pal <- pal %>%
-rename(rlevel2_m = read, mlevel2_m = math) %>%
-mutate(survey =  "ASER")
+  rename(rlevel2_m = read, mlevel2_m = math) %>%
+  mutate(survey =  "ASER")
+
 
 ## Export
 dir <- "/home/eldani/MEGA/Work/Projects/Ongoing/UNESCO/Analysis/ILSA"
