@@ -6,8 +6,8 @@
 library(haven)
 
 # Read and view WIDE standardized microdata from STATA .dta format
-data <- read_dta("Desktop/gemr/new_etl/mics_standardize_small_multi.dta") # change this path
-View(data)
+#data <- read_dta("Desktop/gemr/new_etl/mics_standardize_small_multi.dta") # change this path
+#View(data)
 
 
 # CALCULATE: Completion by education level
@@ -109,13 +109,12 @@ data$edu4_2024 = with(data, ifelse(condition == FALSE, NA,
 
 
 ## TODO:
-# include "overage2plus", "country", "edu4" in DHS standardize - Marcela working
-# change into "literacy_1524" in MICS standardize - Marcela working
 # calculate "household_edu" - Sunmin working
 
-
+library(qs)
+setwd("C:/Users/taiku/UNESCO/GEM Report - WIDE Data NEW/3_calculated")
 # Export data as .rds format
-saveRDS(data, file="Desktop/gemr/new_etl/wide_calculate.rds")
+qsave(data, paste0(survey,"_calculated.qs"))
 
 
 ###### Extra code that is useful for checking ######
