@@ -48,7 +48,7 @@ foreach survey of local process_list_mics {
 		local isocode=upper("`1'")
 		capture mkdir  "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_MICS"		
 		cd "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_MICS"
-		save "std_`isocode'_`3'.dta", replace
+		save "std_`isocode'_`3'_MICS.dta", replace
 		display "You can find the standardized file in C:\Users\taiku\UNESCO\GEM Report - WIDE Data NEW\2_standardised\"
 		clear
      }
@@ -56,6 +56,7 @@ set trace off
 
 
 	 set trace on
+	 set tracedepth 1
 **Now call DHS_standardize RECURSIVELY
 local dpath "C:\Users\taiku\UNESCO\GEM Report - 1_raw_data"
 local opath "C:\Users\taiku\UNESCO\GEM Report - WIDE Data NEW\2_standardised"
@@ -67,7 +68,7 @@ foreach survey of local process_list_dhs {
 		local isocode=upper("`1'")
 		capture mkdir  "C:\Users\taiku\UNESCO\GEM Report - WIDE Data NEW\2_standardised\\`isocode'_`3'_DHS"
 		cd "C:\Users\taiku\UNESCO\GEM Report - WIDE Data NEW\2_standardised\\`isocode'_`3'_DHS"
-		save "std_`isocode'_`3'.dta", replace
+		save "std_`isocode'_`3'_DHS.dta", replace
 		clear
      }
 set trace off	 
