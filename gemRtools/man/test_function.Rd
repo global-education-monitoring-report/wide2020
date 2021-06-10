@@ -3,9 +3,6 @@
 \name{test_function}
 \alias{test_function}
 \title{A TEST Function}
-\usage{
-test_function(test = TRUE)
-}
 \arguments{
 \item{test}{Is this test? Defaults to TRUE.}
 }

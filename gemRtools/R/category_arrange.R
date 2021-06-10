@@ -2,12 +2,15 @@
 #'
 #' This function takes a vector of categories and rearranges them in alphabetical order
 #' ver. May 26 2021
+#' @name category_arrange
 #' @param category Vector of categories to be arranged.
 #' @keywords wide
 #' @export
 #' @examples
 #' category_arrange(category)
 
+usethis::use_package("stringr")
+usethis::use_package("purrr")
 library(stringr)
 library(purrr)
 

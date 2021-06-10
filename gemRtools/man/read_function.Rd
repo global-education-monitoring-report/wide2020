@@ -3,9 +3,6 @@
 \name{read_function}
 \alias{read_function}
 \title{A READ Function}
-\usage{
-read_function(survey, iso_code3, year)
-}
 \arguments{
 \item{survey}{Survey types (e.g. MICS, DHS, etc.) of this dataset}
 
@@ -14,11 +11,11 @@ read_function(survey, iso_code3, year)
 \item{year}{Year of this dataset}
 }
 \description{
-This function reads in a batch of microdata files with an input vector of "survey types", "iso3 codes", and "years".
-Please make sure to run the function in a working directory where it includes microdata files.
-ver. Mar 04 2021
+This function reads in a batch of microdata files with an input vectors of "survey types", "iso3 codes", and "years".
+Please make sure to change the path where data files are located.
+ver. May 31 2021
 }
 \examples{
-read_function(DHS, COD, 2013)
+read_function(c("AFG", "BLZ"), c(2010, 2011), c("MICS"), "/Users/sunminlee/Desktop/gemr/gemRpackage/microdata/")
 }
 \keyword{wide}

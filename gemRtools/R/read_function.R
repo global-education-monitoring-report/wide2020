@@ -3,6 +3,7 @@
 #' This function reads in a batch of microdata files with an input vectors of "survey types", "iso3 codes", and "years".
 #' Please make sure to change the path where data files are located.
 #' ver. May 31 2021
+#' @name read_function
 #' @param survey Survey types (e.g. MICS, DHS, etc.) of this dataset
 #' @param iso_code3 Country ISO3 code of this dataset
 #' @param year Year of this dataset
@@ -20,8 +21,8 @@
 # survey <- c("MICS", "DHS") # include more surveys, if necessary
 # path <- "/Users/sunminlee/Desktop/gemr/gemRpackage/microdata/"
 
-
-# Load libraries
+usethis::use_package("haven")
+usethis::use_package("plyr")
 library(haven)
 library(plyr)
 

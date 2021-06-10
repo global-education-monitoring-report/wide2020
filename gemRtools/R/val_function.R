@@ -2,6 +2,7 @@
 #'
 #' This function validates certain conditions of the variable values.
 #' ver. May 11 2021
+#' @name val_function
 #' @param var Variable name to be validated from this dataset
 #' @keywords wide
 #' @export
@@ -9,7 +10,7 @@
 #' val_function(age)
 
 df <- read.csv(file = '/Users/sunminlee/Desktop/gemr/gemRpackage/microdata/DHS_COD_2013.csv')
-View(df)
+#View(df)
 
 
 val_function <- function(df, var) {
