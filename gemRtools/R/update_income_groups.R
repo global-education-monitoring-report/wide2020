@@ -1,3 +1,17 @@
+#' AN UPDATE INCOME GROUPS Function
+#'
+#' This function gets and updates the world bank income groups
+#' ver. June 10 2021
+#' @name update_income_groups
+#' @param df dataframe 
+#' @keywords wide
+#' @export
+#' @examples
+#' update_income_groups(df)
+
+usethis::use_package("dplyr")
+library(dplyr)
+
 # World Bank income groups
 
 get_income_groups <- function() {

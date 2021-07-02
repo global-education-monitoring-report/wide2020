@@ -7,6 +7,7 @@ library("janitor")
 library("ggplot2")
 library("stringr")
 library("ggpubr")
+library("purrr")
 
 # Pakistan (very close)
 
@@ -94,8 +95,8 @@ moz_pal <- mutate(moz_pal, math = recode(as.numeric(f5_1_matematicaniveisbasicos
 
 # Append datasets
 dvs <- c("math", "read")
-ids <- c("iso_code3", "year")
-groups <- c("grade", "Sex", "Location")
+ids <- c("iso_code3", "year", "grade")
+groups <- c("Sex", "Location")
 
 vars <- c(dvs, ids, groups, "weight")
 df <- lapply(mget(grep("_pal$", ls(), value = TRUE)), function(x) x[vars])
