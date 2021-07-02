@@ -1167,7 +1167,73 @@ generate year_folder = `country_year'
 								}
 					rename HH1 hh1, replace
 					rename HH2 hh2, replace
-					keep iso_code3 year_folder hh1 hh2 hl1 EC*
+					keep iso_code3 year_folder hh1 hh2 hl1 EC* 
+					
+					*There are ch modules with no variables to construct ecd***
+					capture confirm variable EC8
+						if !_rc {
+					***There is a change in variable names/numbers between MICS, so there are two versions to calculate the ecd variable***
+					capture confirm variable EC17
+						if !_rc {
+							for X in any EC8 EC9 EC10 EC11 EC13 EC14 EC15: recode X (2=0) (8/9=.)
+							for X in any EC12 EC16 EC17: recode X (1=0) (2=1) (8/9=.)
+							 ** Literacy & numeracy (identifies at least 10 letters of alphabet / reads 4 simple words / knows numbers 1-10)
+							 gen sum_litnum = EC8 + EC9 + EC10
+							 gen litnum=0
+							 replace litnum=1 if sum_litnum>=2 & sum_litnum!=.
+							 replace litnum=. if EC8==. & EC9==. & EC10==.
+							 ** Physical (able to pick up small object / too sick to play)
+							gen physical=0
+							replace physical=1 if EC11==1 | EC12==1
+							replace physical=. if EC11==. & EC12==.
+							** Learning (can follow instructions / able to do something independently)
+							gen learns=0
+							replace learns=1 if EC13==1 | EC14==1
+							replace learns=. if EC13==. & EC14==.
+							** SocioEm (gets along w other children / kicks bites or hits others / distracted easily )
+							 gen sum_socioem = EC15 + EC16 + EC17
+							 gen socioem=0
+							 replace socioem=1 if sum_socioem>=2 & sum_socioem!=.
+							 replace socioem=. if EC15==. & EC16==. & EC17==.
+							**** ECD index
+								gen sum_ecd=litnum+physical+learns+socioem
+								gen ecd=0
+								replace ecd=1 if sum_ecd>=3 & sum_ecd!=.
+								replace ecd=. if litnum==. & physical==. & learns==. & socioem==.
+								drop sum_*
+							}
+						else {
+							for X in any EC6 EC7 EC8 EC9 EC11 EC12 EC13: recode X (2=0) (8/9=.)
+							for X in any EC10 EC14 EC15: recode X (1=0) (2=1) (8/9=.)
+							 ** Literacy & numeracy (identifies at least 10 letters of alphabet / reads 4 simple words / knows numbers 1-10)
+							 gen sum_litnum= EC6 + EC7 + EC8
+							 gen litnum=0
+							 replace litnum=1 if sum_litnum>=2 & sum_litnum!=.
+							 replace litnum=. if EC6==. & EC7==. & EC8==.
+							 ** Physical (able to pick up small object / too sick to play)
+							gen physical=0
+							replace physical=1 if EC9==1 | EC10==1
+							replace physical=. if EC9==. & EC10==.
+							** Learning (can follow instructions / able to do something independently)
+							gen learns=0
+							replace learns=1 if EC11==1 | EC12==1
+							replace learns=. if EC11==. & EC12==.
+							** SocioEm (gets along w other children / kicks bites or hits others / distracted easily )
+							 gen sum_socioem=EC13 + EC14 + EC15
+							 gen socioem=0
+							 replace socioem=1 if sum_socioem>=2 & sum_socioem!=.
+							 replace socioem=. if EC13==. & EC14==. & EC15==.
+							**** ECD index
+								gen sum_ecd=litnum+physical+learns+socioem
+								gen ecd=0
+								replace ecd=1 if sum_ecd>=3 & sum_ecd!=.
+								replace ecd=. if litnum==. & physical==. & learns==. & socioem==.
+								drop sum_*
+							}
+						}
+						else {
+						 di "CH module does not have EC variables needed to calculate ECD index"
+						 }
 					compress
 					tempfile ch_selection
 					save "`ch_selection'"
