@@ -1,6 +1,8 @@
 * dhs_standardize: program to intake raw DHS surveys and standardize years of education, education completion and education out
 * Version 4.0
 * May 2021
+* Latest update 19/07: Added full_literacy, literacy, eduout_preprim and ECDI calculation (for this install addon filename)
+
 
 program define dhs_standardize_standalone
 	syntax, data_path(string) output_path(string) country_code(string) country_year(string) 
@@ -35,7 +37,7 @@ program define dhs_standardize_standalone
 			cd  "`data_path'\\`country_code'_`country_year'_DHS\"
 			local thefile : dir . files "??`module'????.DTA" 
 			di `thefile'
-			*This if to avoid problems where one module is not available
+			*This is to avoid problems where one module is not available
 				if missing(`"`thefile'"') { 
 				di "There is no " "`module'" " module available for this survey."
 						clear
@@ -184,10 +186,122 @@ program define dhs_standardize_standalone
 		*Household ids
 		catenate hh_id = cluster hv002 
 		
+		
 		* add religion and ethnicity
 		merge m:m hh_id using "`output_path'/DHS/data/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion literacy) keep(master match) nogenerate
-					
+		*Make id to merge with BR
+		catenate newid = hh_id hvidx
+	
 		save "`output_path'/DHS/data/dhs_read.dta", replace
+		
+		*¡NEW! Adding the BR (Birth recode) module to get early child development index (ECDI)*
+		
+		cd  "`data_path'\\`country_code'_`country_year'_DHS\"
+			local brfile : dir . files "??br????.DTA" 
+			di `"`brfile'"' //substitutes first instance for Target filename pattern
+			
+			*This is to avoid problems where one module is not available
+				if missing(`"`brfile'"') { 
+				di "There is no BR module available for this survey."
+									} 
+				else {
+				use `brfile', clear
+						*First: check if relevant ECDI variables exist 
+						*findit findname
+						 findname, varlabeltext("*kick*bite*") local(ecd9)
+						 if missing(`"`ecd9'"') { 
+							di "There are no ECDI variables available in this survey"
+							use "`output_path'/DHS/data/dhs_read.dta", clear
+									} 
+						else {
+							*Second: find all the variables needed
+							findname, varlabeltext("*alphabet*") local(ecd1)
+							if missing(`"`ecd1'"') { 
+							findname, varlabeltext("*letters*") local(ecd1)
+									}
+							findname, varlabeltext("*can*read*") local(ecd2)
+							findname, varlabeltext("*recognize*number*") local(ecd3)
+							if missing(`"`ecd3'"') { 
+									findname, varlabeltext("*identif*number*") local(ecd3)
+									if missing(`"`ecd3'"') { 
+										findname, varlabeltext("*cite*figure*") local(ecd3)
+										if missing(`"`ecd3'"') { 
+										findname, varlabeltext("*knows*numbers*") local(ecd3)
+									}
+									}
+									}
+							findname, varlabeltext("*two*fingers*") local(ecd4)
+							if missing(`"`ecd4'"') { 
+							findname, varlabeltext("*finger*object*") local(ecd4)
+								if missing(`"`ecd4'"') { 
+							findname, varlabeltext("*small*object*") local(ecd4)
+									}
+									}
+							findname, varlabeltext("*sick*play*") local(ecd5)
+							if missing(`"`ecd5'"') { 
+							findname, varlabeltext("*ill*play*") local(ecd5)
+									}
+							findname, varlabeltext("*follow*direc*") local(ecd6)
+							if missing(`"`ecd6'"') { 
+							findname, varlabeltext("*follow*instruc*") local(ecd6)
+									}
+							findname, varlabeltext("*independent*") local(ecd7)
+							findname, varlabeltext("*along*with*children*") local(ecd8)
+							if missing(`"`ecd8'"') { 
+							findname, varlabeltext("*along*with*others*") local(ecd8)
+									}
+							findname, varlabeltext("*kick*bite*other*") local(ecd9)
+							findname, varlabeltext("*distracted*") local(ecd10)
+						
+														
+							* recode identifies letters, reads 4 simple words, knows numbers, 
+							* recode able to pick up object, can follow instructions, communicate sth independently, gets along w others
+							for X in any `ecd1' `ecd2' `ecd3' `ecd4' `ecd6' `ecd7' `ecd8' : recode X (2=0) (8/9=.)
+							* recode too sick to play , kick bites or hits others , distracted easily
+							for X in any `ecd5' `ecd9'  `ecd10': recode X (1=0) (2 0=1) (8/9=.)
+
+							 ** Literacy & numeracy (identifies at least 10 letters of alphabet / reads 4 simple words / knows numbers 1-10)
+							 gen sum_litnum =  `ecd1' + `ecd2' + `ecd3'
+							 gen litnum=0
+							 replace litnum=1 if sum_litnum>=2 & sum_litnum!=.
+							 replace litnum=. if  `ecd1'==. & `ecd2'==. & `ecd3'==.
+							 ** Physical (able to pick up small object / too sick to play)
+							gen physical=0
+							replace physical=1 if `ecd4'==1 | `ecd5'==1
+							replace physical=. if `ecd4'==. & `ecd5'==.
+							** Learning (can follow instructions / able to do something independently)
+							gen learns=0
+							replace learns=1 if `ecd6'==1 | `ecd7'==1
+							replace learns=. if `ecd6'==. & `ecd7'==.
+							** SocioEm (gets along w other children / kicks bites or hits others / distracted easily )
+							 gen sum_socioem = `ecd8' +  `ecd9' +  `ecd10'
+							 gen socioem=0
+							 replace socioem=1 if sum_socioem>=2 & sum_socioem!=.
+							 replace socioem=. if `ecd8'==. &  `ecd9'==. &  `ecd10'==.
+							**** ECD index!
+								gen sum_ecd=litnum+physical+learns+socioem
+								gen ecd=0
+								replace ecd=1 if sum_ecd>=3 & sum_ecd!=.
+								replace ecd=. if litnum==. & physical==. & learns==. & socioem==.
+								drop sum_*
+								
+						*Keep only needed variables		
+						 keep v001 v002 b16 litnum physical learns socioem ecd
+						*Get rid of observations whose line number is not listed in household, this implies getting rid of dead children
+						drop if b16==0 | b16==.
+						*Prepare for merge, forcing removal of duplicates 
+						catenate hh_id = v001 v002
+						catenate newid =  hh_id b16
+						duplicates drop hh_id newid, force
+						*Merge n save 
+						merge 1:1 hh_id newid using "`output_path'/DHS/data/dhs_read.dta", nogenerate
+						drop newid
+						save "`output_path'/DHS/data/dhs_read.dta", replace
+						}
+									
+
+				}
+		
 
 	set more off
 	clear
@@ -545,6 +659,10 @@ program define dhs_standardize_standalone
 	replace eduout = . if inlist(hv121, 8, 9, .)
 	replace eduout = . if inlist(hv122, 8, 9) & eduout == 0 
 	replace eduout = 1 if hv122 == 0
+	
+	*Eduout alternative version that considers children in preschool *NOT* out of school
+	generate eduout_preprim = eduout 
+	replace eduout_preprim = 0 if hv122 == 0 & hv121 == 2 
 
 	* Completion indicators with age limits 
 	foreach X in prim upsec {
@@ -645,11 +763,16 @@ program define dhs_standardize_standalone
 	
 	*******LITERACY**********
 	*Literacy
-	recode literacy (0 = 0) (1 2 = 1) (3 4 = .)
-	*1 cannot read at all
-	*2 able to read only parts or whole sentence
+	recode literacy (0 1 = 0) (2 = 1) (3 4 9 = .), gen(full_literacy)
+	recode literacy (0 = 0) (1 2 = 1) (3 4 9 = .), gen(literacy_1549)
+	recode literacy (0 = 0) (1 2 = 1) (3 4 9 = .)
+	*0 cannot read at all
+	*1 able to read only parts or whole sentence
+	*2 able to read whole sentence 
 	*3 no card with required language
 	*4 blind/visually impaired
+	*9 missing(?)
+	replace literacy_1549=1 if eduyears >= years_lowsec & (age >= 15 & age <= 49)
 	gen literacy_1524=literacy if age >= 15 & age <= 24
 	replace literacy_1524=1 if eduyears >= years_lowsec & (age >= 15 & age <= 24)
 	*******/LITERACY**********
