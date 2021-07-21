@@ -1,3 +1,8 @@
+TO DO:
+
+Recode JKREP for PASEC and rerun:
+assess$JKREP[assess$JKREP==2] <- 1
+
 Folder contains functions (*.R) and data (*.csv) in WIDE MPL (minimum proficiency level) format:
 
 update_mpl            pisa 2018 (reading, maths, science), pirls 2016
