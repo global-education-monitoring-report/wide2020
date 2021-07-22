@@ -1,6 +1,7 @@
 * mics_standardize: program to calculate a standard dataset ready to be processed further in R
 * Version 3.0
 * May 2021
+* Last update: added full_literacy 
 
 program define mics_standardize_standalone
 	syntax, data_path(string) output_path(string) country_code(string) country_year(string) 
@@ -908,8 +909,14 @@ capture rename ln LN
 							di "Both literacy and mass media exist "
 							keep iso_code3 year_folder HH1 HH2 LN WB14 WM6D WM6M WM6Y MT*
 							***RECODE ABLE TO READ TEST VAR***
-							recode WB14 (1 = 0) (2 3 = 1) (4 6 9 = .), gen(literacy_1549)
+							recode WB14 (1 = 0) (2 3 = 1) (4 6 9 = .), gen(literacy)
+							recode WB14 (1 2 = 0) (3 = 1) (4 6 9 = .), gen(full_literacy)
 							*keep identifyer vars and literacy
+							* 1 cannot read at all
+							* 2 able to read only parts of sentence
+							* 3 able to read whole sentence
+							* 4 no sentence in required language
+							* 9 no response
 							  capture confirm variable LN
 										if !_rc {
 										rename LN hl1, replace
@@ -926,10 +933,10 @@ capture rename ln LN
 
 							capture confirm variable partofcountry
 								if !_rc {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry WB14 literacy_1549 MT*
+								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry WB14 literacy full_literacy MT*
 								}
 								else {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy_1549 MT*
+								keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy
 								}
 				compress
 					capture confirm variable partofcountry
@@ -947,8 +954,14 @@ capture rename ln LN
 							di "Only literacy exists, keeping " "`f'"
 							keep iso_code3 year_folder HH1 HH2 LN WB14 WM6D WM6M WM6Y 
 							***RECODE ABLE TO READ TEST VAR***
-							recode WB14 (1 = 0) (2 3 = 1) (4 6 9 = .), gen(literacy_1549)
+							recode WB14 (1 = 0) (2 3 = 1) (4 6 9 = .), gen(literacy)
+							recode WB14 (1 2 = 0) (3 = 1) (4 6 9 = .), gen(full_literacy)
 							*keep identifyer vars and literacy
+							* 1 cannot read at all
+							* 2 able to read only parts of sentence
+							* 3 able to read whole sentence
+							* 4 no sentence in required language
+							* 9 no response
 							  capture confirm variable LN
 										if !_rc {
 										rename LN hl1, replace
@@ -963,10 +976,10 @@ capture rename ln LN
 
 							capture confirm variable partofcountry
 								if !_rc {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry WB14 literacy_1549 
+								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry WB14 literacy full_literacy
 								}
 								else {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy_1549 
+								keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy full_literacy
 								}
 							compress
 							tempfile wm_selection
@@ -1064,7 +1077,14 @@ generate year_folder = `country_year'
 					else {
 							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4
 						}
-					recode MWB14 (1 = 0) (2 3 = 1) (4 9 = .), gen(literacy_1549)
+					recode MWB14 (1 = 0) (2 3 = 1) (4 9 = .), gen(literacy)
+					recode MWB14 (1 2 = 0) (3 = 1) (4 6 9 = .), gen(full_literacy)
+							*keep identifyer vars and literacy
+							* 1 cannot read at all
+							* 2 able to read only parts of sentence
+							* 3 able to read whole sentence
+							* 4 no sentence in required language
+							* 9 no response
 					capture confirm variable LN
 								if !_rc {
 								rename LN hl1, replace
@@ -1229,6 +1249,7 @@ generate year_folder = `country_year'
 								replace ecd=1 if sum_ecd>=3 & sum_ecd!=.
 								replace ecd=. if litnum==. & physical==. & learns==. & socioem==.
 								drop sum_*
+								tab ecd
 							}
 						}
 						else {
@@ -1331,11 +1352,14 @@ if !_rc {
 
 
 	***FINISH LITERACY CALCULATION***
-	capture confirm variable literacy_1549
+	capture confirm variable literacy
 if !_rc {
+		gen literacy_1549 = literacy if age >= 15 & age <= 49
 		replace literacy_1549 = 1 if eduyears >= years_lowsec
 		gen literacy_1524=literacy_1549 if age >= 15 & age <= 24
                }
+	***/FINISH LITERACY CALCULATION***
+
               		
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	foreach var in `vars' {
@@ -1401,7 +1425,7 @@ if !_rc {
 	
 	*getting rid of unnecesary variables and ordering
 	capture drop MWB14 WB14 old_ed3 old_ed4 old_ed5a old_ed5b old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a old_ed10b	old_ed15 old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace lowsec_dur_replace	upsec_dur_replace	prim_age_replace	 
-	capture order MMT1 MMT2 MMT3 MMT4 MMT5 MMT6A MMT6B MMT6C MMT6D MMT6E MMT6F MMT6G MMT6H MMT6I MMT9 MMT10 MMT11 MMT12 MMT11A MMT13 MMT3A MMT4A MMT4BA MMT4BB MMT4BC MMT4BE MMT4BG MMT4BH MMT6 MMT7 MMT8 MMT4B MMT14 MMT15 MT1 MT2 MT3 MT4 MT5 MT6A MT6B MT6C MT6D MT6E MT6F MT6G MT6H MT6I MT9 MT10 MT11 MT12 MT10A MT11A MT13 MT3A MT4A MT4BA MT4BB MT4BC MT4BE MT4BG MT4BH MT6 MT7 MT8 MT4B MT14 MT15, last
+	capture order MMT* MT* , last
 	order hh1 hh2 hl1 country year ethnicity religion sex age location region wealth, first
 	
 	gen survey="MICS"
