@@ -1,7 +1,10 @@
 * mics_standardize: program to calculate a standard dataset ready to be processed further in R
 * Version 3.0
 * May 2021
-* Last update: added full_literacy 
+* Latest updates:
+*   added full_literacy 
+*	added attend_higher_5 
+*	added eduout_preprim
 
 program define mics_standardize_standalone
 	syntax, data_path(string) output_path(string) country_code(string) country_year(string) 
@@ -781,6 +784,10 @@ program define mics_standardize_standalone
 	capture replace eduout = . if ed6a_nr == 0 & country_year == "Barbados_2012"
 	capture replace eduout = 1 if ed3 == "no" & country_year == "Barbados_2012"
 	
+	capture generate eduout_preprim = eduout 
+	*Goes to preschool is not considered as out of school in this variable
+	capture replace eduout_preprim = 0 if code_ed6a == 0 
+	
 	
 //	
 // 	generate attend_mauritania = 0
@@ -872,6 +879,10 @@ program define mics_standardize_standalone
 	capture generate attend_higher = 1 if attend == 1 & high_ed == 1
 	capture replace attend_higher  = 0 if attend == 1 & high_ed != 1
 	capture replace attend_higher  = 0 if attend == 0
+	
+	generate attend_higher_5 = attend_higher if schage >= upsec_age1 + 1 & schage <= upsec_age1 + 5
+
+	
 	*******/HIGHER EDUCATION ATTENDANCE**********
 	
 
@@ -1079,12 +1090,13 @@ generate year_folder = `country_year'
 						}
 					recode MWB14 (1 = 0) (2 3 = 1) (4 9 = .), gen(literacy)
 					recode MWB14 (1 2 = 0) (3 = 1) (4 6 9 = .), gen(full_literacy)
-							*keep identifyer vars and literacy
 							* 1 cannot read at all
 							* 2 able to read only parts of sentence
 							* 3 able to read whole sentence
 							* 4 no sentence in required language
 							* 9 no response
+							
+					*keep identifyer vars and literacy
 					capture confirm variable LN
 								if !_rc {
 								rename LN hl1, replace
@@ -1355,7 +1367,8 @@ if !_rc {
 	capture confirm variable literacy
 if !_rc {
 		gen literacy_1549 = literacy if age >= 15 & age <= 49
-		replace literacy_1549 = 1 if eduyears >= years_lowsec
+		replace literacy_1549 = 1 if eduyears >= years_lowsec & literacy==.
+		replace literacy_1549 = 0 if eduyears < years_lowsec & literacy==.
 		gen literacy_1524=literacy_1549 if age >= 15 & age <= 24
                }
 	***/FINISH LITERACY CALCULATION***

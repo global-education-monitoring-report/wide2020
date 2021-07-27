@@ -1,7 +1,8 @@
 * dhs_standardize: program to intake raw DHS surveys and standardize years of education, education completion and education out
 * Version 4.0
 * May 2021
-* Latest update 19/07: Added full_literacy, literacy, eduout_preprim and ECDI calculation (for this install addon filename)
+* Update 19/07: Added full_literacy, literacy, eduout_preprim and ECDI calculation (for this install addon filename)
+* Update 27/07: Added attend_higher_5 eduout_preprim
 
 
 program define dhs_standardize_standalone
@@ -728,6 +729,8 @@ program define dhs_standardize_standalone
 	generate attend_higher = 0
 	replace attend_higher = 1 if inlist(hv121, 1, 2) & hv122 == 3
 	replace attend_higher = . if inlist(hv121, 8, 9) | inlist(hv122, 8, 9)
+	
+	generate attend_higher_5 = attend_higher if agestandard >= upsec_age1 + 1 & agestandard <= upsec_age1 + 5
 
 	*Durations for out-of-school
 	generate lowsec_age0_eduout = prim_age0_eduout + prim_dur_eduout
