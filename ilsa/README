@@ -1,8 +1,3 @@
-TO DO:
-
-Recode JKREP for PASEC and rerun:
-assess$JKREP[assess$JKREP==2] <- 1
-
 Folder contains functions (*.R) and data (*.csv) in WIDE MPL (minimum proficiency level) format:
 
 update_mpl            pisa 2018 (reading, maths, science), pirls 2016
@@ -15,3 +10,5 @@ sea-plm_mpl           sea-mpl 2019 (reading and maths)
 pasec_mpl             pasec 2014 and 2019 (reading and maths, grade 2 and 6)
 iso_code.csv          iso_code3 key variable 
 ilsa_sum              function to calculate MPL in WIDE format
+
+WIDE levels [here](https://docs.google.com/spreadsheets/d/1UiSbvZDjUprnAHBNjaEZyoZzmxNXjDFe/edit?usp=sharing&ouid=113375079134992639300&rtpof=true&sd=true). 
