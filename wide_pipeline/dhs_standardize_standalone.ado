@@ -159,8 +159,8 @@ program define dhs_standardize_standalone
 // 		generate country_code_dhs = substr(hv000, 1, 2)
 
 		*Round of DHS
-		generate round_dhs = substr(hv000, 3, 1)
-		replace round_dhs = "4" if country_year == "VietNam_2002"
+		generate round = substr(hv000, 3, 2)
+		replace round = "4" if country_year == "VietNam_2002"
 
 		*Individual ids
 		generate zero = string(0)
@@ -338,7 +338,7 @@ program define dhs_standardize_standalone
 	cd "`c(sysdir_personal)'/"
 	*local uisfile : dir . files "UIS_duration_age_*.dta"
 	*findfile `uisfile', path("`c(sysdir_personal)'/")
-	findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
+	findfile UIS_duration_age_30082021.dta, path("`c(sysdir_personal)'/")
 	use "`r(fn)'", clear
 	catenate country_year = country year, p("_")
 	
@@ -780,7 +780,6 @@ program define dhs_standardize_standalone
 	replace literacy_1524=1 if eduyears >= years_lowsec & (age >= 15 & age <= 24)
 	*******/LITERACY**********
 
-	drop round_dhs lowsec_age_uis upsec_age_uis
 	gen survey="DHS"
 	compress
 	

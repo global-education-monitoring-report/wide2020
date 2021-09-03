@@ -237,7 +237,7 @@ program define mics_standardize_standalone
 	*findfile `uisfile', path("`c(sysdir_personal)'/")
 	*findfile UIS_duration_age_25072018.dta, path("`c(sysdir_personal)'/")
 	*need to check!! assuming no change in the world in 2018 nor 2019
-	findfile UIS_duration_age_01102020.dta, path("`c(sysdir_personal)'/")
+	findfile UIS_duration_age_30082021.dta, path("`c(sysdir_personal)'/")
 	use "`r(fn)'", clear
 	merge m:m iso_code3 year using `fixduration', keep(match master) 
 	*Turning this off to see if this is a mistake
@@ -1391,6 +1391,7 @@ if !_rc {
 	capture replace attend_preschool    = 0 if attend == 0
 	
 	rename prim_age0_eduout prim_age0
+	
 	
 	**Household education**
 	
