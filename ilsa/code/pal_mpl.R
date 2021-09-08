@@ -9,7 +9,7 @@ library("stringr")
 library("ggpubr")
 library("purrr")
 
-# Pakistan (very close)
+# Pakistan (almost identical math and reading)
 
 dir  <- "/home/eldani/eldani/International LSA/ASER/Pakistan/2016/PK_2016_STATA"
 pak_pal <- read_dta(file.path(dir, "ASER2016Child.dta"))
@@ -22,6 +22,8 @@ pak_pal <- mutate(pak_pal, math = recode(c012, `5`=1, .default =0),
                  iso_code3 = "PAK",
                  year = 2016,
                  weight = 1)
+
+#prop.table(with(pak_pal, table(grade, c010)),1)
 
 # Kenya (identical)
 dir <- "/home/eldani/eldani/International LSA/ASER/Kenya/2015/KE_2015_STATA"
@@ -36,7 +38,7 @@ ken_pal <- mutate(ken_pal, math = recode(as.numeric(math), `7`=1, .default =0),
                  year = 2015,
                  weight = weight)
 
-# Uganda (math close, read not so close)
+# Uganda (math and read close)
 
 dir <- "/home/eldani/eldani/International LSA/ASER/Uganda/2015/UG_2015_STATA"
 uga_pal <- read_dta(file.path(dir, "UG15_hhld.dta"))
@@ -49,6 +51,8 @@ uga_pal <- mutate(uga_pal, math = recode(as.numeric(math), `7`=1, .default =0),
                  iso_code3 = "UGA",
                  year = 2015,
                  weight = weight)
+
+#prop.table(with(uga_pal, table(grade, english)),1)
 
 # Tanzania (very close)
 
@@ -109,6 +113,9 @@ pal <- wide_bind(df, dvs, ids, groups)
 pal <- pal %>%
   rename(rlevel2_m = read, mlevel2_m = math) %>%
   mutate(survey =  "ASER")
+
+# Remove unused categories
+pal <- filter(pal, !(iso_code3=="PAK" & category=="Total"), iso_code3!="MEX")
 
 
 ## Export
