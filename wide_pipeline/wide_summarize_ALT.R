@@ -11,8 +11,7 @@
 #' @param df Input data frame.
 #' @param cs Categories.
 #'
-wide_aggregate_by_cats <- function(gf, cs) {
-
+wide_aggregate_by_cats <- function(df, cs) {
   # build WIDE 'category' variable and
   # variable names to group by for that category
   if (identical(cs, c(""))) {
@@ -24,15 +23,15 @@ wide_aggregate_by_cats <- function(gf, cs) {
   }
   
   df %>%
-    group_by(!!! cats, country, year, survey, variable) %>%
+    group_by(!!! cats, country, year, survey, indicator) %>%
     summarise(
-      value = weighted.mean(value, weight, na.rm = TRUE),
-      #weight = sum(weight, na.rm = TRUE),
       count = sum(!is.na(value)),
-    ) %>%
+      value = weighted.mean(value, hhweight, na.rm = TRUE)
+      #weight = sum(weight, na.rm = TRUE),
+      ) %>%
     na.omit %>%
     mutate(category = category) %>%
-    select(country, year, survey, variable, value, category, everything()) %>%
+    select(country, year, survey, indicator, value, count, category, everything()) %>%
     identity
 }
 
@@ -46,9 +45,10 @@ wide_aggregate <- function(df, categories = "", depth = 1) {
 
   # build list of combinations of disaggregation dimensions
   # to specified depth
-  disaggs <- unique(c('', purrr::lmap(1:depth, function(n) utils::combn(categories, n, simplify = FALSE))))
+  disaggs <- unique(c('', purrr::lmap(1:depth, function(n) utils::combn(categoriesinsvy, n, simplify = FALSE))))
   
   # map aggregation function over combinations of dimensions
   # and append all results
   purrr::map_dfr(disaggs, function(c) wide_aggregate_by_cats(df, c))
 }
+
