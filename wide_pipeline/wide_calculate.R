@@ -101,7 +101,7 @@ data$attend_higher_1822 = with(data, ifelse(condition == FALSE, NA,
 # CALCULATE: Education years for age between 20 and 24
 condition <- with(data, schage >= 20 & schage <= 24)
 data$eduyears_2024 = with(data, ifelse(condition == FALSE, NA,
-                                            ifelse(eduyears == 1, 1, 0)))
+                                            eduyears))
 
 condition <- with(data, schage >= 20 & schage <= 24)
 data$edu4_2024 = with(data, ifelse(condition == FALSE, NA,
