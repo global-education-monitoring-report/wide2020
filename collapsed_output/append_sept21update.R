@@ -9,12 +9,13 @@ library(stringr)
 library(purrr)
 library(tidyr)
 
+memory.limit(25000)
 
-countries_unesco <- vroom::vroom('C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files/countries_unesco_2020.csv')
+countries_unesco <- vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/countries_unesco_2020.csv')
 
 # last update uploaded ----------------------------------------------------
 
-wide_jan19 <- vroom::vroom('C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files/WIDE_2021-01-25_v2.csv')
+wide_jan19 <- vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/WIDE_2021-01-25_v2.csv')
 
 wide_vars <- names(wide_jan19)
 wide_outcome_vars <- names(select(wide_jan19, comp_prim_v2_m:slevel4_no))
@@ -39,68 +40,53 @@ wide_jan19_long_clean <-
   rename(iso_code3 = iso_code) %>% 
   select(-country, -region_group, -income_group)
   
-table(wide_jan19_long_clean$indicator)
+
 # GEMR Sept 2021 update from widetable new pipeline (MBR) -----------------------------------------------
 
 widetable_sep21 <- 
-  vroom::vroom('C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files/widetable_summarized_10092021.csv') %>%
+  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/widetable_summarized_10092021.csv') %>%
    mutate(iso_code3 = countrycode::countrycode(country, 'country.name.en', 'iso3c')) %>% 
     filter(year > 2017 & year < 2021 ) %>% 
-    select(iso_code3, any_of(wide_vars))
+   rename_with(.fn = str_to_title, 
+              .cols = any_of(c("sex", "location", "wealth", "region", "ethnicity")))  %>%
+    select(iso_code3, any_of(wide_vars))  %>% distinct()
 
 widetable_sep21_long <- 
-  pivot_longer(widetable_sep21, names_to = 'indicator', cols = any_of(wide_outcome_vars))
-
-# # some surveys are mis-scaled
-# gemr_jan21_long %>% 
-#   filter(indicator == 'comp_prim_v2_m') %>% 
-#   group_by(survey) %>% 
-#   summarize(maxval = max(value, na.rm = TRUE)) %>% 
-#   data.frame
-# 
-# gemr_jan21_long %>% 
-#   filter(indicator == 'comp_prim_v2_m', survey %in% c('DHS', 'MICS')) %>% 
-#   group_by(iso_code3) %>% 
-#   summarize(maxval = max(value, na.rm = TRUE)) %>% 
-#   data.frame
-# 
-# check_completion_progression(gemr_jan21) %>% 
-#   filter(category == 'Total')
+  pivot_longer(widetable_sep21, names_to = 'indicator', cols = any_of(wide_outcome_vars)) 
 
 # clean
-gemr_sep21_long_clean <- 
+widetable_sep21_long_clean <- 
   widetable_sep21_long %>% 
   filter(!(iso_code3 == 'CHN' & str_detect(indicator, 'edu0') & year == 2016)) %>% 
   filter(survey != 'EU-SILC') %>% 
   select(-country)
 
-table(gemr_sep21_long_clean$indicator)
-
 # GEMR Sept 2021 update from other surveys (national surveys such as CFPS) (MBR) -----------------------------------------------
 
-nationalsurveys_sep21 <- 
-  vroom::vroom('C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files/nationalsurveys.csv') %>%
+nationalsurveys_sep21 <-
+  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/nationalsurveys.csv') %>%
   rename_with(
-    .fn = ~ paste0(.x, '_m'), 
+    .fn = ~ paste0(.x, '_m'),
     .cols = any_of(c(
       'comp_prim_v2', 'comp_lowsec_v2', 'comp_upsec_v2', 'comp_prim_1524', 'comp_lowsec_1524',
       'comp_upsec_2029', 'eduyears_2024', 'edu2_2024', 'edu4_2024', 'eduout_prim', 'eduout_lowsec',
       'eduout_upsec', 'comp_higher_2529', 'comp_higher_3034', 'attend_higher_1822', 'edu0_prim',
       'overage2plus', 'literacy_1549', 'comp_higher_2yrs_2529', 'comp_higher_4yrs_2529',
-      'comp_lowsec_2024', 'comp_upsec_2024', 'preschool_1ybefore', 'preschool_3', 'comp_higher_4yrs_3034'))) %>% 
+      'comp_lowsec_2024', 'comp_upsec_2024', 'preschool_1ybefore', 'preschool_3', 'comp_higher_4yrs_3034'))) %>%
   filter(country=="China") %>%
   select(-ends_with(c("_dur","_age0","_age1")) ) %>%
-  select(-starts_with(c("comp_lowsec_2024","comp_upsec_2024","literacy", "iso_code2", "no_attend")) )
+  select(-starts_with(c("comp_lowsec_2024","comp_upsec_2024","literacy", "iso_code2", "no_attend")) ) %>% 
+  rename_with(.fn = str_to_title, 
+              .cols = any_of(c("sex", "location", "wealth", "region", "ethnicity"))) %>% distinct()
 
-  nationalsurveys_sep21_long <- 
+nationalsurveys_sep21_long <-
   pivot_longer(nationalsurveys_sep21, names_to = 'indicator', cols = any_of(wide_outcome_vars))
-  
-  table(nationalsurveys_sep21_long$indicator)
-  
+
+table(nationalsurveys_sep21_long$indicator)
 
 # learning update september 2021 ----------------------------------------------------
 
-setwd("C:/Users/mm_barrios-rivera/Documents/GitHub/wide2020/ilsa/data")
+setwd("C:/Users/taiku/Documents/GEM UNESCO MBR/GitHub/wide2020/ilsa/data")
 ilsa_mpl_set21_long <- 
   bind_rows(
     ilsa_mpl = vroom::vroom('update_mpl.csv'),
@@ -143,18 +129,13 @@ ilsa_mpl_set21_long_clean <-
     survey == 'TIMSS|PIRLS' & grade == 4 & !iso_code3 %in% c("AUS", "BWA", "DNK", "ISL", "NOR", "ZAF","IRL") ~ 'end of primary',
     survey == 'TIMSS' & grade == 8 ~ 'end of lower secondary'))
 
+setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
+
+write_csv(ilsa_mpl_set21_long_clean, 'ilsa.csv', na = '')
 
 # UIS update (Sep 2020 release) -------------------------------------------
 
 # actually run uis2wide.R
-
-# uis2add <- 
-#   uis4wide %>% 
-#   anti_join(filter(wide_old_long, category == 'Total'), 
-#             by = c('iso_code3', 'year')) %>% 
-#   left_join(rename(regions, region_group = SDG.region), by = c('iso_code3' = 'COUNTRY_ID')) %>% 
-#   rename(country = name)
-
 
 # EU-SILC -----------------------------------------------------------------
 
@@ -162,7 +143,7 @@ ilsa_mpl_set21_long_clean <-
 #  vroom::vroom('EU_SILC_May31.csv')
 
 silc_new <- 
-  vroom::vroom('C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files/EU_SILC_Jan26_censored.csv') %>% 
+  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/EU_SILC_Jan26_censored.csv') %>% 
   rename(preschool_1ybefore_m = preschool_1ybefore) %>% 
   select(any_of(wide_vars))
 
@@ -177,7 +158,7 @@ silc_long_clean <-
 # LIS (including latest update) ---------------------------------------------------------------------
 
 lis_old <- 
-  readxl::read_xlsx('C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files/LIS_indicators_v3.xlsx', na = '.') %>% 
+  readxl::read_xlsx('C:/Users/taiku/OneDrive - UNESCO/WIDE files/LIS_indicators_v3.xlsx', na = '.') %>% 
   select(-Ctry, -a...10, -a...25) %>% 
   rename_with(
     .fn = ~ paste0(.x, '_m'), 
@@ -194,7 +175,7 @@ lis_old <-
   # AUS appears twice in the file
   distinct
 
-lis_new <- vroom::vroom('C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files/indicators_LIS_1009.csv')  %>% 
+lis_new <- vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/indicators_LIS_1009.csv')  %>% 
   mutate(iso_code3 = countrycode::countrycode(country, 'country.name.en', 'iso3c'), 
          survey = 'LIS') %>%
       rename_with(
@@ -207,9 +188,21 @@ lis_new <- vroom::vroom('C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files
      rename(eduout_prim_no=edu_out_pry_no,
             eduout_lowsec_no = edu_out_lowsec_no,
             eduout_upsec_no = edu_out_upsec_no,
-            comcomp_prim_m)
+            comp_prim_v2_m = comp_prim_m,
+            comp_lowsec_v2_m = comp_lowsec_m,
+            comp_upsec_v2_m = comp_upsec_m,
+            comp_prim_v2_no = comp_prim_no,
+            comp_lowsec_v2_no = comp_lowsec_no,
+            comp_upsec_v2_no = comp_upsec_no, 
+            comp_higher_2yrs_2529_m = comp_higher_2529_m,
+            comp_higher_2yrs_2529_no = comp_higher_2529_no,
+            Sex=sex, Wealth=wealth, Region=region, Ethnicity=ethnicity, Location=location)
 
 lis_all <- bind_rows(lis_old,lis_new)
+
+setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
+
+write_csv(lis_all, 'LIS_full.csv', na = '')
 
 lis_long <- 
   pivot_longer(lis_all, names_to = 'indicator', cols = any_of(wide_outcome_vars))
@@ -235,15 +228,33 @@ rm(wide_jan19,wide_jan19_long)
 wide_21_long_wflag <- 
   wide_jan19_long_clean %>%
   mutate(source = 'WIDE online 2021') %>% 
-  addifnew_wflag(uis4wide, c('iso_code3', 'survey', 'year', 'indicator'), 'UIS 2021') %>% 
-  addifnew_wflag(nationalsurveys_sep21_long, c('iso_code3', 'survey', 'year', 'indicator'), 'MB National surveys') %>% 
-  addifnew_wflag(widetable_sep21_long, c('iso_code3', 'survey', 'year'), 'MB widetable') %>% 
-  bind_rows(mutate(lis_long, source = 'LIS')) %>%
+  addifnew_wflag(uis4wide, c('iso_code3', 'survey', 'year', 'indicator'), 'UIS 2021') 
+
+wide_21_long_wflag <- 
+  wide_21_long_wflag %>%
+  addifnew_wflag(nationalsurveys_sep21_long, c('iso_code3', 'survey', 'year', 'indicator'), 'MB National surveys') 
+
+wide_21_long_wflag <- 
+  wide_21_long_wflag %>%
+  addifnew_wflag(widetable_sep21_long, c('iso_code3', 'survey', 'year', 'indicator' ), 'MB widetable') 
+
+wide_21_long_wflag <- 
+  wide_21_long_wflag %>% 
   filter(survey != "EU-SILC") %>% 
-  bind_rows(mutate(silc_long_clean, source = 'SILC censoring')) %>% 
+  bind_rows(mutate(silc_long_clean, source = 'SILC censored'))
+
+wide_21_long_wflag <- 
+  wide_21_long_wflag %>% 
+  bind_rows(mutate(lis_long, source = 'LIS'))
+
+wide_21_long_wflag <- 
+  wide_21_long_wflag %>%
   filter(!str_detect(indicator, 'level')) %>% 
   bind_rows(mutate(ilsa_mpl_set21_long_clean, source = 'Learning DC Jan 2021')) %>% 
   identity
+
+rm(gemr_sep21_long_clean,ilsa_mpl_set21_long_clean,nationalsurveys_sep21_long,silc_long_clean,widetable_sep21_long)
+rm(lis_long,wide_jan19_long_clean)
 
 todrop <- 
   wide_21_long_wflag %>% 
@@ -251,23 +262,23 @@ todrop <-
   distinct(iso_code3, survey, source, year, indicator) %>% 
   mutate(year_p1 = year + 1, year_m1 = year - 1) %>% 
   bind_rows(
-  {left_join(., filter(., source == 'UIS 2020'), by = c('iso_code3', 'survey', 'year' = 'year_p1'),
+  {left_join(., filter(., source == 'UIS 2021'), by = c('iso_code3', 'survey', 'year' = 'year_p1'),
              suffix = c('', '_uis'))},
-  {left_join(., filter(., source == 'UIS 2020'), by = c('iso_code3', 'survey', 'year' = 'year_m1'),
+  {left_join(., filter(., source == 'UIS 2021'), by = c('iso_code3', 'survey', 'year' = 'year_m1'),
              suffix = c('', '_uis'))},
   ) %>% 
   filter(!is.na(year_uis)) %>% 
   filter(source != source_uis) %>% 
   select(-year_m1, -year_p1, -year_m1_uis, -year_p1_uis) %>% 
   arrange(iso_code3, survey) %>% 
-  mutate(year_todrop = ifelse(source %in% c('WIDE online 2019', 'RV Mar 2019'), year_uis, year)) %>%
+  mutate(year_todrop = ifelse(source %in% c('MB widetable','LIS') , year_uis, year)) %>%
   distinct(iso_code3, survey, year = year_todrop, indicator) %>%
   data.frame
 
 source_count <- 
   wide_21_long_wflag %>% 
   filter(!is.na(value)) %>% 
-  mutate(source_institution = ifelse(source == 'UIS 2020', source, 'GEMR')) %>%
+  mutate(source_institution = ifelse(source == 'UIS 2021', source, 'GEMR')) %>%
   distinct(iso_code3, survey, year, indicator, source, source_institution) %>%
   anti_join(todrop, by = c('iso_code3', 'survey', 'year', 'indicator')) %>% 
   group_by(iso_code3, survey, year) %>% 
@@ -279,7 +290,7 @@ single_source <-
   filter(distinct_instsources == 1) %>% 
   distinct(iso_code3, survey, year, source, source_institution) %>% 
   group_by(iso_code3, survey, year, source_institution) %>% 
-  filter(!'WIDE online 2019' %in% source) %>%
+  filter(!'MB widetable' %in% source) %>%
   select(-source) %>% 
   filter(!survey %in% c('EU-SILC', 'PIRLS', 'PISA', 'TIMSS', 'PASEC')) %>% 
   arrange(iso_code3, survey, year) %>% 
@@ -290,13 +301,13 @@ single_source <-
   ungroup %>% 
   identity
 
-write.csv(single_source, 'single_sources_for_metadata.csv')
+write.csv(single_source, 'C:/Users/taiku/OneDrive - UNESCO/WIDE files/single_sources_for_metadata.csv')
 
 multi_source <- 
   source_count %>% 
   filter(distinct_instsources > 1) %>% 
   distinct(iso_code3, survey, year, indicator, source, source_institution) %>% 
-  filter(source != 'WIDE online 2019') %>%
+  filter(source != 'MB widetable') %>%
   arrange(iso_code3, survey, year, indicator) %>% 
   ungroup %>% 
   select(-source_institution) %>%
@@ -304,6 +315,8 @@ multi_source <-
   identity
 
 write.csv(multi_source, 'additional_sources_for_metadata.csv')
+
+rm(multi_source,single_source)
 
 # combining ---------------------------------------------------------------
 
@@ -316,7 +329,7 @@ wide_21_long <-
   wide_jan19_long_clean %>%
   addifnew(uis4wide, c('iso_code3', 'survey', 'year', 'indicator')) %>% 
   addifnew(nationalsurveys_sep21_long, c('iso_code3', 'survey', 'year', 'indicator')) %>% 
-  addifnew(widetable_sep21_long, c('iso_code3', 'survey', 'year')) %>% 
+  addifnew(widetable_sep21_long_clean, c('iso_code3', 'survey', 'year')) %>% 
   bind_rows(lis_long) %>%
   filter(survey != "EU-SILC") %>% 
   bind_rows(silc_long_clean) %>% 
@@ -327,163 +340,38 @@ wide_21_long <-
   identity
 
 # write_rds(wide_21_long, 'wide_21_long.rds')
-qs::qsave(wide_21_long, 'wide_21_long.qs')
+setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
+qs::qsave(wide_21_long_wflag, 'wide_21_long.qs')
+write_csv(wide_21_long_wflag,"wide_21_long.csv")
 
-#skip this for the moment
-filter_bad_estimates <- function(df) {
-    df %>% 
-    mutate(value = ifelse(str_detect(indicator, 'preschool') &
-                            (
-                            (iso_code == 'SLV' & survey == 'EHPM') |
-                            (iso_code == 'BOL' & survey == 'EH') |
-                            (iso_code == 'BDI' & survey == 'MICS') |
-                            (iso_code == 'TZA' & survey == 'HBS') |
-                            (iso_code == 'MOZ' & survey == 'MICS') |
-                            (iso_code == 'PAN' & survey == 'MICS') |
-                            (iso_code == 'SSD' & survey == 'MICS') |
-                            (iso_code == 'NOR' & survey == 'EU-SILC') |
-                            (iso_code == 'VNM' & survey == 'HRS') |
-                            FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'edu0') &
-                            (
-                              (iso_code == 'MOZ' & survey == 'AIS') |
-                                (iso_code == 'SLV' & survey == 'EHPM') |
-                                (iso_code == 'URY' & survey == 'ECH') |
-                                (iso_code == 'COD' & survey == 'MICS' & year == 2018) |
-                                (iso_code == 'CRI' & survey == 'MICS' & year == 2018) |
-                                (iso_code == 'MKD' & survey == 'MICS' & year == 2018) |
-                                (iso_code == 'VNM' & survey == 'HRS') |
-                                FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'overage') &
-                            (
-                              (iso_code == 'URY' & survey == 'ECH') |
-                                (iso_code == 'ARG' & survey == 'EPH') |
-                                (iso_code == 'SOM' & survey == 'MICS' & year == 2011) |
-                                FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'comp_prim') &
-                            (
-                              FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'eduout_prim') &
-                            (
-                              (iso_code == 'CHN' & year == 2016) |
-                                FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'comp_lowsec') &
-                            (
-                              FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'eduout_lowsec') &
-                            (
-                              (iso_code == 'CHN' & year == 2016) |
-                                FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'comp_upsec') &
-                            (
-                              (iso_code == 'TKM' & year == 2019)), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'eduout_upsec') &
-                            (
-                              FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'attend_higher') &
-                            (
-                              (iso_code == 'RUS' & survey == 'HSE') |
-                              (iso_code == 'TUR' & survey == 'DHS' & year == 2004) |
-                                FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'comp_higher') &
-                            (
-                              (iso_code == 'RUS' & survey == 'HSE') |
-                                (iso_code == 'CAN' & survey == 'LIS' & year == 2013) |
-                                (iso_code == 'BTN' & survey == 'MICS' & year == 2010) |
-                                (iso_code == 'AFG' & survey == 'MICS' & year == 2015) |
-                                (iso_code == 'GAB' & survey == 'DHS' & year == 2012) |
-                                (iso_code == 'MMR' & survey == 'DHS' & year == 2016) |
-                                (iso_code == 'NIC' & survey == 'DHS' & year == 2001) |
-                                #
-                                (iso_code == 'SOM' & survey == 'MICS' & year == 2011) |
-                                (iso_code == 'ARG' & survey == 'EPH' & year == 2019) |
-                                (iso_code == 'TON' & survey == 'MICS' & year == 2019) |
-                                (iso_code == 'PER' & survey == 'ENAHO' & year == 2019) |
-                                (iso_code == 'MEX' & survey == 'MICS' & year == 2015) |
-                                (iso_code == 'NAM' & survey == 'NHIES' & year == 2015) |
-                                (iso_code == 'TUR' & survey == 'DHS' & year == 2004) |
-                                (iso_code == 'SSD' & survey == 'HFS') |
-                                (iso_code == 'TZA' & survey == 'HBS') |
-                                FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'edu2') &
-                            (
-                              (iso_code == 'SSD' & survey == 'HFS') |
-                              FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'edu4') &
-                            (
-                              FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(str_detect(indicator, 'eduyears') &
-                            (
-                              (iso_code == 'ARG' & survey == 'EPH' & year == 2019) |
-                                (iso_code == 'TON' & survey == 'MICS' & year == 2019) |
-                                (iso_code == 'MKD' & survey == 'MICS' & year == 2019) |
-                              FALSE), 
-                          NA, value)) %>%
-    mutate(value = ifelse(indicator %in% c('comp_lowsec_v2_m', 'comp_lowsec_1524_m') &
-                            ((iso_code == 'CHE' & survey == 'EU-SILC' & year == 2009) |
-                               (iso_code == 'BEL' & survey == 'EU-SILC' & year %in% c(2005, 2007)) |
-                               (iso_code == 'TLS' & survey == 'DHS'     & year == 2009) |
-                               (iso_code == 'FRA' & survey == 'EU-SILC' & year == 2013) |
-                               (iso_code == 'LVA' & survey == 'EU-SILC' & year == 2005) |
-                               (iso_code == 'SVN' & survey == 'EU-SILC' & year == 2005)), 
-                          NA, value)) %>% 
-    # TODO China 2016 OOS
-    # mutate(value = ifelse(iso_code == 'CHN' & year == 2016 & indicator %in% c('eduout_prim_m', 'eduout_lowsec_m'), NA, value)) %>% 
-    # mutate(value = ifelse(iso_code == 'MOZ' & survey == 'AIS' & indicator %in% c('edu0_prim_m'), NA, value)) %>% 
-    # mutate(value = ifelse(iso_code == 'SLV' & survey == 'EHPM' & indicator %in% c('edu0_prim_m', 'preschool_1ybefore_m'), NA, value)) %>% 
-    # mutate(value = ifelse(iso_code == 'URY' & survey == 'ECH' & indicator %in% c('edu0_prim_m', 'overage2plus_m'), NA, value)) %>% 
-    # mutate(value = ifelse(iso_code == 'BOL' & survey == 'EH' & indicator %in% c('preschool_1ybefore_m'), NA, value)) %>% 
-    # mutate(value = ifelse(iso_code == 'BDI' & survey == 'MICS' & indicator %in% c('preschool_1ybefore_m'), NA, value)) %>% 
-    # mutate(value = ifelse(iso_code == 'TZA' & survey == 'HBS' & indicator %in% c('preschool_1ybefore_m'), NA, value)) %>% 
-    # mutate(value = ifelse(iso_code %in% c('MOZ', 'PAN', 'SSD') & survey == 'MICS' & indicator %in% c('preschool_1ybefore_m'), NA, value)) %>% 
-    # mutate(value = ifelse(iso_code == 'NOR' & survey == 'EU-SILC' & indicator %in% c('preschool_1ybefore_m'), NA, value)) %>% 
-    # mutate(value = ifelse(iso_code == 'RUS' & survey == 'HSE' & str_detect(indicator, 'higher'), NA, value)) %>% 
-  # mutate(value = ifelse(iso_code == 'ARG' & survey == 'EPH' & str_detect(indicator, 'overage'), NA, value)) %>% 
-  # mutate(value = ifelse(iso_code == 'COD' & survey == 'MICS' & year == 2018 & str_detect(indicator, 'edu0'), NA, value)) %>% 
-  mutate(value = ifelse(iso_code == 'VNM' & survey == 'HRS', NA, value)) %>% 
-  identity
-}
-
-wide_jan21_long_clean <- 
-  wide_21_long %>% 
+wide_21_long_wflag <- 
+  wide_21_long_wflag %>% 
   rename(iso_code = iso_code3) %>% 
   select(any_of(wide_vars), indicator, value) %>% 
-  inner_join(select(countries_unesco, iso_code = iso3c, country = country_fig), by = 'iso_code') %>% 
-  left_join(select(regions, iso_code = iso3c, region_group = SDG.region, income_group), 
-            by = 'iso_code') %>% 
-  filter_bad_estimates %>% 
+  inner_join(select(countries_unesco, iso_code = iso3c, country = country_fig), by = 'iso_code3') %>% 
+  #left_join(select(regions, iso_code = iso3c, region_group = SDG.region, income_group), 
+  #          by = 'iso_code') %>% 
+  #filter_bad_estimates %>% 
   identity
   
 wide_jan21_long_clean %>% check_countries
 
-wide4upload_long <- 
-  wide_jan21_long_clean %>% 
-  check_completeness %>% 
-  check_samplesize %>% 
-  check_categories %>% 
+wide4upload <- 
+  wide_21_long_wflag %>%  distinct() %>% 
+  #check_completeness %>% 
+  #check_samplesize %>% 
+  #check_categories %>% 
   mutate(value = round(value, 4)) %>% 
-  pivot_wider(names_from = 'indicator', values_from = 'value') %>% 
-  impute_prim_from_sec %>% 
-  pivot_longer(names_to = 'indicator', values_to = 'value', cols = any_of(wide_outcome_vars)) %>% 
+  pivot_wider(names_from = 'indicator', values_from = 'value') 
+
+  #impute_prim_from_sec %>% 
+  #pivot_longer(names_to = 'indicator', values_to = 'value', cols = any_of(wide_outcome_vars)) 
+
   # mutate(level = ifelse(!is.na(grade) & grade == 8, 'lower secondary', level)) %>% 
   filter(!(survey == 'EU-SILC' & year >= 2016 & str_detect(category, 'Wealth'))) %>% 
   filter(!(survey == 'CASEN' & year == 2000)) %>% 
   filter(!(iso_code == 'IND' & year == 2006 & survey == 'DHS')) %>% 
   filter(!(iso_code == 'SOM' & year == 2011 & survey == 'MICS')) %>% 
-  filter(!(iso_code == 'URY' & year == 2019 & survey == 'ECH')) %>% 
   group_by(iso_code, year, survey, indicator) %>% 
   filter("Total" %in% category) %>% 
   ungroup
@@ -541,5 +429,6 @@ wide4upload %>%
   arrange(desc(pmax(comp_lowsec_v2_m - comp_prim_v2_m, comp_upsec_v2_m - comp_lowsec_v2_m)))
 
 wide4upload %>% summary
+setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
 
-write_excel_csv(wide4upload, 'WIDE_2021-01-28_v1.csv', na = '')
+write_csv(wide4upload, 'wide4upload_issues.csv', na = '')
