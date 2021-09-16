@@ -10,18 +10,23 @@ library(purrr)
 library(tidyr)
 
 memory.limit(25000)
+options(max.print=10000)
 
 countries_unesco <- vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/countries_unesco_2020.csv')
 
 # last update uploaded ----------------------------------------------------
 
-wide_jan19 <- vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/WIDE_2021-01-25_v2.csv')
+wide_jan19 <- vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/WIDE_2021-01-28_v1.csv', guess_max = 900000) %>%
+  mutate(Religion = replace(Religion, Religion == ".", NA))
 
 wide_vars <- names(wide_jan19)
 wide_outcome_vars <- names(select(wide_jan19, comp_prim_v2_m:slevel4_no))
 
 wide_jan19_long <- 
   pivot_longer(wide_jan19, names_to = 'indicator', cols = any_of(wide_outcome_vars))
+
+#library(foreign)
+#write.dta(wide_jan19_long,'C:/Users/taiku/OneDrive - UNESCO/WIDE files/tests/previouswide.dta')
 
 wide_jan19_long_clean <- 
   wide_jan19_long %>%
@@ -38,18 +43,33 @@ wide_jan19_long_clean <-
   # drop regional aggregates, which will be recalculated
   filter(!is.na(iso_code)) %>% 
   rename(iso_code3 = iso_code) %>% 
-  select(-country, -region_group, -income_group)
+  select(-country, -region_group, -income_group) 
+
+#Today's test: fix with distinct
+wide_jan19_long_clean <- wide_jan19_long_clean %>% distinct()
   
 
 # GEMR Sept 2021 update from widetable new pipeline (MBR) -----------------------------------------------
 
-widetable_sep21 <- 
-  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/widetable_summarized_10092021.csv') %>%
-   mutate(iso_code3 = countrycode::countrycode(country, 'country.name.en', 'iso3c')) %>% 
+widetable_sep21 <-
+  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/widetable_summarized_10092021.csv', guess_max = 900000) %>%
     filter(year > 2017 & year < 2021 ) %>% 
+  mutate(iso_code3 = countrycode::countrycode(country, 'country.name.en', 'iso3c')) %>% 
    rename_with(.fn = str_to_title, 
-              .cols = any_of(c("sex", "location", "wealth", "region", "ethnicity")))  %>%
-    select(iso_code3, any_of(wide_vars))  %>% distinct()
+              .cols = any_of(c("sex", "location", "wealth", "region", "religion", "ethnicity")))  %>%
+    select(iso_code3, any_of(wide_vars))  %>% distinct() %>%
+    mutate(iso_code3 = ifelse(country =="CentralAfricanRepublic" , "CAR" , iso_code3)) %>%
+    subset(country!="Kosovo" & country!="Kosovo_Comms") %>%
+    mutate(Location = replace(Location, Location =="Camps" , NA )) %>%
+    mutate(Location = replace(Location, Location =="Other" , "Rural") ) %>%
+    mutate(Religion = replace(Religion, Religion =="" , NA )) 
+
+widetable_woreligion <- widetable_sep21 %>%  filter(!category %in% c("Religion"))
+
+widetable_religion <- widetable_sep21 %>%  filter(category %in% c("Religion")) %>% 
+  filter( !is.na(Religion) )
+
+widetable_sep21 <- bind_rows(widetable_woreligion,widetable_religion)     
 
 widetable_sep21_long <- 
   pivot_longer(widetable_sep21, names_to = 'indicator', cols = any_of(wide_outcome_vars)) 
@@ -61,10 +81,14 @@ widetable_sep21_long_clean <-
   filter(survey != 'EU-SILC') %>% 
   select(-country)
 
+#Today's test: fix with distinct
+widetable_sep21_long_clean <- widetable_sep21_long_clean %>% distinct()
+
+
 # GEMR Sept 2021 update from other surveys (national surveys such as CFPS) (MBR) -----------------------------------------------
 
 nationalsurveys_sep21 <-
-  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/nationalsurveys.csv') %>%
+  read.csv('C:/Users/taiku/OneDrive - UNESCO/WIDE files/nationalsurveys.csv') %>%
   rename_with(
     .fn = ~ paste0(.x, '_m'),
     .cols = any_of(c(
@@ -73,19 +97,19 @@ nationalsurveys_sep21 <-
       'eduout_upsec', 'comp_higher_2529', 'comp_higher_3034', 'attend_higher_1822', 'edu0_prim',
       'overage2plus', 'literacy_1549', 'comp_higher_2yrs_2529', 'comp_higher_4yrs_2529',
       'comp_lowsec_2024', 'comp_upsec_2024', 'preschool_1ybefore', 'preschool_3', 'comp_higher_4yrs_3034'))) %>%
-  filter(country=="China") %>%
   select(-ends_with(c("_dur","_age0","_age1")) ) %>%
   select(-starts_with(c("comp_lowsec_2024","comp_upsec_2024","literacy", "iso_code2", "no_attend")) ) %>% 
   rename_with(.fn = str_to_title, 
-              .cols = any_of(c("sex", "location", "wealth", "region", "ethnicity"))) %>% distinct()
+              .cols = any_of(c("sex", "location", "wealth", "region", "ethnicity"))) %>%
+  filter(!iso_code3 %in% c("MEX")) %>% distinct()
 
 nationalsurveys_sep21_long <-
   pivot_longer(nationalsurveys_sep21, names_to = 'indicator', cols = any_of(wide_outcome_vars))
 
-table(nationalsurveys_sep21_long$indicator)
+#Today's test: fix with distinct
+nationalsurveys_sep21_long <- nationalsurveys_sep21_long %>% distinct()
 
-# learning update september 2021 ----------------------------------------------------
-
+# learning update september 2021 ---------------------------------------------------
 setwd("C:/Users/taiku/Documents/GEM UNESCO MBR/GitHub/wide2020/ilsa/data")
 ilsa_mpl_set21_long <- 
   bind_rows(
@@ -107,7 +131,7 @@ ilsa_mpl_set21_long <-
   filter(!COUNTRY %in% c(
     'Abu Dhabi, UAE', 'Andalusia, Spain', 'Belgium (Flemish)', 'Belgium (French)',
     'Buenos Aires, Argentina', 'Canada, Ontario', 'Canada, Quebec', 'Canada, Alberta', 'Canada, British Columbia', 'Dubai,UAE',
-    'Eng/Afr/Zulu – RSA (5)', 'Madrid, Spain', 'Moscow City, Russian Fed.', 'Scotland', 'Western Cape, RSA (9)', 'England', 
+    'Eng/Afr/Zulu - RSA (5)', 'Madrid, Spain', 'Moscow City, Russian Fed.', 'Scotland', 'Western Cape, RSA (9)', 'England', 
     'Northern Ireland', 'Taiwan, Province of China', 'Kosovo', 'Chinese Taipei', 'Gauteng, RSA (9)', 'Canada, Nova Scotia',
     'Iceland (5th grade)', 'Maltese-Malta', 'Norway (5th grade)', 'Norway (4 th grade)', 'Morocco 6', 'Connecticut (USA)',
     'Florida (USA)', 'Perm(Russian Federation)', 'Shanghai-China', 'Massachusetts (USA)'
@@ -119,23 +143,31 @@ ilsa_mpl_set21_long <-
 ilsa_mpl_set21_long_clean <- 
   ilsa_mpl_set21_long %>% 
   mutate(new_level= case_when(
-    survey == 'PISA' ~ 'end of lower secondary', 
+    survey == 'PISA' | survey== "PISA-D" ~ 'end of lower secondary', 
     survey == 'SEA-PLM'  ~ 'end of primary',
     survey == 'TERCE' & grade == 3 ~ 'early grades',
     survey == 'TERCE' & grade == 6 ~ 'end of primary',
     survey == 'PASEC' & grade == 2 ~ 'early grades',
     survey == 'PASEC' & grade == 6 ~ 'end of primary',
-    survey == 'TIMSS|PIRLS' & grade == 4 & iso_code3 %in% c("AUS", "BWA", "DNK", "ISL", "NOR", "ZAF","IRL") ~ 'early grades',
-    survey == 'TIMSS|PIRLS' & grade == 4 & !iso_code3 %in% c("AUS", "BWA", "DNK", "ISL", "NOR", "ZAF","IRL") ~ 'end of primary',
-    survey == 'TIMSS' & grade == 8 ~ 'end of lower secondary'))
+    survey == 'TIMSS' & grade == 4 & iso_code3 %in% c("AUS", "BWA", "DNK", "ISL", "NOR", "ZAF","IRL") ~ 'early grades',
+    survey == 'PIRLS' & grade == 4 & iso_code3 %in% c("AUS", "BWA", "DNK", "ISL", "NOR", "ZAF","IRL") ~ 'early grades',
+    survey == 'TIMSS' & grade == 4 & !iso_code3 %in% c("AUS", "BWA", "DNK", "ISL", "NOR", "ZAF","IRL") ~ 'end of primary',
+    survey == 'PIRLS' & grade == 4 & !iso_code3 %in% c("AUS", "BWA", "DNK", "ISL", "NOR", "ZAF","IRL") ~ 'end of primary',
+    survey == 'TIMSS' & grade == 8 ~ 'end of lower secondary')) %>% 
+    select(-level, -grade ) %>% 
+    rename(level=new_level)
 
-setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
+#Today's test: fix with distinct
+ilsa_mpl_set21_long_clean <- ilsa_mpl_set21_long_clean %>% distinct()
 
-write_csv(ilsa_mpl_set21_long_clean, 'ilsa.csv', na = '')
+#setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
+
+#write_csv(ilsa_mpl_set21_long_clean, 'ilsa.csv', na = '')
 
 # UIS update (Sep 2020 release) -------------------------------------------
 
 # actually run uis2wide.R
+#added a duplicates drop there
 
 # EU-SILC -----------------------------------------------------------------
 
@@ -145,7 +177,11 @@ write_csv(ilsa_mpl_set21_long_clean, 'ilsa.csv', na = '')
 silc_new <- 
   vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/EU_SILC_Jan26_censored.csv') %>% 
   rename(preschool_1ybefore_m = preschool_1ybefore) %>% 
-  select(any_of(wide_vars))
+  mutate(iso_code = countrycode::countrycode(country, 'country.name.en', 'iso3c')) %>% 
+  mutate(Location = replace(Location, Location =="Intermediate or densely populated area" , "Urban") ) %>%
+  mutate(Location = replace(Location, Location =="Thinly populated area" , "Rural") ) %>%
+  select(any_of(wide_vars))  %>% 
+  rename(iso_code3 = iso_code)
 
 silc_long <-
   pivot_longer(silc_new, names_to = 'indicator', cols = any_of(wide_outcome_vars))
@@ -153,6 +189,10 @@ silc_long <-
 silc_long_clean <- 
   silc_long %>% 
   select(-country)
+
+
+#Today's test: fix with distinct
+silc_long_clean <- silc_long_clean %>% distinct()
 
 
 # LIS (including latest update) ---------------------------------------------------------------------
@@ -198,16 +238,27 @@ lis_new <- vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/indicators_
             comp_higher_2yrs_2529_no = comp_higher_2529_no,
             Sex=sex, Wealth=wealth, Region=region, Ethnicity=ethnicity, Location=location)
 
-lis_all <- bind_rows(lis_old,lis_new)
+lis_all <- bind_rows(lis_old,lis_new) %>% 
+  mutate(Wealth = replace(Wealth, Wealth =="1" , "Quintile 1") ) %>%
+  mutate(Wealth = replace(Wealth, Wealth =="2" , "Quintile 2") ) %>%
+  mutate(Wealth = replace(Wealth, Wealth =="3" , "Quintile 3") ) %>%
+  mutate(Wealth = replace(Wealth, Wealth =="4" , "Quintile 4") ) %>%
+  mutate(Wealth = replace(Wealth, Wealth =="5" , "Quintile 5") )  %>%
+  mutate(Location = replace(Location, Location =="Not rural" , "Urban") ) %>%
+  mutate(Sex = replace(Sex, Sex =="female" , "Female") )  %>%
+  mutate(Sex = replace(Sex, Sex =="male" , "Male") )  %>%
+  mutate(survey = "LIS")
+  
+#setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
 
-setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
-
-write_csv(lis_all, 'LIS_full.csv', na = '')
+#write_csv(lis_all, 'LIS_full.csv', na = '')
 
 lis_long <- 
   pivot_longer(lis_all, names_to = 'indicator', cols = any_of(wide_outcome_vars))
 
 
+#Today's test: fix with distinct
+lis_long <- lis_long %>% distinct()
 
 # combine-time with tags -------------------------------------------------------
 
@@ -219,16 +270,19 @@ addifnew_wflag <- function(df_priority, df_ifnew, byvars, flag) {
 }
 
 #Prepare computer for potential memory issue
-rm(widetable_sep21)
-rm(disaggs_uis)
-rm(ilsa_mpl_set21_long,lis_new,lis_old,lis_all)
-rm(silc_new,silc_long,nationalsurveys_sep21)
-rm(wide_jan19,wide_jan19_long)
+#rm(widetable_sep21)
+#rm(disaggs_uis)
+#rm(ilsa_mpl_set21_long,lis_new,lis_old,lis_all)
+#rm(silc_new,silc_long,nationalsurveys_sep21)
+#rm(wide_jan19,wide_jan19_long)
 
 wide_21_long_wflag <- 
   wide_jan19_long_clean %>%
   mutate(source = 'WIDE online 2021') %>% 
   addifnew_wflag(uis4wide, c('iso_code3', 'survey', 'year', 'indicator'), 'UIS 2021') 
+
+#write_csv(wide_21_long_wflag, 'widetest', na = '')
+
 
 wide_21_long_wflag <- 
   wide_21_long_wflag %>%
@@ -253,8 +307,8 @@ wide_21_long_wflag <-
   bind_rows(mutate(ilsa_mpl_set21_long_clean, source = 'Learning DC Jan 2021')) %>% 
   identity
 
-rm(gemr_sep21_long_clean,ilsa_mpl_set21_long_clean,nationalsurveys_sep21_long,silc_long_clean,widetable_sep21_long)
-rm(lis_long,wide_jan19_long_clean)
+#rm(gemr_sep21_long_clean,ilsa_mpl_set21_long_clean,nationalsurveys_sep21_long,silc_long_clean,widetable_sep21_long)
+#rm(lis_long,wide_jan19_long_clean)
 
 todrop <- 
   wide_21_long_wflag %>% 
@@ -329,8 +383,8 @@ wide_21_long <-
   wide_jan19_long_clean %>%
   addifnew(uis4wide, c('iso_code3', 'survey', 'year', 'indicator')) %>% 
   addifnew(nationalsurveys_sep21_long, c('iso_code3', 'survey', 'year', 'indicator')) %>% 
-  addifnew(widetable_sep21_long_clean, c('iso_code3', 'survey', 'year')) %>% 
-  bind_rows(lis_long) %>%
+  #addifnew(widetable_sep21_long_clean, c('iso_code3', 'survey', 'year')) %>% 
+  addifnew(lis_long, c('iso_code3', 'survey', 'year', 'indicator')) %>% 
   filter(survey != "EU-SILC") %>% 
   bind_rows(silc_long_clean) %>% 
   filter(!str_detect(indicator, 'level')) %>% 
@@ -339,44 +393,52 @@ wide_21_long <-
   anti_join(todrop, by = c('iso_code3', 'survey', 'year', 'indicator')) %>% 
   identity
 
-# write_rds(wide_21_long, 'wide_21_long.rds')
-setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
-qs::qsave(wide_21_long_wflag, 'wide_21_long.qs')
-write_csv(wide_21_long_wflag,"wide_21_long.csv")
+#saveRDS(wide_21_long_wflag, file = "prepivot.RDS") 
 
-wide_21_long_wflag <- 
-  wide_21_long_wflag %>% 
+# write_rds(wide_21_long, 'wide_21_long.rds')
+#setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
+#qs::qsave(wide_21_long_wflag, 'wide_21_long.qs')
+#write_csv(wide_21_long_wflag,"wide_21_long.csv")
+
+#Before running this, run update_income.R to get regions 
+wide_21_long <- 
+  wide_21_long %>% 
   rename(iso_code = iso_code3) %>% 
   select(any_of(wide_vars), indicator, value) %>% 
-  inner_join(select(countries_unesco, iso_code = iso3c, country = country_fig), by = 'iso_code3') %>% 
-  #left_join(select(regions, iso_code = iso3c, region_group = SDG.region, income_group), 
-  #          by = 'iso_code') %>% 
+  inner_join(select(countries_unesco, iso_code = iso3c, country = country_fig), by = 'iso_code') %>% 
+  left_join(select(regions, iso_code = iso3c, region_group = SDG.region, income_group), 
+            by = 'iso_code') %>% 
+  #Bad estimates will be filtered once I see the final output
   #filter_bad_estimates %>% 
   identity
   
-wide_jan21_long_clean %>% check_countries
+wide_21_long <- 
+  wide_21_long %>% select(-country.x) %>% rename(country=country.y)
 
-wide4upload <- 
-  wide_21_long_wflag %>%  distinct() %>% 
-  #check_completeness %>% 
-  #check_samplesize %>% 
-  #check_categories %>% 
+#Now run checks.R to get the functions
+wide_21_long %>% check_countries
+
+#Impute and check_* function comes from checks.R
+wide4upload_long <- 
+  wide_21_long %>% 
+  check_completeness %>% 
+  check_samplesize %>% 
+  check_categories %>% 
   mutate(value = round(value, 4)) %>% 
-  pivot_wider(names_from = 'indicator', values_from = 'value') 
-
-  #impute_prim_from_sec %>% 
-  #pivot_longer(names_to = 'indicator', values_to = 'value', cols = any_of(wide_outcome_vars)) 
-
+  pivot_wider(names_from = 'indicator', values_from = 'value') %>% 
+  impute_prim_from_sec %>% 
+  pivot_longer(names_to = 'indicator', values_to = 'value', cols = any_of(wide_outcome_vars)) %>% 
   # mutate(level = ifelse(!is.na(grade) & grade == 8, 'lower secondary', level)) %>% 
-  filter(!(survey == 'EU-SILC' & year >= 2016 & str_detect(category, 'Wealth'))) %>% 
-  filter(!(survey == 'CASEN' & year == 2000)) %>% 
-  filter(!(iso_code == 'IND' & year == 2006 & survey == 'DHS')) %>% 
-  filter(!(iso_code == 'SOM' & year == 2011 & survey == 'MICS')) %>% 
+  #filter(!(survey == 'EU-SILC' & year >= 2016 & str_detect(category, 'Wealth'))) %>% 
+  #filter(!(survey == 'CASEN' & year == 2000)) %>% 
+  #filter(!(iso_code == 'IND' & year == 2006 & survey == 'DHS')) %>% 
+  #filter(!(iso_code == 'SOM' & year == 2011 & survey == 'MICS')) %>% 
+  #filter(!(iso_code == 'URY' & year == 2019 & survey == 'ECH')) %>% 
   group_by(iso_code, year, survey, indicator) %>% 
   filter("Total" %in% category) %>% 
   ungroup
-  
 
+  #Now run aggregate.R
 wide_21_2agg <- 
   wide4upload_long %>% 
   filter(category %in% cats2agg) %>% 
@@ -431,4 +493,4 @@ wide4upload %>%
 wide4upload %>% summary
 setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
 
-write_csv(wide4upload, 'wide4upload_issues.csv', na = '')
+write_csv(wide4upload, 'wide4upload.csv', na = '')
