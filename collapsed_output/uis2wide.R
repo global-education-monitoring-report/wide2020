@@ -1,11 +1,6 @@
 ## put UIS disaggregated completion and OOS data into WIDE-compatible format for overwrite
 
-library(dplyr)
-library(vroom)
-library(stringr)
-library(purrr)
-
-path2uisdata <- "C:/Users/mm_barrios-rivera/Documents/UIS_DATA/"
+path2uisdata <- 'C:/Users/taiku/Documents/GEM UNESCO MBR/UIS stat comparison/'
 
 uis_clean <- function(uis_data) {
   print(table(uis_data$QUALIFIER))
@@ -17,7 +12,8 @@ indicators2disagg <- c(
   'CR.1', 'CR.2', 'CR.3',
   'ROFST.H.1', 'ROFST.H.2', 'ROFST.H.3'
 )
-  
+
+
 disaggs_uis <- 
   vroom::vroom(paste0(path2uisdata, 'SDG_DATA_NATIONAL.csv'), na = '') %>% 
   filter(str_detect(INDICATOR_ID, paste(indicators2disagg, collapse = '|'))) %>% 
@@ -26,9 +22,12 @@ disaggs_uis <-
 
 uis_meta <- 
   vroom::vroom(paste0(path2uisdata, 'SDG_METADATA.csv'), na = '') %>% 
-  filter(INDICATOR_ID == 'CR.1') %>% 
+  filter(str_detect(INDICATOR_ID, paste(indicators2disagg, collapse = '|'))) %>% 
   select(iso_code3 = COUNTRY_ID, year = YEAR, meta = METADATA) %>% 
   mutate(survey = case_when(
+    str_detect(meta, "WIDE") ~ 'Drop' ,
+    str_detect(meta, "Value suppressed") ~ 'Drop',
+    str_detect(meta, "Value based on 25-49 unweighted") ~ 'Drop',
     str_detect(meta, "MICS") ~ 'MICS',
     str_detect(meta, "DHS") ~ 'DHS',
     str_detect(meta, "HDS") ~ 'HDS',
@@ -36,7 +35,9 @@ uis_meta <-
     str_detect(meta, "CFPS") ~ 'CFPS',
     str_detect(meta, "CASEN") ~ 'CASEN',
     str_detect(meta, "CPS-ASEC") ~ 'CPS-ASEC',
-    str_detect(meta, "Census|Recensement|Censo") ~ 'Census',
+    str_detect(meta, "Census|census|Recensement|Censo") ~ 'Census',
+    str_detect(meta, "Uruguay Encuesta Nacional de Hogares - Fuerza de Trabajo") ~ 'ENH-FT',
+    str_detect(meta, "Argentina Encuesta Permanente de Hogares") ~ 'EPH',
     str_detect(meta, "ENIGH") ~ 'ENIGH',
     str_detect(meta, "HES") ~ 'HES',
     str_detect(meta, "General Household Survey") ~ 'GHS',
@@ -59,9 +60,12 @@ uis_meta <-
     str_detect(meta, "Panama Encuesta de Hogares|Bolivia Encuesta de Hogares") ~ 'EH',
     str_detect(meta, "Honduras Encuesta Permanente de Hogares de Propositos Multiples") ~ 'EPHPM',
     str_detect(meta, "Nicaragua Encuesta Nacional de Hogares sobre Medicion de Niveles de Vida") ~ 'EMNV',
-    TRUE ~ 'other'
-  )) %>% 
-  select(-meta)
+    TRUE ~ 'other'  )) %>% 
+  select(-meta) %>% filter(survey != "Drop")
+
+#Finding out new stuff 
+#uis_meta_seeother <- uis_meta %>% distinct() %>% filter(survey == 'Already in WIDE')
+
 
 uis2wide <- function(df) {
   df %>% 
@@ -107,4 +111,13 @@ uis2wide <- function(df) {
   left_join(uis_meta, by = c('iso_code3', 'year'))
 }
 
-uis4wide <- uis2wide(disaggs_uis) 
+uis4wide <- uis2wide(disaggs_uis) %>% 
+  filter(!is.na(survey))
+
+#Seemingly there are a ton of duplicates, so getting rid of them 
+uis4wide <- uis4wide %>% distinct()
+
+iso_code3,year,category,Sex,Location,Wealth,indicator,value
+#setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
+
+#write_csv(uis4wide, 'uis4wide.csv', na = '')
