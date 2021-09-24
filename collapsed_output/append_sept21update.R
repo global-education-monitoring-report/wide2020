@@ -9,7 +9,7 @@ library(stringr)
 library(purrr)
 library(tidyr)
 
-memory.limit(25000)
+memory.limit(35000)
 options(max.print=10000)
 
 countries_unesco <- vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/countries_unesco_2020.csv')
@@ -38,7 +38,38 @@ wide_jan19_long_clean <-
   filter(!survey %in% c('UWEZO', 'SACMEQ', 'ASER')) %>% 
   filter(indicator != 'eduyears_2024_m') %>% 
   filter(!(iso_code == 'CHN' & str_detect(indicator, 'edu0'))) %>% 
-  filter(!(survey == 'MICS' & year <= 2009 & 
+  #New filter for eduout correction on MICS6
+  filter(!(iso_code == 'TGO' & str_detect(indicator, 'eduout') & year == 2017 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'SLE' & str_detect(indicator, 'eduout') & year == 2017 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'GHA' & str_detect(indicator, 'eduout') & year == 2017 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'GHA' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'GMB' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'COD' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'GMB' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'BGD' & str_detect(indicator, 'eduout') & year == 2019 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'TUN' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'IRQ' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'SUR' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'CRI' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'TKM' & str_detect(indicator, 'eduout') & year == 2019 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'SRB' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'SRB' & str_detect(indicator, 'eduout') & year == 2019 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'MNE' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'MNE' & str_detect(indicator, 'eduout') & year == 2019 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'KGZ' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'GEO' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'ZWE' & str_detect(indicator, 'eduout') & year == 2019 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'MDG' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'LSO' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'TON' & str_detect(indicator, 'eduout') & year == 2019 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'THA' & str_detect(indicator, 'eduout') & year == 2019 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'MNG' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'LAO' & str_detect(indicator, 'eduout') & year == 2017 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'MNG' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'KIR' & str_detect(indicator, 'eduout') & year == 2018 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'KIR' & str_detect(indicator, 'eduout') & year == 2019 & survey == 'MICS' )) %>% 
+  filter(!(iso_code == 'GNB' & year == 2019 & str_detect(indicator, 'eduout') & survey == 'MICS')) %>% 
+    filter(!(survey == 'MICS' & year <= 2009 & 
           (str_detect(indicator, 'eduout') | str_detect(indicator, 'trans') | str_detect(indicator, 'comp')))) %>% 
   # drop regional aggregates, which will be recalculated
   filter(!is.na(iso_code)) %>% 
@@ -52,8 +83,8 @@ wide_jan19_long_clean <- wide_jan19_long_clean %>% distinct()
 # GEMR Sept 2021 update from widetable new pipeline (MBR) -----------------------------------------------
 
 widetable_sep21 <-
-  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/widetable_summarized_10092021.csv', guess_max = 900000) %>%
-    filter(year > 2017 & year < 2021 ) %>% 
+  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/widetable_summarized_22092021.csv', guess_max = 900000) %>%
+    filter(year > 2016 & year < 2021 ) %>% 
   mutate(iso_code3 = countrycode::countrycode(country, 'country.name.en', 'iso3c')) %>% 
    rename_with(.fn = str_to_title, 
               .cols = any_of(c("sex", "location", "wealth", "region", "religion", "ethnicity")))  %>%
@@ -81,8 +112,6 @@ widetable_sep21_long_clean <-
   filter(survey != 'EU-SILC') %>% 
   select(-country)
 
-#Today's test: fix with distinct
-widetable_sep21_long_clean <- widetable_sep21_long_clean %>% distinct()
 
 
 # GEMR Sept 2021 update from other surveys (national surveys such as CFPS) (MBR) -----------------------------------------------
@@ -158,7 +187,7 @@ ilsa_mpl_set21_long_clean <-
     rename(level=new_level)
 
 #Today's test: fix with distinct
-ilsa_mpl_set21_long_clean <- ilsa_mpl_set21_long_clean %>% distinct()
+#ilsa_mpl_set21_long_clean <- ilsa_mpl_set21_long_clean %>% distinct()
 
 #setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
 
@@ -258,7 +287,7 @@ lis_long <-
 
 
 #Today's test: fix with distinct
-lis_long <- lis_long %>% distinct()
+#lis_long <- lis_long %>% distinct()
 
 # combine-time with tags -------------------------------------------------------
 
@@ -381,9 +410,8 @@ addifnew <- function(df_priority, df_ifnew, byvars) {
 
 wide_21_long <- 
   wide_jan19_long_clean %>%
-  addifnew(uis4wide, c('iso_code3', 'survey', 'year', 'indicator')) %>% 
   addifnew(nationalsurveys_sep21_long, c('iso_code3', 'survey', 'year', 'indicator')) %>% 
-  #addifnew(widetable_sep21_long_clean, c('iso_code3', 'survey', 'year')) %>% 
+  addifnew(widetable_sep21_long_clean, c('iso_code3', 'survey', 'year',  'indicator')) %>% 
   addifnew(lis_long, c('iso_code3', 'survey', 'year', 'indicator')) %>% 
   filter(survey != "EU-SILC") %>% 
   bind_rows(silc_long_clean) %>% 
@@ -416,7 +444,7 @@ wide_21_long <-
   wide_21_long %>% select(-country.x) %>% rename(country=country.y)
 
 #Now run checks.R to get the functions
-wide_21_long %>% check_countries
+wide_21_long %>% check_countries 
 
 #Impute and check_* function comes from checks.R
 wide4upload_long <- 
@@ -428,7 +456,6 @@ wide4upload_long <-
   pivot_wider(names_from = 'indicator', values_from = 'value') %>% 
   impute_prim_from_sec %>% 
   pivot_longer(names_to = 'indicator', values_to = 'value', cols = any_of(wide_outcome_vars)) %>% 
-  # mutate(level = ifelse(!is.na(grade) & grade == 8, 'lower secondary', level)) %>% 
   #filter(!(survey == 'EU-SILC' & year >= 2016 & str_detect(category, 'Wealth'))) %>% 
   #filter(!(survey == 'CASEN' & year == 2000)) %>% 
   #filter(!(iso_code == 'IND' & year == 2006 & survey == 'DHS')) %>% 
@@ -437,6 +464,8 @@ wide4upload_long <-
   group_by(iso_code, year, survey, indicator) %>% 
   filter("Total" %in% category) %>% 
   ungroup
+
+rm(ilsa_mpl_set21_long,ilsa_mpl_set21_long_clean,nationalsurveys_sep21_long,silc_new,silc_long_clean,uis4wide)
 
   #Now run aggregate.R
 wide_21_2agg <- 
@@ -468,7 +497,7 @@ test_long_aggs %>%
   select(-value) %>% 
   pivot_wider(names_from = 'region', values_from = 'weight_share') %>% 
   filter(!str_detect(indicator, '_no')) %>% 
-  write_csv('reg_aggs.csv')
+  write_csv('C:/Users/taiku/OneDrive - UNESCO/WIDE files/reg_aggs.csv')
 
 #
 
@@ -483,7 +512,7 @@ wide4upload <-
     wide4upload_long_aggs
   ) %>% 
   pivot_wider(names_from = 'indicator', values_from = 'value') %>% 
-  select(any_of(wide_vars))
+  select(any_of(wide_vars)) 
 
 wide4upload %>% 
   check_completion_progression %>% 
@@ -491,6 +520,21 @@ wide4upload %>%
   arrange(desc(pmax(comp_lowsec_v2_m - comp_prim_v2_m, comp_upsec_v2_m - comp_lowsec_v2_m)))
 
 wide4upload %>% summary
-setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
 
-write_csv(wide4upload, 'wide4upload.csv', na = '')
+#Quick fix on level variable
+wide4upload <- wide4upload %>% 
+  mutate(level=ifelse(level=="Lower secondary",NA,level)) %>%
+  mutate(level=ifelse(level=="lowsec",NA,level)) %>%
+  mutate(level=ifelse(level=="prim",NA,level)) %>%
+  mutate(level=ifelse(level=="Primary",NA,level)) %>%
+  mutate(level=ifelse(level=="Upper secondary",NA,level)) %>%
+  mutate(level=ifelse(level=="upsec",NA,level))
+
+#setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
+
+setwd("C:/Users/taiku/Desktop/temporary_raw/")
+
+#write_csv(wide4upload, 'WIDE_2021_16_09_v1.csv', na = '')
+#R is crashing when it tries to overwrite the file 
+#so make sure it's gone before running this last line
+write.csv(wide4upload, 'WIDE_2021_24_09.csv', na = '')
