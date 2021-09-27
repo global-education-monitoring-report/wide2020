@@ -83,6 +83,7 @@ program define mics_standardize_standalone
 		
 		capture confirm variable ed6a
     if !_rc {
+	   replace ed6a = old_ed10a if country=="Mongolia" & year_folder==2018
     }
     else {
  		gen ed6a = old_ed10a
@@ -1372,8 +1373,12 @@ if !_rc {
 		gen literacy_1524=literacy_1549 if age >= 15 & age <= 24
                }
 	***/FINISH LITERACY CALCULATION***
+	
+	*Fix year variable hh5y in case some of the imports contain weird values (special cases of Nepal and Ethiopia)
+	replace hh5y = year_folder if  (hh5y - year_folder) > 3
+	replace year = year_folder if  (year - year_folder) > 3
 
-              		
+            		
 	local vars country_year iso_code3 year adjustment location sex wealth region ethnicity religion
 	foreach var in `vars' {
 		capture sdecode `var', replace

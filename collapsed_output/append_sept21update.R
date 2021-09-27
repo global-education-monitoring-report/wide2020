@@ -83,7 +83,7 @@ wide_jan19_long_clean <- wide_jan19_long_clean %>% distinct()
 # GEMR Sept 2021 update from widetable new pipeline (MBR) -----------------------------------------------
 
 widetable_sep21 <-
-  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/widetable_summarized_22092021.csv', guess_max = 900000) %>%
+  vroom::vroom('C:/Users/taiku/OneDrive - UNESCO/WIDE files/widetable_summarized_27092021.csv', guess_max = 900000) %>%
     filter(year > 2016 & year < 2021 ) %>% 
   mutate(iso_code3 = countrycode::countrycode(country, 'country.name.en', 'iso3c')) %>% 
    rename_with(.fn = str_to_title, 
@@ -537,4 +537,5 @@ setwd("C:/Users/taiku/Desktop/temporary_raw/")
 #write_csv(wide4upload, 'WIDE_2021_16_09_v1.csv', na = '')
 #R is crashing when it tries to overwrite the file 
 #so make sure it's gone before running this last line
-write.csv(wide4upload, 'WIDE_2021_24_09.csv', na = '')
+#write.csv(wide4upload, 'WIDE_2021_24_09.csv', na = '')
+write.csv(wide4upload, 'WIDE_2021_27_09.csv', na = '')
