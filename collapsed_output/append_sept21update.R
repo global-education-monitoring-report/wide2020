@@ -530,6 +530,18 @@ wide4upload <- wide4upload %>%
   mutate(level=ifelse(level=="Upper secondary",NA,level)) %>%
   mutate(level=ifelse(level=="upsec",NA,level))
 
+#Fix on category variable
+wide4upload <- wide4upload %>% mutate(category= str_to_title(category)) %>%
+  mutate(category=str_replace_all(category,c("Speaks Language At Home" = "Speakslanguageathome"))) %>%
+  mutate(category=str_replace_all(category,c("&" = "")))  %>%
+  mutate(category=str_squish(category))
+
+wide4upload$category<-sapply(lapply(strsplit(wide4upload$category," "), sort), paste, collapse=" & ")
+
+wide4upload <- wide4upload %>% 
+  mutate(category=str_replace_all(category,c("Speakslanguageathome" = "Speaks Language At Home"))) %>%
+  filter(!category == 'Ethnicity & Location & Region & Sex & Wealth')
+
 #setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
 
 setwd("C:/Users/taiku/Desktop/temporary_raw/")
@@ -538,4 +550,6 @@ setwd("C:/Users/taiku/Desktop/temporary_raw/")
 #R is crashing when it tries to overwrite the file 
 #so make sure it's gone before running this last line
 #write.csv(wide4upload, 'WIDE_2021_24_09.csv', na = '')
-write.csv(wide4upload, 'WIDE_2021_27_09.csv', na = '')
+#write.csv(wide4upload, 'WIDE_2021_27_09.csv', na = '')
+write.csv(wide4upload, 'WIDE_2021_28_09.csv', na = '')
+
