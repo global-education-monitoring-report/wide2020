@@ -8,6 +8,7 @@ library(vroom)
 library(stringr)
 library(purrr)
 library(tidyr)
+library(beepr)
 
 memory.limit(35000)
 options(max.print=10000)
@@ -354,7 +355,6 @@ wide_21_long_wflag <-
   filter(!str_detect(indicator, 'level')) %>% 
   bind_rows(mutate(ilsa_mpl_set21_long_clean, source = 'Learning DC Jan 2021')) %>% 
   identity
-beep()
 
 #rm(gemr_sep21_long_clean,ilsa_mpl_set21_long_clean,nationalsurveys_sep21_long,silc_long_clean,widetable_sep21_long)
 #rm(lis_long,wide_jan19_long_clean)
@@ -420,6 +420,7 @@ multi_source <-
 write.csv(multi_source, 'additional_sources_for_metadata.csv')
 
 rm(multi_source,single_source)
+beep()
 
 # combining ---------------------------------------------------------------
 
@@ -677,5 +678,6 @@ setwd("C:/Users/taiku/Desktop/temporary_raw/")
 #write.csv(wide4upload, 'WIDE_2021_24_09.csv', na = '')
 #write.csv(wide4upload, 'WIDE_2021_27_09.csv', na = '')
 #write.csv(wide4upload, 'WIDE_2021_28_09.csv', na = '')
-write.csv(wide4upload, 'WIDE_2021_06_10.csv', na = '')
+#write.csv(wide4upload, 'WIDE_2021_06_10.csv', na = '')
+write.csv(wide4upload, 'WIDE_2021_12_10.csv', na = '')
 
