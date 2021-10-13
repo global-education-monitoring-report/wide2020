@@ -33,11 +33,10 @@ wide_jan19_long_clean <-
   wide_jan19_long %>%
   mutate(value = case_when(
     survey == 'UWEZO' & str_detect(indicator, 'mlevel') ~ NA_real_,
-    TRUE ~ value
-  )) %>% 
+    TRUE ~ value   )) %>% 
   # drop learning assessments that haven't been re-mapped to MPL
   filter(!survey %in% c('UWEZO', 'SACMEQ', 'ASER')) %>% 
-  #what?
+  #why did they filter this?
   #filter(indicator != 'eduyears_2024_m') %>% 
   filter(!(iso_code == 'CHN' & str_detect(indicator, 'edu0'))) %>% 
   #New filter for eduout correction on MICS6
@@ -355,6 +354,7 @@ wide_21_long_wflag <-
   filter(!str_detect(indicator, 'level')) %>% 
   bind_rows(mutate(ilsa_mpl_set21_long_clean, source = 'Learning DC Jan 2021')) %>% 
   identity
+beep()
 
 #rm(gemr_sep21_long_clean,ilsa_mpl_set21_long_clean,nationalsurveys_sep21_long,silc_long_clean,widetable_sep21_long)
 #rm(lis_long,wide_jan19_long_clean)
@@ -420,7 +420,6 @@ multi_source <-
 write.csv(multi_source, 'additional_sources_for_metadata.csv')
 
 rm(multi_source,single_source)
-beep()
 
 # combining ---------------------------------------------------------------
 
@@ -439,7 +438,7 @@ wide_21_long <-
   filter(!str_detect(indicator, 'level')) %>% 
   bind_rows(ilsa_mpl_set21_long_clean) %>% 
   # drop redundancies due to different year labels
-  anti_join(todrop, by = c('iso_code3', 'survey', 'year', 'indicator')) %>% 
+  #anti_join(todrop, by = c('iso_code3', 'survey', 'year', 'indicator')) %>% 
   identity
 
 #saveRDS(wide_21_long_wflag, file = "prepivot.RDS") 
@@ -631,6 +630,17 @@ wide4upload <-
   pivot_wider(names_from = 'indicator', values_from = 'value') %>% 
   select(any_of(wide_vars)) 
 
+wide4upload_aggregates <- 
+  bind_rows(
+    wide4upload_long_aggs
+  ) %>% 
+  pivot_wider(names_from = 'indicator', values_from = 'value') %>% 
+  select(any_of(wide_vars))
+
+setwd("C:/Users/taiku/Desktop/temporary_raw/")
+write.csv(wide4upload_aggregates, 'WIDE_2021_06_10_aggregates.csv', na = '')
+
+
 wide4upload %>% 
   check_completion_progression %>% 
   filter(category == 'Total') %>% 
@@ -668,6 +678,12 @@ canadaissue <- wide4upload %>% filter(country == "Canada" & year == 2010) %>%
 wide4upload <- wide4upload %>% filter(!(country == "Canada" & year == 2010) ) 
 wide4upload <- wide4upload %>% bind_rows(canadaissue)
 
+#Check if regions have been included checking the NA has 88 entries
+table(wide4upload$iso_code, useNA = "always")
+#If not, add the wide version.
+wide4upload <- bind_rows(wide4upload,wide4upload_aggregates)
+
+
 #setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files")
 
 setwd("C:/Users/taiku/Desktop/temporary_raw/")
@@ -679,5 +695,6 @@ setwd("C:/Users/taiku/Desktop/temporary_raw/")
 #write.csv(wide4upload, 'WIDE_2021_27_09.csv', na = '')
 #write.csv(wide4upload, 'WIDE_2021_28_09.csv', na = '')
 #write.csv(wide4upload, 'WIDE_2021_06_10.csv', na = '')
-write.csv(wide4upload, 'WIDE_2021_12_10.csv', na = '')
+write.csv(wide4upload_wregions, 'WIDE_2021_12_10.csv', na = '')
+
 
