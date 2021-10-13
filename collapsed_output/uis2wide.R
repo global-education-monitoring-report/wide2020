@@ -123,14 +123,14 @@ uis4wide <- uis4wide %>% distinct()
 #write_csv(uis4wide, 'uis4wide.csv', na = '')
 
 #Now let's find out what that "other" surveys were
-uis_meta <- 
-  vroom::vroom(paste0(path2uisdata, 'SDG_METADATA.csv'), na = '') %>% 
-  filter(str_detect(INDICATOR_ID, paste(indicators2disagg, collapse = '|'))) %>% 
-  select(iso_code3 = COUNTRY_ID, year = YEAR, meta = METADATA, type = TYPE) %>% 
-  mutate(survey = case_when(
-    str_detect(meta, "Value suppressed") ~ 'Value supressed',
-    str_detect(meta, "Value based on 25-49 unweighted") ~ 'Few observations based',
-      TRUE ~ 'other'  )) %>% 
-   filter(survey != "other")
-
-post_mortem <- uis2wide(disaggs_uis) 
+# uis_meta <- 
+#   vroom::vroom(paste0(path2uisdata, 'SDG_METADATA.csv'), na = '') %>% 
+#   filter(str_detect(INDICATOR_ID, paste(indicators2disagg, collapse = '|'))) %>% 
+#   select(iso_code3 = COUNTRY_ID, year = YEAR, meta = METADATA, type = TYPE) %>% 
+#   mutate(survey = case_when(
+#     str_detect(meta, "Value suppressed") ~ 'Value supressed',
+#     str_detect(meta, "Value based on 25-49 unweighted") ~ 'Few observations based',
+#       TRUE ~ 'other'  )) %>% 
+#    filter(survey != "other")
+# 
+# post_mortem <- uis2wide(disaggs_uis) 

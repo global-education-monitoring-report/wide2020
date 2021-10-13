@@ -36,7 +36,8 @@ wide_jan19_long_clean <-
   )) %>% 
   # drop learning assessments that haven't been re-mapped to MPL
   filter(!survey %in% c('UWEZO', 'SACMEQ', 'ASER')) %>% 
-  filter(indicator != 'eduyears_2024_m') %>% 
+  #what?
+  #filter(indicator != 'eduyears_2024_m') %>% 
   filter(!(iso_code == 'CHN' & str_detect(indicator, 'edu0'))) %>% 
   #New filter for eduout correction on MICS6
   filter(!(iso_code == 'TGO' & str_detect(indicator, 'eduout') & year == 2017 & survey == 'MICS' )) %>% 
@@ -277,6 +278,24 @@ lis_all <- bind_rows(lis_old,lis_new) %>%
   mutate(Sex = replace(Sex, Sex =="female" , "Female") )  %>%
   mutate(Sex = replace(Sex, Sex =="male" , "Male") )  %>%
   mutate(survey = "LIS")
+
+#Survey naming for LIS
+lis_all <- lis_all %>% mutate(survey= case_when(
+  iso_code3 == 'AUS'  ~ 'SIH', 
+  iso_code3 == 'CAN'  ~ 'CIS',
+  iso_code3 == 'COL' ~ 'GEIH',
+  iso_code3 == 'EGY'  ~ 'HIECS', 
+  iso_code3 == 'GEO'  ~ 'HIES',
+  iso_code3 == 'ISR' ~ 'HES',
+  iso_code3 == 'JOR'  ~ 'HEIS', 
+  iso_code3 == 'JPN'  ~ 'JHPS',
+  iso_code3 == 'PAN' ~ 'ECH',
+  iso_code3 == 'KOR' ~ 'FHES',
+  iso_code3 == 'PSE'  ~ 'PECS', 
+  iso_code3 == 'SOM'  ~ 'HFS',
+  iso_code3 == 'TWN' ~ 'FIDES',
+  iso_code3 == 'USA'  ~ 'CPS-ASEC'
+  ))
   
 #setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
 
@@ -335,6 +354,7 @@ wide_21_long_wflag <-
   filter(!str_detect(indicator, 'level')) %>% 
   bind_rows(mutate(ilsa_mpl_set21_long_clean, source = 'Learning DC Jan 2021')) %>% 
   identity
+beep()
 
 #rm(gemr_sep21_long_clean,ilsa_mpl_set21_long_clean,nationalsurveys_sep21_long,silc_long_clean,widetable_sep21_long)
 #rm(lis_long,wide_jan19_long_clean)
@@ -439,9 +459,105 @@ wide_21_long <-
   #Bad estimates will be filtered once I see the final output
   #filter_bad_estimates %>% 
   identity
-  
+
 wide_21_long <- 
   wide_21_long %>% select(-country.x) %>% rename(country=country.y)
+
+#Filter bad estimates, october 2021 edition
+wide_21_long %>%
+  mutate(value = ifelse(str_detect(indicator, 'literacy') &
+                          (
+                            (iso_code == 'JOR' & survey == 'HEIS' & year == 2013) |
+                              (iso_code == 'COL' & survey == 'GEIH' & year == 2016) |
+                              FALSE), 
+                        NA, value)) %>%  
+  mutate(value = ifelse(str_detect(indicator, 'eduyear') &
+                          (
+                            (iso_code == 'NPL' & survey == 'MICS' & year == 2019) |
+                              (iso_code == 'TON' & survey == 'MICS' & year == 2019) |
+                              (iso_code == 'ZWE' & survey == 'MICS' & year == 2019) | FALSE), 
+                        NA, value))  %>%  
+  mutate(value = ifelse(str_detect(indicator, 'comp_higher') &
+                          (
+                            (iso_code == 'AFG' & survey == 'DHS' & year == 2015 & value == 0) |
+                              (iso_code == 'SSD' & survey == 'MICS' & year == 2010 & value == 0) |
+                              (iso_code == 'NPL' & survey == 'MICS' & year == 2014 & value == 0) |
+                              (iso_code == 'NPL' & survey == 'DHS' & year == 2011 & value == 0) |
+                              (iso_code == 'NPL' & survey == 'DHS' & year == 2001 & value == 0) |
+                                  FALSE), 
+                        NA, value))  %>%  
+  mutate(value = ifelse(str_detect(indicator, 'comp_higher_4yrs_2529_m') &
+                          (
+                              (iso_code == 'BRA' & survey == 'PNAD' & value == 0) |
+                              (iso_code == 'VNM' & survey == 'DHS' & year == 2002 & value == 0) |
+                              (iso_code == 'VNM' & survey == 'MICS' & year == 2014 & value == 0) |
+                                       FALSE), 
+                        NA, value)) %>%  
+  mutate(value = ifelse(str_detect(indicator, 'comp_higher_4yrs_3034_m') &
+                          (
+                            (iso_code == 'BRA' & survey == 'PNAD' & value == 0) |
+                            (iso_code == 'VNM' & survey == 'DHS' & year == 2002  & value == 0) |
+                            (iso_code == 'VNM' & survey == 'MICS' & year == 2014 & value == 0) |
+                                FALSE), 
+                        NA, value)) %>%
+  mutate(value = ifelse(str_detect(indicator, 'attend_higher') &
+                          (
+                            (iso_code == 'CAF'  & survey == 'MICS' &  year == 2006) |
+                            (iso_code == 'LAO'  & survey == 'MICS'& year == 2006) |
+                              FALSE), 
+                        NA, value)) %>%
+  mutate(value = ifelse(str_detect(indicator, 'comp_upsec_v2') &
+                          (
+                            (iso_code == 'GUY' & year == 2019) |
+                            (iso_code == 'NPL' & year == 2019) |
+                            (iso_code == 'JPN' & value == 0) |
+                              FALSE), 
+                        NA, value)) %>%
+  mutate(value = ifelse(str_detect(indicator, 'comp_upsec_2029') &
+                          (
+                            (iso_code == 'NPL' & year == 2019) |
+                              FALSE), 
+                        NA, value)) %>%
+  mutate(value = ifelse(str_detect(indicator, 'comp_lowsec_v2') &
+                          (
+                            (iso_code == 'NPL' & year == 2019) |
+                              (iso_code == 'JPN' & value == 0) |
+                              FALSE), 
+                        NA, value)) %>%
+  mutate(value = ifelse(str_detect(indicator, 'eduout') &
+                          (
+                            (iso_code == 'LSO' & survey == "MICS" & year == 2018) |
+                              FALSE), 
+                        NA, value)) %>%
+  mutate(value = ifelse(str_detect(indicator, 'comp_prim') &
+                          (
+                            (iso_code == 'NPL' & year == 2019) |
+                              FALSE), 
+                        NA, value)) %>%
+  mutate(value = ifelse(str_detect(indicator, 'edu0') &
+                          (
+                            (iso_code == 'CAN' & survey == "CIS") |
+                            (iso_code == 'TON' & year == 2019) |
+                              FALSE), 
+                        NA, value)) %>%
+  mutate(value = ifelse(str_detect(indicator, 'preschool_3') &
+                          (
+                            (iso_code == 'GHA' & year == 2014 & survey == "DHS") |
+                              (iso_code == 'KEN' & year == 2014 & survey == "DHS") |
+                              (iso_code == 'RWA' & year == 2015 & survey == "DHS") |
+                              (iso_code == 'ZWE' & year == 2015 & survey == "DHS") |
+                              (iso_code == 'STP' & year == 2019 & survey == "MICS") |
+                              FALSE), 
+                        NA, value)) %>%
+  mutate(value = ifelse(str_detect(indicator, 'preschool_1ybefore') &
+                          (
+                            (iso_code == 'GHA' & year == 2014 & survey == "DHS") |
+                              (iso_code == 'GHA' & year == 2011 & survey == "MICS") |
+                              (iso_code == 'ZWE' & year == 2015 & survey == "DHS") |
+                              (iso_code == 'STP' & year == 2019 & survey == "MICS") |
+                              FALSE), 
+                        NA, value)) %>% 
+    identity
 
 #Now run checks.R to get the functions
 wide_21_long %>% check_countries 
@@ -540,9 +656,18 @@ wide4upload$category<-sapply(lapply(strsplit(wide4upload$category," "), sort), p
 
 wide4upload <- wide4upload %>% 
   mutate(category=str_replace_all(category,c("Speakslanguageathome" = "Speaks Language At Home"))) %>%
-  filter(!category == 'Ethnicity & Location & Region & Sex & Wealth')
+  filter(!category == 'Ethnicity & Location & Region & Sex & Wealth') 
+wide4upload <- wide4upload %>% filter(!category == "Ethnicity & Location & Sex & Wealth")
 
-#setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files/")
+#Canada 2010 SLID-LIS duplicate issue 
+canadaissue <- wide4upload %>% filter(country == "Canada" & year == 2010) %>% 
+  mutate(survey = replace(survey, category =="Region & Sex" , "SLID") ) %>% 
+  filter(survey == "SLID") %>% distinct()
+  
+wide4upload <- wide4upload %>% filter(!(country == "Canada" & year == 2010) ) 
+wide4upload <- wide4upload %>% bind_rows(canadaissue)
+
+#setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files")
 
 setwd("C:/Users/taiku/Desktop/temporary_raw/")
 
@@ -551,5 +676,6 @@ setwd("C:/Users/taiku/Desktop/temporary_raw/")
 #so make sure it's gone before running this last line
 #write.csv(wide4upload, 'WIDE_2021_24_09.csv', na = '')
 #write.csv(wide4upload, 'WIDE_2021_27_09.csv', na = '')
-write.csv(wide4upload, 'WIDE_2021_28_09.csv', na = '')
+#write.csv(wide4upload, 'WIDE_2021_28_09.csv', na = '')
+write.csv(wide4upload, 'WIDE_2021_06_10.csv', na = '')
 
