@@ -3,6 +3,7 @@
 * May 2021
 * Update 19/07: Added full_literacy, literacy, eduout_preprim and ECDI calculation (for this install addon filename)
 * Update 27/07: Added attend_higher_5 eduout_preprim
+* Update 29/11: Fix literacy uptake from IR and MR
 
 
 program define dhs_standardize_standalone
@@ -221,6 +222,10 @@ program define dhs_standardize_standalone
 							findname, varlabeltext("*letters*") local(ecd1)
 									}
 							findname, varlabeltext("*can*read*") local(ecd2)
+							if missing(`"`ecd2'"') { 
+							findname, varlabeltext("*reads*words*") local(ecd2)
+									}
+																
 							findname, varlabeltext("*recognize*number*") local(ecd3)
 							if missing(`"`ecd3'"') { 
 									findname, varlabeltext("*identif*number*") local(ecd3)
@@ -228,6 +233,9 @@ program define dhs_standardize_standalone
 										findname, varlabeltext("*cite*figure*") local(ecd3)
 										if missing(`"`ecd3'"') { 
 										findname, varlabeltext("*knows*numbers*") local(ecd3)
+											if missing(`"`ecd3'"') { 
+											findname, varlabeltext("*1*to*10*") local(ecd3)
+											}
 									}
 									}
 									}
@@ -250,6 +258,12 @@ program define dhs_standardize_standalone
 							findname, varlabeltext("*along*with*children*") local(ecd8)
 							if missing(`"`ecd8'"') { 
 							findname, varlabeltext("*along*with*others*") local(ecd8)
+								if missing(`"`ecd8'"') { 
+								findname, varlabeltext("*agrees*with*others*") local(ecd8)
+									if missing(`"`ecd8'"') { 
+									findname, varlabeltext("*gets*well*other*") local(ecd8)
+									}
+								}
 									}
 							findname, varlabeltext("*kick*bite*other*") local(ecd9)
 							findname, varlabeltext("*distracted*") local(ecd10)
@@ -302,10 +316,67 @@ program define dhs_standardize_standalone
 									
 
 				}
+				
+				*NEW! Literacy intake from IR and MR but merge on an indivual level 
+				
+	local modules ir mr 
+	* read IR and MR files to get literacy
+	if ("`country_name'" == "Nicaragua" | "`country_name'" == "VietNam" | "`country_name'" == "Yemen"){
+	local modules ir
+	}
+	foreach module of local modules {
+		cd "`output_path'/DHS/data/temporal/"
+		capture mkdir "`output_path'/DHS/data/temporal/`module'"
+		set more off
 		
+			*NEW directory style
+			cd  "`data_path'\\`country_code'_`country_year'_DHS\"
+			local thefile : dir . files "??`module'????.DTA" 
+			di `thefile'
+			*This is to avoid problems where one module is not available
+				if missing(`"`thefile'"') { 
+				di "There is no " "`module'" " module available for this survey."
+						clear
+												} 
+				else {
+						**read a file
+							use *v001 *v002 *v003 *v155 using `thefile', clear
+							set more off
+							
+							rename *, lower
+							for X in any  *v001 *v002 *v003 *v155: capture rename mX X
+							for X in any v001 v002 v003 v150 v155 : capture generate X=.
+							
+							*IR works, MR works
+							catenate hh_id = v001 v002
+							catenate newid =  hh_id v003
+						
+						compress
+							
+						capture save "`output_path'/DHS/data/temporal/dhs_`module'.dta" , replace
+									
+				} 
+			
+			
+	}
+	
+		capture use "`output_path'/DHS/data/temporal/dhs_ir.dta", clear
+		capture append using "`output_path'/DHS/data/temporal/dhs_mr.dta"
+		
+		capture erase "`output_path'/DHS/data/temporal/dhs_ir.dta"
+		capture erase "`output_path'/DHS/data/temporal/dhs_mr.dta"
+		
+		rename v155 literacy
+		
+		compress
+	
+		*Merge
+		merge 1:1 hh_id newid using "`output_path'/DHS/data/dhs_read.dta", nogenerate
+		drop newid
+		save "`output_path'/DHS/data/dhs_read.dta", replace
 
-	set more off
-	clear
+		set more off
+	
 	cd "`output_path'/DHS/data/"
 	unicode analyze "dhs_read.dta"
 	unicode encoding set ibm-912_P100-1995
