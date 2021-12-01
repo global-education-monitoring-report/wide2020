@@ -46,12 +46,12 @@ program define dhs_standardize_standalone
 												} 
 				else {
 						**read a file
-							use *v001 *v002 *v130 *v131 *v150 *v155 using `thefile', clear
+							use *v001 *v002 *v130 *v131 *v150  using `thefile', clear
 							set more off
 							
 							rename *, lower
-							for X in any v001 v002 v130 v131 v150 v155: capture rename mX X
-							for X in any v001 v002 v130 v131 v150 v155 : capture generate X=.
+							for X in any v001 v002 v130 v131 v150 : capture rename mX X
+							for X in any v001 v002 v130 v131 v150 : capture generate X=.
 							
 							* only keep the household head
 							keep if v150 == 1 
@@ -86,7 +86,6 @@ program define dhs_standardize_standalone
 	
 	rename v130 religion
 	rename v131 ethnicity
-	rename v155 literacy
 	
 	compress
 	save "`output_path'/DHS/data/temporal/dhs_religion_ethnicity.dta", replace
@@ -190,7 +189,7 @@ program define dhs_standardize_standalone
 		
 		
 		* add religion and ethnicity
-		merge m:m hh_id using "`output_path'/DHS/data/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion literacy) keep(master match) nogenerate
+		merge m:m hh_id using "`output_path'/DHS/data/temporal/dhs_religion_ethnicity.dta", keepusing (ethnicity religion) keep(master match) nogenerate
 		*Make id to merge with BR
 		catenate newid = hh_id hvidx
 	
@@ -310,7 +309,6 @@ program define dhs_standardize_standalone
 						duplicates drop hh_id newid, force
 						*Merge n save 
 						merge 1:1 hh_id newid using "`output_path'/DHS/data/dhs_read.dta", nogenerate
-						drop newid
 						save "`output_path'/DHS/data/dhs_read.dta", replace
 						}
 									
@@ -354,34 +352,35 @@ program define dhs_standardize_standalone
 						compress
 							
 						capture save "`output_path'/DHS/data/temporal/dhs_`module'.dta" , replace
-									
+						
+						capture use "`output_path'/DHS/data/temporal/dhs_ir.dta", clear
+						capture append using "`output_path'/DHS/data/temporal/dhs_mr.dta"
+		
+						capture erase "`output_path'/DHS/data/temporal/dhs_ir.dta"
+						capture erase "`output_path'/DHS/data/temporal/dhs_mr.dta"
+						
+						rename v155 literacy
+						
+						compress
+	
+						*Merge, double checking for duplicates that arise in older DHS
+						duplicates drop hh_id newid, force
+						merge 1:1 hh_id newid using "`output_path'/DHS/data/dhs_read.dta", nogenerate
+						save "`output_path'/DHS/data/dhs_read.dta", replace
+						set more off
+										
 				} 
 			
 			
 	}
 	
-		capture use "`output_path'/DHS/data/temporal/dhs_ir.dta", clear
-		capture append using "`output_path'/DHS/data/temporal/dhs_mr.dta"
-		
-		capture erase "`output_path'/DHS/data/temporal/dhs_ir.dta"
-		capture erase "`output_path'/DHS/data/temporal/dhs_mr.dta"
-		
-		rename v155 literacy
-		
-		compress
 	
-		*Merge
-		merge 1:1 hh_id newid using "`output_path'/DHS/data/dhs_read.dta", nogenerate
-		drop newid
-		save "`output_path'/DHS/data/dhs_read.dta", replace
-
-		set more off
-	
+	clear
 	cd "`output_path'/DHS/data/"
 	unicode analyze "dhs_read.dta"
 	unicode encoding set ibm-912_P100-1995
 	unicode translate "dhs_read.dta"
-	
+		
 	* remove temporal folder and files
 	rmfiles , folder("`output_path'/DHS/data/temporal/ir") match("*.dta") rmdirs
 	capture rmfiles , folder("`output_path'/DHS/data/temporal/mr") match("*.dta") rmdirs
@@ -837,9 +836,10 @@ program define dhs_standardize_standalone
 	
 	*******LITERACY**********
 	*Literacy
-	recode literacy (0 1 = 0) (2 = 1) (3 4 9 = .), gen(full_literacy)
-	recode literacy (0 = 0) (1 2 = 1) (3 4 9 = .), gen(literacy_1549)
-	recode literacy (0 = 0) (1 2 = 1) (3 4 9 = .)
+	rename literacy original_literacy
+	recode original_literacy (0 1 = 0) (2 = 1) (3 4 9 = .), gen(full_literacy)
+	recode original_literacy (0 = 0) (1 2 = 1) (3 4 9 = .), gen(literacy_1549)
+	recode original_literacy (0 = 0) (1 2 = 1) (3 4 9 = .), gen(literacy)
 	*0 cannot read at all
 	*1 able to read only parts or whole sentence
 	*2 able to read whole sentence 
