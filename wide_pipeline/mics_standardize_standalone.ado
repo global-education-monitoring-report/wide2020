@@ -94,7 +94,7 @@ program define mics_standardize_standalone
  		gen ed8b = old_ed16b
  		gen ed3_check=old_ed8
  		gen ed_completed=old_ed6
-		sdecode ed_completed, replace
+		*sdecode ed_completed, replace
 		}
 		
 
@@ -599,7 +599,10 @@ program define mics_standardize_standalone
 	replace eduyears = 0 if code_ed4a == 0
 	replace eduyears = . if eduyears >= 99
 	capture replace eduyears = eduyears - 1 if ed_completed == "no" & (eduyears <= 97)
+	capture replace eduyears = eduyears - 1 if ed_completed == 2 & (eduyears <= 97)
+
 	replace eduyears = 30 if eduyears >= 30 & eduyears < 90
+	
 	
 
 		

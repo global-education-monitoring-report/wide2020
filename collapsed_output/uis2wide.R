@@ -1,6 +1,6 @@
 ## put UIS disaggregated completion and OOS data into WIDE-compatible format for overwrite
 
-path2uisdata <- 'C:/Users/taiku/Documents/GEM UNESCO MBR/UIS stat comparison/'
+path2uisdata <- 'C:/Users/taiku/Documents/GEM UNESCO MBR/UIS stat comparison/update/'
 
 uis_clean <- function(uis_data) {
   print(table(uis_data$QUALIFIER))
@@ -134,3 +134,10 @@ uis4wide <- uis4wide %>% distinct()
 #    filter(survey != "other")
 # 
 # post_mortem <- uis2wide(disaggs_uis) 
+# 
+# 
+#  selection <- uis4wide %>% filter(category == "Total")  %>% filter(survey == "DHS" | survey == "MICS")  %>%
+#    filter(year >= 2016) %>% filter(!iso_code3 == "MLI")  %>% pivot_wider(id_cols = c(iso_code3, year, survey), names_from = 'indicator', values_from = 'value')
+# # 
+#  setwd("C:/Users/taiku/Documents/GEM UNESCO MBR/UIS stat comparison")
+#  write.csv(selection, "uis_selection2.csv")
