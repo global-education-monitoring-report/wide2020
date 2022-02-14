@@ -83,5 +83,6 @@ all_indicators <- ldply(list.files(), read.csv, header=TRUE)
 #write.csv(all_indicators, paste0("widetable","_summarized_10092021.csv"))
 #write.csv(all_indicators, paste0("widetable","_summarized_22092021.csv"))
 #write.csv(all_indicators, paste0("widetable","_summarized_27092021.csv"))
-write.csv(all_indicators, paste0("widetable","_summarized_07012022.csv"))
+#write.csv(all_indicators, paste0("widetable","_summarized_07012022.csv"))
+write.csv(all_indicators, paste0("widetable","_summarized_mics6_withcorr.csv"))
 

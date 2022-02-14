@@ -8,7 +8,8 @@ library(readr)
 
 
 # Read and view WIDE calculate microdata from R .rds format
-wide_calculate <- readRDS("Desktop/gemr/new_etl/wide_calculate.rds")
+# Used to work like this
+#wide_calculate <- readRDS("Desktop/gemr/new_etl/wide_calculate.rds")
 #View(wide_calculate)
 
 
@@ -57,6 +58,7 @@ function_summarize <- function(x, y, z) {
 }
 
 
+
 # Call the function and include category name
 wide_calculate$total <- "Total" # include "Total" variable to group by total
 data_summarize0 <- cbind(category = "Total", function_summarize(total))
@@ -96,7 +98,7 @@ View(data_summarize_join)
 # Include base data frame with default variables and slice the length matching the number of rows in data_summarize_join 
 # Size (i.e. number of observations) needs to match for joining
 #df_base <- dplyr::select(wide_calculate, iso_code3, country, survey, year, country_year) %>% slice(1:nrow(data_summarize_join))
-df_base <- dplyr::select(wide_calculate, iso_code3, survey, year, country_year) %>% slice(1:nrow(data_summarize_join)) # TODO: Marcela including country in DHS
+df_base <- dplyr::select(wide_calculate, iso_code3, survey, year, country_year) %>% slice(1:nrow(data_summarize_join)) 
 View(df_base)
 
 # Join df_base with data_summarize_join
@@ -114,11 +116,13 @@ data_order <- c("iso_code3", "country", "survey", "year", "country_year", "categ
                 "edu0_prim_no", "eduout_prim_no", "eduout_lowsec_no", "eduout_upsec_no",
                 "attend_higher_1822_no", "literacy_1549_no")
 wide_summarize <- df_base_join[, data_order]
-View(wide_summarize)
+#View(wide_summarize)
 
 
 # Export final data frame as .rds format
-saveRDS(wide_summarize, file="Desktop/gemr/new_etl/wide_summarize.rds")
+# saveRDS(wide_summarize, file="Desktop/gemr/new_etl/wide_summarize.rds")
+
+
 
 
 

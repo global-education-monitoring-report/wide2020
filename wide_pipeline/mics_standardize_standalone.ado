@@ -92,7 +92,7 @@ program define mics_standardize_standalone
 		gen ed7 = old_ed15
 		gen ed8a = old_ed16a
  		gen ed8b = old_ed16b
- 		gen ed3_check=old_ed8
+ 		capture gen ed3_check=old_ed8
  		gen ed_completed=old_ed6
 		*sdecode ed_completed, replace
 		}
@@ -145,7 +145,7 @@ program define mics_standardize_standalone
 		capture drop region
 		for X in any ethnie ethnicidad: capture rename X ethnicity
 		
-		* create numerics variables 
+		* create numeric variables 
 		for X in any ed4a ed4b ed5 ed6a ed6b ed8a ed8b schage: capture generate X_nr = X
 		for X in any ed4a_nr ed6a_nr ed8a_nr: capture recode X (8 = 98) (9 = 99)
 		
@@ -311,7 +311,7 @@ program define mics_standardize_standalone
 
 	* generate code variables
 	for X in any ed4a ed6a ed8a: capture generate code_X = X_nr
-	
+		
 	capture replace code_ed6a = 70 if ed6a_nr == 1 & country_year == "Palestine_2010"
 	capture replace code_ed6a = 22 if ed6a_nr == 2 & country_year == "Palestine_2010"
 	
@@ -554,6 +554,19 @@ program define mics_standardize_standalone
 	replace eduyears=ed4b if(code_ed4a==1|code_ed4a==21|code_ed4a==22) & country_year=="Qatar_2012"
 	replace eduyears=ed4b+years_prim-5 if ed4a=="2" & country_year=="TFYRMacedonia_2018"
 	
+	replace eduyears=ed4b if ed4a=="2" & country_year=="Guyana_2019"
+	replace eduyears=ed4b if ed4a=="3" & country_year=="Guyana_2019"
+
+	replace eduyears=ed4b+years_lowsec-2 if ed4a=="3" & country_year=="Malawi_2019"
+	replace eduyears=ed4b if ed4a=="2" & country_year=="Samoa_2019"
+	replace eduyears=ed4b if ed4a=="2" & country_year=="Tuvalu_2019"
+	replace eduyears=ed4b if ed4a=="2" & country_year=="Belarus_2019"
+	replace eduyears=ed4b if ed4a=="3" & country_year=="Belarus_2019"
+	replace eduyears=ed4b if ed4a=="3" & country_year=="Nepal_2019"
+	replace eduyears=ed4b if ed4a=="4" & country_year=="Nepal_2019"
+	replace eduyears=ed4b if ed4a=="5" & country_year=="Nepal_2019"
+
+		
 	replace eduyears=16 if code_ed4a==3 & ed4b==13 & country_year=="Qatar_2012" // University
 	replace eduyears=18 if code_ed4a==3 & ed4b==14 & country_year=="Qatar_2012" // Masters
 	replace eduyears=16 if code_ed4a==3 & ed4b==15 & country_year=="Qatar_2012" // PHD

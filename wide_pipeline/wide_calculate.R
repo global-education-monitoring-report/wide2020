@@ -80,7 +80,7 @@ if (data$survey[1] == "MICS") {
   condition <- with(data, schage >= 3 & schage <= 4)
   data$preschool_3 = with(data, ifelse(condition == FALSE, NA, ifelse(attend_preschool == 1, 1, 0)))
 } else {
-  print("This indicator is only available in MICS")
+  print("This indicator (Attendance in preschool 3-4) is only available in MICS")
 }
 
 # Note: variable "prim_age0_eduout" is replaced by "prim_age0"
@@ -88,7 +88,7 @@ if (data$survey[1] == "MICS") {
   condition <- with(data, schage == prim_age0 - 1)
   data$preschool_1ybefore = with(data, ifelse(condition == FALSE, NA, ifelse(attend_preschool == 1, 1, 0)))
 } else {
-  print("This indicator is only available in MICS")
+  print("This indicator (Attendance in preschool 1ybefore) is only available in MICS")
 }
 
 
@@ -112,7 +112,7 @@ data$edu4_2024 = with(data, ifelse(condition == FALSE, NA,
 # calculate "household_edu" - Sunmin working
 
 library(qs)
-setwd("C:/Users/taiku/UNESCO/GEM Report - WIDE Data NEW/3_calculated")
+setwd("C:/Users/taiku/UNESCO/GEM Report - 3_calculated")
 # Export data as .rds format
 qsave(data, paste0(survey,"_calculated.qs"))
 
