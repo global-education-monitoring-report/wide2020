@@ -1,4 +1,7 @@
 ########### USING wide_summarize_ALT.R ###########
+#Don't forget to run wide_summarize_ALT.R to get the programs !!!!!!
+#FYI: for some reason, start a new Rstudio session before running this
+
 
 library(dplyr)
 library(stringr)
@@ -6,7 +9,7 @@ library(tidyr)
 library(qs)
 
 #Set this if dealing with BGD 2019 MICS
-memory.limit(size = 45500) 
+#memory.limit(size = 45500) 
 
 #path2calculated <- "C:/Users/taiku/UNESCO/GEM Report - 3_calculated" # enter path
 path2calculated <- "C:/Users/taiku/Desktop/temporary_std" # just 3 first files to test 
@@ -84,5 +87,10 @@ all_indicators <- ldply(list.files(), read.csv, header=TRUE)
 #write.csv(all_indicators, paste0("widetable","_summarized_22092021.csv"))
 #write.csv(all_indicators, paste0("widetable","_summarized_27092021.csv"))
 #write.csv(all_indicators, paste0("widetable","_summarized_07012022.csv"))
-write.csv(all_indicators, paste0("widetable","_summarized_mics6_withcorr.csv"))
+#write.csv(all_indicators, paste0("widetable","_summarized_mics6_withcorr.csv"))
+#write.csv(all_indicators, paste0("widetable","_summarized_Rwanda.csv"))
+#write.csv(all_indicators, paste0("widetable","_summarized_newSenegal.csv"))
 
+write.csv(all_indicators, paste0("widetable","_summarized_latestAfrica.csv"))
+
+#write_dta(all_indicators,paste0("widetable","_summarized_newSenegal.dta"))

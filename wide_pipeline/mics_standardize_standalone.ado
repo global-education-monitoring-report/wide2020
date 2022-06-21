@@ -5,6 +5,12 @@
 *   added full_literacy 
 *	added attend_higher_5 
 *	added eduout_preprim
+* May 2022 update: disability and disability_trad added as a new category 
+
+
+*February 2022 update: updated variable code_ed6a into level_attending into the microdata
+
+
 
 program define mics_standardize_standalone
 	syntax, data_path(string) output_path(string) country_code(string) country_year(string) 
@@ -68,7 +74,7 @@ program define mics_standardize_standalone
 		rename country_name_mics country
 		generate year_folder = `country_year'
 			
-		***IMPORTANT!!!! RENAME OF VARIABLES FOR MICS 6 SURVEYS only
+		***IMPORTANT!!!! RENAMING OF VARIABLES FOR MICS 6 SURVEYS only
  		if (year_folder >= 2017) {
 		for X in any ed1 ed2a ed3 ed4 ed5a ed5b ed6 ed7 ed8 ed9 ed10a ed10b ed11 ed12 ed13a ed13b ed13c ed13d ed13x ed13z ed13nr ed14 ed15 ed16a ed16b: capture rename X old_X
  		gen ed3 = old_ed4
@@ -909,7 +915,10 @@ program define mics_standardize_standalone
 	
 	destring year, replace
 	
+**************************************************************	
 **************************** 	Adding extra modules section
+**************************************************************
+****************************
 
 *WM Module check and merge
 cd "`data_path'\\`country_code'_`country_year'_MICS\"
@@ -930,12 +939,11 @@ capture rename ln LN
 		   
 		   *First check if literacy variable exists, if not, delete that file 
 		   capture confirm variable WB14
-			if _rc == 0 {
+			if !_rc {
 		   	*Adding this to check for the MASS MEDIA AND ICT module and capture it if variables exist
 			 capture confirm variable MT2 
 				if !_rc {
 							di "Both literacy and mass media exist "
-							keep iso_code3 year_folder HH1 HH2 LN WB14 WM6D WM6M WM6Y MT*
 							***RECODE ABLE TO READ TEST VAR***
 							recode WB14 (1 = 0) (2 3 = 1) (4 6 9 = .), gen(literacy)
 							recode WB14 (1 2 = 0) (3 = 1) (4 6 9 = .), gen(full_literacy)
@@ -959,28 +967,23 @@ capture rename ln LN
 							capture rename WAGE age, replace
 							gen sex="Female"
 
-							capture confirm variable partofcountry
-								if !_rc {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry WB14 literacy full_literacy MT*
-								}
-								else {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy
-								}
+							capture confirm variable AF12
+							if !_rc {
+										keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy AF*
+									}
+							else {
+										keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy
+									}
+							
 				compress
-					capture confirm variable partofcountry
-					if !_rc {
-					merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
-					save "`output_path'/MICS/data/mics_standardize.dta", replace
-					}
-					else {
-					merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
-					save "`output_path'/MICS/data/mics_standardize.dta", replace
-										}
+				merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+				save "`output_path'/MICS/data/mics_standardize.dta", replace
+										
 						}
 						
 					else {
 							di "Only literacy exists, keeping " "`f'"
-							keep iso_code3 year_folder HH1 HH2 LN WB14 WM6D WM6M WM6Y 
+							
 							***RECODE ABLE TO READ TEST VAR***
 							recode WB14 (1 = 0) (2 3 = 1) (4 6 9 = .), gen(literacy)
 							recode WB14 (1 2 = 0) (3 = 1) (4 6 9 = .), gen(full_literacy)
@@ -1001,34 +1004,29 @@ capture rename ln LN
 							rename HH2 hh2, replace
 							capture rename WAGE age, replace
 							gen sex="Female"
-
-							capture confirm variable partofcountry
-								if !_rc {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry WB14 literacy full_literacy
-								}
-								else {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy full_literacy
-								}
+														
+							capture confirm variable AF12
+							if !_rc {
+									  keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy full_literacy AF* disability
+									  }
+							else {
+									 keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy full_literacy
+     								}
+							
 							compress
 							tempfile wm_selection
 							save "`wm_selection'"
-							capture confirm variable partofcountry
-								if !_rc {
-								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
-								save "`output_path'/MICS/data/mics_standardize.dta", replace
-								}
-								else {
-								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
-								save "`output_path'/MICS/data/mics_standardize.dta", replace
+							
+							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+							save "`output_path'/MICS/data/mics_standardize.dta", replace
 									}
 			
 							}
-				   }
+				   
 		else {
 		 	  *Adding this in case only mass media ict exists
 			 capture confirm variable MT2 
 				if !_rc {
-							keep iso_code3 year_folder HH1 HH2 LN MT* 
 							*keep identifyer vars and literacy
 							  capture confirm variable LN
 										if !_rc {
@@ -1043,36 +1041,52 @@ capture rename ln LN
 							capture rename WAGE age, replace
 							gen sex="Female"
 
-							capture confirm variable partofcountry
-								if !_rc {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 partofcountry MT*
+							capture confirm variable AF12
+							if !_rc {							
+								keep iso_code3 year_folder sex hh1 hh2 hl1 MT* AF* disability
 								}
-								else {
-								keep iso_code3 year_folder sex hh1 hh2 hl1 MT*
-								}
+							else {
+							    keep iso_code3 year_folder sex hh1 hh2 hl1 MT*
+							}
+								
 							compress
 							tempfile wm_selection
 							save "`wm_selection'"
-							capture confirm variable partofcountry
-								if !_rc {
-								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
-								save "`output_path'/MICS/data/mics_standardize.dta", replace
-								}
-								else {
-								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
-								save "`output_path'/MICS/data/mics_standardize.dta", replace
-									}
+							
+							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+							save "`output_path'/MICS/data/mics_standardize.dta", replace
+									
 													}
 					else {
-							di "Clearing because neither literacy nor mass media/ict variables exists."
-							clear
-							}
+							di "Maybe there's only adult functioning module"
+							capture confirm variable AF12
+							if !_rc {		
+							capture confirm variable LN
+										if !_rc {
+										rename LN hl1, replace
+										}
+										else {
+										rename ln hl1, replace
+										}
+
+							rename HH1 hh1, replace
+							rename HH2 hh2, replace
+							gen sex="Female"
+								keep iso_code3 year_folder sex hh1 hh2 hl1 AF* disability
+								compress
+							tempfile wm_selection
+							save "`wm_selection'"
+							
+							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+							save "`output_path'/MICS/data/mics_standardize.dta", replace
+								}
+							else {
+									clear
+									}						
+							
 			
 			}
-			
-				
-
-					}
+								}
 			
          
 else { 
@@ -1081,9 +1095,10 @@ else {
 
 *end of wm extraction
 
-*****************************************
 
+*****************************************
 *Mn module search and merge
+
   
 cd "`data_path'\\`country_code'_`country_year'_MICS\"
   
@@ -1099,11 +1114,23 @@ generate year_folder = `country_year'
 		    *Adding this to check for the MASS MEDIA AND ICT module and capture it if variables exist
 			 capture confirm variable MMT2 
 				if !_rc {
-							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MMT*
+							capture confirm variable MAF12 
+							if !_rc {
+							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MMT* MAF* mdisability
+							}
+							else {
+							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MMT* 
+							}
 							
 						}
 					else {
+							capture confirm variable MAF12 
+							if !_rc {
+							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MAF* mdisability
+							}
+							else {
 							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4
+									}							
 						}
 					recode MWB14 (1 = 0) (2 3 = 1) (4 9 = .), gen(literacy)
 					recode MWB14 (1 2 = 0) (3 = 1) (4 6 9 = .), gen(full_literacy)
@@ -1133,22 +1160,23 @@ generate year_folder = `country_year'
 					compress
 					tempfile mn_selection
 					save "`mn_selection'"
-					capture confirm variable partofcountry
-						if !_rc {
-						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
-						save "`output_path'/MICS/data/mics_standardize.dta", replace
-						}
-						else {
-						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
-						save "`output_path'/MICS/data/mics_standardize.dta", replace
- 		  		   }
-				   }
+					
+					merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+					save "`output_path'/MICS/data/mics_standardize.dta", replace
+ 		  		      }
 		else {
 		 	  *Adding this in case only mass media ict exists
 			 capture confirm variable MMT2 
 				if !_rc {
+				
+				capture confirm variable MAF12 
+							if !_rc {
+							keep iso_code3 year_folder HH1 HH2 LN MMT* MAF* mdisability
+							}
+							else {
 							keep iso_code3 year_folder HH1 HH2 LN MMT*
-							compress
+									}				
+								compress
 							  capture confirm variable LN
 								if !_rc {
 								rename LN hl1, replace
@@ -1162,19 +1190,34 @@ generate year_folder = `country_year'
 							capture duplicates drop iso_code3 year_folder hh1 hh2 hl1 , force
 							tempfile mn_selection
 							save "`mn_selection'"
-							capture confirm variable partofcountry
-								if !_rc {
-								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
-								save "`output_path'/MICS/data/mics_standardize.dta", replace
-								}
-								else {
-								merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
-								save "`output_path'/MICS/data/mics_standardize.dta", replace
+							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+							save "`output_path'/MICS/data/mics_standardize.dta", replace
 													}
 					else {
-							di "Clearing because neither literacy nor mass media/ict variables exists in " "`f'"
-							clear
+							capture confirm variable MAF12 
+							if !_rc {
+							capture confirm variable LN
+								if !_rc {
+								rename LN hl1, replace
 								}
+								else {
+								capture rename ln hl1, replace
+								capture rename HL1 hh1, replace
+								}
+					rename HH1 hh1, replace
+					rename HH2 hh2, replace
+							keep iso_code3 year_folder HH1 HH2 LN MAF* mdisability
+							capture duplicates drop iso_code3 year_folder hh1 hh2 hl1 , force
+							tempfile mn_selection
+							save "`mn_selection'"
+							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+								save "`output_path'/MICS/data/mics_standardize.dta", replace
+							      }
+							else {
+								di "Clearing because neither literacy nor mass media/ict nor adult functioning variables exists in " "`f'"
+							clear					
+								}
+							}
 			
 			}
 				
@@ -1190,15 +1233,18 @@ else {
 *end of mn extraction
 
 ****************
-
-*begin of ch extraction 
+***CH MODULE: MOTHERS OF <5 Y-O CHILDREN***
+*begin of ch extraction* 
 cd "`data_path'\\`country_code'_`country_year'_MICS\"
   
 capture confirm file ch.dta 
 if _rc == 0 {
 use "ch.dta", clear
+capture rename *, upper
 gen iso_code3=upper("`country_code'")
 generate year_folder = `country_year'
+*homogenizing variables
+
    capture rename ln LN 
 		   *Check for EARLY CHILDHOOD DEVELOPMENT module (EC questions)
 		   capture confirm variable EC1
@@ -1212,11 +1258,25 @@ generate year_folder = `country_year'
 								capture rename HL1 hl1, replace
 								*Mexico 2015
 								capture rename UF4 hl1, replace
-
 								}
 					rename HH1 hh1, replace
 					rename HH2 hh2, replace
-					keep iso_code3 year_folder hh1 hh2 hl1 EC* 
+					***2021 NEW: check if FCF/UCF VARIABLES ARE AVAILABLE TO SAVE THEM 
+					capture confirm variable UCF2
+						 if !_rc {
+											keep iso_code3 year_folder hh1 hh2 hl1 EC* UCF* CDISABILITY
+											rename UCF# FCF#
+						}
+						else {
+						capture confirm variable FCF2
+								if !_rc {
+												keep iso_code3 year_folder hh1 hh2 hl1 EC* FCF* CDISABILITY
+								}
+								else {
+								 				keep iso_code3 year_folder hh1 hh2 hl1 EC* 
+
+																}
+						}
 					
 					*There are ch modules with no variables to construct ecd***
 					capture confirm variable EC8
@@ -1287,22 +1347,59 @@ generate year_folder = `country_year'
 					compress
 					tempfile ch_selection
 					save "`ch_selection'"
-					capture confirm variable partofcountry
-						if !_rc {
-						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
-						save "`output_path'/MICS/data/mics_standardize.dta", replace
-						}
-						else {
+					
 						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
 						save "`output_path'/MICS/data/mics_standardize.dta", replace
-							}
-				   }
+										   }
 		else {
-							di "Clearing because Early Childhood Development submodule is not there"
-							clear
+							di "Early Childhood Development submodule is not there, but child functioning might be"
+							capture rename ln LN 
+		   *Check for EARLY CHILDHOOD DEVELOPMENT module (EC questions)
+		  					capture confirm variable LN
+								if !_rc {
+								rename LN hl1, replace
 								}
+								else {
+								capture rename ln hl1, replace
+								capture rename HL1 hl1, replace
+									}
+					rename HH1 hh1, replace
+					rename HH2 hh2, replace
+							capture confirm variable UCF1 
+						 if !_rc {
+						     di "Early Childhood Development submodule is not there, but child functioning is"
+											keep iso_code3 year_folder hh1 hh2 hl1 UCF* CDISABILITY
+											rename UCF# FCF#
+											compress
+					tempfile ch_selection
+					save "`ch_selection'"
+					
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+						
+						}
+						else {
+						capture confirm variable FCF1
+								if !_rc {
+							  di "Early Childhood Development submodule is not there, but child functioning is"
+
+												keep iso_code3 year_folder hh1 hh2 hl1 FCF* CDISABILITY
+												compress
+					tempfile ch_selection
+					save "`ch_selection'"
+					
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+						
+								}
+								else {
+						 di "Neither Early Childhood Development nor child functioning modules are available"
+						 clear
+										}
+						}
+				}
 			
-			}
+			} // this one is closing whatever you do with ch.dta
 				
 	   
 		 
@@ -1312,21 +1409,22 @@ else {
 
 *end of ch extraction
 
+
 ***************************
 
-*begin of fs extraction
+*begin of fs extraction: 
 cd "`data_path'\\`country_code'_`country_year'_MICS\"
   
 capture confirm file fs.dta 
 if _rc == 0 {
 use "fs.dta", clear
+capture rename *, upper
 gen iso_code3=upper("`country_code'")
 generate year_folder = `country_year'
-   capture rename ln LN 
+
 		   *Check for FOUNDATIONAL LEARNING SKILLS sub-module 
 		   capture confirm variable FL1
 			if _rc == 0 {
-					capture rename ln LN
 					capture confirm variable LN
 								if !_rc {
 								rename LN hl1, replace
@@ -1337,33 +1435,75 @@ generate year_folder = `country_year'
 								}
 					rename HH1 hh1, replace
 					rename HH2 hh2, replace
-					keep iso_code3 year_folder hh1 hh2 hl1 FL*
+					
+					capture confirm variable UCF2 
+						 if !_rc {
+												keep iso_code3 year_folder hh1 hh2 hl1 FL* UCF*  FSDISABILITY
+												
+						}
+						else {
+						capture confirm variable FCF2
+								if !_rc {
+												keep iso_code3 year_folder hh1 hh2 hl1 FL* FCF*  FSDISABILITY
+										**for disability:all the variables coded as FCF will be renamed as UCF as its not homegeneous between surveys 
+												rename FCF# UCF#
+								}
+								else {
+								 				keep iso_code3 year_folder hh1 hh2 hl1 FL*  FSDISABILITY
+
+																}
 					compress
 					tempfile fs_selection
 					save "`fs_selection'"
-					capture confirm variable partofcountry
-						if !_rc {
-						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 partofcountry using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
-						save "`output_path'/MICS/data/mics_standardize.dta", replace
-						}
-						else {
+					
 						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
 						save "`output_path'/MICS/data/mics_standardize.dta", replace
-							}
+							
+				   }
 				   }
 		else {
-							di "Clearing because Foundational Learning Skills submodule is not available"
-							clear
+								capture confirm variable LN
+								if !_rc {
+								rename LN hl1, replace
 								}
-			
-			}
+								else {
+								capture rename ln hl1, replace
+								capture rename HL1 hl1, replace
+								}
+					rename HH1 hh1, replace
+					rename HH2 hh2, replace
+								capture confirm variable UCF1 
+						 if !_rc {
+						     di "Early Childhood Development submodule is not there, but child functioning is"
+											keep iso_code3 year_folder hh1 hh2 hl1 UCF*  FSDISABILITY
+											
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+						
+						}
+						else {
+						capture confirm variable FCF1
+								if !_rc {
+							  di "Early Childhood Development submodule is not there, but child functioning is"
+
+												keep iso_code3 year_folder hh1 hh2 hl1 FCF*  FSDISABILITY
+						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
+						save "`output_path'/MICS/data/mics_standardize.dta", replace
+						
+								}
+								else {
+						 di "Neither Foundational Learning Skills nor child functioning modules are available"
+								clear
+																}
+															}
+						}
+						}
 				
 	   
 		 
 else { 
     di "FS (children ages 5-17) module not available in this survey"
 } 
-
 *end of FS extraction
 
 capture confirm variable hh1
@@ -1375,6 +1515,7 @@ if !_rc {
 					   use "`output_path'/MICS/data/mics_standardize.dta", clear
 
                }
+			   
 
 
 **************************** 	end of do widetable_literacy_mics_std***
@@ -1389,6 +1530,337 @@ if !_rc {
 		gen literacy_1524=literacy_1549 if age >= 15 & age <= 24
                }
 	***/FINISH LITERACY CALCULATION***
+	
+	***DISABILITY CALCULATION***
+
+	*** CH: CHILD FUNCTIONING FOR CHILDREN AGE 2-4 YEARS ***
+
+		*Based on the recommended cut-off, the disability indicator includes "a lot more" difficulty for the question on controlling behavior, and “a lot of difficulty" and "cannot do at all" for all other questions *
+
+		* PART ONE: Creating separate variables per domain of functioning *
+		
+		
+
+		* SEEING DOMAIN *
+		gen SEE_IND = FCF7
+
+		gen Seeing_2to4 = 9
+		replace Seeing_2to4 = 0 if inrange(SEE_IND, 1, 2)
+		replace Seeing_2to4 = 1 if inrange(SEE_IND, 3, 4)
+		label define see 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Seeing_2to4 see
+
+		* HEARING DOMAIN *
+		gen HEAR_IND = FCF9
+
+		gen Hearing_2to4 = 9
+		replace Hearing_2to4 = 0 if inrange(HEAR_IND, 1, 2)
+		replace Hearing_2to4 = 1 if inrange(HEAR_IND, 3, 4)
+		label define hear 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Hearing_2to4 hear
+
+		* WALKING DOMAIN *
+		gen WALK_IND = FCF11 // without equipment...
+		replace WALK_IND = FCF13 if FCF11 == . // compared w other children how difficult is to walk
+		tab WALK_IND
+
+		gen Walking_2to4 = 9
+		replace Walking_2to4 = 0 if inrange(WALK_IND, 1, 2)
+		replace Walking_2to4 = 1 if inrange(WALK_IND, 3, 4)
+		label define walk 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Walking_2to4 walk
+
+		* FINE MOTOR DOMAIN * also called dexterity 
+		gen FineMotor_2to4 = 9
+		replace FineMotor_2to4 = 0 if inrange(FCF14, 1, 2)
+		replace FineMotor_2to4 = 1 if inrange(FCF14, 3, 4)
+		label define motor 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value FineMotor_2to4 motor
+
+		* COMMUNICATING DOMAIN *
+		gen COM_IND = 0
+		replace COM_IND = 4 if (FCF15 == 4 | FCF16 == 4) // HIM UNDERSTANDING YOU 15, YOU UNDERSTANDING HIM 16
+		replace COM_IND = 3 if (COM_IND != 4 & (FCF15 == 3 | FCF16 == 3))
+		replace COM_IND = 2 if (COM_IND != 4 & COM_IND != 3 & (FCF15 == 2 | FCF16 == 2))
+		replace COM_IND = 1 if (COM_IND != 4 & COM_IND != 3 & COM_IND != 1 & (FCF15 == 1 | FCF16 == 1))
+		replace COM_IND = 9 if ((COM_IND == 2 | COM_IND == 1) & (FCF15 == . | FCF16 == 9))
+		tab COM_IND
+
+		gen Communication_2to4 = 9
+		replace Communication_2to4 = 0 if inrange(COM_IND, 1, 2)
+		replace Communication_2to4 = 1 if inrange(COM_IND, 3, 4)
+		label define communicate 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Communication communicate
+
+		* LEARNING DOMAIN *
+		gen Learning_2to4 = 9 
+		replace Learning_2to4 = 0 if inrange(FCF17, 1, 2)
+		replace Learning_2to4 = 1 if inrange(FCF17, 3, 4)
+		label define learn 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Learning_2to4 learn
+
+		* PLAYING DOMAIN *
+		gen Playing_2to4 = 9
+		replace Playing_2to4 = 0 if inrange(FCF18, 1, 2)
+		replace Playing_2to4 = 1 if inrange(FCF18, 3, 4)
+		label define playing 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Playing_2to4 play 
+
+		* BEHAVIOUR DOMAIN *
+		gen Behaviour_2to4 = 9 
+		*replace Behaviour_2to4 = 0 if inrange(FCF19, 1, 4)
+		*replace Behaviour_2to4 = 1 if FCF19 == 5
+		label define behave 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Behaviour_2to4 behave 
+
+		* PART TWO: Creating disability indicator for children age 2-4 years *
+
+		gen FunctionalDifficulty_2to4 = 0
+		replace FunctionalDifficulty_2to4 = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | FineMotor_2to4 == 1 | Communication_2to4 == 1 | Learning_2to4 == 1 | Playing_2to4 == 1 | Behaviour_2to4 == 1) 
+		replace FunctionalDifficulty_2to4 = 9 if (FunctionalDifficulty_2to4 != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | FineMotor_2to4 == 9 | Communication_2to4 == 9 | Learning_2to4 == 9 | Playing_2to4 == 9 | Behaviour_2to4 == 9)) 
+		label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value FunctionalDifficulty_2to4 
+
+		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communicate
+
+		gen disability_trad = 0
+		replace disability_trad = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | Communication_2to4 == 1 ) 
+		replace disability_trad = 9 if (disability_trad != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | Communication_2to4 == 9 )) 
+		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value disability_trad difficulty
+		
+
+
+		***************************************************************************
+		*** CHILD FUNCTIONING FOR CHILDREN AGE 5-17 YEARS ***
+
+		*Based on the recommended cut-off, the disability indicator includes “daily” for the questions on anxiety and depression; and “a lot of difficulty" and "cannot do at all" for all other questions *
+
+		* PART ONE: Creating separate variables per domain of functioning *
+
+		*drop previously created
+		drop *_IND
+		
+		* SEEING DOMAIN *
+		gen SEE_IND = UCF6
+
+		gen Seeing_5to17 = 9
+		replace Seeing_5to17 = 0 if inrange(SEE_IND, 1, 2)
+		replace Seeing_5to17 = 1 if inrange(SEE_IND, 3, 4)
+		*label define see 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Seeing_5to17 see
+
+		* HEARING DOMAIN *
+		gen HEAR_IND = UCF8
+
+		gen Hearing_5to17 = 9
+		replace Hearing_5to17 = 0 if inrange(HEAR_IND, 1, 2)
+		replace Hearing_5to17 = 1 if inrange(HEAR_IND, 3, 4)
+		*label define hear 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Hearing_5to17 hear
+
+		* WALKING DOMAIN *
+		gen WALK_IND1 = UCF10 // withour equipment, diff walking 100 meters 
+		replace WALK_IND1 = UCF11 if UCF10 == 2 // without equipment, walkng 500 meters
+		tab WALK_IND1
+
+		gen WALK_IND2 = UCF14 // compared w children of the same age, diff walking 100 mt
+		replace WALK_IND2 = UCF15 if (UCF14 == 1 | UCF14 == 2) // compared w children same age, diff walking 500 mt
+		tab WALK_IND2
+
+		gen WALK_IND = WALK_IND1
+		replace WALK_IND = WALK_IND2 if WALK_IND1 == .
+		tab WALK_IND
+
+		gen Walking_5to17 = 9
+		replace Walking_5to17 = 0 if inrange(WALK_IND, 1, 2)
+		replace Walking_5to17 = 1 if inrange(WALK_IND, 3, 4)
+		*label define walk 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Walking_5to17 walk 
+
+		* SELFCARE DOMAIN *
+		gen Selfcare_5to17 = 9
+		replace Selfcare_5to17 = 0 if inrange(UCF16, 1, 2)
+		replace Selfcare_5to17 = 1 if inrange(UCF16, 3, 4)
+		*label define selfcare 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Selfcare_5to17 selfcare
+
+		* COMMUNICATING DOMAIN *
+		gen COM_IND = 0
+		replace COM_IND = 4 if (UCF17 == 4 | UCF18 == 4) // diff being understood IN house, diff being understood OUTSIDE of house
+		replace COM_IND = 3 if (COM_IND != 4 & (UCF17 == 3 | UCF18 == 3))
+		replace COM_IND = 2 if (COM_IND != 4 & COM_IND != 3 & (UCF17 == 2 | UCF18 == 2))
+		replace COM_IND = 1 if (COM_IND != 4 & COM_IND != 3 & COM_IND != 1 & (UCF17 == 1 | UCF18 == 1))
+		replace COM_IND = 9 if ((COM_IND == 2 | COM_IND == 1) & (UCF17 == 9 | UCF18 == 9))
+		tab COM_IND
+
+		gen Communication_5to17 = 9
+		replace Communication_5to17 = 0 if inrange(COM_IND, 1, 2) 
+		replace Communication_5to17 = 1 if inrange(COM_IND, 3, 4)
+		*label define communicate 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Communication_5to17 communicate
+
+		* LEARNING DOMAIN *
+		gen Learning_5to17 = 9
+		*replace Learning_5to17 = 0 if inrange(FCF19, 1, 2)
+		*replace Learning_5to17 = 1 if inrange(FCF19, 3, 4)
+		label define learning 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Learning_5to17 learning
+
+		* REMEMBERING DOMAIN *
+		gen Remembering_5to17 = 9
+		replace Remembering_5to17 = 0 if inrange(UCF20, 1, 2)
+		replace Remembering_5to17 = 1 if inrange(UCF20, 3, 4)
+		label define remembering 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Remembering_5to17 remembering
+
+		* CONCENTRATING DOMAIN *
+		gen Concentrating_5to17 = 9
+		replace Concentrating_5to17 = 0 if inrange(UCF21, 1, 2)
+		replace Concentrating_5to17 = 1 if inrange(UCF21, 3, 4)
+		label define concentrating 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Concentrating_5to17 concentrating 
+
+		* ACCEPTING CHANGE DOMAIN *
+		gen AcceptingChange_5to17 = 9
+		replace AcceptingChange_5to17 = 0 if inrange(UCF22, 1, 2)
+		replace AcceptingChange_5to17 = 1 if inrange(UCF22, 3, 4)
+		label define accepting 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value AcceptingChange_5to17 accepting
+
+		* BEHAVIOUR DOMAIN * e difficulty controlling his/her behaviour
+		gen Behaviour_5to17 = 9
+		replace Behaviour_5to17 = 0 if inrange(UCF23, 1, 2)
+		replace Behaviour_5to17 = 1 if inrange(UCF23, 3, 4)
+		label define behaviour 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Behaviour_5to17 behaviour
+
+		* MAKING FRIENDS DOMAIN *
+		gen MakingFriends_5to17 = 9
+		replace MakingFriends_5to17 = 0 if inrange(UCF24, 1, 2)
+		replace MakingFriends_5to17 = 1 if inrange(UCF24, 3, 4)
+		label define friends 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value MakingFriends_5to17 friends
+
+		* ANXIETY DOMAIN *
+		gen Anxiety_5to17 = 9
+		replace Anxiety_5to17 = 0 if inrange(UCF25, 2, 5)
+		replace Anxiety_5to17 = 1 if (UCF25 == 1)
+		label define anxiety 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Anxiety_5to17 anxiety
+
+		* DEPRESSION DOMAIN *
+		gen Depression_5to17 = 9
+		replace Depression_5to17 = 0 if inrange(UCF26, 2, 5)
+		replace Depression_5to17 = 1 if (UCF26 == 1)
+		label define depression 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value Depression_5to17 depression
+
+		* PART TWO: Creating disability indicator for children age 5-17 years *
+
+		gen FunctionalDifficulty_5to17 = 0
+		replace FunctionalDifficulty_5to17 = 1 if (Seeing_5to17 == 1 | Hearing_5to17 == 1 | Walking_5to17 == 1 | Selfcare_5to17 == 1 | Communication_5to17 == 1 | Learning_5to17 == 1 | Remembering_5to17 == 1 | Concentrating_5to17 == 1 | AcceptingChange_5to17 == 1 | Behaviour_5to17 == 1 | MakingFriends_5to17 == 1 | Anxiety_5to17 == 1 | Depression_5to17 == 1) 
+		replace FunctionalDifficulty_5to17 = 9 if (FunctionalDifficulty_5to17 != 1 & (Seeing_5to17 == 9 | Hearing_5to17 == 9 | Walking_5to17 == 9 | Selfcare_5to17 == 9 | Communication_5to17 == 9 | Learning_5to17 == 9 | Remembering_5to17 == 9 | Concentrating_5to17 == 9 | AcceptingChange_5to17 == 9 | Behaviour_5to17 == 9 | MakingFriends_5to17 == 9 | Anxiety_5to17 == 9 | Depression_5to17 == 9)) 
+		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value FunctionalDifficulty_5to17 difficulty
+
+
+		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communication
+
+		replace disability_trad = 0 if schage > 4
+		replace disability_trad = 1 if (Seeing_5to17 == 1 | Hearing_5to17 == 1 | Walking_5to17 == 1 |  Communication_5to17 == 1 ) & schage > 4
+		replace disability_trad = 9 if (disability_trad != 1 & (Seeing_5to17 == 9 | Hearing_5to17 == 9 | Walking_5to17 == 9 | Communication_5to17 == 9 )) & schage > 4
+		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value disability_trad difficulty
+		
+		* Creating disability indicator that is the combination of both FunctionalDifficulty_2to4 and FunctionalDifficulty_5to17
+
+		gen disability_children = FunctionalDifficulty_2to4  + FunctionalDifficulty_5to17
+	
+		
+
+		***************************************************************************
+		*** ADULTS (men and women) 18+ YEARS ***
+
+		*First homogenize MAF and AF
+		*foreach var of varlist AF6 AF8 AF9 AF10 AF11 AF12 {
+		*		replace `var' = M`var' if sex=="Male"
+		*		}
+
+		*Now rename the AF* 
+
+// 		rename AF6 Vision 
+// 		rename AF8 Hearing 
+// 		rename AF9 Mobility
+// 		rename AF10 Cognition // COGNITION=REMEMBERING OR CONCENTRATING
+// 		rename AF11 Self_Care 
+// 		rename AF12 Communication
+
+//
+// 		gen SumPoints=0
+// 		foreach v of var Vision Hearing Mobility Cognition Self_Care Communication {
+// 		replace SumPoints=SumPoints + inlist(`v',2,3,4)
+// 		}
+// 		replace SumPoints=. if missing(Vision) & missing(Hearing) & ///
+// 		missing(Mobility) & missing(Cognition) & missing(Self_Care) & missing(Communication)
+//
+// 		gen SUM_234=. if SumPoints==.
+// 		replace SUM_234=1 if SumPoints==1
+// 		replace SUM_234=2 if SumPoints==2
+// 		replace SUM_234=3 if SumPoints==3
+// 		replace SUM_234=4 if SumPoints==4
+// 		replace SUM_234=5 if SumPoints==5
+// 		replace SUM_234=6 if SumPoints==6
+// 		replace SUM_234=0 if SumPoints==0 
+//
+// 		gen SumPoints2=0
+// 		foreach v of var Vision Hearing Mobility Cognition Self_Care Communication {
+// 		replace SumPoints2=SumPoints2 + inlist(`v',3,4)
+// 		}
+// 		replace SumPoints2=. if missing(Vision) & missing(Hearing) & ///
+// 		missing(Mobility) & missing(Cognition) & missing(Self_Care) & missing(Communication)
+//
+// 		gen SUM_34=. if SumPoints2==.
+// 		replace SUM_34=1 if SumPoints2==1
+// 		replace SUM_34=2 if SumPoints2==2
+// 		replace SUM_34=3 if SumPoints2==3
+// 		replace SUM_34=4 if SumPoints2==4
+// 		replace SUM_34=5 if SumPoints2==5
+// 		replace SUM_34=6 if SumPoints2==6
+// 		replace SUM_34=0 if SumPoints2==0
+// 		tabulate SUM_34
+//
+// 		gen Disability_adults=2
+// 		replace Disability_adults=1 if (SUM_234 >=2 | SUM_34==1)
+// 		replace Disability_adults=. if missing(Vision) & missing(Hearing) & missing(Mobility) & ///
+// 		missing(Cognition) & missing(Self_Care) & missing(Communication)
+//
+// 		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communication
+//
+// 		drop SumPoints*
+// 		gen SumPoints=0
+// 		foreach v of var Vision Hearing Mobility Communication {
+// 		replace SumPoints=SumPoints + inlist(`v',2,3,4)
+// 		}
+// 		replace SumPoints=. if missing(Vision) & missing(Hearing) & ///
+// 		missing(Mobility) & missing(Communication)
+//
+// 		gen SumPoints2=0
+// 		foreach v of var Vision Hearing Mobility Communication {
+// 		replace SumPoints2=SumPoints2 + inlist(`v',3,4)
+// 		}
+// 		replace SumPoints2=. if missing(Vision) & missing(Hearing) & ///
+// 		missing(Mobility) & missing(Communication)
+//
+// 		replace disability_trad=2 if disability_trad==.
+// 		replace disability_trad=1 if (SUM_234 >=2 | SUM_34==1)
+// 		replace disability_trad=. if missing(Vision) & missing(Hearing) & missing(Mobility) & missing(Communication)
+//
+//		
+	
+	***/FINISH DISABILITY CALCULATION***
+	
+	
 	
 	*Fix year variable hh5y in case some of the imports contain weird values (special cases of Nepal and Ethiopia)
 	replace hh5y = year_folder if  (hh5y - year_folder) > 3
@@ -1452,20 +1924,31 @@ if !_rc {
 	if !_rc {
 	egen hh_edu8 = max(literacy_1549), by(hh_id)
                }
-		
+			   
 	**/Household education**
+	
+	**Level attending: manipulating code_ed6a **
+	
+	label define level_attending_homogenized 0 "Preschool / No level" 1 "Primary" 2 "Secondary" 24 "Voc/tech/prof as upsec" 21 "Lower secondary" 22 	"Upper secondary" 23 "Voc/tech/prof as lowsec" 32 "post-secondary or superior no university" 33 "Voc/tech/prof as higher" 40 "Post graduate (master, PhD)" 41 "Master degree" 42 "PhD or doctoral degree" 50 "Special literacy program" 51 "Adult education" 60 "General school (ex. Mongolia, Turkmenistan)" 70 "Primary+lowsec (ex. Sudan & South Sudan)" 80 "Not formal/not regular/not standard" 90 "Coranique" 97 "Inconsistent" 98 "Don't know" 99 "NA / Missing"  3 "Higher", replace
+
+	label values code_ed6a level_attending_homogenized
+
+	clonevar level_attending = code_ed6a
+	
+		
+	**/Level attending: manipulating code_ed6a **
+
 	
 	save "`output_path'/MICS/data/mics_standardize.dta", replace
 	
-	
+		
 	*getting rid of unnecesary variables and ordering
 	capture drop MWB14 WB14 old_ed3 old_ed4 old_ed5a old_ed5b old_ed6	old_ed7	old_ed8	old_ed9	old_ed10a old_ed10b	old_ed15 old_ed16a	old_ed16b	year_folder	ed4b_label	ed3_check	D	E	F	G	H	I	J	prim_dur_comp	lowsec_dur_comp	upsec_dur_comp	prim_age0_comp	prim_dur_replace lowsec_dur_replace	upsec_dur_replace	prim_age_replace	 
-	capture order MMT* MT* , last
+	capture order MMT* MT*  , last
 	order hh1 hh2 hl1 country year ethnicity religion sex age location region wealth, first
 	
 	gen survey="MICS"
 	compress
 	* No saving, this will be done in update.ado		
-	
 	
 end

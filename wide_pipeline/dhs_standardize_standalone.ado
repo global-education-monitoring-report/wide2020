@@ -185,7 +185,12 @@ program define dhs_standardize_standalone
 		drop zero
 		
 		*Household ids
-		catenate hh_id = cluster hv002 
+		if (country_year == "Honduras_2005" | country_year == "Mali_2001" | country_year == "Peru_2012" | country_year == "Senegal_2005") {
+			catenate hh_id = hv001 hv002 
+		}
+		else {
+			catenate hh_id = cluster hv002 
+		}
 		
 		
 		* add religion and ethnicity
@@ -389,7 +394,7 @@ program define dhs_standardize_standalone
 	capture rmdir "temporal"
 	
 	
-	*****************************CLEAN  OR DATA HOMOGENIZATION**********************************
+	*****************************CLEAN OR DATA HOMOGENIZATION**********************************
 	
 	*create auxiliary tempfiles from setcode table to fix values later
 	local vars sex location date duration ethnicity region religion hv122 hv109 calendar calendar2
@@ -431,6 +436,15 @@ program define dhs_standardize_standalone
 	* read the master data
 	use "`output_path'/DHS/data/dhs_read.dta", clear
 	set more off
+	
+	*******LEVEL ATTENDING THE CURRENT YEAR********
+	clonevar level_attending = hv122
+	*0 not attending, preschool
+	*1 primary
+	*2 secondary
+	*3 higher
+	*8 dk
+	*9 na (?)
 
 	*Fixing categories and creating variables
 	replace hv007 = year_folder if hv007 < 1980
@@ -439,7 +453,7 @@ program define dhs_standardize_standalone
 	replace_many `fixhv109' hv109 hv109_replace
 	replace_many `fixhv122' hv122 hv122_replace
 	replace_many `fixregion' region region_replace country 
-	replace_many `fixreligion' religion religion_replace
+	replace_many `fixreligion' religion religion_replac
 	*replace_many `fixethnicity' ethnicity ethnicity_replace
 	replace_many `fixdate' hv006 hv006_replace country_year
 	replace_many `fixcalendar' hv007 hv007_replace country_year hv006
@@ -806,7 +820,17 @@ program define dhs_standardize_standalone
 	generate lowsec_age0_eduout = prim_age0_eduout + prim_dur_eduout
 	generate upsec_age0_eduout  = lowsec_age0_eduout + lowsec_dur_eduout
 	for X in any prim lowsec upsec: generate X_age1_eduout = X_age0_eduout + X_dur_eduout - 1
-	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv122 hv123 hv124 years_*
+	
+	
+	capture confirm variable ecd
+								if !_rc {
+	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv122 hv123 hv124 years_* ecd*
+								}
+								else {
+	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv122 hv123 hv124 years_* 
+								}
+	
+	
 
 
 	*******/ATTEND HIGHER AND EDUOUT********
@@ -850,6 +874,8 @@ program define dhs_standardize_standalone
 	gen literacy_1524=literacy if age >= 15 & age <= 24
 	replace literacy_1524=1 if eduyears >= years_lowsec & (age >= 15 & age <= 24)
 	*******/LITERACY**********
+	
+	
 
 	gen survey="DHS"
 	compress
