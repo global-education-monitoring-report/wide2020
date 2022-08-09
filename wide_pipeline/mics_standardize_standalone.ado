@@ -1449,7 +1449,7 @@ generate year_folder = `country_year'
 												rename FCF# UCF#
 								}
 								else {
-								 				keep iso_code3 year_folder hh1 hh2 hl1 FL*  FSDISABILITY
+								 				keep iso_code3 year_folder hh1 hh2 hl1 FL*  
 
 																}
 					compress
@@ -1539,8 +1539,8 @@ if !_rc {
 
 		* PART ONE: Creating separate variables per domain of functioning *
 		
-		
-
+		capture confirm variable FCF7
+	if !_rc {
 		* SEEING DOMAIN *
 		gen SEE_IND = FCF7
 
@@ -1608,8 +1608,8 @@ if !_rc {
 
 		* BEHAVIOUR DOMAIN *
 		gen Behaviour_2to4 = 9 
-		*replace Behaviour_2to4 = 0 if inrange(FCF19, 1, 4)
-		*replace Behaviour_2to4 = 1 if FCF19 == 5
+		replace Behaviour_2to4 = 0 if inrange(FCF19, 1, 4)
+		replace Behaviour_2to4 = 1 if FCF19 == 5
 		label define behave 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
 		label value Behaviour_2to4 behave 
 
@@ -1617,17 +1617,19 @@ if !_rc {
 
 		gen FunctionalDifficulty_2to4 = 0
 		replace FunctionalDifficulty_2to4 = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | FineMotor_2to4 == 1 | Communication_2to4 == 1 | Learning_2to4 == 1 | Playing_2to4 == 1 | Behaviour_2to4 == 1) 
-		replace FunctionalDifficulty_2to4 = 9 if (FunctionalDifficulty_2to4 != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | FineMotor_2to4 == 9 | Communication_2to4 == 9 | Learning_2to4 == 9 | Playing_2to4 == 9 | Behaviour_2to4 == 9)) 
+		replace FunctionalDifficulty_2to4 = . if (FunctionalDifficulty_2to4 != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | FineMotor_2to4 == 9 | Communication_2to4 == 9 | Learning_2to4 == 9 | Playing_2to4 == 9 | Behaviour_2to4 == 9)) 
 		label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
 		label value FunctionalDifficulty_2to4 
+		
+		}
 
-		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communicate
-
-		gen disability_trad = 0
-		replace disability_trad = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | Communication_2to4 == 1 ) 
-		replace disability_trad = 9 if (disability_trad != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | Communication_2to4 == 9 )) 
-		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
-		label value disability_trad difficulty
+// 		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communicate
+//
+// 		gen disability_trad = 0
+// 		replace disability_trad = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | Communication_2to4 == 1 ) 
+// 		replace disability_trad = . if (disability_trad != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | Communication_2to4 == 9 )) 
+// 		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+// 		label value disability_trad difficulty
 		
 
 
@@ -1639,8 +1641,10 @@ if !_rc {
 		* PART ONE: Creating separate variables per domain of functioning *
 
 		*drop previously created
-		drop *_IND
+		capture drop *_IND
 		
+		capture confirm variable UCF6
+	if !_rc {
 		* SEEING DOMAIN *
 		gen SEE_IND = UCF6
 
@@ -1702,8 +1706,8 @@ if !_rc {
 
 		* LEARNING DOMAIN *
 		gen Learning_5to17 = 9
-		*replace Learning_5to17 = 0 if inrange(FCF19, 1, 2)
-		*replace Learning_5to17 = 1 if inrange(FCF19, 3, 4)
+		replace Learning_5to17 = 0 if inrange(UCF19, 1, 2)
+		replace Learning_5to17 = 1 if inrange(UCF19, 3, 4)
 		label define learning 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
 		label value Learning_5to17 learning
 
@@ -1761,80 +1765,92 @@ if !_rc {
 		gen FunctionalDifficulty_5to17 = 0
 		replace FunctionalDifficulty_5to17 = 1 if (Seeing_5to17 == 1 | Hearing_5to17 == 1 | Walking_5to17 == 1 | Selfcare_5to17 == 1 | Communication_5to17 == 1 | Learning_5to17 == 1 | Remembering_5to17 == 1 | Concentrating_5to17 == 1 | AcceptingChange_5to17 == 1 | Behaviour_5to17 == 1 | MakingFriends_5to17 == 1 | Anxiety_5to17 == 1 | Depression_5to17 == 1) 
 		replace FunctionalDifficulty_5to17 = 9 if (FunctionalDifficulty_5to17 != 1 & (Seeing_5to17 == 9 | Hearing_5to17 == 9 | Walking_5to17 == 9 | Selfcare_5to17 == 9 | Communication_5to17 == 9 | Learning_5to17 == 9 | Remembering_5to17 == 9 | Concentrating_5to17 == 9 | AcceptingChange_5to17 == 9 | Behaviour_5to17 == 9 | MakingFriends_5to17 == 9 | Anxiety_5to17 == 9 | Depression_5to17 == 9)) 
-		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		capture label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
 		label value FunctionalDifficulty_5to17 difficulty
-
-
-		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communication
-
-		replace disability_trad = 0 if schage > 4
-		replace disability_trad = 1 if (Seeing_5to17 == 1 | Hearing_5to17 == 1 | Walking_5to17 == 1 |  Communication_5to17 == 1 ) & schage > 4
-		replace disability_trad = 9 if (disability_trad != 1 & (Seeing_5to17 == 9 | Hearing_5to17 == 9 | Walking_5to17 == 9 | Communication_5to17 == 9 )) & schage > 4
-		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
-		label value disability_trad difficulty
 		
-		* Creating disability indicator that is the combination of both FunctionalDifficulty_2to4 and FunctionalDifficulty_5to17
+		}
 
-		gen disability_children = FunctionalDifficulty_2to4  + FunctionalDifficulty_5to17
-	
+
+// 		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communication
+//
+// 		replace disability_trad = 0 if schage > 4
+// 		replace disability_trad = 1 if (Seeing_5to17 == 1 | Hearing_5to17 == 1 | Walking_5to17 == 1 |  Communication_5to17 == 1 ) & schage > 4
+// 		replace disability_trad = . if (disability_trad != 1 & (Seeing_5to17 == 9 | Hearing_5to17 == 9 | Walking_5to17 == 9 | Communication_5to17 == 9 )) & schage > 4
+// 		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+// 		label value disability_trad difficulty
 		
+		* Creating disability indicator that is the combination of both FunctionalDifficulty_2to4 and FunctionalDifficulty_5to17 IF BOTH EXIST 
+		capture confirm variable FunctionalDifficulty_2to4 FunctionalDifficulty_5to17
+		if !_rc {
+		egen disability_children =rowtotal(FunctionalDifficulty_2to4  FunctionalDifficulty_5to17)
+				}
+				
 
 		***************************************************************************
 		*** ADULTS (men and women) 18+ YEARS ***
 
-		*First homogenize MAF and AF
-		*foreach var of varlist AF6 AF8 AF9 AF10 AF11 AF12 {
-		*		replace `var' = M`var' if sex=="Male"
-		*		}
+		
 
+		capture confirm variable AF6
+	if !_rc {
+			*First homogenize MAF and AF...IF MAF EXISTS...
+		capture confirm variable MAF6
+	if !_rc {
+		foreach var of varlist AF6 AF8 AF9 AF10 AF11 AF12 {
+				replace `var' = M`var' if sex=="Male"
+				}
+			}
+	
 		*Now rename the AF* 
+		rename AF6 Vision 
+		rename AF8 Hearing 
+ 		rename AF9 Mobility
+ 		rename AF10 Cognition // COGNITION=REMEMBERING OR CONCENTRATING
+		rename AF11 Self_Care 
+ 		rename AF12 Communication
 
-// 		rename AF6 Vision 
-// 		rename AF8 Hearing 
-// 		rename AF9 Mobility
-// 		rename AF10 Cognition // COGNITION=REMEMBERING OR CONCENTRATING
-// 		rename AF11 Self_Care 
-// 		rename AF12 Communication
+		gen SumPoints=0
+		foreach v of var Vision Hearing Mobility Cognition Self_Care Communication {
+ 		replace SumPoints=SumPoints + inlist(`v',2,3,4)
+ 		}
+ 		replace SumPoints=. if missing(Vision) & missing(Hearing) & ///
+ 		missing(Mobility) & missing(Cognition) & missing(Self_Care) & missing(Communication)
 
-//
-// 		gen SumPoints=0
-// 		foreach v of var Vision Hearing Mobility Cognition Self_Care Communication {
-// 		replace SumPoints=SumPoints + inlist(`v',2,3,4)
-// 		}
-// 		replace SumPoints=. if missing(Vision) & missing(Hearing) & ///
-// 		missing(Mobility) & missing(Cognition) & missing(Self_Care) & missing(Communication)
-//
-// 		gen SUM_234=. if SumPoints==.
-// 		replace SUM_234=1 if SumPoints==1
-// 		replace SUM_234=2 if SumPoints==2
-// 		replace SUM_234=3 if SumPoints==3
-// 		replace SUM_234=4 if SumPoints==4
-// 		replace SUM_234=5 if SumPoints==5
-// 		replace SUM_234=6 if SumPoints==6
-// 		replace SUM_234=0 if SumPoints==0 
-//
-// 		gen SumPoints2=0
-// 		foreach v of var Vision Hearing Mobility Cognition Self_Care Communication {
-// 		replace SumPoints2=SumPoints2 + inlist(`v',3,4)
-// 		}
-// 		replace SumPoints2=. if missing(Vision) & missing(Hearing) & ///
-// 		missing(Mobility) & missing(Cognition) & missing(Self_Care) & missing(Communication)
-//
-// 		gen SUM_34=. if SumPoints2==.
-// 		replace SUM_34=1 if SumPoints2==1
-// 		replace SUM_34=2 if SumPoints2==2
-// 		replace SUM_34=3 if SumPoints2==3
-// 		replace SUM_34=4 if SumPoints2==4
-// 		replace SUM_34=5 if SumPoints2==5
-// 		replace SUM_34=6 if SumPoints2==6
-// 		replace SUM_34=0 if SumPoints2==0
-// 		tabulate SUM_34
-//
-// 		gen Disability_adults=2
-// 		replace Disability_adults=1 if (SUM_234 >=2 | SUM_34==1)
-// 		replace Disability_adults=. if missing(Vision) & missing(Hearing) & missing(Mobility) & ///
-// 		missing(Cognition) & missing(Self_Care) & missing(Communication)
-//
+ 		gen SUM_234=. if SumPoints==.
+ 		replace SUM_234=1 if SumPoints==1
+ 		replace SUM_234=2 if SumPoints==2
+ 		replace SUM_234=3 if SumPoints==3
+ 		replace SUM_234=4 if SumPoints==4
+ 		replace SUM_234=5 if SumPoints==5
+ 		replace SUM_234=6 if SumPoints==6
+ 		replace SUM_234=0 if SumPoints==0 
+
+ 		gen SumPoints2=0
+ 		foreach v of var Vision Hearing Mobility Cognition Self_Care Communication {
+ 		replace SumPoints2=SumPoints2 + inlist(`v',3,4)
+ 		}
+ 		replace SumPoints2=. if missing(Vision) & missing(Hearing) & ///
+ 		missing(Mobility) & missing(Cognition) & missing(Self_Care) & missing(Communication)
+
+ 		gen SUM_34=. if SumPoints2==.
+ 		replace SUM_34=1 if SumPoints2==1
+ 		replace SUM_34=2 if SumPoints2==2
+ 		replace SUM_34=3 if SumPoints2==3
+ 		replace SUM_34=4 if SumPoints2==4
+ 		replace SUM_34=5 if SumPoints2==5
+ 		replace SUM_34=6 if SumPoints2==6
+ 		replace SUM_34=0 if SumPoints2==0
+ 		*tabulate SUM_34
+		
+		gen Disability_adults=0
+		replace Disability_adults=1 if (inlist(Vision,3,4) | inlist(Hearing,3,4) | inlist(Mobility,3,4) | ///
+		inlist(Communication,3,4) | inlist(Self_Care,3,4) | inlist(Cognition,3,4))
+		replace Disability_adults=. if missing(Vision) & missing(Hearing) & missing(Mobility) & ///
+		missing(Cognition) & missing(Self_Care) & missing(Communication)
+		
+		label value Disability_adults difficulty
+		}
+
 // 		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communication
 //
 // 		drop SumPoints*
@@ -1856,7 +1872,10 @@ if !_rc {
 // 		replace disability_trad=1 if (SUM_234 >=2 | SUM_34==1)
 // 		replace disability_trad=. if missing(Vision) & missing(Hearing) & missing(Mobility) & missing(Communication)
 //
-//		
+
+		*Taking care of the 9 (missings)
+		
+		
 	
 	***/FINISH DISABILITY CALCULATION***
 	
@@ -1886,38 +1905,51 @@ if !_rc {
 	rename prim_age0_eduout prim_age0
 	
 	
-	**Household education**
+	**HOUSEHOLD EDUCATION**
+	**NEW!**
 	
-	* "Household Education 1": At least one adult of the family has completed primary 
-	egen hh_edu1 = max(comp_prim), by(hh_id)
+	/* 
+		Most educated adult has’ and the options would be: 
+	-	0  not completed any level of education 
+	-	1  completed primary
+	-	2  completed lower secondary
+	-	3  completed upper secondary
+	-	4  completed post-secondary 
+	*/
 
-	* "Household Education 2": At least one adult of the family has completed lower secondary
-	egen hh_edu2 = max(comp_lowsec), by(hh_id) 
-
-	* "Household Education 3": Most educated male in the family has at least primary
-	gen male_comp_prim = comp_prim if sex=="Male"
-	egen hh_edu3 = max(male_comp_prim), by(hh_id)
-	drop male_comp_prim
-
-	* "Household Education 4": Most educated female in the family has at least primary
-	gen female_comp_prim = comp_prim if sex=="Female"
-	egen hh_edu4 = max(female_comp_prim), by(hh_id)
-	drop female_comp_prim
-
-	* "Household Education 5": Most educated male in the family has at least lower secondary
-	gen male_comp_lowsec = comp_lowsec if sex=="Male"
-	egen hh_edu5 = max(male_comp_lowsec), by(hh_id)
-	drop male_comp_lowsec
-
-	* "Household Education 6": Most educated female in the family has at least lower secondary
-	gen female_comp_lowsec = comp_lowsec if sex=="Female"
-	egen hh_edu6 = max(female_comp_lowsec), by(hh_id)
-	drop female_comp_lowsec
+  	* Household Education 1: Considering head of household as highest education (no missings but recode categories)
+	* However, it's not rare that the mother has higher education than the head 
 	
-	* "Household Education 7": Most educated adult (25+ years old) in the family has at least lower secondary
-	gen adult_comp_lowsec = comp_lowsec if age >= 25 
-	egen hh_edu7 = max(adult_comp_lowsec), by(hh_id)
-	drop adult_comp_lowsec
+	bysort hh_id: egen head_eduyears = total(cond(hl3 == 1 , eduyears, .))
+	
+	generate hh_edu_head = 0
+	foreach Z in prim lowsec upsec higher {
+		replace hh_edu_head = hh_edu_head + 1  if head_eduyears >= years_`Z'
+				 	}
+	label define hh_edu_head 0 "Not completed any level of education" 1 "Completed primary" 2 "Completed lower secondary" 3 "Completed upper secondary" 4 "Completed post-secondary" 
+	label value hh_edu_head hh_edu_head
+	
+	* Household Education 2: Get highest education of all household adults (using age, could have used relationship to head but age might be better)
+		
+	bysort hh_id: egen adult_eduyears = max(cond(hl6 >= 18 , eduyears, .))
+	
+	generate hh_edu_adult = 0
+	foreach Z in prim lowsec upsec higher {
+		replace hh_edu_adult = hh_edu_adult + 1  if adult_eduyears >= years_`Z'
+				 	}
+	label value hh_edu_adult hh_edu_head
+	
+	* Mother's education : use melevel variable otherwise
+	
+	gen female_eduyears = eduyears if hl4 == 2 // females
+	bysort hh_id: egen women_eduyears = max(cond(hl6 >= 18 , female_eduyears, .)) //adult females
+	drop female_eduyears
+	
+	generate hh_edu_women = 0
+	foreach Z in prim lowsec upsec higher {
+		replace hh_edu_women = hh_edu_women + 1  if women_eduyears >= years_`Z'
+				 	}
+	label value hh_edu_women hh_edu_head
 	
 	* "Household Education 8": Literate adult (25+ years old) in the family 
 		capture confirm variable literacy_1549

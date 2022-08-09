@@ -7,7 +7,7 @@
 *TO ONLY UPDATE NEW DATASETS, ON A SEQUENTIAL BASIS********************
 ***********************************************************************
 
-global raw_path "C:\Users\taiku\Desktop\multiproposito\mics6completas"
+global raw_path "C:\Users\taiku\Desktop\temporary_raw"
 *C:\Users\taiku\Desktop\temporary_raw
 global std_path "C:\Users\taiku\Desktop\temporary_std"
 
@@ -69,23 +69,23 @@ foreach survey of local process_list_mics {
  set trace off	 
 
 
-//
-// 	 set trace on
-//   	 set tracedepth 1
-//  **Now call DHS_standardize RECURSIVELY
-//  local dpath "C:\Users\taiku\UNESCO\GEM Report - 1_raw_data"
-//  local opath "C:\Users\taiku\Desktop\temporary_std"
-//  foreach survey of local process_list_dhs {
-//           di "Now processing" " `survey'"
-//           *Directly run widetable with one survey
-//  			tokenize "`survey'", parse(_)
-//  		dhs_standardize_standalone,  data_path(`dpath') output_path(`opath')  country_code("`1'") country_year("`3'")
-//  		local isocode=upper("`1'")
-//  		capture mkdir  "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_DHS"
-//  		cd "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_DHS"
-//  		save "std_`isocode'_`3'_DHS.dta", replace
-//  		clear
-//       }
-//   set trace off	 
+
+ 	 set trace on
+   	 set tracedepth 1
+  **Now call DHS_standardize RECURSIVELY
+  local dpath "C:\Users\taiku\UNESCO\GEM Report - 1_raw_data"
+  local opath "C:\Users\taiku\Desktop\temporary_std"
+  foreach survey of local process_list_dhs {
+           di "Now processing" " `survey'"
+           *Directly run widetable with one survey
+  			tokenize "`survey'", parse(_)
+  		dhs_standardize_standalone,  data_path(`dpath') output_path(`opath')  country_code("`1'") country_year("`3'")
+  		local isocode=upper("`1'")
+  		capture mkdir  "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_DHS"
+  		cd "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_DHS"
+  		save "std_`isocode'_`3'_DHS.dta", replace
+  		clear
+       }
+   set trace off	 
 
 *DIS fallaron CUB HND GEO MNE

@@ -4,6 +4,7 @@
 * Update 19/07: Added full_literacy, literacy, eduout_preprim and ECDI calculation (for this install addon filename)
 * Update 27/07: Added attend_higher_5 eduout_preprim
 * Update 29/11: Fix literacy uptake from IR and MR
+* Update 02/aug/22: introduce relationship to head into std file (hv101), through excel dictionary setcode file 
 
 
 program define dhs_standardize_standalone
@@ -585,7 +586,9 @@ program define dhs_standardize_standalone
 	generate years_prim	= prim_dur
 	generate years_lowsec = prim_dur + lowsec_dur
 	generate years_upsec = prim_dur + lowsec_dur + upsec_dur
-	*gen years_higher	=prim_dur+lowsec_dur+upsec_dur+higher_dur
+	*BIG assumption for HH_EDU purposes: higher duration is of 3 years 
+	gen higher_dur = 3
+	gen years_higher	=prim_dur+lowsec_dur+upsec_dur+higher_dur
 
 
 	*Ages for completion
@@ -824,10 +827,10 @@ program define dhs_standardize_standalone
 	
 	capture confirm variable ecd
 								if !_rc {
-	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv122 hv123 hv124 years_* ecd*
+	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv101 hv122 hv123 hv124 years_* ecd*
 								}
 								else {
-	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv122 hv123 hv124 years_* 
+	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv101 hv122 hv123 hv124 years_* 
 								}
 	
 	
@@ -876,6 +879,55 @@ program define dhs_standardize_standalone
 	*******/LITERACY**********
 	
 	
+	**HOUSEHOLD EDUCATION**
+	**NEW!**
+	
+	/* 
+		Most educated adult has’ and the options would be: 
+	-	0  not completed any level of education 
+	-	1  completed primary
+	-	2  completed lower secondary
+	-	3  completed upper secondary
+	-	4  completed post-secondary 
+	*/
+
+  	* Household Education 1: Considering head of household as highest education (no missings but recode categories)
+	* However, it's not rare that the mother has higher education than the head 
+	
+	bysort hh_id: egen head_eduyears = total(cond(hv101 == 1 , eduyears, .))
+	
+	generate hh_edu_head = 0
+	foreach Z in prim lowsec upsec higher {
+		replace hh_edu_head = hh_edu_head + 1  if head_eduyears >= years_`Z'
+				 	}
+	label define hh_edu_head 0 "Not completed any level of education" 1 "Completed primary" 2 "Completed lower secondary" 3 "Completed upper secondary" 4 "Completed post-secondary" 
+	label value hh_edu_head hh_edu_head
+	
+	* Household Education 2: Get highest education of all household adults (using age, could have used relationship to head but age might be better)
+		
+	bysort hh_id: egen adult_eduyears = max(cond(age >= 18 , eduyears, .))
+	
+	generate hh_edu_adult = 0
+	foreach Z in prim lowsec upsec higher {
+		replace hh_edu_adult = hh_edu_adult + 1  if adult_eduyears >= years_`Z'
+				 	}
+	label value hh_edu_adult hh_edu_head
+	
+	* Mother's education : use melevel variable otherwise
+	
+	gen female_eduyears = eduyears if sex == "Female" // females
+	bysort hh_id: egen women_eduyears = max(cond(age >= 18 , female_eduyears, .)) //adult females
+	drop female_eduyears
+	
+	generate hh_edu_women = 0
+	foreach Z in prim lowsec upsec higher {
+		replace hh_edu_women = hh_edu_women + 1  if women_eduyears >= years_`Z'
+				 	}
+	label value hh_edu_women hh_edu_head
+	
+				   
+	**/Household education**
+		
 
 	gen survey="DHS"
 	compress
