@@ -102,17 +102,18 @@ for (i in 1:length(file_names)) {
   {
     wide_calculate <- wide_calculate %>% mutate(country =  str_split(country_year, "_")[[1]][1]) 
   }
+}
   
 
   #Generate the categories checking the dataset
-  categoriesinsvy <- c('hh_edu_adult', 'hh_edu_head')
+  categoriesinsvy <- c('disability','sex')
   
   #Generate a long version of wide_calculate qs file
   wide_long <-  pivot_longer(wide_calculate, names_to = 'indicator', cols = any_of(wide_outcome_vars))
   print("pivoted") 
   
   # Run aggregation 
-  summarized_wide <- wide_aggregate(wide_long, categoriesinsvy, depth = 1)
+  summarized_wide <- wide_aggregate(wide_long, categoriesinsvy, depth = 2)
   print("summarized")
   summarized_wider <-  pivot_wider(summarized_wide, names_from = 'indicator',  values_from = c(value,count))
   print("re-pivoted")
@@ -131,4 +132,12 @@ for (i in 1:length(file_names)) {
   write.csv(summarized_wider, paste0(survey,"_summarized.csv"))
 }
 
+#OPTIONAL: merge all indicators into a single csv file
+library(plyr)
+
+#setwd("C:/Users/taiku/UNESCO/GEM Report - 3_calculated")
+setwd("C:/Users/taiku/Desktop/temporary_sum")
+all_indicators <- ldply(list.files(), read.csv, header=TRUE)
+
+write.csv(all_indicators, paste0("widetable","_summarized_disability_fromraw.csv"))
 

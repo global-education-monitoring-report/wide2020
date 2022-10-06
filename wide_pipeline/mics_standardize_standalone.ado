@@ -5,7 +5,7 @@
 *   added full_literacy 
 *	added attend_higher_5 
 *	added eduout_preprim
-* May 2022 update: disability and disability_trad added as a new category 
+* May 2022 update: disability added as a new category 
 
 
 *February 2022 update: updated variable code_ed6a into level_attending into the microdata
@@ -970,6 +970,7 @@ capture rename ln LN
 							capture confirm variable AF12
 							if !_rc {
 										keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy AF*
+										
 									}
 							else {
 										keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy
@@ -1008,7 +1009,9 @@ capture rename ln LN
 							capture confirm variable AF12
 							if !_rc {
 									  keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy full_literacy AF* disability
-									  }
+	  								rename disability wdisability
+									sdecode wdisability, replace 
+								  }
 							else {
 									 keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy full_literacy
      								}
@@ -1044,6 +1047,8 @@ capture rename ln LN
 							capture confirm variable AF12
 							if !_rc {							
 								keep iso_code3 year_folder sex hh1 hh2 hl1 MT* AF* disability
+								rename disability wdisability
+								sdecode wdisability, replace 
 								}
 							else {
 							    keep iso_code3 year_folder sex hh1 hh2 hl1 MT*
@@ -1073,6 +1078,8 @@ capture rename ln LN
 							rename HH2 hh2, replace
 							gen sex="Female"
 								keep iso_code3 year_folder sex hh1 hh2 hl1 AF* disability
+								rename disability wdisability
+								sdecode wdisability, replace 
 								compress
 							tempfile wm_selection
 							save "`wm_selection'"
@@ -1117,6 +1124,7 @@ generate year_folder = `country_year'
 							capture confirm variable MAF12 
 							if !_rc {
 							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MMT* MAF* mdisability
+							sdecode mdisability, replace 
 							}
 							else {
 							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MMT* 
@@ -1127,6 +1135,7 @@ generate year_folder = `country_year'
 							capture confirm variable MAF12 
 							if !_rc {
 							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MAF* mdisability
+							sdecode mdisability, replace 
 							}
 							else {
 							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4
@@ -1172,6 +1181,7 @@ generate year_folder = `country_year'
 				capture confirm variable MAF12 
 							if !_rc {
 							keep iso_code3 year_folder HH1 HH2 LN MMT* MAF* mdisability
+							sdecode mdisability, replace 
 							}
 							else {
 							keep iso_code3 year_folder HH1 HH2 LN MMT*
@@ -1207,6 +1217,7 @@ generate year_folder = `country_year'
 					rename HH1 hh1, replace
 					rename HH2 hh2, replace
 							keep iso_code3 year_folder HH1 HH2 LN MAF* mdisability
+							sdecode mdisability, replace 
 							capture duplicates drop iso_code3 year_folder hh1 hh2 hl1 , force
 							tempfile mn_selection
 							save "`mn_selection'"
@@ -1266,11 +1277,13 @@ generate year_folder = `country_year'
 						 if !_rc {
 											keep iso_code3 year_folder hh1 hh2 hl1 EC* UCF* CDISABILITY
 											rename UCF# FCF#
+											sdecode CDISABILITY, replace
 						}
 						else {
 						capture confirm variable FCF2
 								if !_rc {
 												keep iso_code3 year_folder hh1 hh2 hl1 EC* FCF* CDISABILITY
+												sdecode CDISABILITY, replace
 								}
 								else {
 								 				keep iso_code3 year_folder hh1 hh2 hl1 EC* 
@@ -1370,6 +1383,7 @@ generate year_folder = `country_year'
 						     di "Early Childhood Development submodule is not there, but child functioning is"
 											keep iso_code3 year_folder hh1 hh2 hl1 UCF* CDISABILITY
 											rename UCF# FCF#
+											sdecode CDISABILITY, replace
 											compress
 					tempfile ch_selection
 					save "`ch_selection'"
@@ -1384,6 +1398,7 @@ generate year_folder = `country_year'
 							  di "Early Childhood Development submodule is not there, but child functioning is"
 
 												keep iso_code3 year_folder hh1 hh2 hl1 FCF* CDISABILITY
+												sdecode CDISABILITY, replace
 												compress
 					tempfile ch_selection
 					save "`ch_selection'"
@@ -1412,7 +1427,7 @@ else {
 
 ***************************
 
-*begin of fs extraction: 
+ *begin of fs module (mothers of 5-17 years old children) extraction: 
 cd "`data_path'\\`country_code'_`country_year'_MICS\"
   
 capture confirm file fs.dta 
@@ -1439,6 +1454,7 @@ generate year_folder = `country_year'
 					capture confirm variable UCF2 
 						 if !_rc {
 												keep iso_code3 year_folder hh1 hh2 hl1 FL* UCF*  FSDISABILITY
+												sdecode FSDISABILITY, replace
 												
 						}
 						else {
@@ -1447,6 +1463,7 @@ generate year_folder = `country_year'
 												keep iso_code3 year_folder hh1 hh2 hl1 FL* FCF*  FSDISABILITY
 										**for disability:all the variables coded as FCF will be renamed as UCF as its not homegeneous between surveys 
 												rename FCF# UCF#
+												sdecode FSDISABILITY, replace
 								}
 								else {
 								 				keep iso_code3 year_folder hh1 hh2 hl1 FL*  
@@ -1476,6 +1493,7 @@ generate year_folder = `country_year'
 						 if !_rc {
 						     di "Early Childhood Development submodule is not there, but child functioning is"
 											keep iso_code3 year_folder hh1 hh2 hl1 UCF*  FSDISABILITY
+											sdecode FSDISABILITY, replace
 											
 						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
 						save "`output_path'/MICS/data/mics_standardize.dta", replace
@@ -1487,6 +1505,7 @@ generate year_folder = `country_year'
 							  di "Early Childhood Development submodule is not there, but child functioning is"
 
 												keep iso_code3 year_folder hh1 hh2 hl1 FCF*  FSDISABILITY
+												sdecode FSDISABILITY, replace
 						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
 						save "`output_path'/MICS/data/mics_standardize.dta", replace
 						
@@ -1764,7 +1783,7 @@ if !_rc {
 
 		gen FunctionalDifficulty_5to17 = 0
 		replace FunctionalDifficulty_5to17 = 1 if (Seeing_5to17 == 1 | Hearing_5to17 == 1 | Walking_5to17 == 1 | Selfcare_5to17 == 1 | Communication_5to17 == 1 | Learning_5to17 == 1 | Remembering_5to17 == 1 | Concentrating_5to17 == 1 | AcceptingChange_5to17 == 1 | Behaviour_5to17 == 1 | MakingFriends_5to17 == 1 | Anxiety_5to17 == 1 | Depression_5to17 == 1) 
-		replace FunctionalDifficulty_5to17 = 9 if (FunctionalDifficulty_5to17 != 1 & (Seeing_5to17 == 9 | Hearing_5to17 == 9 | Walking_5to17 == 9 | Selfcare_5to17 == 9 | Communication_5to17 == 9 | Learning_5to17 == 9 | Remembering_5to17 == 9 | Concentrating_5to17 == 9 | AcceptingChange_5to17 == 9 | Behaviour_5to17 == 9 | MakingFriends_5to17 == 9 | Anxiety_5to17 == 9 | Depression_5to17 == 9)) 
+		replace FunctionalDifficulty_5to17 = . if (FunctionalDifficulty_5to17 != 1 & (Seeing_5to17 == 9 | Hearing_5to17 == 9 | Walking_5to17 == 9 | Selfcare_5to17 == 9 | Communication_5to17 == 9 | Learning_5to17 == 9 | Remembering_5to17 == 9 | Concentrating_5to17 == 9 | AcceptingChange_5to17 == 9 | Behaviour_5to17 == 9 | MakingFriends_5to17 == 9 | Anxiety_5to17 == 9 | Depression_5to17 == 9)) 
 		capture label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
 		label value FunctionalDifficulty_5to17 difficulty
 		
@@ -1779,11 +1798,12 @@ if !_rc {
 // 		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
 // 		label value disability_trad difficulty
 		
-		* Creating disability indicator that is the combination of both FunctionalDifficulty_2to4 and FunctionalDifficulty_5to17 IF BOTH EXIST 
-		capture confirm variable FunctionalDifficulty_2to4 FunctionalDifficulty_5to17
-		if !_rc {
-		egen disability_children =rowtotal(FunctionalDifficulty_2to4  FunctionalDifficulty_5to17)
-				}
+// 		* Creating disability indicator that is the combination of both FunctionalDifficulty_2to4 and FunctionalDifficulty_5to17 IF BOTH EXIST 
+// 		capture confirm variable FunctionalDifficulty_2to4 FunctionalDifficulty_5to17
+// 		if !_rc {
+// 		egen disability_children =rowtotal(FunctionalDifficulty_2to4  FunctionalDifficulty_5to17)
+// 		*there is a problem here, so we're not using this combined variable just yet (also how did this happened?)
+// 				}
 				
 
 		***************************************************************************
@@ -1842,41 +1862,18 @@ if !_rc {
  		replace SUM_34=0 if SumPoints2==0
  		*tabulate SUM_34
 		
-		gen Disability_adults=0
-		replace Disability_adults=1 if (inlist(Vision,3,4) | inlist(Hearing,3,4) | inlist(Mobility,3,4) | ///
+		gen FunctionalDifficulty_adults=0
+		replace FunctionalDifficulty_adults=1 if (inlist(Vision,3,4) | inlist(Hearing,3,4) | inlist(Mobility,3,4) | ///
 		inlist(Communication,3,4) | inlist(Self_Care,3,4) | inlist(Cognition,3,4))
-		replace Disability_adults=. if missing(Vision) & missing(Hearing) & missing(Mobility) & ///
+		replace FunctionalDifficulty_adults=. if missing(Vision) & missing(Hearing) & missing(Mobility) & ///
 		missing(Cognition) & missing(Self_Care) & missing(Communication)
-		
-		label value Disability_adults difficulty
+		capture label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+
+		label value FunctionalDifficulty_adults difficulty
 		}
-
-// 		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communication
-//
-// 		drop SumPoints*
-// 		gen SumPoints=0
-// 		foreach v of var Vision Hearing Mobility Communication {
-// 		replace SumPoints=SumPoints + inlist(`v',2,3,4)
-// 		}
-// 		replace SumPoints=. if missing(Vision) & missing(Hearing) & ///
-// 		missing(Mobility) & missing(Communication)
-//
-// 		gen SumPoints2=0
-// 		foreach v of var Vision Hearing Mobility Communication {
-// 		replace SumPoints2=SumPoints2 + inlist(`v',3,4)
-// 		}
-// 		replace SumPoints2=. if missing(Vision) & missing(Hearing) & ///
-// 		missing(Mobility) & missing(Communication)
-//
-// 		replace disability_trad=2 if disability_trad==.
-// 		replace disability_trad=1 if (SUM_234 >=2 | SUM_34==1)
-// 		replace disability_trad=. if missing(Vision) & missing(Hearing) & missing(Mobility) & missing(Communication)
-//
-
-		*Taking care of the 9 (missings)
-		
 		
 	
+		
 	***/FINISH DISABILITY CALCULATION***
 	
 	
@@ -1919,15 +1916,22 @@ if !_rc {
 
   	* Household Education 1: Considering head of household as highest education (no missings but recode categories)
 	* However, it's not rare that the mother has higher education than the head 
+	* New age restriction on head 
 	
 	bysort hh_id: egen head_eduyears = total(cond(hl3 == 1 , eduyears, .))
-	
+
 	generate hh_edu_head = 0
 	foreach Z in prim lowsec upsec higher {
 		replace hh_edu_head = hh_edu_head + 1  if head_eduyears >= years_`Z'
 				 	}
+	*Censoring for head of households who are older than 60 years old 
+	bysort hh_id: egen head_age = total(cond(hl3 == 1 , hl6, .))
+	replace hh_edu_head=. if head_age>60
+	
 	label define hh_edu_head 0 "Not completed any level of education" 1 "Completed primary" 2 "Completed lower secondary" 3 "Completed upper secondary" 4 "Completed post-secondary" 
 	label value hh_edu_head hh_edu_head
+	sdecode hh_edu_head, replace 
+	
 	
 	* Household Education 2: Get highest education of all household adults (using age, could have used relationship to head but age might be better)
 		
@@ -1938,6 +1942,8 @@ if !_rc {
 		replace hh_edu_adult = hh_edu_adult + 1  if adult_eduyears >= years_`Z'
 				 	}
 	label value hh_edu_adult hh_edu_head
+	sdecode hh_edu_adult, replace 
+
 	
 	* Mother's education : use melevel variable otherwise
 	
