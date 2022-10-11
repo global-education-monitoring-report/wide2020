@@ -497,3 +497,11 @@ table(uis4wide$source_calculation)
 
 check <- uis4wide %>% filter(survey2=='Likely national survey') %>% select(survey2,source_calculation,metadata,country_id,year) %>% distinct()
 #select(iso_code3 = country_id, year = year, meta = metadata) %>% 
+
+
+############
+
+#Some extracts 
+uis4somalia <- uis4wide %>% filter(str_detect(country_id, 'SOM')) %>% filter(str_detect(year, 'SOM'))
+
+                                   
