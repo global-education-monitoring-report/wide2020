@@ -88,18 +88,32 @@ write.csv(all_indicators, paste0("widetable","_summarized_hh-edu-options.csv"))
 
 #  Part 2 : disability by parts   -----------------------------------------------------------------
 
+path2calculated <- "C:/Users/taiku/Desktop/temporary_std" # just 3 first files to test 
+
+file_names <- list.files(path2calculated) #to set the directory
+file_names
+
+setwd(path2calculated)
+
+
 #Disability by parts: 
 # PARTS: (1) FSDISABILITY, (2) DISABILITY, (3) CDISABILITY 
 
 #Generate the categories checking the dataset, this goes for all parts
-categoriesinsvy <- c('disability','sex')
 
 
 for (i in 1:length(file_names)) {
   setwd(path2calculated)
   print(file_names[[i]]) 
   wide_calculate <- qread(file_names[[i]]) 
-  #LITERACY_1524 would ideally be calculated with adult disability, so it's not included here 
+
+  #variable "country"
+  if(!"country" %in% colnames(wide_calculate))
+  {
+    print("country name missing")
+    wide_calculate <- wide_calculate %>% mutate(country =  str_split(country_year, "_")[[1]][1]) 
+  }
+ 
   
 # (1) FSDISABILITY 5-17 y-o relevant indicators
   
@@ -111,7 +125,9 @@ for (i in 1:length(file_names)) {
       print("comp lowsec calculated with ADULT QUESTIONNAIRE,in part 2" )}
       wide_outcome_vars <- names(select(wide_calculate, comp_prim_v2, eduout_prim, eduout_lowsec, eduout_upsec, edu0_prim, overage2plus))
   
-      summarized_fs <- summ_bypieces(wide_calculate, wide_outcome_vars, depth = 2)
+      categoriesinsvy <- c('FSDISABILITY','sex')
+      
+      summarized_fs <- summ_bypieces(wide_calculate, wide_outcome_vars, depth = 2, categoriesinsvy)
  
   # (2) DISABILITY ADULTS 17+ y-o relevant indicators
   
@@ -126,31 +142,32 @@ for (i in 1:length(file_names)) {
   wide_outcome_vars <- names(select(wide_calculate, comp_lowsec_v2, comp_upsec_v2, comp_prim_1524, comp_lowsec_1524, comp_upsec_2029, 
                                     eduyears_2024, edu4_2024, comp_higher_2yrs_2529, comp_higher_4yrs_2529, 
                                     comp_higher_4yrs_3034, attend_higher_1822, literacy_1524)) 
+ 
+      categoriesinsvy <- c('FunctionalDifficulty_adults','sex')
   
-      summarized_adults <- summ_bypieces(wide_calculate, wide_outcome_vars, depth = 2)
+      summarized_adults <- summ_bypieces(wide_calculate, wide_outcome_vars, depth = 2, categoriesinsvy)
   
 # (3) CDISABILITY <5 y-o relevant indicators
       
       wide_outcome_vars <- names(select(wide_calculate, preschool_3))
       
-      summarized_ch <- summ_bypieces(wide_calculate, wide_outcome_vars, depth = 2)
+      categoriesinsvy <- c('CDISABILITY','sex')
       
-      summarized_disability <- full_join(summarized_fs,summarized_adults,summarized_ch,  by = c('country', 'survey', 'year','category','disability', 'sex'))
+      summarized_ch <- summ_bypieces(wide_calculate, wide_outcome_vars, depth = 2, categoriesinsvy)
+      
+      #Consolidate parts
+      summarized_disability <- full_join(summarized_fs,summarized_adults,summarized_ch,  by = c('country', 'survey', 'year','category', 'sex'))
+      
+      #Get rid of category=='Sex'
+      
+      # Export data as .csv format by country
+      survey <- substring( file_names[[i]], 1, 13)
+      setwd("C:/Users/taiku/Desktop/temporary_sum")
+      write.csv(summarized_disability, paste0(survey,"_summarized.csv"))
+      
       
 }
 
-#variable "country"
-if(!"country" %in% colnames("RESULT"))
-{
-  wide_calculate <- wide_calculate %>% mutate(country =  str_split(country_year, "_")[[1]][1]) 
-}
-}
-
-
-# Export data as .csv format by country
-survey <- substring( file_names[[i]], 1, 13)
-setwd("C:/Users/taiku/Desktop/temporary_sum")
-write.csv(summarized_wider, paste0(survey,"_summarized.csv"))
 
 
 
@@ -161,7 +178,8 @@ library(plyr)
 setwd("C:/Users/taiku/Desktop/temporary_sum")
 all_indicators <- ldply(list.files(), read.csv, header=TRUE)
 
-write.csv(all_indicators, paste0("widetable","_summarized_disability_fromraw.csv"))
+write.csv(all_indicators, paste0("widetable","_summarized_chaosdisability.csv"))
 
-
+#search variables through this 
+wide_calculate %>% dplyr:: select(contains("dif")) %>% names()
 

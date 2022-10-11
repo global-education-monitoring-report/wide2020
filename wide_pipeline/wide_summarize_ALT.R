@@ -70,7 +70,11 @@ summ_bypieces <- function(qsfile, wide_outcome_vars, depth = 2, categoriesinsvy)
   summarized_wider <- summarized_wider %>% rename_all(~stringr::str_replace(.,"^value_",""))  %>%
     rename_with(~paste0(., "_m"), any_of(wide_outcome_vars)) %>% 
     rename_with(~paste0(., "_no"), any_of(paste0('count_',wide_outcome_vars)))  %>%  
-    rename_all(~stringr::str_replace(.,"^count_",""))
+    rename_all(~stringr::str_replace(.,"^count_","")) %>%
+    rename_all(~stringr::str_replace(.,"CDISABILITY","disability")) %>%
+    rename_all(~stringr::str_replace(.,"FSDISABILITY","disability")) %>%
+    rename_all(~stringr::str_replace(.,"FunctionalDifficulty_adults","disability"))
+  
   #Fixing category names
   summarized_wider %>% mutate(category= str_to_title(category))
   
