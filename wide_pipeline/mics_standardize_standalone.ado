@@ -571,8 +571,12 @@ program define mics_standardize_standalone
 	replace eduyears=ed4b if ed4a=="3" & country_year=="Nepal_2019"
 	replace eduyears=ed4b if ed4a=="4" & country_year=="Nepal_2019"
 	replace eduyears=ed4b if ed4a=="5" & country_year=="Nepal_2019"
+	
+// 	replace eduyears=ed4b+years_prim if code_ed4a==2 &  inlist(ed4b, 1, 2) & country_year=="Lesotho_2018" // incomplete lowsec
+// 	replace eduyears=ed4b+years_prim if code_ed4a==2 &  inlist(ed4b, 3, 4) & country_year=="Lesotho_2018" // complete lowsec , incomplete upsec
+// 	replace eduyears=ed4b+years_prim if code_ed4a==2 & inlist(ed4b, 5) & country_year=="Lesotho_2018" // complete upsec
+	replace eduyears=ed6b2+ed4b if code_ed4a==23 & ed6b1==1 & country_year=="Lesotho_2018" // recalculate for vocational (variable ed6b2 for previous ed + grades of vocational edu ed5b/ed4b here )
 
-		
 	replace eduyears=16 if code_ed4a==3 & ed4b==13 & country_year=="Qatar_2012" // University
 	replace eduyears=18 if code_ed4a==3 & ed4b==14 & country_year=="Qatar_2012" // Masters
 	replace eduyears=16 if code_ed4a==3 & ed4b==15 & country_year=="Qatar_2012" // PHD
@@ -607,7 +611,7 @@ program define mics_standardize_standalone
 	replace eduyears=ed4b+years_prim-5 if code_ed4a==21 & country_year=="Kosovo_2013"
 	replace eduyears=ed4b+years_prim-9 if code_ed4a==22 & country_year=="Kosovo_2013"
 	
-	replace eduyears=ed4b+years_lowsec-3 if code_ed4a==22 & country_year=="Thailand_2019" // stair issue upsec
+	replace eduyears=ed4b+years_lowsec-3 if code_ed4a==22 & country_year=="Thailand_2019" // *stairs* issue upsec
 	replace eduyears=ed4b+years_upsec+6 if code_ed4a==41 & country_year=="Thailand_2019" // Master assuming 6 years of bachelor
 	replace eduyears=ed4b+years_upsec+6+2 if code_ed4a==42 & country_year=="Thailand_2019" // Doctoral degree assuming 2 years of master
 
@@ -622,9 +626,7 @@ program define mics_standardize_standalone
 
 	replace eduyears = 30 if eduyears >= 30 & eduyears < 90
 	
-	
-
-		
+			
 	* COMPUTE EDUCATION COMPLETION (the level reached in primary, secondary, etc.)
 	generate lowsec_age0 = prim_age0 + prim_dur
 	generate upsec_age0  = lowsec_age0 + lowsec_dur
