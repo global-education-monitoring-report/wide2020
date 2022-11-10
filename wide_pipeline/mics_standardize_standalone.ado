@@ -575,7 +575,7 @@ program define mics_standardize_standalone
 // 	replace eduyears=ed4b+years_prim if code_ed4a==2 &  inlist(ed4b, 1, 2) & country_year=="Lesotho_2018" // incomplete lowsec
 // 	replace eduyears=ed4b+years_prim if code_ed4a==2 &  inlist(ed4b, 3, 4) & country_year=="Lesotho_2018" // complete lowsec , incomplete upsec
 // 	replace eduyears=ed4b+years_prim if code_ed4a==2 & inlist(ed4b, 5) & country_year=="Lesotho_2018" // complete upsec
-	replace eduyears=ed6b2+ed4b if code_ed4a==23 & ed6b1==1 & country_year=="Lesotho_2018" // recalculate for vocational (variable ed6b2 for previous ed + grades of vocational edu ed5b/ed4b here )
+	*replace eduyears=ed6b2+ed4b if code_ed4a==23 & ed6b2!=98 & ed6b1==1 & country_year=="Lesotho_2018" // recalculate for vocational (variable ed6b2 for previous ed + grades of vocational edu ed5b/ed4b here )
 
 	replace eduyears=16 if code_ed4a==3 & ed4b==13 & country_year=="Qatar_2012" // University
 	replace eduyears=18 if code_ed4a==3 & ed4b==14 & country_year=="Qatar_2012" // Masters
@@ -1628,19 +1628,34 @@ if !_rc {
 		label value Playing_2to4 play 
 
 		* BEHAVIOUR DOMAIN *
+		*couple surveys w this missing*
+		capture confirm variable FCF19
+	if !_rc {
 		gen Behaviour_2to4 = 9 
 		replace Behaviour_2to4 = 0 if inrange(FCF19, 1, 4)
 		replace Behaviour_2to4 = 1 if FCF19 == 5
 		label define behave 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
 		label value Behaviour_2to4 behave 
+	}
 
 		* PART TWO: Creating disability indicator for children age 2-4 years *
 
+		capture confirm variable FCF19
+	if !_rc {
 		gen FunctionalDifficulty_2to4 = 0
 		replace FunctionalDifficulty_2to4 = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | FineMotor_2to4 == 1 | Communication_2to4 == 1 | Learning_2to4 == 1 | Playing_2to4 == 1 | Behaviour_2to4 == 1) 
 		replace FunctionalDifficulty_2to4 = . if (FunctionalDifficulty_2to4 != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | FineMotor_2to4 == 9 | Communication_2to4 == 9 | Learning_2to4 == 9 | Playing_2to4 == 9 | Behaviour_2to4 == 9)) 
 		label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
 		label value FunctionalDifficulty_2to4 
+	}
+	else {
+	    gen FunctionalDifficulty_2to4 = 0
+		replace FunctionalDifficulty_2to4 = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | FineMotor_2to4 == 1 | Communication_2to4 == 1 | Learning_2to4 == 1 | Playing_2to4 == 1) 
+		replace FunctionalDifficulty_2to4 = . if (FunctionalDifficulty_2to4 != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | FineMotor_2to4 == 9 | Communication_2to4 == 9 | Learning_2to4 == 9 | Playing_2to4 == 9 )) 
+		label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+		label value FunctionalDifficulty_2to4 
+		
+	}
 		
 		}
 

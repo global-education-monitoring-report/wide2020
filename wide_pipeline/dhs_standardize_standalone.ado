@@ -825,12 +825,18 @@ program define dhs_standardize_standalone
 	for X in any prim lowsec upsec: generate X_age1_eduout = X_age0_eduout + X_dur_eduout - 1
 	
 	
+		capture confirm variable hdis1
+					if !_rc {
+		unab disabilityvars : hdis*
+        display "`disabilityvars'
+		 					}
+	
 	capture confirm variable ecd
 								if !_rc {
-	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv101 hv122 hv123 hv124 years_* ecd*
+	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv101 hv122 hv123 hv124 years_* ecd*  `disabilityvars'
 								}
 								else {
-	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv101 hv122 hv123 hv124 years_* 
+	keep country_year year age* iso_code3 hv007 sex location wealth religion ethnicity hhweight region comp_* eduout* attend* literacy cluster prim_dur lowsec_dur upsec_dur prim_age* lowsec_age* upsec_age* hh* hvidx individual_id attend round adjustment edu* hh* hv101 hv122 hv123 hv124 years_*  `disabilityvars'
 								}
 	
 	
@@ -879,7 +885,61 @@ program define dhs_standardize_standalone
 	*******/LITERACY**********
 	
 	
-	**HOUSEHOLD EDUCATION**
+	******DISABILITY**********
+
+	*Now rename the AF* 
+	rename hdis2 Vision 
+	rename hdis4 Hearing 
+	rename hdis7 Mobility // mobility = walking or climbing steps
+	rename hdis6 Cognition // COGNITION=REMEMBERING OR CONCENTRATING
+	rename hdis8 Self_Care // washing all over or dressing
+	rename hdis5 Communication
+
+	gen SumPoints=0
+	foreach v of var Vision Hearing Mobility Cognition Self_Care Communication {
+	replace SumPoints=SumPoints + inlist(`v',2,3,4)
+	}
+	replace SumPoints=. if missing(Vision) & missing(Hearing) & ///
+	missing(Mobility) & missing(Cognition) & missing(Self_Care) & missing(Communication)
+
+	gen SUM_234=. if SumPoints==.
+	replace SUM_234=1 if SumPoints==1
+	replace SUM_234=2 if SumPoints==2
+	replace SUM_234=3 if SumPoints==3
+	replace SUM_234=4 if SumPoints==4
+	replace SUM_234=5 if SumPoints==5
+	replace SUM_234=6 if SumPoints==6
+	replace SUM_234=0 if SumPoints==0 
+
+	gen SumPoints2=0
+	foreach v of var Vision Hearing Mobility Cognition Self_Care Communication {
+	replace SumPoints2=SumPoints2 + inlist(`v',3,4)
+	}
+	replace SumPoints2=. if missing(Vision) & missing(Hearing) & ///
+	missing(Mobility) & missing(Cognition) & missing(Self_Care) & missing(Communication)
+
+	gen SUM_34=. if SumPoints2==.
+	replace SUM_34=1 if SumPoints2==1
+	replace SUM_34=2 if SumPoints2==2
+	replace SUM_34=3 if SumPoints2==3
+	replace SUM_34=4 if SumPoints2==4
+	replace SUM_34=5 if SumPoints2==5
+	replace SUM_34=6 if SumPoints2==6
+	replace SUM_34=0 if SumPoints2==0
+	*tabulate SUM_34
+	
+	gen Disability_adults=0
+	replace Disability_adults=1 if (inlist(Vision,3,4) | inlist(Hearing,3,4) | inlist(Mobility,3,4) | ///
+	inlist(Communication,3,4) | inlist(Self_Care,3,4) | inlist(Cognition,3,4))
+	replace Disability_adults=. if missing(Vision) & missing(Hearing) & missing(Mobility) & ///
+	missing(Cognition) & missing(Self_Care) & missing(Communication)
+	capture label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
+
+	label value Disability_adults difficulty
+	
+		******/DISABILITY**********
+
+	********HOUSEHOLD EDUCATION*******
 	**NEW!**
 	
 	/* 
@@ -927,6 +987,8 @@ program define dhs_standardize_standalone
 	
 				   
 	**/Household education**
+	*********/HOUSEHOLD EDUCATION*******
+
 		
 
 	gen survey="DHS"

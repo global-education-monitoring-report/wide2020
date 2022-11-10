@@ -9,7 +9,7 @@ library(tidyr)
 library(qs)
 
 #Set this if dealing with BGD 2019 MICS
-#memory.limit(size = 45500) 
+memory.limit(size = 45500) 
 
 #path2calculated <- "C:/Users/taiku/UNESCO/GEM Report - 3_calculated" # enter path
 path2calculated <- "C:/Users/taiku/Desktop/temporary_std" # just 3 first files to test 
@@ -37,15 +37,15 @@ for (i in 1:length(file_names)) {
   wide_calculate <- wide_calculate %>% mutate(country =  str_split(country_year, "_")[[1]][1]) 
   }
   #Generate the categories checking the dataset
-  emptycheck <- all.equal("",unique(wide_calculate$location))
+  emptycheck <- isTRUE(all.equal("",unique(wide_calculate$location)))
   if(emptycheck==TRUE){
     categoriesinsvy <- c('sex', 'wealth')
   } else {
-    emptycheck <- all.equal("",unique(wide_calculate$region))
+    emptycheck <- isTRUE(all.equal("",unique(wide_calculate$region)))
     if(emptycheck==TRUE){
       categoriesinsvy <-c('sex', 'wealth', 'location')
     } else {
-      emptycheck <- all.equal("",unique(wide_calculate$religion))
+      emptycheck <- isTRUE(all.equal("",unique(wide_calculate$religion)))
       if(emptycheck==TRUE){
         categoriesinsvy <-c('sex', 'wealth', 'location', 'region')
       } else {
@@ -91,6 +91,8 @@ all_indicators <- ldply(list.files(), read.csv, header=TRUE)
 #write.csv(all_indicators, paste0("widetable","_summarized_Rwanda.csv"))
 #write.csv(all_indicators, paste0("widetable","_summarized_newSenegal.csv"))
 
-write.csv(all_indicators, paste0("widetable","_summarized_latestAfrica.csv"))
+#write.csv(all_indicators, paste0("widetable","_summarized_latestAfrica.csv"))
 
-#write_dta(all_indicators,paste0("widetable","_summarized_newSenegal.dta"))
+
+write.csv(all_indicators, paste0("widetable","_summarized_2022update.csv"), na = '')
+
