@@ -9,6 +9,7 @@
 *TO ONLY UPDATE NEW DATASETS, ON A SEQUENTIAL BASIS********************
 ***********************************************************************
 
+/*
 
 global raw_path "C:\Users\taiku\Desktop\temporary_raw"
 *C:\Users\taiku\Desktop\temporary_raw
@@ -38,24 +39,33 @@ foreach filepath of local process_list_mics {
    di "`filepath'"
 }
 
+*/
 
-/*
+
 clear 
  use "C:\ado\personal\repository_inventory.dta"
+/*
  drop if iso=="FJI"
  drop if iso=="VNM"
- keep if roundmics==6
- 
- levelsof fullname, local(mics6surveys)
- *whatever name of the local put the local name in the next loop 
 */
+ *keep if inlist(roundmics, 6)
+  keep if inlist(phasedhs,  7, 8)
+
+ *problem with CUBA 2014
+ 
+ *levelsof fullname, local(mics6surveys)
+  levelsof fullname, local(process_list_dhs)
+
+ *whatever name of the local put the local name in the next loop 
+
+/*
 
  set trace on
  set tracedepth 1
 **Now call MICS_standardize RECURSIVELY
 local dpath "C:\Users\taiku\UNESCO\GEM Report - 1_raw_data"
 local opath "C:\Users\taiku\Desktop\temporary_std"
-foreach survey of local process_list_mics {
+foreach survey of local mics6surveys {
          di "Now processing" " `survey'"
          *Directly run mics_standardize_standalone with one survey
 		tokenize "`survey'", parse(_)
@@ -80,6 +90,7 @@ foreach survey of local process_list_mics {
 		clear
      }
  set trace off	 
+*/
 
 
 

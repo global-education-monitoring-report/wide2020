@@ -951,8 +951,10 @@ program define dhs_standardize_standalone
 	-	4  completed post-secondary 
 	*/
 
-  	* Household Education 1: Considering head of household as highest education (no missings but recode categories)
+  	** Household Education 1: Considering head of household as highest education (no missings but recode categories)
 	* However, it's not rare that the mother has higher education than the head 
+	* New age restriction on head : max 60 years old 
+
 	
 	bysort hh_id: egen head_eduyears = total(cond(hv101 == 1 , eduyears, .))
 	
@@ -960,33 +962,74 @@ program define dhs_standardize_standalone
 	foreach Z in prim lowsec upsec higher {
 		replace hh_edu_head = hh_edu_head + 1  if head_eduyears >= years_`Z'
 				 	}
-	label define hh_edu_head 0 "Not completed any level of education" 1 "Completed primary" 2 "Completed lower secondary" 3 "Completed upper secondary" 4 "Completed post-secondary" 
-	label value hh_edu_head hh_edu_head
+					
+	*Censoring for head of households who are older than 60 years old 
+	bysort hh_id: egen head_age = total(cond(hv101 == 1 , age, .))
+	replace hh_edu_head=. if head_age>60
+
 	
-	* Household Education 2: Get highest education of all household adults (using age, could have used relationship to head but age might be better)
+	label define hh_edu_head 0 "Not completed primary" 1 "Completed primary" 2 "Completed secondary" 3  "Completed post-secondary" 
+	label value hh_edu_head hh_edu_head
+	sdecode hh_edu_head, replace 
+
+	
+	** Household Education 2: Get highest education of all household adults (using age)
 		
-	bysort hh_id: egen adult_eduyears = max(cond(age >= 18 , eduyears, .))
+	bysort hh_id: egen adult_eduyears = max(cond(age >= 25 , eduyears, .))
 	
 	generate hh_edu_adult = 0
-	foreach Z in prim lowsec upsec higher {
+	foreach Z in prim upsec higher {
 		replace hh_edu_adult = hh_edu_adult + 1  if adult_eduyears >= years_`Z'
 				 	}
-	label value hh_edu_adult hh_edu_head
+	replace hh_edu_adult = . if adult_eduyears == . 
 	
-	* Mother's education : use melevel variable otherwise
+	label value hh_edu_adult hh_edu_head
+	sdecode hh_edu_adult, replace 
+
+	
+	*Women's education 
 	
 	gen female_eduyears = eduyears if sex == "Female" // females
 	bysort hh_id: egen women_eduyears = max(cond(age >= 18 , female_eduyears, .)) //adult females
 	drop female_eduyears
 	
 	generate hh_edu_women = 0
-	foreach Z in prim lowsec upsec higher {
+	foreach Z in prim upsec higher {
 		replace hh_edu_women = hh_edu_women + 1  if women_eduyears >= years_`Z'
 				 	}
+	replace hh_edu_women=. if women_eduyears==.
 	label value hh_edu_women hh_edu_head
+	sdecode hh_edu_women, replace 
+
+	
+	**Mother's education 
+	
+	*DHS has this calculated hc68/hc61 but only for 0-5 y-o
+	*Use mother's line hv112 but check its not empty
+	capture confirm missing(vacio)
+		if !_rc {
+		capture findit rangestat 
+		rangestat (max) mother_eduyears = eduyears, by(hh_id) interval(hvidx hv112 hv112)
+		replace mother_eduyears = . if missing(hv112)
+		replace mother_eduyears = . if hv112 == 0
+
+	
+		generate hh_edu_mother = 0
+		foreach Z in prim upsec higher {
+				replace hh_edu_mother = hh_edu_mother + 1  if mother_eduyears >= years_`Z'
+				 	}
+		replace hh_edu_mother=. if mother_eduyears==.
+
+		label value hh_edu_mother hh_edu_head
+		sdecode hh_edu_mother, replace 
+
+	} 
+	else {
+		di "No line number for mothers in this survey, no hh_edu_mother possible"
+	}	
+	
 	
 				   
-	**/Household education**
 	*********/HOUSEHOLD EDUCATION*******
 
 		
