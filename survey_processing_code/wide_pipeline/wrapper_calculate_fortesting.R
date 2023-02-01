@@ -29,6 +29,7 @@ setwd(path2calculated)
 
 for (i in 1:length(file_names)) {
   print(file_names[[i]]) 
+  setwd(path2calculated)
   wide_calculate <- qread(file_names[[i]]) 
   #Outcome vars
   if("literacy_1524" %in% colnames(wide_calculate))
@@ -43,10 +44,18 @@ for (i in 1:length(file_names)) {
     wide_calculate <- wide_calculate %>% mutate(country =  str_split(country_year, "_")[[1]][1]) 
   }
   
-#  Part 1 : hh_edu options  -----------------------------------------------------------------
+#  Part 1 : hh_edu tables for BILAL  -----------------------------------------------------------------
   
   #Generate the categories checking the dataset
+  
+  if("hh_edu_mother" %in% colnames(wide_calculate))
+  {
+    categoriesinsvy <- c('hh_edu_adult', 'hh_edu_head', 'hh_edu_mother')
+    
+  } else {
     categoriesinsvy <- c('hh_edu_adult', 'hh_edu_head')
+    
+  }
   
   #Generate a long version of wide_calculate qs file
   wide_long <-  pivot_longer(wide_calculate, names_to = 'indicator', cols = any_of(wide_outcome_vars))
@@ -81,7 +90,16 @@ library(plyr)
 setwd("C:/Users/taiku/Desktop/temporary_sum")
 all_indicators <- ldply(list.files(), read.csv, header=TRUE)
 
-write.csv(all_indicators, paste0("widetable","_summarized_hh-edu-options.csv"))
+#Some cleanup
+
+all_indicators_p1 <-all_indicators %>%  filter(!(hh_edu_adult == ''  ))
+all_indicators_p2 <-all_indicators %>%  filter(!(hh_edu_head == '' | hh_edu_head == '4' ))
+all_indicators_p3 <-all_indicators %>%  filter(!(hh_edu_mother == '' ))
+all_indicators_p4 <-all_indicators %>%  filter(category == 'Total' )
+
+all_indicators_clean <-bind_rows(all_indicators_p1,all_indicators_p2,all_indicators_p3,all_indicators_p4)
+
+write.csv(all_indicators_clean, paste0("widetable","_summarized_hh-edu-options.csv"))
 
 ##CONCLUSION PARTE 1: HH_EDU CON HEAD FUNCIONA MEJOR QUE CON ADULT 
 

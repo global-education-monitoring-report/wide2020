@@ -15,6 +15,6 @@ for (i in 2:length(folder_names)) {
   #survey <- substring( folder_names[[i]], 52, 65)
     setwd(folder_names[[i]])
   data <- read_dta(paste0("std_",survey,".dta")) # change this path
-  source("C:/Users/taiku/Documents/GEM UNESCO MBR/GitHub/wide2020/wide_pipeline/wide_calculate.R")
+  source("C:/Users/taiku/Documents/GEM UNESCO MBR/GitHub/wide2020/survey_processing_code/wide_pipeline/wide_calculate.R")
   }
 

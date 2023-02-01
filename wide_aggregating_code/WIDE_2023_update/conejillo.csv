@@ -1,0 +1,5 @@
+iso_code3,year,category,sex,location,wealth,indicator,level,value,survey
+ALB,2017,Wealth,,,Quintile 4,comp_prim_v2_m,prim,.9433068,DHS
+ALB,2017,Wealth,,,Quintile 4,comp_lowsec_v2_m,lowsec,.97092021,DHS
+ALB,2017,Wealth,,,Quintile 4,comp_upsec_v2_m,upsec,.88442618,DHS
+ALB,2017,Wealth,,,Quintile 4,comp_prim_v2_m,,1,DHS

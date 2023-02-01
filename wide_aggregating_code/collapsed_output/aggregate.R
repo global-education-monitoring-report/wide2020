@@ -11,6 +11,7 @@ sap_indicators <- c(
   'SAP.3'#, #'SAP.3.F', 'SAP.3.M'
   )
 
+#SAP= SCHOOL AGE POPULATION from UIS
 saps <- 
   vroom::vroom(paste0(path2uisdata, 'NATMON_DATA_NATIONAL.csv'), na = '') %>% 
   filter(INDICATOR_ID %in% sap_indicators) %>% 
@@ -27,6 +28,7 @@ saps <-
   summarize(wt_value = mean(value, na.rm = TRUE)) %>% 
   ungroup
 
+#WPP 2019 extraction
 pops <- 
   bind_rows(female = popF, male = popM, .id = 'Sex') %>%
   select(pop = `2015`, country_code, name, age, Sex) %>%
