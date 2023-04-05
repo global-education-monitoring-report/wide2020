@@ -1,4 +1,4 @@
-### pal_summarize: Examples
+### pal data
 
 library("tidyverse")
 library("haven")
@@ -8,115 +8,70 @@ library("ggplot2")
 library("stringr")
 library("ggpubr")
 library("purrr")
+library("readxl")
 
-# Pakistan (almost identical math and reading)
-
-dir  <- "/home/eldani/eldani/International LSA/ASER/Pakistan/2016/PK_2016_STATA"
-pak_pal <- read_dta(file.path(dir, "ASER2016Child.dta"))
-
-pak_pal <- mutate(pak_pal, math = recode(c012, `5`=1, .default =0), 
-                 read = recode(c010, `5`=1, .default =0), 
-                 grade = as.numeric(c005),
-                 Sex = factor(c002, labels = c("Female", "Male")),
-                 Location = "Rural",
-                 iso_code3 = "PAK",
-                 year = 2016,
-                 weight = 1)
-
-#prop.table(with(pak_pal, table(grade, c010)),1)
-
-# Kenya (identical)
-dir <- "/home/eldani/eldani/International LSA/ASER/Kenya/2015/KE_2015_STATA"
-ken_pal <- read_dta(file.path(dir, "KE15_hhld.dta"))
-
-ken_pal <- mutate(ken_pal, math = recode(as.numeric(math), `7`=1, .default =0), 
-                 read = recode(as.numeric(swahili), `5`=1, .default =0), 
-                 grade = as.numeric(grade),
-                 Sex = factor(gender, labels = c("Male", "Female")),
-                 Location = factor(ea_type, labels = c("Rural", "Urban")),
-                 iso_code3 = "KEN",
-                 year = 2015,
-                 weight = weight)
-
-# Uganda (math and read close)
-
-dir <- "/home/eldani/eldani/International LSA/ASER/Uganda/2015/UG_2015_STATA"
-uga_pal <- read_dta(file.path(dir, "UG15_hhld.dta"))
-
-uga_pal <- mutate(uga_pal, math = recode(as.numeric(math), `7`=1, .default =0), 
-                 read = recode(as.numeric(english), `5`=1, .default =0), 
-                 grade = as.numeric(grade),
-                 Sex = factor(gender, labels = c("Male", "Female")),
-                 Location = factor(urban_code, labels = c("Rural", "Urban")),
-                 iso_code3 = "UGA",
-                 year = 2015,
-                 weight = weight)
-
-#prop.table(with(uga_pal, table(grade, english)),1)
-
-# Tanzania (very close)
-
-dir <- "/home/eldani/eldani/International LSA/ASER/Tanzania/2015/TZ_2015_STATA"
-tza_pal <- read_dta(file.path(dir, "TZ15_hhld.dta"))
+dir <- "/home/eldani/eldani/International LSA/PAL/"
+df <- readRDS(file = file.path(dir, "pal_micro.rds")) %>% 
+      filter(grade %in% c(3,6))
 
 
-tza_pal <- mutate(tza_pal, math = recode(as.numeric(math), `9`=1, .default =0), 
-                 read = recode(as.numeric(swahili), `5`=1, .default =0), 
-                 grade = as.numeric(grade),
-                 Sex = factor(gender, labels = c("Male", "Female")),
-                 Location = factor(ea_type, labels = c("Rural", rep("Urban", 2))),
-                 iso_code3 = "TZA",
-                 year = 2015,
-                 weight = weight)
-
-
-# Mexico (close)
-dir <- "/home/eldani/eldani/International LSA/ASER/Mexico/2016/MIA_2016"
-mex_pal <- read.csv(file.path(dir, "med_2016.csv"))
-
-mex_pal <- mutate(mex_pal, math = na_if(División, 999), 
-                 read = na_if(Historia, 999), 
-                 grade = Escolaridad -1,
-                 Sex = factor(SexoNiño, labels = c("Female", "Male")),
-                 Location = NA,
-                 iso_code3 = "MEX",
-                 year = 2016,
-                 weight = 1)
-
-# Mozambique (identical)
-dir <- "/home/eldani/eldani/International LSA/ASER/Mozambique/2016/MZ_2016_STATA"
-moz_pal <- read_dta(file.path(dir, "2016_TPC_Mozambique_RawDataSet_Pilot.dta"))
-
-moz_pal <- mutate(moz_pal, math = recode(as.numeric(f5_1_matematicaniveisbasicos), `9`=1, .default=0), 
-                 read = recode(as.numeric(f50_1_leituraniveisbasicos), `6`=1, .default=0), 
-                 grade = as.numeric(f37_1_criancasfrequenciaclasse), # this is correct
-                 Sex = factor(f36_1_sexodacrianca, 1:2, labels = c("Male", "Female")),
-                 Location = factor(urbano_rural, labels = c("Urban", "Rural")),
-                 iso_code3 = "MOZ",
-                 year = 2016,
-                 weight = 1)
-
-
-# Append datasets
+#### Aggregate data for WIDE 
 dvs <- c("math", "read")
 ids <- c("iso_code3", "year", "grade")
 groups <- c("Sex", "Location")
-
 vars <- c(dvs, ids, groups, "weight")
-df <- lapply(mget(grep("_pal$", ls(), value = TRUE)), function(x) x[vars])
-df <- do.call(dplyr::bind_rows, df)
-df <- filter(df, grade %in% c(3, 5))
-df <- df[complete.cases(df[, c("math", "read")]), ]
 
-# Calculate
 pal <- wide_bind(df, dvs, ids, groups)
+pal <- filter(pal, !((iso_code3 == "PAK" & category == "Total")| 
+                    (iso_code3=="IND" & category == "Total")))
+
+############## Add aggregated
+
+### India
+dir <- "/home/eldani/eldani/International LSA/PAL/India/"
+read <- read_excel(file.path(dir, "India.xlsx"), sheet = "read") %>%
+  rename(read = Story) %>% dplyr::select(year, grade, read)
+math <- read_excel(file.path(dir, "India.xlsx"), sheet = "math")  %>%
+  rename(math = Division) %>% dplyr::select(year, grade, math)
+
+india <- full_join(read, math, by = c("year", "grade")) %>% 
+  filter(grade %in% c(1:8)) %>%
+  mutate(iso_code3 = "IND", category = "Total", grade = as.numeric(grade)) %>%
+  filter(year == 2022, grade %in% c(3,6))
+
+#india <- bind_rows(india, cbind(select(india, !category), category = "Location", Location = "Rural"))
+
+
+pal <- bind_rows(pal, cbind(select(india, !category), category = "Location", Location = "Rural"))
+
+
+#### Pakistan
+dir <- "/home/eldani/eldani/International LSA/PAL/Pakistan/"
+read <- read_excel(file.path(dir, "Pakistan.xlsx"), sheet = "read") %>%
+  mutate(read = story/100) %>% dplyr::select(year, grade, read)
+
+math <- read_excel(file.path(dir, "Pakistan.xlsx"), sheet = "math") %>%
+  mutate(math = division_2d/100) %>% dplyr::select(year, grade, math)
+
+pak <- full_join(read, math, by = c("year", "grade")) %>% 
+  mutate(iso_code3 = "PAK", category = "Total", grade = as.numeric(grade)) %>%
+  filter(year >= 2016, grade %in% c(3,6))
+
+# remove PAK from micro data
+pal <- bind_rows(filter(pal, iso_code3 != "PAK"), 
+                 cbind(select(pak, !category), category = "Location", Location = "Rural"))
+
+
+## Rename for WIDE
 pal <- pal %>%
+  filter(iso_code3!= "MEX") %>%
   rename(rlevel2_m = read, mlevel2_m = math) %>%
-  mutate(survey =  "ASER")
+  mutate(survey =  "ASER") %>%
+  select(-n)
 
-# Remove unused categories
-pal <- filter(pal, !(iso_code3=="PAK" & category=="Total"), iso_code3!="MEX")
-
+ggplot(filter(pal, category=="Total"), 
+       aes(x= reorder(iso_code3, mlevel2_m), y= mlevel2_m, fill= as.factor(grade))) +
+       geom_bar(stat="identity", position = "dodge")
 
 ## Export
 dir <- "/home/eldani/MEGA/Work/Projects/Ongoing/UNESCO/Analysis/ILSA"
