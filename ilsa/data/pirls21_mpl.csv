@@ -1,0 +1,364 @@
+"iso_code3","year","grade","level","survey","COUNTRY","iso_num","category","Location","Sex","rlevel2_m","rlevel3_m","rlevel4_m","rlevel2_se","rlevel3_se","rlevel4_se","rlevel2_no","rlevel3_no","rlevel4_no"
+"ALB",2021,4,"Primary","PIRLS","Albania",8,"Total",,,0.9212,0.6926,0.3259,0.0094,0.0171,0.0159,3955,3136,1621
+"ARE",2021,4,"Primary","PIRLS","United Arab Emirates",784,"Total",,,0.7503,0.5759,0.337,0.0066,0.0071,0.0061,20153,15140,8729
+"AUS",2021,4,"Primary","PIRLS","Australia",36,"Total",,,0.9424,0.8024,0.4805,0.0055,0.0103,0.0132,5148,4405,2726
+"AUT",2021,4,"Primary","PIRLS","Austria",40,"Total",,,0.9592,0.7953,0.4053,0.0043,0.0116,0.0157,4606,3816,1999
+"AZE",2021,4,"Primary","PIRLS","Azerbaijan",31,"Total",,,0.6743,0.3718,0.1099,0.0149,0.0169,0.0092,3828,2358,747
+"BGR",2021,4,"Primary","PIRLS","Bulgaria",100,"Total",,,0.9288,0.7837,0.4906,0.0094,0.0139,0.0142,3852,3375,2229
+"BHR",2021,4,"Primary","PIRLS","Bahrain",48,"Total",,,0.7118,0.4663,0.2041,0.0093,0.0116,0.0106,3613,2318,958
+"BRA",2021,4,"Primary","PIRLS","Brazil",76,"Total",,,0.6125,0.3713,0.1281,0.0188,0.0164,0.0102,3251,2083,791
+"CYP",2021,4,"Primary","PIRLS","Cyprus",196,"Total",,,0.9179,0.6914,0.3205,0.0067,0.0152,0.0142,4222,3231,1523
+"CZE",2021,4,"Primary","PIRLS","Czech Republic",203,"Total",,,0.9601,0.8154,0.4729,0.0053,0.0104,0.0131,6394,5480,3164
+"DEU",2021,4,"Primary","PIRLS","Germany",276,"Total",,,0.9359,0.7464,0.3914,0.0052,0.0107,0.0119,4321,3503,1872
+"DNK",2021,4,"Primary","PIRLS","Denmark",208,"Total",,,0.9595,0.813,0.4753,0.006,0.0094,0.0134,4659,3970,2398
+"EGY",2021,4,"Primary","PIRLS","Egypt",818,"Total",,,0.4457,0.1949,0.0491,0.02,0.014,0.0069,3549,1592,419
+"ENG",2021,4,"Primary","PIRLS","England",926,"Total",,,0.9703,0.8635,0.5659,0.004,0.0091,0.0131,4017,3592,2351
+"ESP",2021,4,"Primary","PIRLS","Spain",724,"Total",,,0.9523,0.7572,0.3523,0.0057,0.012,0.013,8196,6664,3268
+"FIN",2021,4,"Primary","PIRLS","Finland",246,"Total",,,0.9648,0.8445,0.5324,0.0053,0.0102,0.0136,6799,5948,3811
+"FRA",2021,4,"Primary","PIRLS","France",250,"Total",,,0.9386,0.7242,0.3152,0.0066,0.0142,0.0149,5045,3962,1745
+"GEO",2021,4,"Primary","PIRLS","Georgia",268,"Total",,,0.8716,0.6143,0.2549,0.0097,0.0155,0.0113,4626,3347,1430
+"HKG",2021,4,"Primary","PIRLS","Hong Kong",344,"Total",,,0.9828,0.9229,0.6821,0.0041,0.0099,0.0184,3771,3561,2667
+"HRV",2021,4,"Primary","PIRLS","Croatia",191,"Total",,,0.9808,0.8797,0.5617,0.0044,0.0101,0.0153,3866,3503,2288
+"HUN",2021,4,"Primary","PIRLS","Hungary",348,"Total",,,0.9413,0.7925,0.4945,0.0101,0.0149,0.0163,5067,4398,2837
+"IRL",2021,4,"Primary","PIRLS","Ireland",372,"Total",,,0.9778,0.9089,0.672,0.0038,0.0071,0.0145,4576,4250,3200
+"IRN",2021,4,"Primary","PIRLS","Iran, Islamic Republic of",364,"Total",,,0.586,0.2876,0.0658,0.0201,0.0151,0.0062,3779,1893,460
+"ISR",2021,4,"Primary","PIRLS","Israel",376,"Total",,,0.8796,0.6723,0.3543,0.0082,0.0111,0.0113,4331,3291,1742
+"ITA",2021,4,"Primary","PIRLS","Italy",380,"Total",,,0.9718,0.8274,0.4445,0.0033,0.0097,0.0147,5293,4555,2497
+"JOR",2021,4,"Primary","PIRLS","Jordan",400,"Total",,,0.4664,0.217,0.0549,0.0197,0.016,0.0076,2644,1180,280
+"KAZ",2021,4,"Primary","PIRLS","Kazakhstan",398,"Total",,,0.907,0.6679,0.2774,0.0079,0.0143,0.0134,6368,4748,2042
+"LTU",2021,4,"Primary","PIRLS","Lithuania",440,"Total",,,0.9711,0.8617,0.5434,0.004,0.0083,0.0144,4508,4022,2603
+"LVA",2021,4,"Primary","PIRLS","Latvia",428,"Total",,,0.9429,0.7759,0.4037,0.0074,0.0143,0.0142,4195,3558,2046
+"MAC",2021,4,"Primary","PIRLS","Macao",446,"Total",,,0.9592,0.8183,0.4469,0.0038,0.0059,0.0069,4905,4224,2332
+"MAR",2021,4,"Primary","PIRLS","Morocco",504,"Total",,,0.4058,0.1704,0.048,0.0163,0.0138,0.0101,2712,1014,225
+"MKD",2021,4,"Primary","PIRLS","Macedonia, the former Yugoslav Republic of",807,"Total",,,0.6996,0.3818,0.1052,0.0223,0.0247,0.0115,2080,1160,319
+"MLT",2021,4,"Primary","PIRLS","Malta",470,"Total",,,0.9024,0.6972,0.3635,0.0091,0.0137,0.013,2753,2123,1089
+"MNE",2021,4,"Primary","PIRLS","Montenegro",499,"Total",,,0.8691,0.5883,0.2126,0.0068,0.0115,0.0085,3870,2596,904
+"NLD",2021,4,"Primary","PIRLS","Netherlands",528,"Total",,,0.9645,0.7896,0.3731,0.0068,0.0131,0.0136,4182,3468,1678
+"NOR",2021,4,"Primary","PIRLS","Norway",578,"Total",,,0.9582,0.8081,0.4732,0.0056,0.0097,0.0131,5186,4404,2662
+"NZL",2021,4,"Primary","PIRLS","New Zealand",554,"Total",,,0.8988,0.7127,0.4066,0.0064,0.01,0.0111,5063,4076,2384
+"OMN",2021,4,"Primary","PIRLS","Oman",512,"Total",,,0.622,0.3543,0.1319,0.0137,0.0138,0.0098,3311,1867,681
+"POL",2021,4,"Primary","PIRLS","Poland",616,"Total",,,0.9721,0.8528,0.5159,0.0047,0.0099,0.0149,4085,3600,2215
+"PRT",2021,4,"Primary","PIRLS","Portugal",620,"Total",,,0.9418,0.7492,0.3559,0.0058,0.0103,0.0139,5774,4577,2224
+"QAT",2021,4,"Primary","PIRLS","Qatar",634,"Total",,,0.8039,0.5665,0.2669,0.0117,0.0166,0.0159,4237,3008,1435
+"RUS",2021,4,"Primary","PIRLS","Russian Federation",643,"Total",,,0.9836,0.8923,0.6261,0.0037,0.0137,0.0201,5152,4765,3394
+"ALB",2021,4,"Primary","PIRLS","Albania",8,"Location","Urban",,0.9282,0.7091,0.3405,0.0109,0.0175,0.0173,3504,2815,1470
+"ALB",2021,4,"Primary","PIRLS","Albania",8,"Location","Rural",,0.8475,0.4959,0.1509,0.0586,0.1107,0.0718,76,43,13
+"ARE",2021,4,"Primary","PIRLS","United Arab Emirates",784,"Location","Urban",,0.8266,0.6652,0.4043,0.0082,0.0102,0.009,14106,11476,7093
+"ARE",2021,4,"Primary","PIRLS","United Arab Emirates",784,"Location","Rural",,0.6399,0.3501,0.1181,0.0342,0.0294,0.0211,246,126,40
+"AUS",2021,4,"Primary","PIRLS","Australia",36,"Location","Urban",,0.9429,0.8041,0.4836,0.0058,0.0101,0.0132,4562,3910,2426
+"AUS",2021,4,"Primary","PIRLS","Australia",36,"Location","Rural",,0.8698,0.7137,0.3478,0.1232,0.185,0.0918,68,48,24
+"AUT",2021,4,"Primary","PIRLS","Austria",40,"Location","Urban",,0.9593,0.7916,0.4052,0.0043,0.0119,0.0152,4462,3694,1936
+"AUT",2021,4,"Primary","PIRLS","Austria",40,"Location","Rural",,0.9582,0.8327,0.4068,0.0187,0.0337,0.042,144,122,63
+"AZE",2021,4,"Primary","PIRLS","Azerbaijan",31,"Location","Urban",,0.7014,0.3959,0.1182,0.0169,0.0198,0.0104,3464,2150,691
+"AZE",2021,4,"Primary","PIRLS","Azerbaijan",31,"Location","Rural",,0.3894,0.0965,0.0073,0.0489,0.0405,0.0072,91,20,1
+"BGR",2021,4,"Primary","PIRLS","Bulgaria",100,"Location","Urban",,0.9287,0.7846,0.4932,0.0106,0.0158,0.0164,3738,3273,2170
+"BGR",2021,4,"Primary","PIRLS","Bulgaria",100,"Location","Rural",,0.9019,0.6877,0.3171,0.0792,0.0904,0.0782,40,32,12
+"BHR",2021,4,"Primary","PIRLS","Bahrain",48,"Location","Urban",,0.718,0.4761,0.2109,0.0095,0.0126,0.0118,3409,2212,924
+"BRA",2021,4,"Primary","PIRLS","Brazil",76,"Location","Urban",,0.6277,0.3881,0.1371,0.0163,0.0179,0.011,3019,1957,752
+"BRA",2021,4,"Primary","PIRLS","Brazil",76,"Location","Rural",,0.4547,0.1992,0.055,0.1248,0.0768,0.0328,59,23,4
+"CYP",2021,4,"Primary","PIRLS","Cyprus",196,"Location","Urban",,0.9169,0.6886,0.3178,0.007,0.0148,0.0142,4150,3167,1485
+"CYP",2021,4,"Primary","PIRLS","Cyprus",196,"Location","Rural",,0.8889,0.7333,0.3778,0,0.1388,0.1388,8,7,5
+"CZE",2021,4,"Primary","PIRLS","Czech Republic",203,"Location","Urban",,0.9617,0.8182,0.482,0.0042,0.0108,0.0131,5659,4837,2801
+"CZE",2021,4,"Primary","PIRLS","Czech Republic",203,"Location","Rural",,0.9543,0.8072,0.4464,0.0143,0.0312,0.0298,663,580,330
+"DEU",2021,4,"Primary","PIRLS","Germany",276,"Location","Urban",,0.9349,0.7405,0.3867,0.0071,0.0141,0.0133,3272,2663,1409
+"DEU",2021,4,"Primary","PIRLS","Germany",276,"Location","Rural",,0.9363,0.7738,0.3858,0.0177,0.0296,0.062,223,175,99
+"DNK",2021,4,"Primary","PIRLS","Denmark",208,"Location","Urban",,0.9596,0.8129,0.4778,0.0062,0.0108,0.0145,4135,3529,2142
+"DNK",2021,4,"Primary","PIRLS","Denmark",208,"Location","Rural",,0.9667,0.8473,0.5049,0.0153,0.043,0.0694,159,137,82
+"EGY",2021,4,"Primary","PIRLS","Egypt",818,"Location","Urban",,0.4437,0.1917,0.0491,0.021,0.0148,0.0075,3120,1389,370
+"EGY",2021,4,"Primary","PIRLS","Egypt",818,"Location","Rural",,0.3664,0.1772,0.0439,0.0931,0.0764,0.0276,144,74,18
+"ENG",2021,4,"Primary","PIRLS","England",926,"Location","Urban",,0.9695,0.8646,0.5684,0.0048,0.0095,0.0157,3487,3122,2066
+"ENG",2021,4,"Primary","PIRLS","England",926,"Location","Rural",,1,0.9569,0.7891,0,0.0588,0.184,29,28,24
+"ESP",2021,4,"Primary","PIRLS","Spain",724,"Location","Urban",,0.952,0.7564,0.3519,0.0052,0.0116,0.0128,8129,6610,3237
+"ESP",2021,4,"Primary","PIRLS","Spain",724,"Location","Rural",,0.8241,0.5463,0.2037,0.1909,0.3086,0.2365,11,9,5
+"FIN",2021,4,"Primary","PIRLS","Finland",246,"Location","Urban",,0.9613,0.8424,0.5426,0.005,0.0118,0.0149,5672,4963,3230
+"FIN",2021,4,"Primary","PIRLS","Finland",246,"Location","Rural",,0.9785,0.8538,0.488,0.0079,0.0233,0.0305,1023,892,527
+"FRA",2021,4,"Primary","PIRLS","France",250,"Location","Urban",,0.9398,0.7322,0.3239,0.0058,0.0136,0.016,4429,3502,1580
+"FRA",2021,4,"Primary","PIRLS","France",250,"Location","Rural",,0.9423,0.7096,0.304,0.0181,0.04,0.0345,412,312,130
+"GEO",2021,4,"Primary","PIRLS","Georgia",268,"Location","Urban",,0.8792,0.62,0.2589,0.0095,0.0146,0.0121,4423,3201,1368
+"GEO",2021,4,"Primary","PIRLS","Georgia",268,"Location","Rural",,0.8378,0.5868,0.225,0.0419,0.0611,0.0472,120,89,36
+"HKG",2021,4,"Primary","PIRLS","Hong Kong",344,"Location","Urban",,0.9828,0.9241,0.6829,0.0044,0.0096,0.0188,3723,3520,2639
+"HRV",2021,4,"Primary","PIRLS","Croatia",191,"Location","Urban",,0.9822,0.8832,0.5659,0.0045,0.0099,0.0154,3693,3347,2182
+"HRV",2021,4,"Primary","PIRLS","Croatia",191,"Location","Rural",,1,0.8603,0.3941,0,0.203,0.0755,21,17,7
+"HUN",2021,4,"Primary","PIRLS","Hungary",348,"Location","Urban",,0.9409,0.793,0.4918,0.0103,0.0159,0.0173,4580,3990,2572
+"HUN",2021,4,"Primary","PIRLS","Hungary",348,"Location","Rural",,0.9192,0.6619,0.3076,0.0568,0.0894,0.0832,37,23,9
+"IRL",2021,4,"Primary","PIRLS","Ireland",372,"Location","Urban",,0.9764,0.9045,0.6576,0.0042,0.0081,0.0161,4080,3786,2823
+"IRL",2021,4,"Primary","PIRLS","Ireland",372,"Location","Rural",,0.9859,0.9306,0.7365,0.0074,0.0128,0.0327,445,416,333
+"IRN",2021,4,"Primary","PIRLS","Iran, Islamic Republic of",364,"Location","Urban",,0.6055,0.2988,0.0688,0.0199,0.0164,0.0068,3587,1805,441
+"IRN",2021,4,"Primary","PIRLS","Iran, Islamic Republic of",364,"Location","Rural",,0.3079,0.125,0.0231,0.0718,0.0371,0.0156,72,25,3
+"ISR",2021,4,"Primary","PIRLS","Israel",376,"Location","Urban",,0.8867,0.6865,0.3648,0.0109,0.0154,0.0136,3699,2836,1519
+"ISR",2021,4,"Primary","PIRLS","Israel",376,"Location","Rural",,0.8055,0.5463,0.2575,0.0671,0.0881,0.0749,157,100,47
+"ITA",2021,4,"Primary","PIRLS","Italy",380,"Location","Urban",,0.9727,0.8315,0.4515,0.0042,0.009,0.0147,4227,3654,2018
+"ITA",2021,4,"Primary","PIRLS","Italy",380,"Location","Rural",,0.9724,0.8165,0.4236,0.0088,0.0323,0.0397,982,835,443
+"JOR",2021,4,"Primary","PIRLS","Jordan",400,"Location","Urban",,0.4638,0.216,0.0552,0.0208,0.0167,0.0081,2321,1047,255
+"JOR",2021,4,"Primary","PIRLS","Jordan",400,"Location","Rural",,0.5228,0.1958,0.023,0.1622,0.0811,0.0119,175,67,8
+"KAZ",2021,4,"Primary","PIRLS","Kazakhstan",398,"Location","Urban",,0.9066,0.6701,0.2825,0.0078,0.0151,0.0148,5731,4271,1867
+"KAZ",2021,4,"Primary","PIRLS","Kazakhstan",398,"Location","Rural",,0.9098,0.6365,0.2334,0.0279,0.049,0.0327,469,340,114
+"LTU",2021,4,"Primary","PIRLS","Lithuania",440,"Location","Urban",,0.9707,0.8582,0.5262,0.005,0.0105,0.0138,2968,2643,1666
+"LVA",2021,4,"Primary","PIRLS","Latvia",428,"Location","Urban",,0.9484,0.79,0.4173,0.0065,0.0146,0.0157,3913,3340,1929
+"LVA",2021,4,"Primary","PIRLS","Latvia",428,"Location","Rural",,0.8858,0.6441,0.2685,0.0527,0.0825,0.0411,96,70,29
+"MAC",2021,4,"Primary","PIRLS","Macao",446,"Location","Urban",,0.9592,0.8183,0.4469,0.004,0.0059,0.0067,4905,4224,2332
+"MAR",2021,4,"Primary","PIRLS","Morocco",504,"Location","Urban",,0.428,0.1827,0.0515,0.0173,0.0157,0.0121,2363,894,196
+"MAR",2021,4,"Primary","PIRLS","Morocco",504,"Location","Rural",,0.3081,0.1266,0.0395,0.0583,0.0479,0.0321,160,57,18
+"MKD",2021,4,"Primary","PIRLS","Macedonia, the former Yugoslav Republic of",807,"Location","Urban",,0.7115,0.3962,0.1111,0.0235,0.0271,0.0127,1931,1094,304
+"MKD",2021,4,"Primary","PIRLS","Macedonia, the former Yugoslav Republic of",807,"Location","Rural",,0.6045,0.2632,0.0389,0.0856,0.0871,0.031,65,26,4
+"MLT",2021,4,"Primary","PIRLS","Malta",470,"Location","Urban",,0.8987,0.6881,0.355,0.0092,0.0151,0.0134,2633,2013,1027
+"MLT",2021,4,"Primary","PIRLS","Malta",470,"Location","Rural",,0.9471,0.7239,0.2837,0.0606,0.2967,0.2981,27,21,6
+"MNE",2021,4,"Primary","PIRLS","Montenegro",499,"Location","Urban",,0.8735,0.5947,0.2156,0.0068,0.012,0.0093,3431,2313,807
+"MNE",2021,4,"Primary","PIRLS","Montenegro",499,"Location","Rural",,0.7576,0.4093,0.1357,0.0362,0.0386,0.0218,147,80,30
+"NLD",2021,4,"Primary","PIRLS","Netherlands",528,"Location","Urban",,0.9597,0.7765,0.3617,0.0076,0.0192,0.0169,2917,2387,1158
+"NLD",2021,4,"Primary","PIRLS","Netherlands",528,"Location","Rural",,0.9931,0.9128,0.572,0.0069,0.0454,0.0915,83,75,45
+"NOR",2021,4,"Primary","PIRLS","Norway",578,"Location","Urban",,0.9639,0.8167,0.4926,0.006,0.01,0.0154,4100,3499,2169
+"NOR",2021,4,"Primary","PIRLS","Norway",578,"Location","Rural",,0.9446,0.7867,0.4256,0.0087,0.0211,0.0202,976,816,454
+"NZL",2021,4,"Primary","PIRLS","New Zealand",554,"Location","Urban",,0.8996,0.7148,0.4177,0.0083,0.0121,0.0156,3855,3110,1867
+"NZL",2021,4,"Primary","PIRLS","New Zealand",554,"Location","Rural",,0.9912,0.8812,0.4695,0.0215,0.0924,0.1683,18,16,8
+"OMN",2021,4,"Primary","PIRLS","Oman",512,"Location","Urban",,0.6301,0.3624,0.1381,0.0147,0.0157,0.0109,2855,1615,604
+"OMN",2021,4,"Primary","PIRLS","Oman",512,"Location","Rural",,0.5126,0.2835,0.0895,0.0766,0.05,0.0269,136,74,22
+"POL",2021,4,"Primary","PIRLS","Poland",616,"Location","Urban",,0.9715,0.8576,0.5263,0.0049,0.0102,0.017,3591,3160,1946
+"POL",2021,4,"Primary","PIRLS","Poland",616,"Location","Rural",,0.9721,0.8207,0.457,0.0107,0.0328,0.0473,345,308,184
+"PRT",2021,4,"Primary","PIRLS","Portugal",620,"Location","Urban",,0.9411,0.7483,0.3542,0.006,0.0101,0.014,5645,4476,2168
+"PRT",2021,4,"Primary","PIRLS","Portugal",620,"Location","Rural",,1,0.6286,0.3429,0,0.1116,0.1116,7,4,3
+"QAT",2021,4,"Primary","PIRLS","Qatar",634,"Location","Urban",,0.8063,0.5697,0.27,0.0119,0.0172,0.0167,4148,2959,1422
+"QAT",2021,4,"Primary","PIRLS","Qatar",634,"Location","Rural",,0.8725,0.5519,0.1439,0.0549,0.0748,0.0688,66,40,12
+"RUS",2021,4,"Primary","PIRLS","Russian Federation",643,"Location","Urban",,0.9909,0.92,0.6792,0.0022,0.0108,0.0178,4364,4091,3024
+"RUS",2021,4,"Primary","PIRLS","Russian Federation",643,"Location","Rural",,0.9535,0.7779,0.4077,0.0134,0.0404,0.0445,710,603,317
+"ALB",2021,4,"Primary","PIRLS","Albania",8,"Sex",,"Female",0.9394,0.742,0.3771,0.0118,0.0223,0.0195,1960,1640,901
+"ALB",2021,4,"Primary","PIRLS","Albania",8,"Sex",,"Male",0.904,0.646,0.2777,0.0122,0.0188,0.0198,1995,1496,720
+"ARE",2021,4,"Primary","PIRLS","United Arab Emirates",784,"Sex",,"Female",0.7963,0.6159,0.3595,0.007,0.0101,0.0113,10825,8135,4676
+"ARE",2021,4,"Primary","PIRLS","United Arab Emirates",784,"Sex",,"Male",0.702,0.534,0.3134,0.0121,0.0135,0.0102,9328,7005,4053
+"AUS",2021,4,"Primary","PIRLS","Australia",36,"Sex",,"Female",0.9606,0.837,0.5158,0.0061,0.0118,0.0189,2602,2281,1478
+"AUS",2021,4,"Primary","PIRLS","Australia",36,"Sex",,"Male",0.9243,0.7681,0.4456,0.0088,0.0126,0.0177,2546,2124,1248
+"AUT",2021,4,"Primary","PIRLS","Austria",40,"Sex",,"Female",0.9648,0.8206,0.4507,0.0051,0.0112,0.0178,2260,1919,1088
+"AUT",2021,4,"Primary","PIRLS","Austria",40,"Sex",,"Male",0.9539,0.7708,0.3613,0.0062,0.0148,0.0193,2346,1897,911
+"AZE",2021,4,"Primary","PIRLS","Azerbaijan",31,"Sex",,"Female",0.7158,0.4098,0.1259,0.0174,0.0216,0.0114,1883,1206,408
+"AZE",2021,4,"Primary","PIRLS","Azerbaijan",31,"Sex",,"Male",0.6378,0.3384,0.0957,0.0209,0.0179,0.0098,1945,1152,339
+"BGR",2021,4,"Primary","PIRLS","Bulgaria",100,"Sex",,"Female",0.9384,0.8128,0.5318,0.0087,0.0157,0.0176,1888,1702,1150
+"BGR",2021,4,"Primary","PIRLS","Bulgaria",100,"Sex",,"Male",0.92,0.7571,0.4529,0.0141,0.0199,0.0189,1964,1673,1079
+"BHR",2021,4,"Primary","PIRLS","Bahrain",48,"Sex",,"Female",0.8014,0.5565,0.2489,0.0134,0.0185,0.0164,1980,1366,589
+"BHR",2021,4,"Primary","PIRLS","Bahrain",48,"Sex",,"Male",0.6226,0.3764,0.1594,0.0121,0.0135,0.0119,1633,952,369
+"BRA",2021,4,"Primary","PIRLS","Brazil",76,"Sex",,"Female",0.6604,0.398,0.1411,0.0191,0.0212,0.0134,1681,1071,420
+"BRA",2021,4,"Primary","PIRLS","Brazil",76,"Sex",,"Male",0.5683,0.3469,0.1162,0.0219,0.0196,0.0132,1565,1010,371
+"CYP",2021,4,"Primary","PIRLS","Cyprus",196,"Sex",,"Female",0.9256,0.714,0.3411,0.0093,0.0154,0.0172,2158,1699,832
+"CYP",2021,4,"Primary","PIRLS","Cyprus",196,"Sex",,"Male",0.9099,0.6678,0.299,0.0079,0.0176,0.0155,2064,1532,691
+"CZE",2021,4,"Primary","PIRLS","Czech Republic",203,"Sex",,"Female",0.965,0.8278,0.4829,0.0057,0.0152,0.0138,3193,2778,1626
+"CZE",2021,4,"Primary","PIRLS","Czech Republic",203,"Sex",,"Male",0.9554,0.8034,0.4632,0.0063,0.0137,0.017,3201,2702,1538
+"DEU",2021,4,"Primary","PIRLS","Germany",276,"Sex",,"Female",0.9443,0.7886,0.4322,0.0065,0.0111,0.0156,2122,1784,1010
+"DEU",2021,4,"Primary","PIRLS","Germany",276,"Sex",,"Male",0.9278,0.7058,0.3522,0.0077,0.0141,0.0143,2198,1718,862
+"DNK",2021,4,"Primary","PIRLS","Denmark",208,"Sex",,"Female",0.9698,0.8335,0.5018,0.0056,0.0106,0.0173,2414,2096,1306
+"DNK",2021,4,"Primary","PIRLS","Denmark",208,"Sex",,"Male",0.9486,0.7912,0.4469,0.0082,0.0141,0.0168,2245,1874,1092
+"EGY",2021,4,"Primary","PIRLS","Egypt",818,"Sex",,"Female",0.4733,0.205,0.0517,0.023,0.0154,0.0098,1881,822,224
+"EGY",2021,4,"Primary","PIRLS","Egypt",818,"Sex",,"Male",0.4186,0.1849,0.0464,0.0235,0.0162,0.0067,1668,770,195
+"ENG",2021,4,"Primary","PIRLS","England",926,"Sex",,"Female",0.9778,0.8781,0.5872,0.0042,0.0101,0.0185,2086,1878,1265
+"ENG",2021,4,"Primary","PIRLS","England",926,"Sex",,"Male",0.9623,0.8481,0.5439,0.007,0.0127,0.018,1925,1709,1084
+"ESP",2021,4,"Primary","PIRLS","Spain",724,"Sex",,"Female",0.9555,0.7653,0.3533,0.0064,0.0138,0.0178,3952,3261,1613
+"ESP",2021,4,"Primary","PIRLS","Spain",724,"Sex",,"Male",0.9495,0.75,0.3514,0.0068,0.016,0.0135,4244,3403,1655
+"FIN",2021,4,"Primary","PIRLS","Finland",246,"Sex",,"Female",0.9756,0.8699,0.5843,0.0052,0.0111,0.0152,3447,3087,2106
+"FIN",2021,4,"Primary","PIRLS","Finland",246,"Sex",,"Male",0.9542,0.8193,0.4809,0.0064,0.0124,0.0159,3352,2861,1705
+"FRA",2021,4,"Primary","PIRLS","France",250,"Sex",,"Female",0.9514,0.7593,0.3495,0.0063,0.0152,0.0178,2551,2079,984
+"FRA",2021,4,"Primary","PIRLS","France",250,"Sex",,"Male",0.9258,0.6892,0.2809,0.0095,0.0166,0.0159,2494,1883,761
+"GEO",2021,4,"Primary","PIRLS","Georgia",268,"Sex",,"Female",0.9107,0.6712,0.2881,0.0091,0.0149,0.017,2328,1758,805
+"GEO",2021,4,"Primary","PIRLS","Georgia",268,"Sex",,"Male",0.8348,0.5607,0.2236,0.0132,0.02,0.013,2298,1589,625
+"HKG",2021,4,"Primary","PIRLS","Hong Kong",344,"Sex",,"Female",0.9879,0.9381,0.6995,0.0053,0.0098,0.0214,1930,1842,1398
+"HKG",2021,4,"Primary","PIRLS","Hong Kong",344,"Sex",,"Male",0.9776,0.9074,0.6642,0.0054,0.0124,0.0208,1841,1719,1269
+"HRV",2021,4,"Primary","PIRLS","Croatia",191,"Sex",,"Female",0.9836,0.889,0.5944,0.006,0.0114,0.0177,1903,1749,1191
+"HRV",2021,4,"Primary","PIRLS","Croatia",191,"Sex",,"Male",0.9782,0.8711,0.531,0.0054,0.0131,0.0189,1963,1754,1097
+"HUN",2021,4,"Primary","PIRLS","Hungary",348,"Sex",,"Female",0.9549,0.8296,0.5263,0.0103,0.0157,0.0189,2571,2285,1507
+"HUN",2021,4,"Primary","PIRLS","Hungary",348,"Sex",,"Male",0.9277,0.7553,0.4626,0.0123,0.0176,0.0183,2496,2113,1330
+"IRL",2021,4,"Primary","PIRLS","Ireland",372,"Sex",,"Female",0.9791,0.9165,0.6987,0.0054,0.0092,0.0185,2261,2122,1644
+"IRL",2021,4,"Primary","PIRLS","Ireland",372,"Sex",,"Male",0.9766,0.9016,0.6464,0.0044,0.0098,0.0175,2315,2128,1556
+"IRN",2021,4,"Primary","PIRLS","Iran, Islamic Republic of",364,"Sex",,"Female",0.6261,0.3184,0.0764,0.0299,0.0299,0.011,1948,1021,268
+"IRN",2021,4,"Primary","PIRLS","Iran, Islamic Republic of",364,"Sex",,"Male",0.5514,0.261,0.0565,0.0248,0.0165,0.0077,1831,872,192
+"ISR",2021,4,"Primary","PIRLS","Israel",376,"Sex",,"Female",0.8904,0.6809,0.3593,0.0103,0.0137,0.0146,2199,1677,901
+"ISR",2021,4,"Primary","PIRLS","Israel",376,"Sex",,"Male",0.869,0.6638,0.3494,0.0091,0.0133,0.0136,2132,1614,841
+"ITA",2021,4,"Primary","PIRLS","Italy",380,"Sex",,"Female",0.9743,0.8441,0.4628,0.004,0.0108,0.0173,2645,2324,1289
+"ITA",2021,4,"Primary","PIRLS","Italy",380,"Sex",,"Male",0.9694,0.811,0.4267,0.0052,0.0125,0.0157,2648,2231,1208
+"JOR",2021,4,"Primary","PIRLS","Jordan",400,"Sex",,"Female",0.5243,0.2454,0.0678,0.026,0.023,0.0123,1551,719,189
+"JOR",2021,4,"Primary","PIRLS","Jordan",400,"Sex",,"Male",0.4069,0.1879,0.0416,0.031,0.0197,0.0079,1093,461,91
+"KAZ",2021,4,"Primary","PIRLS","Kazakhstan",398,"Sex",,"Female",0.9371,0.7103,0.3073,0.0075,0.0157,0.0151,3298,2547,1126
+"KAZ",2021,4,"Primary","PIRLS","Kazakhstan",398,"Sex",,"Male",0.8764,0.6248,0.247,0.0107,0.0179,0.0164,3070,2201,916
+"LTU",2021,4,"Primary","PIRLS","Lithuania",440,"Sex",,"Female",0.9828,0.8987,0.6064,0.0045,0.0098,0.0163,2278,2098,1455
+"LTU",2021,4,"Primary","PIRLS","Lithuania",440,"Sex",,"Male",0.9595,0.8248,0.4809,0.0069,0.0115,0.0176,2230,1924,1148
+"LVA",2021,4,"Primary","PIRLS","Latvia",428,"Sex",,"Female",0.9608,0.8326,0.4751,0.008,0.0146,0.0168,2075,1834,1150
+"LVA",2021,4,"Primary","PIRLS","Latvia",428,"Sex",,"Male",0.9256,0.7212,0.3347,0.0104,0.019,0.015,2120,1724,896
+"MAC",2021,4,"Primary","PIRLS","Macao",446,"Sex",,"Female",0.9647,0.8387,0.4754,0.0052,0.0081,0.0117,2466,2168,1247
+"MAC",2021,4,"Primary","PIRLS","Macao",446,"Sex",,"Male",0.9536,0.7979,0.4184,0.0064,0.0085,0.0112,2439,2056,1085
+"MAR",2021,4,"Primary","PIRLS","Morocco",504,"Sex",,"Female",0.4708,0.209,0.0591,0.019,0.0162,0.0128,1522,586,150
+"MAR",2021,4,"Primary","PIRLS","Morocco",504,"Sex",,"Male",0.3448,0.1341,0.0377,0.0185,0.0143,0.0114,1190,428,75
+"MKD",2021,4,"Primary","PIRLS","Macedonia, the former Yugoslav Republic of",807,"Sex",,"Female",0.7383,0.437,0.1329,0.0254,0.0295,0.0153,1113,683,197
+"MKD",2021,4,"Primary","PIRLS","Macedonia, the former Yugoslav Republic of",807,"Sex",,"Male",0.6589,0.3238,0.076,0.0242,0.0285,0.0125,967,477,122
+"MLT",2021,4,"Primary","PIRLS","Malta",470,"Sex",,"Female",0.9101,0.7162,0.379,0.0109,0.0205,0.0189,1294,1009,516
+"MLT",2021,4,"Primary","PIRLS","Malta",470,"Sex",,"Male",0.8958,0.6808,0.3502,0.0114,0.0155,0.0169,1459,1114,573
+"MNE",2021,4,"Primary","PIRLS","Montenegro",499,"Sex",,"Female",0.9048,0.6386,0.2483,0.0078,0.0117,0.0146,1949,1346,501
+"MNE",2021,4,"Primary","PIRLS","Montenegro",499,"Sex",,"Male",0.8358,0.5415,0.1794,0.0101,0.0175,0.0112,1921,1250,403
+"NLD",2021,4,"Primary","PIRLS","Netherlands",528,"Sex",,"Female",0.9738,0.8187,0.4066,0.007,0.0173,0.0159,2131,1806,908
+"NLD",2021,4,"Primary","PIRLS","Netherlands",528,"Sex",,"Male",0.9549,0.7598,0.3389,0.0078,0.0161,0.0154,2048,1659,768
+"NOR",2021,4,"Primary","PIRLS","Norway",578,"Sex",,"Female",0.9715,0.843,0.5124,0.0058,0.0112,0.0177,2586,2245,1417
+"NOR",2021,4,"Primary","PIRLS","Norway",578,"Sex",,"Male",0.9454,0.7747,0.4357,0.0067,0.0127,0.0151,2600,2159,1245
+"NZL",2021,4,"Primary","PIRLS","New Zealand",554,"Sex",,"Female",0.9199,0.7537,0.4433,0.0078,0.0118,0.0156,2536,2115,1269
+"NZL",2021,4,"Primary","PIRLS","New Zealand",554,"Sex",,"Male",0.8786,0.6735,0.3716,0.0089,0.0128,0.0138,2526,1960,1114
+"OMN",2021,4,"Primary","PIRLS","Oman",512,"Sex",,"Female",0.6885,0.4115,0.1539,0.0167,0.0179,0.0127,1851,1095,403
+"OMN",2021,4,"Primary","PIRLS","Oman",512,"Sex",,"Male",0.5546,0.2964,0.1097,0.0151,0.0146,0.0104,1460,772,278
+"POL",2021,4,"Primary","PIRLS","Poland",616,"Sex",,"Female",0.9806,0.8848,0.5745,0.0066,0.0132,0.0191,1982,1805,1192
+"POL",2021,4,"Primary","PIRLS","Poland",616,"Sex",,"Male",0.9646,0.8244,0.4639,0.0066,0.0136,0.0193,2103,1795,1023
+"PRT",2021,4,"Primary","PIRLS","Portugal",620,"Sex",,"Female",0.9559,0.7651,0.3575,0.0051,0.0124,0.0146,2826,2273,1067
+"PRT",2021,4,"Primary","PIRLS","Portugal",620,"Sex",,"Male",0.9287,0.7343,0.3544,0.0088,0.0131,0.0182,2948,2304,1157
+"QAT",2021,4,"Primary","PIRLS","Qatar",634,"Sex",,"Female",0.8353,0.5986,0.2823,0.0126,0.0211,0.0189,2272,1623,788
+"QAT",2021,4,"Primary","PIRLS","Qatar",634,"Sex",,"Male",0.7707,0.5326,0.2506,0.0177,0.021,0.0198,1965,1385,647
+"RUS",2021,4,"Primary","PIRLS","Russian Federation",643,"Sex",,"Female",0.9876,0.9093,0.6646,0.0038,0.0121,0.0207,2538,2371,1757
+"RUS",2021,4,"Primary","PIRLS","Russian Federation",643,"Sex",,"Male",0.9798,0.876,0.5891,0.0052,0.0197,0.0246,2614,2394,1637
+"ALB",2021,4,"Primary","PIRLS","Albania",8,"Location & Sex","Urban","Female",0.9464,0.7569,0.3931,0.0131,0.0227,0.0193,1752,1479,824
+"ALB",2021,4,"Primary","PIRLS","Albania",8,"Location & Sex","Urban","Male",0.9102,0.662,0.2887,0.0138,0.0178,0.0209,1752,1336,646
+"ALB",2021,4,"Primary","PIRLS","Albania",8,"Location & Sex","Rural","Female",0.8416,0.4598,0.0871,0.0725,0.1386,0.069,31,17,4
+"ALB",2021,4,"Primary","PIRLS","Albania",8,"Location & Sex","Rural","Male",0.8509,0.5165,0.1874,0.0633,0.1315,0.0926,45,26,9
+"ARE",2021,4,"Primary","PIRLS","United Arab Emirates",784,"Location & Sex","Urban","Female",0.8698,0.7109,0.4326,0.008,0.0131,0.0153,7391,6076,3769
+"ARE",2021,4,"Primary","PIRLS","United Arab Emirates",784,"Location & Sex","Urban","Male",0.7815,0.6176,0.3748,0.0144,0.0177,0.0147,6715,5400,3324
+"ARE",2021,4,"Primary","PIRLS","United Arab Emirates",784,"Location & Sex","Rural","Female",0.6687,0.3793,0.1208,0.041,0.0349,0.0247,154,82,25
+"ARE",2021,4,"Primary","PIRLS","United Arab Emirates",784,"Location & Sex","Rural","Male",0.5991,0.3088,0.1141,0.0446,0.0491,0.0267,92,44,15
+"AUS",2021,4,"Primary","PIRLS","Australia",36,"Location & Sex","Urban","Female",0.9595,0.8385,0.5214,0.0067,0.0121,0.0197,2291,2011,1309
+"AUS",2021,4,"Primary","PIRLS","Australia",36,"Location & Sex","Urban","Male",0.9266,0.7704,0.4465,0.0087,0.013,0.0164,2271,1899,1117
+"AUS",2021,4,"Primary","PIRLS","Australia",36,"Location & Sex","Rural","Female",0.9399,0.8453,0.3825,0.0459,0.1405,0.1759,40,31,16
+"AUS",2021,4,"Primary","PIRLS","Australia",36,"Location & Sex","Rural","Male",0.8105,0.6026,0.3186,0.2092,0.2567,0.0765,28,17,8
+"AUT",2021,4,"Primary","PIRLS","Austria",40,"Location & Sex","Urban","Female",0.9626,0.8143,0.448,0.0054,0.012,0.0208,2190,1858,1057
+"AUT",2021,4,"Primary","PIRLS","Austria",40,"Location & Sex","Urban","Male",0.9562,0.7697,0.3638,0.0055,0.015,0.0178,2272,1836,879
+"AUT",2021,4,"Primary","PIRLS","Austria",40,"Location & Sex","Rural","Female",0.9859,0.8822,0.478,0.0109,0.0427,0.0632,70,61,31
+"AUT",2021,4,"Primary","PIRLS","Austria",40,"Location & Sex","Rural","Male",0.9302,0.7828,0.3349,0.0386,0.0606,0.0887,74,61,32
+"AZE",2021,4,"Primary","PIRLS","Azerbaijan",31,"Location & Sex","Urban","Female",0.7457,0.4332,0.1357,0.0192,0.0237,0.0132,1714,1098,381
+"AZE",2021,4,"Primary","PIRLS","Azerbaijan",31,"Location & Sex","Urban","Male",0.6619,0.3627,0.1027,0.0227,0.02,0.0109,1750,1052,310
+"AZE",2021,4,"Primary","PIRLS","Azerbaijan",31,"Location & Sex","Rural","Female",0.3964,0.1229,0.014,0.0662,0.0538,0.0138,42,13,1
+"AZE",2021,4,"Primary","PIRLS","Azerbaijan",31,"Location & Sex","Rural","Male",0.3831,0.0732,0.0013,0.0548,0.0446,0.0032,49,7,0
+"BGR",2021,4,"Primary","PIRLS","Bulgaria",100,"Location & Sex","Urban","Female",0.9396,0.8156,0.5341,0.0093,0.0156,0.0195,1830,1648,1116
+"BGR",2021,4,"Primary","PIRLS","Bulgaria",100,"Location & Sex","Urban","Male",0.9187,0.7566,0.4563,0.015,0.0205,0.0209,1908,1625,1054
+"BGR",2021,4,"Primary","PIRLS","Bulgaria",100,"Location & Sex","Rural","Female",0.8753,0.6784,0.3965,0.1114,0.148,0.0898,22,18,9
+"BGR",2021,4,"Primary","PIRLS","Bulgaria",100,"Location & Sex","Rural","Male",0.9365,0.6998,0.2138,0.0542,0.1055,0.1003,18,14,3
+"BHR",2021,4,"Primary","PIRLS","Bahrain",48,"Location & Sex","Urban","Female",0.8135,0.573,0.2595,0.0125,0.0189,0.0173,1850,1295,563
+"BHR",2021,4,"Primary","PIRLS","Bahrain",48,"Location & Sex","Urban","Male",0.625,0.3817,0.1635,0.0127,0.0151,0.0135,1559,917,361
+"BRA",2021,4,"Primary","PIRLS","Brazil",76,"Location & Sex","Urban","Female",0.6691,0.4068,0.1493,0.0197,0.0228,0.0156,1558,1000,399
+"BRA",2021,4,"Primary","PIRLS","Brazil",76,"Location & Sex","Urban","Male",0.5896,0.3714,0.1259,0.0192,0.0209,0.0137,1456,955,353
+"BRA",2021,4,"Primary","PIRLS","Brazil",76,"Location & Sex","Rural","Female",0.5481,0.2653,0.0697,0.1177,0.1037,0.0299,30,12,2
+"BRA",2021,4,"Primary","PIRLS","Brazil",76,"Location & Sex","Rural","Male",0.3743,0.1423,0.0424,0.1233,0.0501,0.0506,29,11,2
+"CYP",2021,4,"Primary","PIRLS","Cyprus",196,"Location & Sex","Urban","Female",0.9245,0.712,0.3392,0.0093,0.0155,0.0171,2123,1668,814
+"CYP",2021,4,"Primary","PIRLS","Cyprus",196,"Location & Sex","Urban","Male",0.9089,0.6642,0.2955,0.0079,0.0176,0.0151,2027,1499,671
+"CYP",2021,4,"Primary","PIRLS","Cyprus",196,"Location & Sex","Rural","Female",1,0.8286,0.4286,0,0.1309,0.1565,7,6,4
+"CZE",2021,4,"Primary","PIRLS","Czech Republic",203,"Location & Sex","Urban","Female",0.9692,0.8324,0.4869,0.0045,0.015,0.015,2826,2456,1435
+"CZE",2021,4,"Primary","PIRLS","Czech Republic",203,"Location & Sex","Urban","Male",0.9544,0.8043,0.4771,0.0064,0.0135,0.0186,2833,2381,1366
+"CZE",2021,4,"Primary","PIRLS","Czech Republic",203,"Location & Sex","Rural","Female",0.9502,0.8135,0.472,0.0181,0.05,0.0428,328,289,170
+"CZE",2021,4,"Primary","PIRLS","Czech Republic",203,"Location & Sex","Rural","Male",0.958,0.8014,0.4233,0.0151,0.0352,0.0332,335,291,160
+"DEU",2021,4,"Primary","PIRLS","Germany",276,"Location & Sex","Urban","Female",0.9458,0.7845,0.4253,0.0074,0.0148,0.0167,1625,1376,763
+"DEU",2021,4,"Primary","PIRLS","Germany",276,"Location & Sex","Urban","Male",0.9243,0.6975,0.349,0.0099,0.0174,0.0166,1646,1286,646
+"DEU",2021,4,"Primary","PIRLS","Germany",276,"Location & Sex","Rural","Female",0.9478,0.8225,0.4321,0.0197,0.0466,0.0785,110,88,57
+"DEU",2021,4,"Primary","PIRLS","Germany",276,"Location & Sex","Rural","Male",0.9255,0.7283,0.3425,0.0298,0.0473,0.0634,113,87,42
+"DNK",2021,4,"Primary","PIRLS","Denmark",208,"Location & Sex","Urban","Female",0.9708,0.8346,0.5057,0.0062,0.0126,0.0189,2135,1860,1168
+"DNK",2021,4,"Primary","PIRLS","Denmark",208,"Location & Sex","Urban","Male",0.9477,0.7901,0.4482,0.0086,0.0158,0.0185,2000,1669,974
+"DNK",2021,4,"Primary","PIRLS","Denmark",208,"Location & Sex","Rural","Female",0.9795,0.8809,0.5592,0.0179,0.0485,0.086,83,75,46
+"DNK",2021,4,"Primary","PIRLS","Denmark",208,"Location & Sex","Rural","Male",0.952,0.8088,0.4427,0.0188,0.058,0.0725,76,62,36
+"EGY",2021,4,"Primary","PIRLS","Egypt",818,"Location & Sex","Urban","Female",0.4726,0.2029,0.054,0.0244,0.0174,0.0105,1679,736,206
+"EGY",2021,4,"Primary","PIRLS","Egypt",818,"Location & Sex","Urban","Male",0.4149,0.1806,0.0442,0.0249,0.0163,0.0069,1441,653,164
+"EGY",2021,4,"Primary","PIRLS","Egypt",818,"Location & Sex","Rural","Female",0.3544,0.1661,0.039,0.1247,0.0754,0.0271,66,32,7
+"EGY",2021,4,"Primary","PIRLS","Egypt",818,"Location & Sex","Rural","Male",0.3775,0.1874,0.0484,0.1206,0.1175,0.0361,78,42,11
+"ENG",2021,4,"Primary","PIRLS","England",926,"Location & Sex","Urban","Female",0.977,0.8799,0.5895,0.0047,0.0108,0.0206,1833,1649,1121
+"ENG",2021,4,"Primary","PIRLS","England",926,"Location & Sex","Urban","Male",0.9613,0.8482,0.5466,0.008,0.0137,0.0189,1650,1470,944
+"ENG",2021,4,"Primary","PIRLS","England",926,"Location & Sex","Rural","Female",1,0.925,0.65,,,,8,8,4
+"ENG",2021,4,"Primary","PIRLS","England",926,"Location & Sex","Rural","Male",1,0.9779,0.8803,0,0.0501,0.0704,21,20,20
+"ESP",2021,4,"Primary","PIRLS","Spain",724,"Location & Sex","Urban","Female",0.9549,0.7631,0.3519,0.0066,0.0141,0.0176,3918,3234,1594
+"ESP",2021,4,"Primary","PIRLS","Spain",724,"Location & Sex","Urban","Male",0.9495,0.7504,0.3519,0.0068,0.0159,0.0136,4211,3376,1643
+"ESP",2021,4,"Primary","PIRLS","Spain",724,"Location & Sex","Rural","Male",0.7935,0.4848,0.1348,0.211,0.2423,0.138,7,5,2
+"FIN",2021,4,"Primary","PIRLS","Finland",246,"Location & Sex","Urban","Female",0.9726,0.8678,0.5889,0.0055,0.0123,0.0167,2909,2601,1781
+"FIN",2021,4,"Primary","PIRLS","Finland",246,"Location & Sex","Urban","Male",0.9497,0.8164,0.4952,0.0066,0.015,0.0169,2763,2362,1449
+"FIN",2021,4,"Primary","PIRLS","Finland",246,"Location & Sex","Rural","Female",0.9876,0.8766,0.5539,0.0068,0.0272,0.0365,489,439,294
+"FIN",2021,4,"Primary","PIRLS","Finland",246,"Location & Sex","Rural","Male",0.9705,0.8336,0.4294,0.0129,0.0246,0.0365,534,453,233
+"FRA",2021,4,"Primary","PIRLS","France",250,"Location & Sex","Urban","Female",0.9495,0.7638,0.3572,0.0073,0.0151,0.0175,2227,1821,883
+"FRA",2021,4,"Primary","PIRLS","France",250,"Location & Sex","Urban","Male",0.9303,0.7012,0.2911,0.0077,0.0169,0.0176,2202,1681,697
+"FRA",2021,4,"Primary","PIRLS","France",250,"Location & Sex","Rural","Female",0.965,0.7594,0.3414,0.0129,0.0435,0.0484,218,176,78
+"FRA",2021,4,"Primary","PIRLS","France",250,"Location & Sex","Rural","Male",0.9187,0.658,0.2653,0.03,0.0515,0.0434,194,136,52
+"GEO",2021,4,"Primary","PIRLS","Georgia",268,"Location & Sex","Urban","Female",0.9149,0.6777,0.2944,0.0093,0.0151,0.0165,2233,1692,775
+"GEO",2021,4,"Primary","PIRLS","Georgia",268,"Location & Sex","Urban","Male",0.8448,0.5643,0.2248,0.0134,0.0192,0.0134,2190,1509,593
+"GEO",2021,4,"Primary","PIRLS","Georgia",268,"Location & Sex","Rural","Female",0.8854,0.6206,0.2409,0.0393,0.0752,0.0746,61,45,20
+"GEO",2021,4,"Primary","PIRLS","Georgia",268,"Location & Sex","Rural","Male",0.7972,0.5579,0.2114,0.0613,0.0893,0.0421,59,44,16
+"HKG",2021,4,"Primary","PIRLS","Hong Kong",344,"Location & Sex","Urban","Female",0.9877,0.938,0.6993,0.0054,0.0098,0.0215,1908,1822,1386
+"HKG",2021,4,"Primary","PIRLS","Hong Kong",344,"Location & Sex","Urban","Male",0.9778,0.9097,0.666,0.0054,0.0128,0.0209,1815,1698,1253
+"HRV",2021,4,"Primary","PIRLS","Croatia",191,"Location & Sex","Urban","Female",0.9832,0.8914,0.5955,0.0065,0.0117,0.0182,1814,1668,1133
+"HRV",2021,4,"Primary","PIRLS","Croatia",191,"Location & Sex","Urban","Male",0.9813,0.8754,0.5379,0.005,0.013,0.0193,1879,1679,1049
+"HRV",2021,4,"Primary","PIRLS","Croatia",191,"Location & Sex","Rural","Female",1,0.8759,0.5828,0,0.1971,0.108,6,5,3
+"HRV",2021,4,"Primary","PIRLS","Croatia",191,"Location & Sex","Rural","Male",1,0.8552,0.3337,0,0.2319,0.0935,15,12,4
+"HUN",2021,4,"Primary","PIRLS","Hungary",348,"Location & Sex","Urban","Female",0.9544,0.8295,0.5248,0.0111,0.0167,0.0205,2312,2057,1365
+"HUN",2021,4,"Primary","PIRLS","Hungary",348,"Location & Sex","Urban","Male",0.9273,0.7565,0.4589,0.0123,0.0196,0.0192,2268,1933,1207
+"HUN",2021,4,"Primary","PIRLS","Hungary",348,"Location & Sex","Rural","Female",0.9582,0.7658,0.3456,0.0243,0.0816,0.1593,22,18,7
+"HUN",2021,4,"Primary","PIRLS","Hungary",348,"Location & Sex","Rural","Male",0.8818,0.5621,0.271,0.1088,0.1987,0.1006,15,5,2
+"IRL",2021,4,"Primary","PIRLS","Ireland",372,"Location & Sex","Urban","Female",0.9785,0.9165,0.687,0.0057,0.0094,0.0205,2021,1898,1454
+"IRL",2021,4,"Primary","PIRLS","Ireland",372,"Location & Sex","Urban","Male",0.9743,0.8929,0.629,0.005,0.0111,0.0196,2059,1888,1369
+"IRL",2021,4,"Primary","PIRLS","Ireland",372,"Location & Sex","Rural","Female",0.9815,0.9153,0.7528,0.0111,0.0267,0.0397,224,208,176
+"IRL",2021,4,"Primary","PIRLS","Ireland",372,"Location & Sex","Rural","Male",0.9899,0.9448,0.7214,0.01,0.0258,0.0451,221,208,157
+"IRN",2021,4,"Primary","PIRLS","Iran, Islamic Republic of",364,"Location & Sex","Urban","Female",0.6465,0.3311,0.0803,0.0304,0.0315,0.0116,1845,971,254
+"IRN",2021,4,"Primary","PIRLS","Iran, Islamic Republic of",364,"Location & Sex","Urban","Male",0.5703,0.2711,0.0589,0.0245,0.0174,0.0081,1742,834,187
+"IRN",2021,4,"Primary","PIRLS","Iran, Islamic Republic of",364,"Location & Sex","Rural","Female",0.3273,0.1322,0.0159,0.1033,0.0719,0.0163,23,8,1
+"IRN",2021,4,"Primary","PIRLS","Iran, Islamic Republic of",364,"Location & Sex","Rural","Male",0.2948,0.1201,0.0281,0.0903,0.0337,0.0222,49,17,2
+"ISR",2021,4,"Primary","PIRLS","Israel",376,"Location & Sex","Urban","Female",0.8958,0.6946,0.3709,0.0118,0.0181,0.0162,1856,1431,779
+"ISR",2021,4,"Primary","PIRLS","Israel",376,"Location & Sex","Urban","Male",0.8778,0.6787,0.359,0.0124,0.0171,0.0166,1843,1405,740
+"ISR",2021,4,"Primary","PIRLS","Israel",376,"Location & Sex","Rural","Female",0.8664,0.5875,0.2954,0.0447,0.0855,0.0706,104,66,34
+"ISR",2021,4,"Primary","PIRLS","Israel",376,"Location & Sex","Rural","Male",0.703,0.4771,0.194,0.1144,0.1057,0.0959,53,34,13
+"ITA",2021,4,"Primary","PIRLS","Italy",380,"Location & Sex","Urban","Female",0.974,0.8477,0.4672,0.005,0.0107,0.0171,2105,1862,1033
+"ITA",2021,4,"Primary","PIRLS","Italy",380,"Location & Sex","Urban","Male",0.9714,0.816,0.4364,0.0057,0.0115,0.0169,2122,1792,985
+"ITA",2021,4,"Primary","PIRLS","Italy",380,"Location & Sex","Rural","Female",0.9778,0.8356,0.4509,0.0082,0.0305,0.0452,491,422,233
+"ITA",2021,4,"Primary","PIRLS","Italy",380,"Location & Sex","Rural","Male",0.9669,0.7971,0.396,0.0117,0.0403,0.0414,491,413,210
+"JOR",2021,4,"Primary","PIRLS","Jordan",400,"Location & Sex","Urban","Female",0.5153,0.2444,0.0703,0.0255,0.0236,0.0133,1394,651,177
+"JOR",2021,4,"Primary","PIRLS","Jordan",400,"Location & Sex","Urban","Male",0.4101,0.1865,0.0394,0.0339,0.0209,0.0086,927,396,78
+"JOR",2021,4,"Primary","PIRLS","Jordan",400,"Location & Sex","Rural","Female",0.6299,0.2435,0.0272,0.1475,0.0754,0.0136,65,33,4
+"JOR",2021,4,"Primary","PIRLS","Jordan",400,"Location & Sex","Rural","Male",0.2157,0.0588,0.011,0.0947,0.0305,0.009,110,34,4
+"KAZ",2021,4,"Primary","PIRLS","Kazakhstan",398,"Location & Sex","Urban","Female",0.934,0.7085,0.3068,0.0082,0.0171,0.0161,2976,2298,1017
+"KAZ",2021,4,"Primary","PIRLS","Kazakhstan",398,"Location & Sex","Urban","Male",0.8783,0.6306,0.2574,0.01,0.0182,0.0175,2755,1973,850
+"KAZ",2021,4,"Primary","PIRLS","Kazakhstan",398,"Location & Sex","Rural","Female",0.9577,0.7054,0.3011,0.0149,0.0455,0.0619,239,178,73
+"KAZ",2021,4,"Primary","PIRLS","Kazakhstan",398,"Location & Sex","Rural","Male",0.8655,0.5726,0.1705,0.0513,0.0816,0.042,230,162,41
+"LTU",2021,4,"Primary","PIRLS","Lithuania",440,"Location & Sex","Urban","Female",0.9846,0.8987,0.5864,0.0042,0.0104,0.0175,1536,1409,949
+"LTU",2021,4,"Primary","PIRLS","Lithuania",440,"Location & Sex","Urban","Male",0.9561,0.8158,0.4633,0.0091,0.015,0.0175,1432,1234,717
+"LVA",2021,4,"Primary","PIRLS","Latvia",428,"Location & Sex","Urban","Female",0.9667,0.8436,0.4883,0.0064,0.0153,0.0179,1930,1711,1077
+"LVA",2021,4,"Primary","PIRLS","Latvia",428,"Location & Sex","Urban","Male",0.9313,0.7404,0.3514,0.0096,0.019,0.0173,1983,1629,852
+"LVA",2021,4,"Primary","PIRLS","Latvia",428,"Location & Sex","Rural","Female",0.9069,0.7291,0.3579,0.0644,0.0751,0.0623,59,48,24
+"LVA",2021,4,"Primary","PIRLS","Latvia",428,"Location & Sex","Rural","Male",0.8531,0.512,0.1294,0.0627,0.1208,0.0619,37,22,5
+"MAC",2021,4,"Primary","PIRLS","Macao",446,"Location & Sex","Urban","Female",0.9647,0.8387,0.4754,0.0052,0.0081,0.0117,2466,2168,1247
+"MAC",2021,4,"Primary","PIRLS","Macao",446,"Location & Sex","Urban","Male",0.9536,0.7979,0.4184,0.0064,0.0085,0.0112,2439,2056,1085
+"MAR",2021,4,"Primary","PIRLS","Morocco",504,"Location & Sex","Urban","Female",0.4973,0.2272,0.0666,0.0196,0.0181,0.0145,1317,521,139
+"MAR",2021,4,"Primary","PIRLS","Morocco",504,"Location & Sex","Urban","Male",0.3648,0.1422,0.0377,0.021,0.0171,0.013,1046,373,57
+"MAR",2021,4,"Primary","PIRLS","Morocco",504,"Location & Sex","Rural","Female",0.358,0.1447,0.0364,0.0782,0.0635,0.0377,96,31,7
+"MAR",2021,4,"Primary","PIRLS","Morocco",504,"Location & Sex","Rural","Male",0.2528,0.1067,0.0429,0.0581,0.0423,0.0352,64,26,11
+"MKD",2021,4,"Primary","PIRLS","Macedonia, the former Yugoslav Republic of",807,"Location & Sex","Urban","Female",0.7532,0.4541,0.1403,0.0273,0.0318,0.0168,1033,643,187
+"MKD",2021,4,"Primary","PIRLS","Macedonia, the former Yugoslav Republic of",807,"Location & Sex","Urban","Male",0.6684,0.3364,0.081,0.0267,0.0321,0.0134,898,451,117
+"MKD",2021,4,"Primary","PIRLS","Macedonia, the former Yugoslav Republic of",807,"Location & Sex","Rural","Female",0.6298,0.3375,0.0539,0.112,0.1067,0.0376,34,17,3
+"MKD",2021,4,"Primary","PIRLS","Macedonia, the former Yugoslav Republic of",807,"Location & Sex","Rural","Male",0.5726,0.1699,0.02,0.0929,0.0838,0.0335,31,9,1
+"MLT",2021,4,"Primary","PIRLS","Malta",470,"Location & Sex","Urban","Female",0.9062,0.7065,0.3715,0.0116,0.0195,0.018,1232,953,488
+"MLT",2021,4,"Primary","PIRLS","Malta",470,"Location & Sex","Urban","Male",0.8923,0.6724,0.3409,0.0124,0.0175,0.0186,1401,1060,539
+"MLT",2021,4,"Primary","PIRLS","Malta",470,"Location & Sex","Rural","Female",0.9505,0.7172,0.2651,0.0676,0.2394,0.2784,18,13,3
+"MLT",2021,4,"Primary","PIRLS","Malta",470,"Location & Sex","Rural","Male",0.9411,0.736,0.3167,0.0361,0.4514,0.378,9,8,3
+"MNE",2021,4,"Primary","PIRLS","Montenegro",499,"Location & Sex","Urban","Female",0.9083,0.6422,0.2499,0.008,0.0123,0.0151,1745,1204,447
+"MNE",2021,4,"Primary","PIRLS","Montenegro",499,"Location & Sex","Urban","Male",0.8405,0.5497,0.1831,0.0109,0.0188,0.0118,1686,1109,360
+"MNE",2021,4,"Primary","PIRLS","Montenegro",499,"Location & Sex","Rural","Female",0.7877,0.4671,0.1369,0.0566,0.0595,0.037,64,40,12
+"MNE",2021,4,"Primary","PIRLS","Montenegro",499,"Location & Sex","Rural","Male",0.7327,0.3616,0.1346,0.0542,0.0637,0.0399,83,40,18
+"NLD",2021,4,"Primary","PIRLS","Netherlands",528,"Location & Sex","Urban","Female",0.9697,0.8057,0.3983,0.0091,0.0207,0.0204,1475,1230,633
+"NLD",2021,4,"Primary","PIRLS","Netherlands",528,"Location & Sex","Urban","Male",0.9498,0.7474,0.3252,0.0105,0.0222,0.0196,1440,1155,524
+"NLD",2021,4,"Primary","PIRLS","Netherlands",528,"Location & Sex","Rural","Female",1,0.9188,0.6137,0,0.081,0.1615,50,46,27
+"NLD",2021,4,"Primary","PIRLS","Netherlands",528,"Location & Sex","Rural","Male",0.9852,0.9058,0.5245,0.0148,0.061,0.1204,33,29,18
+"NOR",2021,4,"Primary","PIRLS","Norway",578,"Location & Sex","Urban","Female",0.9741,0.8491,0.533,0.0056,0.0122,0.0187,2027,1764,1153
+"NOR",2021,4,"Primary","PIRLS","Norway",578,"Location & Sex","Urban","Male",0.9541,0.7856,0.4539,0.0089,0.0136,0.0179,2073,1735,1016
+"NOR",2021,4,"Primary","PIRLS","Norway",578,"Location & Sex","Rural","Female",0.9645,0.8228,0.4651,0.0152,0.0241,0.031,499,429,244
+"NOR",2021,4,"Primary","PIRLS","Norway",578,"Location & Sex","Rural","Male",0.9258,0.7524,0.3882,0.0104,0.0269,0.0313,477,387,210
+"NZL",2021,4,"Primary","PIRLS","New Zealand",554,"Location & Sex","Urban","Female",0.9209,0.7647,0.4675,0.0091,0.0138,0.0199,1915,1619,997
+"NZL",2021,4,"Primary","PIRLS","New Zealand",554,"Location & Sex","Urban","Male",0.8792,0.6673,0.3706,0.0108,0.0165,0.0191,1939,1490,869
+"NZL",2021,4,"Primary","PIRLS","New Zealand",554,"Location & Sex","Rural","Female",0.9693,0.7078,0.0615,0.0753,0.1686,0.0922,6,4,0
+"NZL",2021,4,"Primary","PIRLS","New Zealand",554,"Location & Sex","Rural","Male",1,0.9507,0.633,0,0.0739,0.1884,12,12,8
+"OMN",2021,4,"Primary","PIRLS","Oman",512,"Location & Sex","Urban","Female",0.6966,0.4178,0.1583,0.0178,0.02,0.0136,1611,951,357
+"OMN",2021,4,"Primary","PIRLS","Oman",512,"Location & Sex","Urban","Male",0.5619,0.3054,0.1173,0.0165,0.0161,0.0119,1244,664,247
+"OMN",2021,4,"Primary","PIRLS","Oman",512,"Location & Sex","Rural","Female",0.5791,0.347,0.1091,0.0901,0.0562,0.0352,72,43,13
+"OMN",2021,4,"Primary","PIRLS","Oman",512,"Location & Sex","Rural","Male",0.4527,0.2263,0.0719,0.0824,0.0562,0.0303,64,31,9
+"POL",2021,4,"Primary","PIRLS","Poland",616,"Location & Sex","Urban","Female",0.9797,0.8884,0.5844,0.006,0.0135,0.0212,1756,1596,1059
+"POL",2021,4,"Primary","PIRLS","Poland",616,"Location & Sex","Urban","Male",0.964,0.8294,0.4733,0.0072,0.0144,0.0195,1835,1564,887
+"POL",2021,4,"Primary","PIRLS","Poland",616,"Location & Sex","Rural","Female",0.9832,0.8591,0.5072,0.0197,0.0387,0.0579,159,148,90
+"POL",2021,4,"Primary","PIRLS","Poland",616,"Location & Sex","Rural","Male",0.9636,0.791,0.4183,0.0172,0.0424,0.0631,186,160,94
+"PRT",2021,4,"Primary","PIRLS","Portugal",620,"Location & Sex","Urban","Female",0.9552,0.7637,0.3538,0.0052,0.0125,0.0146,2769,2227,1038
+"PRT",2021,4,"Primary","PIRLS","Portugal",620,"Location & Sex","Urban","Male",0.9278,0.7338,0.3547,0.009,0.0133,0.0177,2876,2249,1130
+"PRT",2021,4,"Primary","PIRLS","Portugal",620,"Location & Sex","Rural","Male",1,0.6667,0.4,0,0,0.1944,6,4,3
+"QAT",2021,4,"Primary","PIRLS","Qatar",634,"Location & Sex","Urban","Female",0.8353,0.5986,0.2825,0.0126,0.0211,0.0189,2257,1612,784
+"QAT",2021,4,"Primary","PIRLS","Qatar",634,"Location & Sex","Urban","Male",0.7748,0.5384,0.2564,0.0189,0.022,0.0205,1891,1347,638
+"QAT",2021,4,"Primary","PIRLS","Qatar",634,"Location & Sex","Rural","Female",0.8667,0.6111,0.1778,0.0648,0.1111,0.1144,15,11,4
+"QAT",2021,4,"Primary","PIRLS","Qatar",634,"Location & Sex","Rural","Male",0.8743,0.533,0.133,0.0713,0.0777,0.0819,51,29,8
+"RUS",2021,4,"Primary","PIRLS","Russian Federation",643,"Location & Sex","Urban","Female",0.994,0.934,0.7178,0.0023,0.0102,0.0192,2175,2053,1572
+"RUS",2021,4,"Primary","PIRLS","Russian Federation",643,"Location & Sex","Urban","Male",0.9877,0.9061,0.6406,0.0035,0.018,0.0231,2189,2038,1452
+"RUS",2021,4,"Primary","PIRLS","Russian Federation",643,"Location & Sex","Rural","Female",0.9584,0.7988,0.4243,0.0146,0.0417,0.0523,327,285,158
+"RUS",2021,4,"Primary","PIRLS","Russian Federation",643,"Location & Sex","Rural","Male",0.9494,0.7605,0.3938,0.0191,0.0482,0.0491,383,318,159
