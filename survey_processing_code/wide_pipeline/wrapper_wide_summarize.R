@@ -68,7 +68,8 @@ for (i in 1:length(file_names)) {
     rename_with(~paste0(., "_no"), any_of(paste0('count_',wide_outcome_vars)))  %>%  
     rename_all(~stringr::str_replace(.,"^count_",""))
   #Fixing category names
-  summarized_wider <- summarized_wider %>% mutate(category= str_to_title(category))
+  summarized_wider <- summarized_wider %>% mutate(category= str_to_title(category)) %>%
+    mutate(iso_code3 = countrycode::countrycode(country, 'country.name.en', 'iso3c')) 
   # Export data as .csv format by country
   survey <- substring( file_names[[i]], 1, 13)
   setwd("C:/Users/taiku/Desktop/temporary_sum")
@@ -94,5 +95,7 @@ all_indicators <- ldply(list.files(), read.csv, header=TRUE)
 #write.csv(all_indicators, paste0("widetable","_summarized_latestAfrica.csv"))
 
 
-write.csv(all_indicators, paste0("widetable","_summarized_2022update.csv"), na = '')
+#write.csv(all_indicators, paste0("widetable","_summarized_2022update.csv"), na = '')
+#write.csv(all_indicators, paste0("widetable","_summarized_2023update.csv"), na = '')
+write.csv(all_indicators, paste0("widetable","_summarized_Nepalrecalculation.csv"), na = '')
 

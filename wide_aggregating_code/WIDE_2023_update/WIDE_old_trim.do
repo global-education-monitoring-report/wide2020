@@ -6009,3 +6009,14 @@ drop if iso=="URY" & year==2016 & cat=="Wealth" & sex=="" & location=="" & wealt
 **# Save WIDE_old_clean
 
 export delimited using "C:\Users\taiku\Documents\GEM UNESCO MBR\WIDE_2023_files\wide_old_clean.csv", replace
+
+**# NEPAAAAL and USA AND ISRAEL 
+
+
+import delimited "C:\Users\taiku\Documents\GEM UNESCO MBR\GitHub\wide2020\wide_aggregating_code\WIDE_2023_update\WIDE_2023_files\wide_old_clean.csv", clear
+tab survey year if iso=="NPL"
+drop if iso=="NPL"
+drop if iso=="USA" & year==2013
+drop if iso=="ISR" & year==2012
+
+export delimited using "C:\Users\taiku\Documents\GEM UNESCO MBR\GitHub\wide2020\wide_aggregating_code\WIDE_2023_update\WIDE_2023_files\wide_old_clean.csv", replace

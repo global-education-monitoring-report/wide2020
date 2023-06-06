@@ -1,4 +1,4 @@
-* mics_standardize: program to calculate a standard dataset ready to be processed further in R
+ * mics_standardize: program to calculate a standard dataset ready to be processed further in R
 * Version 3.0
 * May 2021
 * Latest updates:
@@ -80,6 +80,8 @@ program define mics_standardize_standalone
  		gen ed3 = old_ed4
 			capture confirm variable ed4a
     if !_rc {
+			   rename ed4a formal_education if country=="Nigeria" & year_folder==2021
+			   rename old_ed5a ed5a if country=="Nigeria" & year_folder==2021
     }
     else {
  		gen ed4a = old_ed5a
@@ -363,13 +365,19 @@ program define mics_standardize_standalone
 	
 	for X in any prim_dur lowsec_dur upsec_dur: rename X_uis X
 	rename prim_age_uis prim_age0
-	generate higher_dur = 4 
+	*BIG assumption for HH_EDU purposes: higher duration is of 3 years 
+	generate higher_dur = 3
+	
+	**SPECIAL NEPAL FIX: to get numbers that make sense, this makes upsec last 11 years instead of 12 that UIS says 
+	replace upsec_dur=3 if iso_code3=="NPL"
 
 	* With info of duration of primary and secondary I can compare official duration with the years of education completed..
 	generate years_prim   = prim_dur
 	generate years_lowsec = prim_dur + lowsec_dur
 	generate years_upsec  = prim_dur + lowsec_dur + upsec_dur
 	generate years_higher = prim_dur + lowsec_dur + upsec_dur + higher_dur
+	
+	
 	
 	* save data 	
 	compress
@@ -553,6 +561,7 @@ program define mics_standardize_standalone
 	replace eduyears=ed4b+years_lowsec if inlist(code_ed4a, 22, 24)
 	replace eduyears=ed4b+years_upsec if inlist(code_ed4a, 3, 32, 33) 
 	
+		
 	*NEW STUFF PARTICULAR FOR SOME COUNTRIES
 	replace eduyears=ed4b+years_prim-5 if code_ed4a==21 & country_year=="Montenegro_2018"
 	replace eduyears=ed4b if(code_ed4a==1|code_ed4a==21|code_ed4a==22|code_ed4a==3) & country_year=="Bangladesh_2019"
@@ -568,9 +577,17 @@ program define mics_standardize_standalone
 	replace eduyears=ed4b if ed4a=="2" & country_year=="Tuvalu_2019"
 	replace eduyears=ed4b if ed4a=="2" & country_year=="Belarus_2019"
 	replace eduyears=ed4b if ed4a=="3" & country_year=="Belarus_2019"
-	replace eduyears=ed4b if ed4a=="3" & country_year=="Nepal_2019"
-	replace eduyears=ed4b if ed4a=="4" & country_year=="Nepal_2019"
-	replace eduyears=ed4b if ed4a=="5" & country_year=="Nepal_2019"
+	replace eduyears=ed4b if  country_year=="Nepal_2010"
+	replace eduyears=. if  ed4b==98 &  country_year=="Nepal_2010"
+
+	replace eduyears=old_ed5b if country_year=="Nepal_2019"
+	replace eduyears=. if old_ed5b==99 & country_year=="Nepal_2019"
+	replace eduyears=. if old_ed5b==98 & country_year=="Nepal_2019"
+
+	
+	replace eduyears=ed4b if ed4a=="2" & country_year=="Uzbekistan_2021"
+
+	
 	
 // 	replace eduyears=ed4b+years_prim if code_ed4a==2 &  inlist(ed4b, 1, 2) & country_year=="Lesotho_2018" // incomplete lowsec
 // 	replace eduyears=ed4b+years_prim if code_ed4a==2 &  inlist(ed4b, 3, 4) & country_year=="Lesotho_2018" // complete lowsec , incomplete upsec
@@ -616,12 +633,13 @@ program define mics_standardize_standalone
 	replace eduyears=ed4b+years_upsec+6+2 if code_ed4a==42 & country_year=="Thailand_2019" // Doctoral degree assuming 2 years of master
 
 	* Recode for all country_years
-	replace eduyears = 97 if code_ed4a == 97 | ed4b_label == "inconsistent" 
-	replace eduyears = 98 if code_ed4a == 98 | ed4b_label == "don't know"
-	replace eduyears = 99 if code_ed4a == 99 | inlist(ed4b_label, "missing", "doesn't answer", "missing/dk")
-	replace eduyears = 0 if code_ed4a == 0
-	replace eduyears = . if eduyears >= 99
-	capture replace eduyears = eduyears - 1 if ed_completed == "no" & (eduyears <= 97)
+	*replace eduyears = 97 if code_ed4a == 97 | ed4b_label == "inconsistent" 
+	*replace eduyears = 98 if code_ed4a == 98 | ed4b_label == "don't know"
+	*replace eduyears = 99 if code_ed4a == 99 | inlist(ed4b_label, "missing", "doesn't answer", "missing/dk")
+	
+	*replace eduyears = 0 if code_ed4a == 0
+	*replace eduyears = . if eduyears >= 99
+		capture replace eduyears = eduyears - 1 if ed_completed == "no" & (eduyears <= 97)
 	capture replace eduyears = eduyears - 1 if ed_completed == 2 & (eduyears <= 97)
 
 	replace eduyears = 30 if eduyears >= 30 & eduyears < 90
@@ -794,6 +812,7 @@ program define mics_standardize_standalone
 	* generate eduout
 	* missing when age, attendance or level of attendance (when goes to school) is missing / 1: goes to preschool. "out of school" if "ever attended school"=no 
 	capture generate eduout = no_attend
+	*capture replace eduout  = . if (attend == 1 & ed4b_label == "missing") | age == . & country_year=="Nepal_2010"
 	capture replace eduout  = . if (attend == 1 & code_ed6a == .) | age == . | (inlist(code_ed6a,. , 98, 99) & eduout == 0)
 	capture replace eduout  = 1 if code_ed6a == 0 | ed3 == "no" 
 	*Code_ed6a=80/90 affects countries Nigeria 2011, Nigeria 2016, Mauritania 2015, SouthSudan 2010, Sudan 2010 2014
@@ -971,15 +990,31 @@ capture rename ln LN
 
 							capture confirm variable AF12
 							if !_rc {
-										keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy AF*
+										keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy AF* disability
+										rename disability wdisability
+									replace wdisability=. if wdisability==9
+									label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+									label value wdisability disability_raw
+									sdecode wdisability, replace 
 										
 									}
 							else {
-										keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy
+										capture confirm variable disability
+							if !_rc {
+									keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy disability
+									rename disability wdisability
+									replace wdisability=. if wdisability==9
+									label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+									label value wdisability disability_raw
+									sdecode wdisability, replace 
 									}
+									else {
+									    keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy MT* full_literacy
+									}
+							}
 							
 				compress
-				merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+				merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\Lenovo PC\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
 				save "`output_path'/MICS/data/mics_standardize.dta", replace
 										
 						}
@@ -1012,6 +1047,9 @@ capture rename ln LN
 							if !_rc {
 									  keep iso_code3 year_folder sex hh1 hh2 hl1 WB14 literacy full_literacy AF* disability
 	  								rename disability wdisability
+									replace wdisability=. if wdisability==9
+									label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+									label value wdisability disability_raw
 									sdecode wdisability, replace 
 								  }
 							else {
@@ -1022,7 +1060,7 @@ capture rename ln LN
 							tempfile wm_selection
 							save "`wm_selection'"
 							
-							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\Lenovo PC\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
 							save "`output_path'/MICS/data/mics_standardize.dta", replace
 									}
 			
@@ -1050,6 +1088,9 @@ capture rename ln LN
 							if !_rc {							
 								keep iso_code3 year_folder sex hh1 hh2 hl1 MT* AF* disability
 								rename disability wdisability
+								replace wdisability=. if wdisability==9
+								label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+								label value wdisability disability_raw
 								sdecode wdisability, replace 
 								}
 							else {
@@ -1060,7 +1101,7 @@ capture rename ln LN
 							tempfile wm_selection
 							save "`wm_selection'"
 							
-							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\Lenovo PC\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
 							save "`output_path'/MICS/data/mics_standardize.dta", replace
 									
 													}
@@ -1081,12 +1122,15 @@ capture rename ln LN
 							gen sex="Female"
 								keep iso_code3 year_folder sex hh1 hh2 hl1 AF* disability
 								rename disability wdisability
+								replace wdisability=. if wdisability==9
+								label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+								label value wdisability disability_raw
 								sdecode wdisability, replace 
 								compress
 							tempfile wm_selection
 							save "`wm_selection'"
 							
-							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\taiku\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
+							merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "C:\Users\Lenovo PC\Desktop\temporary_std\MICS\data\mics_standardize.dta", nogenerate keep(match using) 
 							save "`output_path'/MICS/data/mics_standardize.dta", replace
 								}
 							else {
@@ -1126,6 +1170,9 @@ generate year_folder = `country_year'
 							capture confirm variable MAF12 
 							if !_rc {
 							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MMT* MAF* mdisability
+							replace mdisability=. if mdisability==9
+							label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+							label value mdisability disability_raw
 							sdecode mdisability, replace 
 							}
 							else {
@@ -1137,6 +1184,9 @@ generate year_folder = `country_year'
 							capture confirm variable MAF12 
 							if !_rc {
 							keep iso_code3 year_folder HH1 HH2 LN MWB14 MWM6D MWM6M MWM6Y MWB4 MAF* mdisability
+							replace mdisability=. if mdisability==9
+							label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+							label value mdisability disability_raw
 							sdecode mdisability, replace 
 							}
 							else {
@@ -1183,6 +1233,9 @@ generate year_folder = `country_year'
 				capture confirm variable MAF12 
 							if !_rc {
 							keep iso_code3 year_folder HH1 HH2 LN MMT* MAF* mdisability
+							replace mdisability=. if mdisability==9
+							label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+							label value mdisability disability_raw
 							sdecode mdisability, replace 
 							}
 							else {
@@ -1219,6 +1272,9 @@ generate year_folder = `country_year'
 					rename HH1 hh1, replace
 					rename HH2 hh2, replace
 							keep iso_code3 year_folder HH1 HH2 LN MAF* mdisability
+							replace mdisability=. if mdisability==9
+							label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+							label value mdisability disability_raw
 							sdecode mdisability, replace 
 							capture duplicates drop iso_code3 year_folder hh1 hh2 hl1 , force
 							tempfile mn_selection
@@ -1279,12 +1335,18 @@ generate year_folder = `country_year'
 						 if !_rc {
 											keep iso_code3 year_folder hh1 hh2 hl1 EC* UCF* CDISABILITY
 											rename UCF# FCF#
+											replace CDISABILITY=. if CDISABILITY==9
+											label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+											label value CDISABILITY disability_raw
 											sdecode CDISABILITY, replace
 						}
 						else {
 						capture confirm variable FCF2
 								if !_rc {
 												keep iso_code3 year_folder hh1 hh2 hl1 EC* FCF* CDISABILITY
+												replace CDISABILITY=. if CDISABILITY==9
+											label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+											label value CDISABILITY disability_raw
 												sdecode CDISABILITY, replace
 								}
 								else {
@@ -1385,6 +1447,9 @@ generate year_folder = `country_year'
 						     di "Early Childhood Development submodule is not there, but child functioning is"
 											keep iso_code3 year_folder hh1 hh2 hl1 UCF* CDISABILITY
 											rename UCF# FCF#
+											replace CDISABILITY=. if CDISABILITY==9
+											label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+											label value CDISABILITY disability_raw
 											sdecode CDISABILITY, replace
 											compress
 					tempfile ch_selection
@@ -1400,6 +1465,9 @@ generate year_folder = `country_year'
 							  di "Early Childhood Development submodule is not there, but child functioning is"
 
 												keep iso_code3 year_folder hh1 hh2 hl1 FCF* CDISABILITY
+												replace CDISABILITY=. if CDISABILITY==9
+											label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+											label value CDISABILITY disability_raw
 												sdecode CDISABILITY, replace
 												compress
 					tempfile ch_selection
@@ -1456,6 +1524,9 @@ generate year_folder = `country_year'
 					capture confirm variable UCF2 
 						 if !_rc {
 												keep iso_code3 year_folder hh1 hh2 hl1 FL* UCF*  FSDISABILITY
+												replace FSDISABILITY=. if FSDISABILITY==9
+											label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+											label value FSDISABILITY disability_raw
 												sdecode FSDISABILITY, replace
 												
 						}
@@ -1465,6 +1536,9 @@ generate year_folder = `country_year'
 												keep iso_code3 year_folder hh1 hh2 hl1 FL* FCF*  FSDISABILITY
 										**for disability:all the variables coded as FCF will be renamed as UCF as its not homegeneous between surveys 
 												rename FCF# UCF#
+												replace FSDISABILITY=. if FSDISABILITY==9
+											label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+											label value FSDISABILITY disability_raw
 												sdecode FSDISABILITY, replace
 								}
 								else {
@@ -1495,6 +1569,9 @@ generate year_folder = `country_year'
 						 if !_rc {
 						     di "Early Childhood Development submodule is not there, but child functioning is"
 											keep iso_code3 year_folder hh1 hh2 hl1 UCF*  FSDISABILITY
+											replace FSDISABILITY=. if FSDISABILITY==9
+											label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+											label value FSDISABILITY disability_raw
 											sdecode FSDISABILITY, replace
 											
 						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
@@ -1507,6 +1584,9 @@ generate year_folder = `country_year'
 							  di "Early Childhood Development submodule is not there, but child functioning is"
 
 												keep iso_code3 year_folder hh1 hh2 hl1 FCF*  FSDISABILITY
+												replace FSDISABILITY=. if FSDISABILITY==9
+											label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+											label value FSDISABILITY disability_raw
 												sdecode FSDISABILITY, replace
 						merge 1:1 iso_code3 year_folder hh1 hh2 hl1 using "`output_path'/MICS/data/mics_standardize.dta", nogenerate keep(match using) 
 						save "`output_path'/MICS/data/mics_standardize.dta", replace
@@ -1553,6 +1633,15 @@ if !_rc {
 	***/FINISH LITERACY CALCULATION***
 	
 	***DISABILITY CALCULATION***
+	
+	*sometimes there's a variable for all ages 0-49, idk how it was calculated but in that case I just want it to be homogeneous in its labels 
+	capture confirm variable disability 
+				if !_rc {	
+					replace disability=. if disability==9
+											capture label define disability_raw  1 "At least one functional difficulty" 2 "No functional difficulty" 
+											label value disability disability_raw
+												sdecode disability, replace
+									}
 
 	*** CH: CHILD FUNCTIONING FOR CHILDREN AGE 2-4 YEARS ***
 
@@ -1646,31 +1735,33 @@ if !_rc {
 		replace FunctionalDifficulty_2to4 = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | FineMotor_2to4 == 1 | Communication_2to4 == 1 | Learning_2to4 == 1 | Playing_2to4 == 1 | Behaviour_2to4 == 1) 
 		replace FunctionalDifficulty_2to4 = . if (FunctionalDifficulty_2to4 != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | FineMotor_2to4 == 9 | Communication_2to4 == 9 | Learning_2to4 == 9 | Playing_2to4 == 9 | Behaviour_2to4 == 9)) 
 		label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
-		label value FunctionalDifficulty_2to4 
+		label value FunctionalDifficulty_2to4 difficulty
 	}
 	else {
 	    gen FunctionalDifficulty_2to4 = 0
 		replace FunctionalDifficulty_2to4 = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | FineMotor_2to4 == 1 | Communication_2to4 == 1 | Learning_2to4 == 1 | Playing_2to4 == 1) 
 		replace FunctionalDifficulty_2to4 = . if (FunctionalDifficulty_2to4 != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | FineMotor_2to4 == 9 | Communication_2to4 == 9 | Learning_2to4 == 9 | Playing_2to4 == 9 )) 
 		label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
-		label value FunctionalDifficulty_2to4 
+		label value FunctionalDifficulty_2to4 difficulty
 		
 	}
 		
 		}
+		
+		*For CH module: 
+		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communicate
 
-// 		* Creating "traditional" disability that will only consider the 4 dimensions  seeing, hearing, walking/mobility, and communicate
-//
-// 		gen disability_trad = 0
-// 		replace disability_trad = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | Communication_2to4 == 1 ) 
-// 		replace disability_trad = . if (disability_trad != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | Communication_2to4 == 9 )) 
-// 		*label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
-// 		label value disability_trad difficulty
+ 		gen disability_trad_ch = 0
+ 		replace disability_trad_ch = 1 if (Seeing_2to4 == 1 | Hearing_2to4 == 1 | Walking_2to4 == 1 | Communication_2to4 == 1 ) 
+ 		replace disability_trad_ch = . if (disability_trad != 1 & (Seeing_2to4 == 9 | Hearing_2to4 == 9 | Walking_2to4 == 9 | Communication_2to4 == 9 )) 
+ 		label define difficulty_trad 0 "No functional difficulty" 1 "At least one sensory, physical or intellectual difficulty" 9 "Missing" 
+ 		label value disability_trad_ch difficulty_trad
+		sdecode disability_trad_ch, replace 
 		
 
 
 		***************************************************************************
-		*** CHILD FUNCTIONING FOR CHILDREN AGE 5-17 YEARS ***
+		*** CHILD FUNCTIONING FOR CHILDREN AGE 5-17 YEARS *** : THIS IS TAKEN CARE OF IN A DIFFERENT PART OF THE CODE, BECAUSE OF THE WEIGHTS. WE JUST USING THE FS.dta MODULE independently 
 
 		*Based on the recommended cut-off, the disability indicator includes “daily” for the questions on anxiety and depression; and “a lot of difficulty" and "cannot do at all" for all other questions *
 
@@ -1825,7 +1916,7 @@ if !_rc {
 
 		***************************************************************************
 		*** ADULTS (men and women) 18+ YEARS ***
-
+		***here there's a traditional disability calculation 
 		
 
 		capture confirm variable AF6
@@ -1887,6 +1978,16 @@ if !_rc {
 		capture label define difficulty 0 "No functional difficulty" 1 "With functional difficulty" 9 "Missing" 
 
 		label value FunctionalDifficulty_adults difficulty
+			
+		***Traditional disability 
+				
+		gen disability_trad_adults=0
+		replace disability_trad_adults=1 if (inlist(Vision,3,4) | inlist(Hearing,3,4) | inlist(Mobility,3,4) | inlist(Communication,3,4))
+		replace disability_trad_adults=. if missing(Vision) & missing(Hearing) & missing(Mobility) &  missing(Communication)
+		capture label define difficulty_trad 0 "No functional difficulty" 1 "At least one sensory, physical or intellectual difficulty" 9 "Missing" 
+ 		label value disability_trad_adults difficulty_trad
+		sdecode disability_trad_adults, replace 
+		
 		}
 		
 	
@@ -1922,18 +2023,16 @@ if !_rc {
 	**HOUSEHOLD EDUCATION**
 	**NEW!**
 	
-	/* 
-		Most educated adult has’ and the options would be: 
-	-	0  not completed any level of education 
-	-	1  completed primary
-	-	2  completed lower secondary
-	-	3  completed upper secondary
-	-	4  completed post-secondary 
+	/* FIX THIS
+	
+	Most educated adult the options would be: 
+	0 "Not completed primary" 1 "Completed primary" 2 "Completed lower secondary" 3  "Completed upper secondary" 4 "Completed post-secondary or higher"
+
 	*/
 
-  	* Household Education 1: Considering head of household as highest education (no missings but recode categories)
+  	* Household Education 1: Considering head of household as reference (no missings but recode categories)
 	* However, it's not rare that the mother has higher education than the head 
-	* New age restriction on head 
+	* New age restriction on head : max 60 years old 
 	
 	bysort hh_id: egen head_eduyears = total(cond(hl3 == 1 , eduyears, .))
 
@@ -1941,30 +2040,88 @@ if !_rc {
 	foreach Z in prim lowsec upsec higher {
 		replace hh_edu_head = hh_edu_head + 1  if head_eduyears >= years_`Z'
 				 	}
+						
 	*Censoring for head of households who are older than 60 years old 
 	bysort hh_id: egen head_age = total(cond(hl3 == 1 , hl6, .))
 	replace hh_edu_head=. if head_age>60
 	
-	label define hh_edu_head 0 "Not completed any level of education" 1 "Completed primary" 2 "Completed lower secondary" 3 "Completed upper secondary" 4 "Completed post-secondary" 
+	label define hh_edu_head 0 "Not completed primary" 1 "Completed primary" 2 "Completed lower secondary" 3 "Completed upper secondary" 4 "Completed post-secondary or higher"
 	label value hh_edu_head hh_edu_head
-	sdecode hh_edu_head, replace 
 	
+	sdecode hh_edu_head, replace 
+		
+	**Some additional calculations for Bilal
+	gen hh_edu_head_exact = 0
+	local i=0
+	foreach Z in prim lowsec upsec higher {
+		gen hh_edu_head_`Z' = .
+		replace hh_edu_head_`Z' = 0  if head_eduyears < years_`Z'
+		replace hh_edu_head_`Z' = 1  if head_eduyears >= years_`Z'
+		label define hh_edu_head_`Z' 0 "Less than `Z'" 1 "Completed `Z' or higher" , replace
+		label value hh_edu_head_`Z' hh_edu_head_`Z'
+		local i=`i'+ 1
+		replace hh_edu_head_exact = hh_edu_head_exact + `i'  if head_eduyears == years_`Z'
+		tab  hh_edu_head_`Z' hh_edu_head_exact
+				 	}
+					
+					
+	
+	replace hh_edu_head_exact = . if hh_edu_head_exact==0
+	label define hh_edu_head_exact  1 "Completed primary exactly" 2 "Completed lower secondary exactly" 3 "Completed upper secondary exactly" 4 "Completed post-secondary exactly"
+	label value hh_edu_head_exact hh_edu_head_exact
+	
+	
+	
+	replace hh_edu_head_prim=. if head_age>60
+	replace hh_edu_head_lowsec=. if head_age>60
+	replace hh_edu_head_upsec=. if head_age>60
+	replace hh_edu_head_higher=. if head_age>60
+	
+	sdecode hh_edu_head_exact, replace
+	sdecode hh_edu_head_prim, replace
+	sdecode hh_edu_head_lowsec, replace
+	sdecode hh_edu_head_upsec, replace
+	sdecode hh_edu_head_higher, replace
 	
 	* Household Education 2: Get highest education of all household adults (using age, could have used relationship to head but age might be better)
 		
-	bysort hh_id: egen adult_eduyears = max(cond(hl6 >= 18 , eduyears, .))
+	bysort hh_id: egen adult_eduyears = max(cond(hl6 >= 25 , eduyears, .))
 	
 	generate hh_edu_adult = 0
 	foreach Z in prim lowsec upsec higher {
 		replace hh_edu_adult = hh_edu_adult + 1  if adult_eduyears >= years_`Z'
 				 	}
+	replace hh_edu_adult = . if adult_eduyears == . 
+	
 	label value hh_edu_adult hh_edu_head
 	sdecode hh_edu_adult, replace 
+	
 
+	**Some additional calculations for Bilal
+	gen hh_edu_adult_exact = 0
+	local i=0
+
+	foreach Z in prim lowsec upsec higher {
+		gen hh_edu_adult_`Z' = .
+		replace hh_edu_adult_`Z' = 0  if adult_eduyears < years_`Z'
+		replace hh_edu_adult_`Z' = 1  if adult_eduyears >= years_`Z'
+		label define hh_edu_adult_`Z' 0 "Less than `Z'" 1 "Completed `Z' or higher" , replace
+		label value hh_edu_adult_`Z' hh_edu_adult_`Z'
+		local i=`i'+ 1
+		replace hh_edu_adult_exact = hh_edu_adult_exact + `i'  if adult_eduyears == years_`Z'
+				 	}
 	
-	* Mother's education : use melevel variable otherwise
+	replace hh_edu_adult_exact = . if hh_edu_adult_exact==0
+	label value hh_edu_adult_exact hh_edu_head_exact
+	sdecode hh_edu_adult_exact, replace
+	sdecode hh_edu_adult_prim, replace
+	sdecode hh_edu_adult_lowsec, replace
+	sdecode hh_edu_adult_upsec, replace
+	sdecode hh_edu_adult_higher, replace
 	
-	gen female_eduyears = eduyears if hl4 == 2 // females
+	* Women's education : 18+ females highest educated
+	
+	gen female_eduyears = eduyears if hl4 == 2 // females 
 	bysort hh_id: egen women_eduyears = max(cond(hl6 >= 18 , female_eduyears, .)) //adult females
 	drop female_eduyears
 	
@@ -1972,13 +2129,59 @@ if !_rc {
 	foreach Z in prim lowsec upsec higher {
 		replace hh_edu_women = hh_edu_women + 1  if women_eduyears >= years_`Z'
 				 	}
+	replace hh_edu_women = . if women_eduyears == . 
+
 	label value hh_edu_women hh_edu_head
+	sdecode hh_edu_women, replace 
+
+	**Mother's education 
+	*MICS has melevel variable but it's not homogeneous between surveys 
+	*Use mother's line mline
 	
+	rangestat (max) mother_eduyears = eduyears, by(hh_id) interval(hl1 mline mline)
+		replace mother_eduyears = . if missing(mline)
+	
+		generate hh_edu_mother = 0
+		foreach Z in prim lowsec upsec higher {
+				replace hh_edu_mother = hh_edu_mother + 1  if mother_eduyears >= years_`Z'
+				 	}
+	replace hh_edu_mother = . if mother_eduyears == . 
+		label value hh_edu_mother hh_edu_head
+		sdecode hh_edu_mother, replace 
+		
+	*Some additional calculations for Bilal
+	gen hh_edu_mother_exact = 0
+	local i=0
+	foreach Z in prim lowsec upsec higher {
+		gen hh_edu_mother_`Z' = .
+		replace hh_edu_mother_`Z' = 0  if mother_eduyears < years_`Z'
+		replace hh_edu_mother_`Z' = 1  if mother_eduyears >= years_`Z'
+		label define hh_edu_mother_`Z' 0 "Less than `Z'" 1 "Completed `Z' or higher" , replace
+		label value hh_edu_mother_`Z' hh_edu_mother_`Z'
+		local i=`i'+ 1
+		replace hh_edu_mother_exact = hh_edu_mother_exact + `i'  if mother_eduyears == years_`Z'
+		tab hh_edu_mother_`Z' hh_edu_mother_exact
+				 	}
+	
+	replace hh_edu_mother_exact = . if hh_edu_mother_exact==0
+
+	label value hh_edu_mother_exact hh_edu_head_exact
+	
+	sdecode hh_edu_mother_exact, replace
+	sdecode hh_edu_mother_prim, replace
+	sdecode hh_edu_mother_lowsec, replace
+	sdecode hh_edu_mother_upsec, replace
+	sdecode hh_edu_mother_higher, replace
+
+
+	
+/*
 	* "Household Education 8": Literate adult (25+ years old) in the family 
 		capture confirm variable literacy_1549
 	if !_rc {
 	egen hh_edu8 = max(literacy_1549), by(hh_id)
                }
+*/
 			   
 	**/Household education**
 	
@@ -2003,6 +2206,7 @@ if !_rc {
 	order hh1 hh2 hl1 country year ethnicity religion sex age location region wealth, first
 	
 	gen survey="MICS"
+	capture generate iso_code3= "`country_code'"
 	compress
 	* No saving, this will be done in update.ado		
 	

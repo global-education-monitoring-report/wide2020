@@ -9,8 +9,9 @@
 *TO ONLY UPDATE NEW DATASETS, ON A SEQUENTIAL BASIS********************
 ***********************************************************************
 
-/*
 
+
+/*
 global raw_path "C:\Users\taiku\Desktop\temporary_raw"
 *C:\Users\taiku\Desktop\temporary_raw
 global std_path "C:\Users\taiku\Desktop\temporary_std"
@@ -42,29 +43,65 @@ foreach filepath of local process_list_mics {
 */
 
 
+
+
 clear 
- use "C:\ado\personal\repository_inventory.dta"
+ use "C:\Users\Lenovo PC\ado\personal\repository_inventory.dta"
+
 /*
  drop if iso=="FJI"
  drop if iso=="VNM"
 */
+
  *keep if inlist(roundmics, 6)
-  keep if inlist(phasedhs,  7, 8)
+ 
+
+/*
+ keep if roundmics == 6
+ 
+ 
+ keep if iso=="TCD"
+*/
+
+*/
+
+
+
+ keep if inlist(phasedhs,  7, 8)
+   drop if iso=="IND"
+
+
+
+   
+/*
+    keep if inlist(phasedhs,  7)
+
+   drop if iso=="COL"
+*/
+
+
+
 
  *problem with CUBA 2014
  
- *levelsof fullname, local(mics6surveys)
+
+ levelsof fullname, local(mics6surveys)
   levelsof fullname, local(process_list_dhs)
+
 
  *whatever name of the local put the local name in the next loop 
 
-/*
+
+
+
+
+
 
  set trace on
  set tracedepth 1
 **Now call MICS_standardize RECURSIVELY
-local dpath "C:\Users\taiku\UNESCO\GEM Report - 1_raw_data"
-local opath "C:\Users\taiku\Desktop\temporary_std"
+local dpath "C:\Users\Lenovo PC\UNESCO\GEM Report - WIDE Data NEW\1_raw_data"
+local opath "C:\Users\Lenovo PC\Desktop\temporary_std"
 foreach survey of local mics6surveys {
          di "Now processing" " `survey'"
          *Directly run mics_standardize_standalone with one survey
@@ -84,32 +121,42 @@ foreach survey of local mics6surveys {
 		mics_standardize_standalone,  data_path(`dpath') output_path(`opath') country_code("`1'") country_year("`3'") 
 		
 		gen round="`round'"
-		capture mkdir  "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_MICS"		
-		cd "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_MICS"
+
+		capture mkdir  "C:\Users\Lenovo PC\UNESCO\GEM Report - WIDE Data NEW\2_standardised\\`isocode'_`3'_MICS"		
+		cd "C:\Users\Lenovo PC\UNESCO\GEM Report - WIDE Data NEW\2_standardised\\`isocode'_`3'_MICS"
 		save "std_`isocode'_`3'_MICS.dta", replace
 		clear
      }
  set trace off	 
-*/
+
+
+
+
+
+
 
 
 
  	 set trace on
    	 set tracedepth 1
   **Now call DHS_standardize RECURSIVELY
-  local dpath "C:\Users\taiku\UNESCO\GEM Report - 1_raw_data"
-  local opath "C:\Users\taiku\Desktop\temporary_std"
+  local dpath "C:\Users\Lenovo PC\UNESCO\GEM Report - WIDE Data NEW\1_raw_data"
+  local opath "C:\Users\Lenovo PC\Desktop\temporary_std"
   foreach survey of local process_list_dhs {
            di "Now processing" " `survey'"
            *Directly run widetable with one survey
   			tokenize "`survey'", parse(_)
   		dhs_standardize_standalone,  data_path(`dpath') output_path(`opath')  country_code("`1'") country_year("`3'")
   		local isocode=upper("`1'")
-  		capture mkdir  "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_DHS"
-  		cd "C:\Users\taiku\UNESCO\GEM Report - 2_standardised\\`isocode'_`3'_DHS"
+		capture gen iso_code3="`isocode'"
+
+  		capture mkdir  "C:\Users\Lenovo PC\UNESCO\GEM Report - WIDE Data NEW\2_standardised\\`isocode'_`3'_DHS"
+  		cd "C:\Users\Lenovo PC\UNESCO\GEM Report - WIDE Data NEW\2_standardised\\`isocode'_`3'_DHS"
   		save "std_`isocode'_`3'_DHS.dta", replace
   		clear
        }
    set trace off	 
 
-*DIS fallaron CUB HND GEO MNE
+
+*no failure in 8, 7 DHS phase
+*prob w COL phase 6

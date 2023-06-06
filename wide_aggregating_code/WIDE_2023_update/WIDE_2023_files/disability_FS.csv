@@ -1,0 +1,265 @@
+year,country,category,disability,sex,iso_code,comp_prim_v2,comp_lowsec_v2,comp_upsec_v2,overage2plus,eduout_prim,eduout_lowsec,eduout_upsec,edu0_prim,comp_prim_v2_no,comp_lowsec_v2_no,comp_upsec_v2_no,overage2plus_no,eduout_prim_no,eduout_lowsec_no,eduout_upsec_no,edu0_prim_no
+2019,Zimbabwe,Disability,At least one functional difficulty,,ZWE,.51711959,.36242366,,,.046481043,.25402546,.46032274,0,121,32,0,0,364,84,121,184
+2019,Zimbabwe,Disability,"At least one sensory, physical or intellectual difficulty",,ZWE,.6141659,,,,.036826119,.18376353,.34094167,0,55,11,0,0,170,39,55,91
+2019,Zimbabwe,Disability & Sex,At least one functional difficulty,Female,ZWE,.39502734,,,,.050710723,.33628076,.58226085,0,49,16,0,0,167,33,49,81
+2019,Zimbabwe,Disability & Sex,At least one functional difficulty,Male,ZWE,.59417146,,,,.042734623,.19902648,.3833681,0,72,16,0,0,197,51,72,103
+2019,Zimbabwe,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,ZWE,,,,,.041517776,,,0,20,4,0,0,82,13,20,46
+2019,Zimbabwe,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,ZWE,.67288113,,,,.032302927,,.28411874,0,35,7,0,0,88,26,35,45
+2019,Argentina,Disability,At least one functional difficulty,,ARG,.90759426,.94471723,,.3997137,,,,.017452307,173,44,0,769,8,5,26,243
+2019,Argentina,Disability,"At least one sensory, physical or intellectual difficulty",,ARG,.8577987,,,.39295807,,,,.060351577,45,10,0,184,1,3,9,72
+2019,Argentina,Disability & Sex,At least one functional difficulty,Female,ARG,.89574409,,,.442835,,,,.032315958,93,26,0,376,2,1,13,115
+2019,Argentina,Disability & Sex,At least one functional difficulty,Male,ARG,.92330146,,,.35297239,,,,.0012145445,80,18,0,393,6,4,13,128
+2019,Argentina,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,ARG,,,,.47341138,,,,.10952298,21,7,0,92,0,1,5,39
+2019,Argentina,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,ARG,,,,.30353335,,,,.0042954753,24,3,0,92,1,2,4,33
+2019,Bangladesh,Disability,At least one functional difficulty,,BGD,.70897967,.50735664,,.13074641,.042764284,.16197342,.33975342,.073688149,581,263,0,1465,1152,648,622,921
+2019,Bangladesh,Disability,"At least one sensory, physical or intellectual difficulty",,BGD,.4770917,.36437336,,.1837658,.043129448,.25303277,.44980261,.16014104,192,71,0,653,475,243,186,385
+2019,Bangladesh,Disability & Sex,At least one functional difficulty,Female,BGD,.81085205,.52667695,,.10916504,.033692319,.10157841,.27839082,.077235989,242,114,0,618,528,292,247,408
+2019,Bangladesh,Disability & Sex,At least one functional difficulty,Male,BGD,.62700659,.49244401,,.14672552,.051147103,.21331502,.38222873,.070775546,339,149,0,847,624,356,375,513
+2019,Bangladesh,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,BGD,.61341298,,,.1450901,.019194061,.22886799,.41709393,.1696897,75,27,0,268,215,109,64,174
+2019,Bangladesh,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,BGD,.37466627,.35676068,,.20984377,.063462406,.27570295,.46735823,.15117212,117,44,0,385,260,134,122,211
+2019,Belarus,Disability,At least one functional difficulty,,BLR,,,,.062064581,0,0,,.043242648,20,1,0,50,48,45,8,45
+2019,Belarus,Disability,"At least one sensory, physical or intellectual difficulty",,BLR,,,,,,,,,6,0,0,16,13,13,2,16
+2019,Belarus,Disability & Sex,At least one functional difficulty,Female,BLR,,,,,,,,,7,0,0,13,13,16,6,15
+2019,Belarus,Disability & Sex,At least one functional difficulty,Male,BLR,,,,.10267016,0,,,.0080428654,13,1,0,37,35,29,2,30
+2019,Belarus,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,BLR,,,,,,,,,1,0,0,5,4,3,2,4
+2019,Belarus,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,BLR,,,,,,,,,5,0,0,11,9,10,0,12
+2018,CentralAfricanRepublic,Disability,At least one functional difficulty,,CAF,.33389971,,,.32929406,.070538029,.19262879,.39107266,.13497426,220,0,0,1293,775,356,85,538
+2018,CentralAfricanRepublic,Disability,"At least one sensory, physical or intellectual difficulty",,CAF,.35703143,,,.29663444,.082714207,.22307922,,.1884328,57,0,0,355,212,94,22,148
+2018,CentralAfricanRepublic,Disability & Sex,At least one functional difficulty,Female,CAF,.39143863,,,.33341116,.0757268,.24743308,.48343161,.17140545,118,0,0,622,373,172,41,274
+2018,CentralAfricanRepublic,Disability & Sex,At least one functional difficulty,Male,CAF,.28082117,,,.32598889,.066275239,.15129793,.3138721,.10116089,102,0,0,671,402,184,44,264
+2018,CentralAfricanRepublic,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,CAF,,,,.305915,.083769724,.1986365,,.2059707,29,0,0,179,107,47,11,77
+2018,CentralAfricanRepublic,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,CAF,,,,.28843763,.08172182,.24238938,,.17132448,28,0,0,176,105,47,11,71
+2017,DRCongo,Disability,At least one functional difficulty,,COD,.67455399,.33347183,,.31158662,.097306319,.15468916,.21724765,.083658233,340,164,0,2103,1245,331,406,899
+2017,DRCongo,Disability,"At least one sensory, physical or intellectual difficulty",,COD,.74793583,,,.35175103,.099418126,.11351688,.19089349,.14238757,55,25,0,374,227,52,59,160
+2017,DRCongo,Disability & Sex,At least one functional difficulty,Female,COD,.75333381,.28888014,,.3269541,.089852884,.16058367,.20276996,.1011904,160,80,0,1011,599,161,193,431
+2017,DRCongo,Disability & Sex,At least one functional difficulty,Male,COD,.57793128,.39185989,,.29659507,.1040163,.14906298,.2346487,.067858987,180,84,0,1092,646,170,213,468
+2017,DRCongo,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,COD,,,,.33958972,.098870449,,,.27165139,28,13,0,179,108,23,29,77
+2017,DRCongo,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,COD,,,,.36405182,.099996023,,.31359959,.054354109,27,12,0,195,119,29,30,83
+2018,CostaRica,Disability,At least one functional difficulty,,CRI,.86436093,.54933089,,.44438037,.0060089803,.039955199,.17647989,0,187,66,0,746,432,175,127,236
+2018,CostaRica,Disability,"At least one sensory, physical or intellectual difficulty",,CRI,.94292307,,,.50435311,.015062324,.049099617,.055321813,0,58,22,0,265,157,67,36,78
+2018,CostaRica,Disability & Sex,At least one functional difficulty,Female,CRI,.89366215,.63947237,,.51009911,.010401128,.0094761178,.14385268,0,94,42,0,372,205,84,66,119
+2018,CostaRica,Disability & Sex,At least one functional difficulty,Male,CRI,.83006555,,,.38352844,.0025295401,.063536666,.21519332,0,93,24,0,374,227,91,61,117
+2018,CostaRica,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,CRI,,,,.58148885,.038423296,0,,0,28,14,0,133,76,35,18,43
+2018,CostaRica,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,CRI,.93087244,,,.43973947,0,.086223356,,0,30,8,0,132,81,32,18,35
+2019,Cuba,Disability,At least one functional difficulty,,CUB,.70862025,,,.32407644,.017416134,.074042089,.40180448,.022070436,77,10,0,388,255,72,63,150
+2019,Cuba,Disability,"At least one sensory, physical or intellectual difficulty",,CUB,,,,.19735132,.080020748,,,,11,1,0,60,42,13,7,27
+2019,Cuba,Disability & Sex,At least one functional difficulty,Female,CUB,.59644115,,,.28135684,.0080191176,,,.0016470944,33,5,0,161,108,29,28,67
+2019,Cuba,Disability & Sex,At least one functional difficulty,Male,CUB,.78251505,,,.35198876,.024518332,.10095848,.3261714,.036425639,44,5,0,227,147,43,35,83
+2019,Cuba,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,CUB,,,,,,,,,3,0,0,20,15,2,3,12
+2019,Cuba,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,CUB,,,,.2129811,,,,,8,1,0,40,27,11,4,15
+2019,DominicanRepublic,Disability,At least one functional difficulty,,DOM,.78356099,.57873285,,,.036250859,.084669553,.29637456,.016651008,257,101,0,0,617,208,292,339
+2019,DominicanRepublic,Disability,"At least one sensory, physical or intellectual difficulty",,DOM,.82827359,,,,.044157486,.17868312,.21758783,.060707297,74,29,0,0,152,48,88,94
+2019,DominicanRepublic,Disability & Sex,At least one functional difficulty,Female,DOM,.81213981,.66375846,,,.05619245,.043227322,.22589904,.01166801,115,51,0,0,255,89,137,146
+2019,DominicanRepublic,Disability & Sex,At least one functional difficulty,Male,DOM,.76434225,.49622011,,,.020003606,.11342084,.34781268,.020340458,142,50,0,0,362,119,155,193
+2019,DominicanRepublic,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,DOM,.92268211,,,,.058243692,,.059817202,.039723895,42,13,0,0,65,21,48,41
+2019,DominicanRepublic,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,DOM,.7433573,,,,.033129688,,.38194144,.079498507,32,16,0,0,87,27,40,53
+2018,Algeria,Disability,At least one functional difficulty,,DZA,.86119705,.59800035,,.45824224,.0058822674,.051906336,.26708081,.037710194,704,219,0,2798,1318,922,737,983
+2018,Algeria,Disability,"At least one sensory, physical or intellectual difficulty",,DZA,.8033939,,,.43010491,.020402607,.079738304,.19912252,.15650707,120,29,0,475,235,154,116,181
+2018,Algeria,Disability & Sex,At least one functional difficulty,Female,DZA,.88432854,.68256927,,.47328201,.010348903,.053522889,.19410385,.039493047,275,91,0,1171,570,368,290,418
+2018,Algeria,Disability & Sex,At least one functional difficulty,Male,DZA,.84537172,.5320062,,.44764861,.0027487841,.050811335,.31713098,.036471527,429,128,0,1627,748,554,447,565
+2018,Algeria,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,DZA,.82992917,,,.42570657,.02871836,.097892247,.13513374,.14470603,49,19,0,227,123,63,55,86
+2018,Algeria,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,DZA,.78309053,,,.43368366,.012568245,.067484491,.24948458,.16646211,71,10,0,248,112,91,61,95
+2021,Fiji,Disability,At least one functional difficulty,,FJI,,,,0,,,,,0,0,0,175,0,0,0,0
+2021,Fiji,Disability,"At least one sensory, physical or intellectual difficulty",,FJI,,,,0,,,,,0,0,0,61,0,0,0,0
+2021,Fiji,Disability & Sex,At least one functional difficulty,Female,FJI,,,,0,,,,,0,0,0,66,0,0,0,0
+2021,Fiji,Disability & Sex,At least one functional difficulty,Male,FJI,,,,0,,,,,0,0,0,109,0,0,0,0
+2021,Fiji,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,FJI,,,,,,,,,0,0,0,23,0,0,0,0
+2021,Fiji,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,FJI,,,,0,,,,,0,0,0,38,0,0,0,0
+2018,Georgia,Disability,At least one functional difficulty,,GEO,.85027128,,,.011647308,.0014916253,0,.17344876,.064356223,68,23,0,156,167,54,72,87
+2018,Georgia,Disability,"At least one sensory, physical or intellectual difficulty",,GEO,,,,.0037917902,.0037154402,,,.15024154,21,6,0,60,65,21,22,37
+2018,Georgia,Disability & Sex,At least one functional difficulty,Female,GEO,.9508847,,,.023605058,0,,.075846411,.025472783,34,8,0,70,75,23,32,42
+2018,Georgia,Disability & Sex,At least one functional difficulty,Male,GEO,.75740486,,,0,.0029805738,0,.24526551,.10699212,34,15,0,86,92,31,40,45
+2018,Georgia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,GEO,,,,,,,,,10,0,0,23,24,9,7,15
+2018,Georgia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,GEO,,,,0,.0063958978,,,,11,6,0,37,41,12,15,22
+2017,Ghana,Disability,At least one functional difficulty,,GHA,.79639816,.3813408,,.42664576,.020317627,.083340511,.15683492,.059125792,311,77,0,1371,871,374,279,564
+2017,Ghana,Disability,"At least one sensory, physical or intellectual difficulty",,GHA,.77541935,,,.34459651,.023562904,.108696,.21120684,.065679766,99,18,0,471,325,119,81,199
+2017,Ghana,Disability & Sex,At least one functional difficulty,Female,GHA,.80282295,.33997092,,.44973829,.024513425,.074930511,.17565829,.04750669,163,32,0,663,413,180,138,256
+2017,Ghana,Disability & Sex,At least one functional difficulty,Male,GHA,.78676754,.40716773,,.40414295,.016684929,.091623642,.13400047,.069675229,148,45,0,708,458,194,141,308
+2017,Ghana,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,GHA,.78219175,,,.31479916,.032719873,.14448845,.36004019,.044363782,48,6,0,223,152,63,34,93
+2017,Ghana,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,GHA,.76742643,,,.37345314,.015895739,.049896847,.095231697,.08469817,51,12,0,248,173,56,47,106
+2018,Gambia,Disability,At least one functional difficulty,,GMB,.49740627,,,.20124553,.063615911,.18231028,,.14304182,34,0,0,334,218,63,17,126
+2018,Gambia,Disability,"At least one sensory, physical or intellectual difficulty",,GMB,,,,.13671145,.1358906,,,.16014767,13,0,0,131,83,21,6,44
+2018,Gambia,Disability & Sex,At least one functional difficulty,Female,GMB,,,,.19492339,.03880883,.036359113,,.12892002,18,0,0,172,112,32,10,62
+2018,Gambia,Disability & Sex,At least one functional difficulty,Male,GMB,,,,.20649214,.083367638,.27282223,,.15246457,16,0,0,162,106,31,7,64
+2018,Gambia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,GMB,,,,.15603653,.063441984,,,,9,0,0,66,40,12,5,22
+2018,Gambia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,GMB,,,,.12499759,.16823685,,,,4,0,0,65,43,9,1,22
+2018,Guinea-Bissau,Disability,At least one functional difficulty,,GNB,.3269856,,,,.14352982,.16541725,.26282477,.19401081,119,10,0,0,341,143,78,232
+2018,Guinea-Bissau,Disability,"At least one sensory, physical or intellectual difficulty",,GNB,,,,,,,,,9,1,0,0,24,7,8,19
+2018,Guinea-Bissau,Disability & Sex,At least one functional difficulty,Female,GNB,.33656043,,,,.12837391,.1913389,.34608382,.23587103,63,7,0,0,187,74,46,118
+2018,Guinea-Bissau,Disability & Sex,At least one functional difficulty,Male,GNB,.31602162,,,,.15896386,.13645092,.14565171,.15607947,56,3,0,0,154,69,32,114
+2018,Guinea-Bissau,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,GNB,,,,,,,,,5,1,0,0,13,4,5,7
+2018,Guinea-Bissau,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,GNB,,,,,,,,,4,0,0,0,11,3,3,12
+2019,Guyana,Disability,At least one functional difficulty,,GUY,.86863232,,,.021281313,.035232693,.029716348,.16326082,.017270137,103,17,0,288,258,101,69,160
+2019,Guyana,Disability,"At least one sensory, physical or intellectual difficulty",,GUY,,,,.035581689,.034662351,,,.052128613,18,5,0,78,73,20,13,45
+2019,Guyana,Disability & Sex,At least one functional difficulty,Female,GUY,.88434386,,,.032862056,.030183701,.031766813,.11909569,.011217285,50,11,0,140,129,52,34,83
+2019,Guyana,Disability & Sex,At least one functional difficulty,Male,GUY,.84709752,,,.010459742,.040094629,.028248126,.24310827,.022362234,53,6,0,148,129,49,35,77
+2019,Guyana,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,GUY,,,,.056903373,.047388252,,,,8,4,0,45,43,12,6,28
+2019,Guyana,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,GUY,,,,0,.013468749,,,,10,1,0,33,30,8,7,17
+2019,Honduras,Disability,At least one functional difficulty,,HND,.54734886,.43048269,,,.077713765,.31911448,.46866751,.023829753,360,64,0,0,833,377,254,539
+2019,Honduras,Disability,"At least one sensory, physical or intellectual difficulty",,HND,.52424675,,,,.090154469,.34713739,.51705509,.053324807,149,16,0,0,350,134,108,236
+2019,Honduras,Disability & Sex,At least one functional difficulty,Female,HND,.59708524,.440759,,,.098661914,.32602447,.46417126,.021581229,209,40,0,0,375,175,149,245
+2019,Honduras,Disability & Sex,At least one functional difficulty,Male,HND,.48880124,,,,.0621613,.31324807,.47411057,.025609421,151,24,0,0,458,202,105,294
+2019,Honduras,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,HND,.5895493,,,,.11611944,.35679159,.50060093,.056240104,84,10,0,0,158,60,61,103
+2019,Honduras,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,HND,.44738808,,,,.072700985,.33836544,.53503007,.051273953,65,6,0,0,192,74,47,133
+2018,Iraq,Disability,At least one functional difficulty,,IRQ,.57146901,.66246432,,.26082972,.04773308,.22900617,.42670989,.049968008,618,83,0,2605,1468,609,532,924
+2018,Iraq,Disability,"At least one sensory, physical or intellectual difficulty",,IRQ,.48371339,,,.27072725,.045843162,.2242264,.28276369,.1886884,71,11,0,378,229,83,63,167
+2018,Iraq,Disability & Sex,At least one functional difficulty,Female,IRQ,.52776229,.79846299,,.25133988,.0561403,.3213864,.44003713,.037560474,248,33,0,1087,611,252,214,371
+2018,Iraq,Disability & Sex,At least one functional difficulty,Male,IRQ,.6025067,.46947178,,.26798075,.041834667,.16171314,.4158709,.058117062,370,50,0,1518,857,357,318,553
+2018,Iraq,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,IRQ,,,,.26944575,.083785899,.47695684,,.15727319,22,6,0,158,104,30,22,64
+2018,Iraq,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,IRQ,.53927338,,,.27145386,.025083605,.115785,.34990528,.20185554,49,5,0,220,125,53,41,103
+2018,Kyrgyzstan,Disability,At least one functional difficulty,,KGZ,.9771415,,,.029378571,.014092359,.0094747832,,0,46,0,0,126,109,92,24,80
+2018,Kyrgyzstan,Disability,"At least one sensory, physical or intellectual difficulty",,KGZ,,,,.013295756,.023672899,,,,10,0,0,36,31,25,4,25
+2018,Kyrgyzstan,Disability & Sex,At least one functional difficulty,Female,KGZ,,,,.034448549,.032295924,0,,0,21,0,0,55,48,46,10,39
+2018,Kyrgyzstan,Disability & Sex,At least one functional difficulty,Male,KGZ,,,,.026625158,.0041669845,.022141181,,0,25,0,0,71,61,46,14,41
+2018,Kyrgyzstan,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,KGZ,,,,,,,,,6,0,0,15,15,16,2,14
+2018,Kyrgyzstan,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,KGZ,,,,,,,,,4,0,0,21,16,9,2,11
+2018,Kiribati,Disability,At least one functional difficulty,,KIR,.65261662,,,.23917054,.029232886,.1993567,.39690337,.033813395,59,8,0,394,267,96,43,131
+2018,Kiribati,Disability,"At least one sensory, physical or intellectual difficulty",,KIR,,,,.23575054,.041572131,,,.13596314,12,3,0,82,56,18,13,31
+2018,Kiribati,Disability & Sex,At least one functional difficulty,Female,KIR,.77093381,,,.262456,.044895802,.10404078,,.014406549,32,2,0,199,136,43,20,60
+2018,Kiribati,Disability & Sex,At least one functional difficulty,Male,KIR,,,,.21579029,.014722723,.27767849,,.049183227,27,6,0,195,131,53,23,71
+2018,Kiribati,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,KIR,,,,.32238394,,,,,8,2,0,39,25,6,8,11
+2018,Kiribati,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,KIR,,,,.16757946,0,,,,4,1,0,43,31,12,5,20
+2018,Lesotho,Disability,At least one functional difficulty,,LSO,.66743708,,,.29194057,.01867176,.097706035,.3662791,.022329176,64,0,0,360,212,104,39,119
+2018,Lesotho,Disability,"At least one sensory, physical or intellectual difficulty",,LSO,.78374976,,,.32750511,.038289711,.048512038,,.02321131,36,0,0,216,134,63,19,79
+2018,Lesotho,Disability & Sex,At least one functional difficulty,Female,LSO,.72295213,,,.40297523,.010647063,.08357998,,0,38,0,0,177,90,59,24,53
+2018,Lesotho,Disability & Sex,At least one functional difficulty,Male,LSO,,,,.17768082,.02424111,.11784668,,.039213862,26,0,0,183,122,45,15,66
+2018,Lesotho,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,LSO,,,,.44731376,.038323026,.045554809,,0,21,0,0,102,56,34,13,35
+2018,Lesotho,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,LSO,,,,.21310629,.038267028,,,.039413948,15,0,0,114,78,29,6,44
+2018,Madagascar,Disability,At least one functional difficulty,,MDG,.44515473,,,.31304374,.064836659,.24090344,.59925008,.13623706,296,6,0,1119,492,384,172,443
+2018,Madagascar,Disability,"At least one sensory, physical or intellectual difficulty",,MDG,.48142344,,,.349733,.044984516,.20151946,.50567758,.15649252,139,2,0,505,213,181,79,192
+2018,Madagascar,Disability & Sex,At least one functional difficulty,Female,MDG,.48271418,,,.33850208,.074876733,.23088413,.54474664,.10934397,147,4,0,561,241,198,93,219
+2018,Madagascar,Disability & Sex,At least one functional difficulty,Male,MDG,.40972853,,,.28562567,.054880075,.25249726,.6656785,.16563876,149,2,0,558,251,186,79,224
+2018,Madagascar,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,MDG,.52551967,,,.36717153,.050102767,.20785657,.39941812,.14080247,68,1,0,244,96,93,43,95
+2018,Madagascar,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,MDG,.44390899,,,.3326675,.040439278,.19488485,.62980139,.17357771,71,1,0,261,117,88,36,97
+2018,TFYRMacedonia,Disability,At least one functional difficulty,,MKD,,,,.36860031,.0025886653,.021069188,,0,25,11,0,90,68,32,27,50
+2018,TFYRMacedonia,Disability,"At least one sensory, physical or intellectual difficulty",,MKD,,,,,,,,,2,1,0,8,6,2,4,4
+2018,TFYRMacedonia,Disability & Sex,At least one functional difficulty,Female,MKD,,,,.39557624,0,,,,11,3,0,42,35,17,7,25
+2018,TFYRMacedonia,Disability & Sex,At least one functional difficulty,Male,MKD,,,,.34228137,.0049393564,,,,14,8,0,48,33,15,20,25
+2018,TFYRMacedonia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,MKD,,,,,,,,,0,0,0,2,1,0,1,1
+2018,TFYRMacedonia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,MKD,,,,,,,,,2,1,0,6,5,2,3,3
+2018,Montenegro,Disability,At least one functional difficulty,,MNE,,,,.34980354,.0050500087,,,,16,12,0,56,33,27,25,29
+2018,Montenegro,Disability,"At least one sensory, physical or intellectual difficulty",,MNE,,,,,,,,,2,1,0,5,2,2,2,2
+2018,Montenegro,Disability & Sex,At least one functional difficulty,Female,MNE,,,,,,,,,6,5,0,26,16,9,10,10
+2018,Montenegro,Disability & Sex,At least one functional difficulty,Male,MNE,,,,.31537667,,,,,10,7,0,30,17,18,15,19
+2018,Montenegro,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,MNE,,,,,,,,,0,0,0,1,0,1,0,1
+2018,Montenegro,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,MNE,,,,,,,,,2,1,0,4,2,1,2,1
+2018,Mongolia,Disability,At least one functional difficulty,,MNG,.90209919,,,,.040258147,.059452467,.1598514,.064001463,72,15,0,0,182,111,64,135
+2018,Mongolia,Disability,"At least one sensory, physical or intellectual difficulty",,MNG,.82011479,,,,.0059167915,.085565776,.21302693,.097751074,41,8,0,0,82,65,32,72
+2018,Mongolia,Disability & Sex,At least one functional difficulty,Female,MNG,.97775495,,,,.071706608,.010908287,.062663436,.030505206,39,9,0,0,93,52,37,63
+2018,Mongolia,Disability & Sex,At least one functional difficulty,Male,MNG,.81549603,,,,.0051652933,.10734579,,.10410619,33,6,0,0,89,59,27,72
+2018,Mongolia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,MNG,,,,,0,,,.029188003,19,4,0,0,37,28,18,32
+2018,Mongolia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,MNG,,,,,.011742029,.14298667,,.18916227,22,4,0,0,45,37,14,40
+2019,Malawi,Disability,At least one functional difficulty,,MWI,.50941992,,,.29771906,.040798601,.12616406,.39392874,.029048942,421,0,0,2005,1097,597,177,708
+2019,Malawi,Disability,"At least one sensory, physical or intellectual difficulty",,MWI,.53834641,,,.27176657,.041960336,.12038231,.42053181,.044236396,169,0,0,855,483,245,59,312
+2019,Malawi,Disability & Sex,At least one functional difficulty,Female,MWI,.56311476,,,.27753618,.02680913,.11069068,.34112766,.038011353,191,0,0,969,542,264,91,345
+2019,Malawi,Disability & Sex,At least one functional difficulty,Male,MWI,.46996754,,,.31502044,.052780624,.13896962,.43890509,.02124366,230,0,0,1036,555,333,86,363
+2019,Malawi,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,MWI,.6413663,,,.2573337,.025987603,.091564126,,.065582663,83,0,0,434,253,117,29,161
+2019,Malawi,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,MWI,.43491212,,,.2859219,.057932276,.14826052,.45451438,.022494722,86,0,0,421,230,128,30,151
+2021,Nigeria,Disability,At least one functional difficulty,,NGA,,,,0,,,,,0,0,0,1678,0,0,0,0
+2021,Nigeria,Disability,"At least one sensory, physical or intellectual difficulty",,NGA,,,,0,,,,,0,0,0,391,0,0,0,0
+2021,Nigeria,Disability & Sex,At least one functional difficulty,Female,NGA,,,,0,,,,,0,0,0,798,0,0,0,0
+2021,Nigeria,Disability & Sex,At least one functional difficulty,Male,NGA,,,,0,,,,,0,0,0,880,0,0,0,0
+2021,Nigeria,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,NGA,,,,0,,,,,0,0,0,199,0,0,0,0
+2021,Nigeria,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,NGA,,,,0,,,,,0,0,0,192,0,0,0,0
+2019,Nepal,Disability,At least one functional difficulty,,NPL,.63875592,.1787664,,.28631362,.012485724,.015920628,.16126652,.092683859,64,60,0,141,480,222,235,333
+2019,Nepal,Disability,"At least one sensory, physical or intellectual difficulty",,NPL,,,,,.0078566214,,.31380755,.21997979,9,13,0,25,67,24,32,40
+2019,Nepal,Disability & Sex,At least one functional difficulty,Female,NPL,.7991969,.13809866,,.18942097,.011552835,.0082783448,.15369965,.086797006,30,36,0,59,210,100,121,152
+2019,Nepal,Disability & Sex,At least one functional difficulty,Male,NPL,.52078032,,,.35503462,.013221771,.023215204,.16986322,.09773019,34,24,0,82,270,122,114,181
+2019,Nepal,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,NPL,,,,,,,,,5,8,0,10,27,12,18,15
+2019,Nepal,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,NPL,,,,,0,,,,4,5,0,15,40,12,14,25
+2019,Palestine,Disability,At least one functional difficulty,,PSE,.9386583,,,,.017395334,.037523523,.26938522,.017305439,157,28,0,0,261,258,135,217
+2019,Palestine,Disability,"At least one sensory, physical or intellectual difficulty",,PSE,,,,,0,.07498081,,.085664116,24,3,0,0,52,44,18,49
+2019,Palestine,Disability & Sex,At least one functional difficulty,Female,PSE,1,,,,.019562429,0,.28312701,.023160631,63,12,0,0,108,93,52,73
+2019,Palestine,Disability & Sex,At least one functional difficulty,Male,PSE,.88914782,,,,.015771946,.060577694,.26380533,.014722307,94,16,0,0,153,165,83,144
+2019,Palestine,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,PSE,,,,,,,,,10,2,0,0,20,18,7,22
+2019,Palestine,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,PSE,,,,,0,,,,14,1,0,0,32,26,11,27
+2017,SierraLeone,Disability,At least one functional difficulty,,SLE,.74583119,,,.3067089,.018171825,.077861309,.15166317,.13544942,275,16,0,1841,1066,337,169,735
+2017,SierraLeone,Disability,"At least one sensory, physical or intellectual difficulty",,SLE,,,,.2040787,.0083291288,.097982869,,.16525093,29,1,0,404,228,47,14,116
+2017,SierraLeone,Disability & Sex,At least one functional difficulty,Female,SLE,.75066084,,,.31603587,.016562846,.066034973,.18454063,.094077341,149,11,0,928,514,178,91,327
+2017,SierraLeone,Disability & Sex,At least one functional difficulty,Male,SLE,.74025834,,,.29691681,.019800397,.091303915,.11631156,.17457284,126,5,0,913,552,159,78,408
+2017,SierraLeone,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,SLE,,,,.23202994,.009663647,,,.083470643,18,1,0,224,124,28,10,60
+2017,SierraLeone,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,SLE,,,,.16802108,.0067184428,,,.24558358,11,0,0,180,104,19,4,56
+2019,Serbia,Disability,At least one functional difficulty,,SRB,,,,,,,,,22,3,0,0,19,26,15,24
+2019,Serbia,Disability,"At least one sensory, physical or intellectual difficulty",,SRB,,,,,,,,,7,0,0,0,8,9,5,8
+2019,Serbia,Disability & Sex,At least one functional difficulty,Female,SRB,,,,,,,,,7,0,0,0,6,10,3,8
+2019,Serbia,Disability & Sex,At least one functional difficulty,Male,SRB,,,,,,,,,15,3,0,0,13,16,12,16
+2019,Serbia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,SRB,,,,,,,,,1,0,0,0,2,2,0,2
+2019,Serbia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,SRB,,,,,,,,,6,0,0,0,6,7,5,6
+2019,SaoTomeandPrincipe,Disability,At least one functional difficulty,,STP,.78570515,,,.32634056,.023125645,.11201219,.19819544,.026640547,91,20,0,368,212,100,81,134
+2019,SaoTomeandPrincipe,Disability,"At least one sensory, physical or intellectual difficulty",,STP,.84115106,,,.3049171,.023643441,.081285261,,.05183823,35,3,0,149,91,41,26,68
+2019,SaoTomeandPrincipe,Disability & Sex,At least one functional difficulty,Female,STP,.84611583,,,.32641098,.010940872,.045997076,.20660408,.035599153,51,16,0,185,100,46,53,64
+2019,SaoTomeandPrincipe,Disability & Sex,At least one functional difficulty,Male,STP,.7308591,,,.3262766,.03438532,.15718496,,.019296916,40,4,0,183,112,54,28,70
+2019,SaoTomeandPrincipe,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,STP,,,,.28674334,.023520999,,,.063862339,24,2,0,82,47,23,18,34
+2019,SaoTomeandPrincipe,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,STP,,,,.32514161,.023790453,,,.040349577,11,1,0,67,44,18,8,34
+2018,Suriname,Disability,At least one functional difficulty,,SUR,.90823275,,,.29158428,.010542151,.07895381,.15194251,.045653626,110,0,0,448,256,145,44,160
+2018,Suriname,Disability,"At least one sensory, physical or intellectual difficulty",,SUR,.94432634,,,.24824859,.0047100345,.034128048,,.033467911,39,0,0,160,92,46,20,47
+2018,Suriname,Disability & Sex,At least one functional difficulty,Female,SUR,.93344146,,,.32961392,.019004123,.031928062,,0,54,0,0,217,120,72,21,73
+2018,Suriname,Disability & Sex,At least one functional difficulty,Male,SUR,.8916896,,,.26027039,.0029934435,.11048518,,.070336491,56,0,0,231,136,73,23,87
+2018,Suriname,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,SUR,,,,.31442574,0,,,,19,0,0,89,52,23,9,26
+2018,Suriname,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,SUR,,,,.1635422,.011878328,,,,20,0,0,71,40,23,11,21
+2019,Turks and Caicos Islands,Disability,At least one functional difficulty,,TCA,,,,,,,,,0,0,0,0,19,10,3,18
+2019,Turks and Caicos Islands,Disability,"At least one sensory, physical or intellectual difficulty",,TCA,,,,,,,,,0,0,0,0,4,2,0,5
+2019,Turks and Caicos Islands,Disability & Sex,At least one functional difficulty,Female,TCA,,,,,,,,,0,0,0,0,12,3,0,7
+2019,Turks and Caicos Islands,Disability & Sex,At least one functional difficulty,Male,TCA,,,,,,,,,0,0,0,0,7,7,3,11
+2019,Turks and Caicos Islands,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,TCA,,,,,,,,,0,0,0,0,3,0,0,2
+2019,Turks and Caicos Islands,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,TCA,,,,,,,,,0,0,0,0,1,2,0,3
+2019,Chad,Disability,At least one functional difficulty,,TCD,.47246271,,,.36771575,.091610618,.18002935,.24668986,.48538846,277,0,0,1457,797,429,108,1156
+2019,Chad,Disability,"At least one sensory, physical or intellectual difficulty",,TCD,.38581991,,,.32070705,.10950736,.28343433,,.45767939,37,0,0,262,155,62,14,198
+2019,Chad,Disability & Sex,At least one functional difficulty,Female,TCD,.41392988,,,.32311401,.088414513,.26340091,.36210829,.55018216,118,0,0,674,390,182,47,568
+2019,Chad,Disability & Sex,At least one functional difficulty,Male,TCD,.51743883,,,.4052414,.094635099,.11880474,.16504164,.42221215,159,0,0,783,407,247,61,588
+2019,Chad,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,TCD,,,,.249038,.095388971,,,.5086062,16,0,0,122,68,27,8,91
+2019,Chad,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,TCD,,,,.38416806,.12086152,.21604647,,.40553069,21,0,0,140,87,35,6,107
+2017,Togo,Disability,At least one functional difficulty,,TGO,.78217715,,,.34888962,.013632309,.063370049,.23292978,.023575509,188,0,0,867,451,251,85,281
+2017,Togo,Disability,"At least one sensory, physical or intellectual difficulty",,TGO,.72357559,,,.33907577,.027206918,.055769309,,.023100659,58,0,0,259,134,87,20,87
+2017,Togo,Disability & Sex,At least one functional difficulty,Female,TGO,.77524561,,,.31360897,.022784824,.089330703,.26458144,.034137268,103,0,0,440,219,136,44,144
+2017,Togo,Disability & Sex,At least one functional difficulty,Male,TGO,.79018795,,,.3819274,.0044782464,.042148076,.19467232,.013473415,85,0,0,427,232,115,41,137
+2017,Togo,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,TGO,.8266415,,,.31905502,.045048404,.099307977,,.024165314,35,0,0,139,70,48,14,47
+2017,Togo,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,TGO,,,,.36097229,.0045854882,.024516383,,.021985136,23,0,0,120,64,39,6,40
+2019,Turkmenistan,Disability,At least one functional difficulty,,TKM,,,,,0,,,,14,0,0,0,34,26,13,24
+2019,Turkmenistan,Disability,"At least one sensory, physical or intellectual difficulty",,TKM,,,,,,,,,5,0,0,0,22,11,10,14
+2019,Turkmenistan,Disability & Sex,At least one functional difficulty,Female,TKM,,,,,,,,,7,0,0,0,20,12,10,14
+2019,Turkmenistan,Disability & Sex,At least one functional difficulty,Male,TKM,,,,,,,,,7,0,0,0,14,14,3,10
+2019,Turkmenistan,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,TKM,,,,,,,,,1,0,0,0,17,3,8,8
+2019,Turkmenistan,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,TKM,,,,,,,,,4,0,0,0,5,8,2,6
+2019,Tonga,Disability,At least one functional difficulty,,TON,.90193594,,,.46734229,.007110029,.068502523,,0,46,0,0,141,62,60,4,40
+2019,Tonga,Disability,"At least one sensory, physical or intellectual difficulty",,TON,,,,.39309415,,,,,12,0,0,46,25,16,2,13
+2019,Tonga,Disability & Sex,At least one functional difficulty,Female,TON,,,,.62653702,,.016596351,,,28,0,0,69,28,36,1,21
+2019,Tonga,Disability & Sex,At least one functional difficulty,Male,TON,,,,.34893382,0,,,,18,0,0,72,34,24,3,19
+2019,Tonga,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,TON,,,,,,,,,7,0,0,25,15,10,0,9
+2019,Tonga,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,TON,,,,,,,,,5,0,0,21,10,6,2,4
+2018,Tunisia,Disability,At least one functional difficulty,,TUN,.78326625,.63326895,,.18748572,.021690398,.071208097,.25868475,.017492702,250,36,0,678,499,231,208,323
+2018,Tunisia,Disability,"At least one sensory, physical or intellectual difficulty",,TUN,.72617316,,,.11977683,.025427319,.073906034,.40815395,.069825977,50,9,0,156,118,53,42,76
+2018,Tunisia,Disability & Sex,At least one functional difficulty,Female,TUN,.89100188,,,.205451,.025632637,.050295379,.12929323,.013466162,120,13,0,313,226,94,99,143
+2018,Tunisia,Disability & Sex,At least one functional difficulty,Male,TUN,.6711691,,,.17217034,.018347912,.085215099,.39125714,.020728532,130,23,0,365,273,137,109,180
+2018,Tunisia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,TUN,,,,.14818935,.015864361,,,.061105888,20,3,0,70,52,23,17,35
+2018,Tunisia,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,TUN,.56619686,,,.095342197,.033203572,.10876354,,.07854908,30,6,0,86,66,30,25,41
+2019,Tuvalu,Disability,At least one functional difficulty,,TUV,,,,0,,,,,5,0,0,41,29,11,2,14
+2019,Tuvalu,Disability,"At least one sensory, physical or intellectual difficulty",,TUV,,,,,,,,,1,0,0,18,13,4,0,4
+2019,Tuvalu,Disability & Sex,At least one functional difficulty,Female,TUV,,,,,,,,,1,0,0,13,10,1,1,2
+2019,Tuvalu,Disability & Sex,At least one functional difficulty,Male,TUV,,,,,,,,,4,0,0,28,19,10,1,12
+2019,Tuvalu,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,TUV,,,,,,,,,0,0,0,7,5,0,0,1
+2019,Tuvalu,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,TUV,,,,,,,,,1,0,0,11,8,4,0,3
+2021,Uzbekistan,Disability,At least one functional difficulty,,UZB,,,,0,,,,,0,0,0,130,0,0,0,0
+2021,Uzbekistan,Disability,"At least one sensory, physical or intellectual difficulty",,UZB,,,,,,,,,0,0,0,24,0,0,0,0
+2021,Uzbekistan,Disability & Sex,At least one functional difficulty,Female,UZB,,,,0,,,,,0,0,0,66,0,0,0,0
+2021,Uzbekistan,Disability & Sex,At least one functional difficulty,Male,UZB,,,,0,,,,,0,0,0,64,0,0,0,0
+2021,Uzbekistan,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,UZB,,,,,,,,,0,0,0,14,0,0,0,0
+2021,Uzbekistan,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,UZB,,,,,,,,,0,0,0,10,0,0,0,0
+2020,VietNam,Disability,At least one functional difficulty,,VNM,.84816247,,,.06242419,.012971788,.090630218,,.069914594,33,3,0,82,61,59,26,68
+2020,VietNam,Disability,"At least one sensory, physical or intellectual difficulty",,VNM,,,,.09576457,,,,.17287396,14,3,0,43,28,27,12,33
+2020,VietNam,Disability & Sex,At least one functional difficulty,Female,VNM,,,,.031516764,,,,.10371017,11,1,0,35,24,26,11,35
+2020,VietNam,Disability & Sex,At least one functional difficulty,Male,VNM,,,,.086208716,.0072936742,.11399524,,.037574209,22,2,0,47,37,33,15,33
+2020,VietNam,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,VNM,,,,,,,,,4,1,0,13,8,10,4,16
+2020,VietNam,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,VNM,,,,.11924413,,,,,10,2,0,30,20,17,8,17
+2019,Samoa,Disability,At least one functional difficulty,,WSM,.92407942,.73310274,,.0040435311,.02118716,.022646999,.19204351,0,74,59,0,317,247,67,113,145
+2019,Samoa,Disability,"At least one sensory, physical or intellectual difficulty",,WSM,,,,.013808009,.025999166,,,,5,4,0,41,31,10,9,12
+2019,Samoa,Disability & Sex,At least one functional difficulty,Female,WSM,.98990893,.75440836,,.005835121,.02585068,,.16422433,0,41,33,0,129,102,28,61,55
+2019,Samoa,Disability & Sex,At least one functional difficulty,Male,WSM,.85467982,,,.0029677795,.018139195,.01972701,.22161682,0,33,26,0,188,145,39,52,90
+2019,Samoa,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,WSM,,,,,,,,,4,1,0,9,8,2,5,1
+2019,Samoa,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,WSM,,,,.017457591,,,,,1,3,0,32,23,8,4,11
+2019,Zimbabwe,Disability,At least one functional difficulty,,ZWE,.51711959,.36242366,,,.046481043,.25402546,.46032274,0,121,32,0,0,364,84,121,184
+2019,Zimbabwe,Disability,"At least one sensory, physical or intellectual difficulty",,ZWE,.6141659,,,,.036826119,.18376353,.34094167,0,55,11,0,0,170,39,55,91
+2019,Zimbabwe,Disability & Sex,At least one functional difficulty,Female,ZWE,.39502734,,,,.050710723,.33628076,.58226085,0,49,16,0,0,167,33,49,81
+2019,Zimbabwe,Disability & Sex,At least one functional difficulty,Male,ZWE,.59417146,,,,.042734623,.19902648,.3833681,0,72,16,0,0,197,51,72,103
+2019,Zimbabwe,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Female,ZWE,,,,,.041517776,,,0,20,4,0,0,82,13,20,46
+2019,Zimbabwe,Disability & Sex,"At least one sensory, physical or intellectual difficulty",Male,ZWE,.67288113,,,,.032302927,,.28411874,0,35,7,0,0,88,26,35,45
