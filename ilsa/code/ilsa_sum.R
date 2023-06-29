@@ -104,7 +104,7 @@ three_ach <- lapply(three, function(x) {
   mydata <- data[complete.cases(data[, x]), ];
   mymiss <- aggregate(list(n=mydata[["COUNTRY"]]), mydata[c("COUNTRY", x)], length);
   mydata <- merge(mydata, mymiss, all.x=TRUE);
-  mydata <- mydata[mydata$n>50, ]; # remove intersections with less than 5 groups (for run)
+  mydata <- mydata[mydata$n>5, ]; # remove intersections with less than 5 groups (for run)
   
   ach <- intsvy.ben.pv(pvnames = pvnames, 
                        cutoff= cutoff, by = c("COUNTRY", x), 
@@ -130,7 +130,7 @@ bench_ach$levels <- factor(bench_ach$Benchmark,
                        levels = sapply(seq_along(cutoff), function(c) 
                          grep(cutoff[c], levels(factor(bench_ach$Benchmark)), value = TRUE)),
                        labels = paste0("level", 1:length(cutoff)))
-
+bench_ach$Wealth <- as.integer(bench_ach$Wealth)
 
 bench_n <- dplyr::bind_rows(total_n, one_n, two_n, three_n)
 
@@ -143,7 +143,6 @@ myout <- pivot_wider(data = bench_tot,
                      names_from= c("levels"), values_from =c("Percentage", "Std. err.", "n"))
 
 ## var names
-
 perlev <- paste0(prefix, "level", 1:length(cutoff), "_m")
 selev <- paste0(prefix, "level", 1:length(cutoff), "_se")
 nolev <- paste0(prefix, "level", 1:length(cutoff), "_no")
