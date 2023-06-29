@@ -1,0 +1,308 @@
+---
+title: "Graph ideas chapter 4.3"
+output: pdf_document
+geometry: margin=1cm
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#setup of data frames
+
+library(ggplot2)
+library(tidyverse)
+library(cowplot)
+library(ggrepel)
+
+#march update:
+path2uisdata2 <- 'C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/UIS info/'
+
+
+uis_clean <- function(uis_data) {
+  print(table(uis_data$qualifier))
+  mutate(uis_data, value = ifelse(magnitude == 'NA' & value == 0, NA, value)) %>% 
+    mutate(indicator_id = toupper(indicator_id))
+}
+
+varlabels <-  read.csv(paste0(path2uisdata2, 'SDG_LABEL.csv'), na = '') %>% rename(indicator_id=INDICATOR_ID)
+
+regions <-   vroom::vroom(paste0(path2uisdata2, 'countries_updated.csv'), na = '') %>%
+  rename(country_id=iso3c)  %>% select(country_id, GEMR.region, income_group, income_subgroup)
+
+indicators2extract <- c('PRYA.12MO.AG25T54' )
+
+f1 <-   vroom::vroom(paste0(path2uisdata2, 'SDG_DATA_NATIONAL.csv'), na = '') %>% 
+  filter(str_detect(indicator_id, paste(indicators2extract, collapse = '|'))) %>% 
+  #rid of gender and GPIA 
+  filter(!str_detect(indicator_id, 'GPIA'), !str_detect(indicator_id, fixed('.M')),  !str_detect(indicator_id, fixed('.F'))) %>% 
+  uis_clean %>%
+  select(-qualifier, -magnitude) %>%
+  #regions countries belong to
+  left_join(regions ,by="country_id", multiple = "all") %>%
+  unite(incgroup2, c("income_group", "income_subgroup")) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='_NA',replacement = '')) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='Middle_',replacement = '')) %>%
+  filter(!incgroup2=='NA') %>%  filter(!incgroup2=='Not Classified')  %>%
+    #var labels
+  left_join(varlabels, by="indicator_id") %>% filter(year > 2014 ) %>% 
+  #keep last year per country 
+  group_by(country_id) %>% filter(year == max(year)) %>%
+  #crazy data cleanup: high unlikely outliers DJI and BRB 
+  filter(!(country_id=='DJI' | country_id=='BRB')) 
+
+f1_m <- vroom::vroom(paste0(path2uisdata2, 'SDG_DATA_NATIONAL.csv'), na = '') %>% 
+  filter(str_detect(indicator_id, paste('PRYA.12MO.AG25T54.M', collapse = '|'))) %>% 
+  uis_clean %>%
+  select(-qualifier, -magnitude) %>%
+  #regions countries belong to
+  left_join(regions ,by="country_id", multiple = "all") %>%
+  unite(incgroup2, c("income_group", "income_subgroup")) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='_NA',replacement = '')) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='Middle_',replacement = '')) %>%
+  filter(!incgroup2=='NA') %>%  filter(!incgroup2=='Not Classified')  %>%
+  #var labels
+  left_join(varlabels, by="indicator_id") %>% filter(year > 2014 & year < 2022) %>%
+  #keep last year per country 
+  group_by(country_id) %>% filter(year == max(year)) %>% mutate(gender="Male")  %>%
+  #crazy data cleanup: high unlikely outliers DJI and BRB 
+  filter(!(country_id=='DJI' | country_id=='BRB')) 
+
+f1_f <- vroom::vroom(paste0(path2uisdata2, 'SDG_DATA_NATIONAL.csv'), na = '') %>% 
+  filter(str_detect(indicator_id, paste('PRYA.12MO.AG25T54.F', collapse = '|'))) %>% 
+  uis_clean %>%
+  select(-qualifier, -magnitude) %>%
+  #regions countries belong to
+  left_join(regions ,by="country_id", multiple = "all") %>%
+  unite(incgroup2, c("income_group", "income_subgroup")) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='_NA',replacement = '')) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='Middle_',replacement = '')) %>%
+  filter(!incgroup2=='NA') %>%  filter(!incgroup2=='Not Classified')  %>%
+  #var labels
+  left_join(varlabels, by="indicator_id") %>% filter(year > 2014 & year < 2022) %>%
+  #keep last year per country 
+  group_by(country_id) %>% filter(year == max(year)) %>% mutate(gender="Female")  %>%
+  #crazy data cleanup: high unlikely outliers DJI and BRB 
+  filter(!(country_id=='DJI' | country_id=='BRB')) 
+
+f1_sex <- bind_rows(f1_m, f1_f) %>% pivot_wider(names_from = gender, values_from = value)
+
+f2 <- vroom::vroom(paste0(path2uisdata2, 'SDG_DATA_NATIONAL.csv'), na = '') %>% 
+  filter(str_detect(indicator_id, paste(indicators2extract, collapse = '|'))) %>% 
+  #rid of gender and GPIA 
+  filter(!str_detect(indicator_id, 'GPIA'), !str_detect(indicator_id, fixed('.M')),  !str_detect(indicator_id, fixed('.F'))) %>% 
+  uis_clean %>%
+  select(-qualifier, -magnitude) %>%
+  #regions countries belong to
+  left_join(regions ,by="country_id", multiple = "all") %>%
+  unite(incgroup2, c("income_group", "income_subgroup")) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='_NA',replacement = '')) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='Middle_',replacement = '')) %>%
+  filter(!incgroup2=='NA') %>%  filter(!incgroup2=='Not Classified')  %>%
+  #var labels
+  left_join(varlabels, by="indicator_id") %>% filter(year > 2014 ) %>% 
+  #crazy data cleanup: high unlikely outliers DJI and BRB 
+  filter(!(country_id=='DJI' | country_id=='BRB')) %>% 
+  #count obs per country 
+  group_by(country_id) %>% mutate(yearcount = n()) %>% 
+  filter(yearcount > 5) %>%
+  arrange(desc(-year))
+
+f2_subset <- f2 %>% filter(GEMR.region=='Europe and Northern America' | GEMR.region=='Latin America and the Caribbean')
+
+f2_pivot <- vroom::vroom(paste0(path2uisdata2, 'SDG_DATA_NATIONAL.csv'), na = '') %>% 
+  filter(str_detect(indicator_id, paste(indicators2extract, collapse = '|'))) %>% 
+  #rid of gender and GPIA 
+  filter(!str_detect(indicator_id, 'GPIA'), !str_detect(indicator_id, fixed('.M')),  !str_detect(indicator_id, fixed('.F'))) %>% 
+  uis_clean %>%
+  select(-qualifier, -magnitude) %>%
+  #regions countries belong to
+  left_join(regions ,by="country_id", multiple = "all") %>%
+  unite(incgroup2, c("income_group", "income_subgroup")) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='_NA',replacement = '')) %>%
+  mutate(incgroup2=str_replace(incgroup2, pattern='Middle_',replacement = '')) %>%
+  filter(!incgroup2=='NA') %>%  filter(!incgroup2=='Not Classified')  %>%
+  #var labels
+  left_join(varlabels, by="indicator_id") %>% filter(year > 2014 ) %>% 
+  #crazy data cleanup: high unlikely outliers DJI and BRB 
+  filter(!(country_id=='DJI' | country_id=='BRB')) %>% 
+  #count obs per country 
+  group_by(country_id) %>% mutate(yearcount = n()) %>% 
+  arrange(desc(-year)) %>%
+  pivot_wider(names_from = year, values_from = value,  names_prefix = "year") %>%
+  mutate(chg1520 = year2020- year2015, chg1521 = year2021- year2015, 
+         c16= year2016- year2015, c17= year2017- year2016, c18= year2018- year2017, c19= year2019- year2018, 
+         c20= year2020- year2019, c21= year2021- year2020) %>% 
+  mutate(avg_annualc = mean(c(c16, c17, c18, c19, c20, c21), na.rm = TRUE) ) %>%
+  arrange(desc(chg1520))
+
+f2_pivot2 <- f2_pivot %>% filter(!is.na(chg1520))
+
+f2_pivot3 <- f2_pivot %>% filter(!is.na(chg1521))
+
+
+```
+
+## Figure 1: Participation rate
+
+A few choices without gender
+
+```{r f1 , echo=FALSE, warning = FALSE}
+f1_byregion <- ggplot(f1, aes(x = value ,  fill = GEMR.region)) + 
+  geom_dotplot(method='histodot', stackratio = 1,  binwidth = 1.5)+
+  ggtitle("Participation rate of youth and adults in formal and non-formal education and training \nin the previous 12 months") +
+    xlab("Participation (%) ") + ylab("")
+
+plot(f1_byregion)
+
+cat("\\pagebreak")
+
+
+f1_byincgroup <-  ggplot(f1, aes(x = value , y = 0,  fill = incgroup2)) +
+  geom_dotplot(method='histodot', stackratio = 1, binwidth = 1)+
+  ggtitle("Participation rate of youth and adults in formal and non-formal education and training \nin the previous 12 months") +
+  xlab("Participation (%) ") + ylab("") 
+
+#THIS
+TRY IN EXCEL
+NO VERTICAL LABELS IN Y AXIS 
+Y AXIS UP TO 0.5 
+NO TITTLE 
+LEGEND ORDER AND COMPLETE NAME
+BACKGROUND AREA WHITE, NO GREY
+FIG 3.8 FOR COLORS 
+
+plot(f1_byincgroup)
+
+cat("\\pagebreak")
+
+
+f1_densities <- ggplot(data=f1, aes(x=value, group=incgroup2, fill=incgroup2)) +
+  geom_density(adjust=1.5, alpha=.4)+
+  ggtitle("Participation rate of youth and adults in formal and non-formal education and training \nin the previous 12 months") +
+  xlab("Participation (%) ") + ylab("") 
+
+plot(f1_densities)
+
+cat("\\pagebreak")
+ 
+```
+
+Now some choices with gender
+
+```{r f1_sex , echo=FALSE, warning = FALSE}
+
+#THIS
+NO TITTLE 
+Y AXIS INTO 20% = # COUNTRIES COUNT
+    BACKGROUND INTO WHITE 
+
+
+gender1 <- ggplot(f1_sex, aes(x)) + geom_histogram( aes(x = Male, y = ..density..),
+                                         binwidth = diff(range(f1_m$value))/30, fill="#404080") + 
+  geom_histogram( aes(x = Female, y = -..density..), binwidth = diff(range(f1_f$value))/30, fill= "#69b3a2")+
+  geom_label(x=13, y=0.05, label="Male", color="#404080")  +
+geom_label(x=13, y=-0.05, label="Female", color="#69b3a2" )   + 
+  ggtitle("Participation rate of youth and adults in formal and non-formal education and training, \n25-54 years old") +
+  xlab("Participation (%) ") + ylab("") 
+
+plot(gender1)
+
+cat("\\pagebreak")
+
+
+p <- ggplot(f1_sex, aes(x=x) ) +
+  # Top
+  geom_density( aes(x = Male, y = ..density..), fill="#69b3a2" ) +
+  geom_label( aes(x=4.5, y=0.25, label="Male participation"), color="#69b3a2") +
+  # Bottom
+  geom_density( aes(x = Female, y = -..density..), fill= "#404080") +
+  geom_label( aes(x=4.5, y=-0.25, label="Female participation"), color="#404080") +
+  xlab("value of x")
+
+plot(p)
+
+cat("\\pagebreak")
+
+
+```
+
+## Figure 2: Participation rate in time
+
+```{r f2_subset, echo=FALSE}
+
+timeseries <- ggplot(data=f2_subset, aes(x=year, y=value, color = country_id)) + geom_line()+
+  ggtitle("Participation rates have barely changed") 
+
+tlines <- timeseries + facet_wrap(~incgroup2) 
+
+plot(tlines)
+
+cat("\\pagebreak")
+
+
+tlines2 <- timeseries + facet_wrap(~GEMR.region) 
+
+plot(tlines2)
+
+#this 
+EXCEL FOR ALL THIS
+
+```
+
+Covid impact in 2020?
+
+```{r f2_pivot, echo=FALSE}
+
+#THIS 
+#COLORS ACCRODING TO SCHEME LEGEND IN ORDER 
+#HIGH INCOME HYPHEN 
+# Y AXIS NORMAL NUMBERS 
+#X PERCENTAGE OF change
+
+
+ts_1 <- ggplot(f2_pivot, aes(x=chg1520, fill =incgroup2)) + 
+  geom_histogram(binwidth=0.5) + 
+  ggtitle("Participation rate change between 2015 and 2020") +
+  xlab("Participation change in pp ") + ylab("") 
+
+plot(ts_1)
+
+
+
+cat("\\pagebreak")
+
+
+timevariation4 <- ggplot(f2_pivot,  aes(x=reorder(country_id,avg_annualc) , y=avg_annualc, fill=incgroup2)) +
+  geom_bar(stat="identity") + 
+  ggtitle("Average annual change in participation") +
+  xlab("Country ") + ylab("% change in a year") 
+
+plot(timevariation4)
+
+```
+
+Histogram makes it easy to see that big variations are in rich countries.
+
+```{r f2_pivot2, echo=FALSE}
+ts_2 <- timevariation <- ggplot(f2_pivot2,  aes(x=reorder(country_id,chg1520) , y=chg1520, fill=incgroup2)) +
+  geom_bar(stat="identity") + 
+  ggtitle("Participation rate change between 2015 and 2020") +
+  xlab("Participation change in pp  ") + ylab("") 
+
+plot(ts_2)
+
+```
+
+This one has the country labels.
+
+```{r f2_pivot3, echo=FALSE}
+timevariation3 <- ggplot(f2_pivot3,  aes(x=reorder(country_id,chg1521) , y=chg1521, fill=incgroup2)) +
+  geom_bar(stat="identity") + 
+  ggtitle("Participation rate change between 2015 and 2021") +
+  xlab("Participation change in pp ") + ylab("") 
+
+plot(timevariation3)
+
+```
+
+Most recent data shows the same.

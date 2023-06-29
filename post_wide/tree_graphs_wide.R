@@ -10,13 +10,19 @@ library(ggthemes)
 library(cowplot)
 
 #to save graphs
-setwd("C:/Users/Lenovo PC/OneDrive - UNESCO/inequality_forest/")
+#setwd("C:/Users/Lenovo PC/OneDrive - UNESCO/inequality_forest/")
+
+#newlaptop
+setwd("C:/Users/mm_barrios-rivera/OneDrive - UNESCO/inequality_forest/")
 
 
 #Load WIDE dataset
 
 #WIDE_2023_08_02 <- read_csv("C:/Users/Lenovo PC/OneDrive - UNESCO/WIDE files/2023/WIDE_2023_08_02.csv") 
-WIDE_2023_08_02 <- read_csv("C:/Users/Lenovo PC/OneDrive - UNESCO/WIDE files/2023/WIDE_2023.csv") 
+#WIDE_2023_08_02 <- read_csv("C:/Users/Lenovo PC/OneDrive - UNESCO/WIDE files/2023/WIDE_2023.csv") 
+
+#newlaptop
+WIDE_2023_08_02 <- read_csv("C:/Users/mm_barrios-rivera/OneDrive - UNESCO//WIDE files/2023/WIDE_2023_19_04_2.csv") 
 
 
 #See what's on 3D possibilities 
@@ -128,9 +134,7 @@ q5_rur_m <- extracted_survey %>% filter(category=="Location & Sex & Wealth") %>%
   filter(wealth %in% c('Quintile 5') & location %in% c('Rural') & sex %in% c('Male')) %>% pull(indicator)
 #q5_rur_f <- -1
 #q5_rur_m <- -1
-q5_urb <- 0.92
-
-
+#q5_urb <- 0.92
 
 
 
@@ -225,9 +229,9 @@ accessg <-   ggp+
                                         size = 0.5, linetype = "solid"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())   +
-  scale_y_continuous(limits = c(0, 1))+
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent)+
   scale_x_continuous(n.breaks = 4, label = c("Wealth", "Location", "Sex", "Sex")) +
-  labs(y= "Primary completion", x="") +
+  labs(y= "Primary completion (%)", x="") +
   geom_label_repel(aes(label = short_labels),
                    box.padding   = 0.95, 
                    point.padding = 0.5,
@@ -390,10 +394,12 @@ ggsave("comp_prim_TCD_2019_MICS_wsl.png", width = 7, height = 6, units = "in")
 #CRI 2015 END OF LOWSEC PISA X
 #THA 2019 PISA X
 
-####MICS6 learning  ----
+####MICS6 learning intake ----
 
 path2pieces <- "C:/Users/Lenovo PC/Documents/GEM UNESCO MBR/GitHub/wide2020/wide_aggregating_code/WIDE_2023_update/WIDE_2023_files/" 
-mics_learning <- vroom::vroom(paste0(path2pieces,"mics6_mpl.csv")) %>%
+path2learning <- "C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/GitHub/wide2020/wide_aggregating_code/WIDE_2023_update/WIDE_2023_files/" 
+
+mics_learning <- vroom::vroom(paste0(path2learning,"mics6_mpl.csv")) %>%
   mutate(survey= 'MICS') %>%
   #year issue 
   mutate(year = ifelse((iso_code3 == 'GUY' & survey == 'MICS' & year == 2019), 2020, year)) %>%
@@ -668,9 +674,9 @@ learningg <-   ggp+
                                         size = 0.5, linetype = "solid"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())   +
-  scale_y_continuous(limits = c(0, 1))+
+  scale_y_continuous(limits = c(0, 1),  labels = scales::percent)+
   scale_x_continuous(n.breaks = 4, label = c("Wealth", "Location", "Sex", "Sex")) +
-  labs(y= "% of students reaching the minimum proficiency level \n in reading, end of primary", x="") +
+  labs(y= "Students reaching minimum proficiency in mathematics (%)", x="") +
   geom_label_repel(aes(label = short_labels),
                    box.padding   = 0.95, 
                    point.padding = 0.5,
@@ -685,7 +691,7 @@ plot_row
 # now add the title
 title <- ggdraw() + 
   draw_label(
-    "Bangladesh 2019 (MICS)",
+    "Ghana",
     fontface = 'bold',
     x = 0,
     hjust = 0
@@ -704,9 +710,9 @@ plot_grid(
 )
 
 #doesnt work :(
-  ggsave("paralel_BGD2019MICS.png", width = 10, height = 6, units = "in" ,  bg = 'white')
-  ggsave("paralel_COD2018MICS.png", width = 10, height = 6, units = "in" ,  bg = 'white')
-  ggsave("paralel_GHA2017MICS.png", width = 10, height = 6, units = "in",  bg = 'white')
+  ggsave("paralel_BGD2019MICS_v2.png", width = 12, height = 8, units = "in" ,  bg = 'white')
+  ggsave("paralel_COD2018MICS_v2.png", width = 12, height = 8, units = "in" ,  bg = 'white')
+  ggsave("paralel_GHA2017MICS_v2.png", width = 12, height = 8, units = "in",  bg = 'white')
   
 
 ####
