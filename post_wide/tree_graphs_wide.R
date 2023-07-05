@@ -811,3 +811,9 @@ q1_urb <-0.74674809
 q1 <-0.72190374
 
 
+#Final EXCEL -----
+#excel
+library("writexl") 
+sheets <- list("F1.2" = summary, "F1.3" = latest_year, "F2.2" = bycountry_time2, "F3.4" = dl_edu, "F4.1" = edu_att22, "F1_THAT" = argh) #assume sheet1 and sheet2 are data frames
+write.xlsx(sheets, file = "C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/graphs_44_v2.xlsx")
+
