@@ -4,8 +4,8 @@
 data(popF, popM, package = 'wpp2019')
 
 #path2uisdata <- 'C:/Users/Lenovo PC/Documents/GEM UNESCO MBR/UIS stat comparison/UIS sept 2022 bulk data/'
-path2uisdata <- 'C:/Users/Lenovo PC/Documents/GEM UNESCO MBR/UIS info/'
-
+#$path2uisdata <- 'C:/Users/Lenovo PC/Documents/GEM UNESCO MBR/UIS info/'
+path2uisdata <- 'C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/UIS info/'
 
 sap_indicators <- c(
   'SAP.1.AgM1', 'SAP.02', 'SAP.5t8',
@@ -69,7 +69,7 @@ pops <-
 weights <- 
   bind_rows(saps, pops) %>% 
   arrange(iso_code) %>% 
-  inner_join(vroom::vroom('C:/Users/Lenovo PC/OneDrive - UNESCO/WIDE files/weight_vars.csv'), by = 'weight')
+  inner_join(vroom::vroom('C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files/weight_vars.csv'), by = 'weight')
 
 cats2agg <- c('Total', 'Location', 'Sex', 'Wealth')
 

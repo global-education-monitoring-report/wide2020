@@ -1,5 +1,6 @@
 # Update income groups
-setwd("C:/Users/Lenovo PC/OneDrive - UNESCO/WIDE files/")
+setwd("C:/Users/mm_barrios-rivera/OneDrive - UNESCO/WIDE files/")
+
 library(wbstats)
 
 #this generates only HIGH LOW AND MIDDLE income 

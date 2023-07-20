@@ -232,7 +232,8 @@ if( exists("disability", wide_calculate) ) {
 library(plyr)
 
 #setwd("C:/Users/taiku/UNESCO/GEM Report - 3_calculated")
-setwd("C:/Users/taiku/Desktop/temporary_sum")
+#setwd("C:/Users/taiku/Desktop/temporary_sum")
+setwd("C:/Users/mm_barrios-rivera/Desktop/temporary_sum")
 
 all_indicators <- ldply(list.files(), read.csv, header=TRUE)
 

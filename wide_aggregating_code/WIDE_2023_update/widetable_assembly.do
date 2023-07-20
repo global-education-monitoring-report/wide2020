@@ -1,4 +1,5 @@
 *WIDETABLE so many parts
+*output: widetable_2023.csv
 
 **# IMPORT so many files 
 
