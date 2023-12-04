@@ -1,8 +1,8 @@
 *****WIDE 2023: FILTER BAD ESTIMATES STATA VERSION (BLASPHEMY/unholy)
 
 *import delimited "C:\Users\taiku\OneDrive - UNESCO\WIDE files\2023\WIDE_2023_07_02.csv", clear
-import delimited "C:\Users\mm_barrios-rivera\OneDrive - UNESCO\WIDE files\WIDE_2023_julytest.csv", clear
-
+*import delimited "C:\Users\mm_barrios-rivera\OneDrive - UNESCO\WIDE files\WIDE_2023_julytest.csv", clear
+import delimited "C:\Users\mm_barrios-rivera\OneDrive - UNESCO\WIDE files\2023\WIDE_2023_july_v2.csv", clear
 
 // eduout_lowsec
 *Ben's content
@@ -463,6 +463,50 @@ replace survey="EMNV" if country_year=="NIC_2009"
 replace survey="RLMS-HSE" if survey=="HSE"
 
 drop country_year
+
+****
+*new manos to filter out
+
+*overage2plus_m
+*STP 2019 disability
+replace overage2plus_m=. if iso=="STP" & survey=="MICS" & inlist(year, 2019)   & cat=="Disability"
+*MDG 2018 disability
+replace overage2plus_m=. if iso=="MGD" & survey=="MICS" & inlist(year, 2018)   & cat=="Disability"
+*GHA 2018 disability
+replace overage2plus_m=. if iso=="GHA" & survey=="MICS" & inlist(year, 2018)   & cat=="Disability"
+*SRB all?
+replace overage2plus_m=. if iso=="SRB" & survey=="MICS" & inlist(year, 2019)   
+*MNE all?
+replace overage2plus_m=. if iso=="MNE" & survey=="MICS" & inlist(year, 2018)   
+*NGA 2021
+replace overage2plus_m=. if iso=="NGA" & survey=="MICS" & inlist(year, 2021)   
+
+
+
+*DROP SSD HFS 2017 SURVEY
+drop if iso=="SSD" & survey=="HFS" & inlist(year, 2017, 2018)
+*DROP AFROBAROMETER 2017
+drop if survey=="Afrobarometer" & inlist(year, 2017)
+*DROP INDIA NFHS
+drop if survey=="NFHS" 
+
+*transition to lowsec
+*drop china CFPS 2014
+replace trans_prim_m=. if iso=="CHN" & survey=="MICS" & inlist(year, 2014)
+replace trans_lowsec_m=. if iso=="CHN" & survey=="MICS" & inlist(year, 2014)
+
+replace literacy_1524_m=. if iso=="COL" & survey=="GEIH" & inlist(year, 2016)
+replace literacy_1524_no=. if iso=="COL" & survey=="GEIH" & inlist(year, 2016)
+
+drop v1 
+
+
+*LEARNING: MICS6 CHANGE LEVEL ---DONE IN R code 
+
+
+
+*
+****
 
 
 *export in .DTA, then treat in R 

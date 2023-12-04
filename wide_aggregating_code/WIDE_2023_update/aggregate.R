@@ -41,7 +41,7 @@ saps <-
 #WPP 2019 extraction
 pops <- 
   bind_rows(female = popF, male = popM, .id = 'Sex') %>%
-  select(pop = `2015`, country_code, name, age, Sex) %>%
+  select(pop = `2020`, country_code, name, age, Sex) %>%
   filter(age %in% c('15-19', '20-24', '25-29', '30-34')) %>%
   # {print(all({dplyr::count(., country_code) %>% pull(n)} == 2))} %>%
   group_by(country_code, age, Sex) %>%
@@ -62,6 +62,9 @@ pops <-
   select(-country_code) %>% 
   pivot_longer(names_to = 'weight', values_to = 'wt_value', cols = c(starts_with('pop_'), const)) %>% 
   mutate(wt_value = 1000 * wt_value)
+
+#write.csv(pops, 'pops2010.csv', na = '')
+
 
 #fix <- popF %>% select(country_code, name) %>% distinct 
 #seems the problems are regions...

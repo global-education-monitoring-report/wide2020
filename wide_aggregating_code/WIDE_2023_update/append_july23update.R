@@ -100,6 +100,40 @@ widetable_2023 <-
 widetable_2023_long <- 
   pivot_longer(widetable_2023, names_to = 'indicator', cols = any_of(wide_outcome_vars)) 
 
+# more past indicators to be rescued ----------------------------------------------
+
+nfR <-
+  vroom::vroom(paste0(path2pieces,"newfromRosa.csv"), guess_max = 900000) %>% 
+  select(-country_year, -'_merge', -cy, -year_uis, -country) %>% 
+  filter(!category=='Total') %>% filter(!category=='Location') %>% filter(!category=='Sex') %>% filter(!category=='Wealth') %>% 
+  rename(comp_prim_v2_m=comp_prim_v2, comp_lowsec_v2_m= comp_lowsec_v2, comp_upsec_v2_m=comp_upsec_v2, eduout_prim_m=eduout_prim, 
+         eduout_lowsec_m= eduout_lowsec, eduout_upsec_m=eduout_upsec, comp_prim_1524_m=comp_prim_1524, comp_lowsec_1524_m= comp_lowsec_1524,
+         comp_upsec_2029_m= comp_upsec_2029, eduyears_2024_m= eduyears_2024, edu2_2024_m= edu2_2024, edu4_2024_m=edu4_2024, 
+         iso_code=iso_code3) %>%
+  mutate_at(vars(contains('_m')), ~ (. /100)) %>%
+  mutate(eduyears_2024_m= eduyears_2024_m*100) %>%
+  mutate(year = ifelse((iso_code == 'CAF' & survey == 'MICS' & year == 2018), 2019, year)) %>%
+  mutate(year = ifelse((iso_code == 'COD' & survey == 'MICS' & year == 2017), 2018, year)) %>%
+  mutate(year = ifelse((iso_code == 'GUY' & survey == 'MICS' & year == 2019), 2020, year)) %>%
+  mutate(year = ifelse((iso_code == 'WSM' & survey == 'MICS' & year == 2020), 2019, year)) %>%
+  mutate(year = ifelse((iso_code == 'TCA' & survey == 'MICS' & year == 2019), 2020, year)) %>%
+  mutate(year = ifelse((iso_code == 'TUV' & survey == 'MICS' & year == 2020), 2019, year)) %>%
+  mutate(year = ifelse((iso_code == 'PSE' & survey == 'MICS' & year == 2019), 2020, year)) %>%
+  mutate(year = ifelse((iso_code == 'KIR' & survey == 'MICS' & year == 2018), 2019, year)) %>%
+  mutate(year = ifelse((iso_code == 'MKD' & survey == 'MICS' & year == 2018), 2019, year)) %>%
+  mutate(year = ifelse((iso_code == 'BEN' & survey == 'MICS' & year == 2017), 2018, year)) %>%
+  mutate(year = ifelse((iso_code == 'GHA' & survey == 'MICS' & year == 2017), 2018, year)) %>%
+  mutate(year = ifelse((iso_code == 'JOR' & survey == 'MICS' & year == 2017), 2018, year)) %>%
+  mutate(year = ifelse((iso_code == 'PNG' & survey == 'MICS' & year == 2017), 2018, year)) %>%
+  rename(iso_code3=iso_code) %>%
+  filter(category=='Region')
+
+
+nfR_long <- 
+  pivot_longer(nfR, names_to = 'indicator', cols = any_of(wide_outcome_vars)) %>%
+  filter(!is.na(value))
+
+
 # new categories: disability and parental edu-----------------------------
 
 #fixed FS incorporated new 17/july version 
@@ -138,14 +172,21 @@ nationalsurveys_long <-
 
 pirls21 <- vroom::vroom(paste0(path2pieces,"pirls21_mpl.csv")) %>% select(-rlevel2_se, -rlevel3_se, -rlevel4_se) %>%
   rename(language=Language) %>% rename(location=Location) %>% rename(sex=Sex) %>% 
-  mutate(level= case_when(
-    grade == 3 ~ 'early grades',
+    mutate(level= case_when(
+    grade == 4 ~ 'early grades',
     grade == 6 ~ 'end of primary')) %>% select(-grade) %>%
     #wealth fix
   mutate(quin = case_when(is.na(Wealth)~ '', TRUE ~ 'Quintile ')) %>% 
-  unite("wealth", c('quin', 'Wealth'), sep = "" , remove = TRUE, na.rm = TRUE) 
-  
+  unite("wealth", c('quin', 'Wealth'), sep = "" , remove = TRUE, na.rm = TRUE) %>%
+  mutate(wealth= na_if(wealth, "")) %>%
+  mutate(category=str_replace(category, 'Language', 'Speaks Language At Home')) %>%
+  mutate(category=str_replace(category, 'Speaks Language At Home & Location & Sex', 'Location & Sex & Speaks Language At Home')) %>%
+  mutate(category=str_replace(category, 'Speaks Language At Home & Location', 'Location & Speaks Language At Home')) %>%
+  mutate(category=str_replace(category, 'Speaks Language At Home & Location & Wealth', 'Location & Speaks Language At Home & Wealth')) %>%
+  mutate(category=str_replace(category, 'Speaks Language At Home & Sex & Wealth', 'Sex & Speaks Language At Home & Wealth')) %>%
+  mutate(category=str_replace(category, 'Speaks Language At Home & Sex', 'Sex & Speaks Language At Home')) 
 
+  
 pirls21_long <-
   pivot_longer(pirls21, names_to = 'indicator', cols = any_of(wide_outcome_vars)) %>% filter (!is.na(value))
 
@@ -172,7 +213,12 @@ mics_learning <- vroom::vroom(paste0(path2pieces,"mics6_mpl.csv")) %>%
   #wealth 
   mutate(quin = case_when(is.na(Wealth)~ '', TRUE ~ 'Quintile ')) %>% 
   unite("wealth", c('quin', 'Wealth'), sep = "" , remove = TRUE, na.rm = TRUE) %>%
-  rename(location = Location) %>% rename(sex = Sex)
+  mutate(wealth= na_if(wealth, "")) %>%
+  rename(location = Location) %>% rename(sex = Sex) %>%
+  #RENAME MPL (LEVEL 2) category into LEVEL 1 so it does not appear wrongly in WIDE web
+  rename(rlevel1_m=rlevel2_m) %>% rename(rlevel1_no=rlevel2_no)  %>%
+  rename(mlevel1_m=mlevel2_m) %>% rename(mlevel1_no=mlevel2_no) 
+  
 
 micslearning_long <-
   pivot_longer(mics_learning, names_to = 'indicator', cols = any_of(wide_outcome_vars)) %>% filter (!is.na(value))
@@ -231,24 +277,27 @@ addifnew_wflag <- function(df_priority, df_ifnew, byvars, flag) {
 }
 
 wide_23_long <- wide_previous_long %>%
-  addifnew_wflag(uis4wide, c('iso_code3', 'survey', 'year', 'indicator'), 'UIS4WIDE') %>% 
-  addifnew_wflag(widetable_2023_long, c('iso_code3', 'survey', 'year',  'indicator'), 'WIDETABLE') %>% 
-  addifnew_wflag(lis_long, c('iso_code3', 'survey', 'year', 'indicator'),'LIS') %>% 
-  addifnew_wflag(LFS_long, c('iso_code3', 'survey', 'year', 'indicator'),'LFS') %>% 
-  addifnew_wflag(nationalsurveys_long, c('iso_code3', 'survey', 'year', 'indicator'), 'NationalSurveys') %>%
+  addifnew_wflag(uis4wide, c('iso_code3', 'survey', 'year', 'indicator', 'category'), 'UIS4WIDE') %>% 
+  addifnew_wflag(widetable_2023_long, c('iso_code3', 'survey', 'year', 'indicator', 'category'), 'WIDETABLE') %>% 
+  addifnew_wflag(nfR_long, c('iso_code3', 'survey', 'year', 'indicator', 'category'), 'nfR') %>% 
+  addifnew_wflag(lis_long, c('iso_code3', 'survey', 'year', 'indicator', 'category'),'LIS') %>% 
+  addifnew_wflag(LFS_long, c('iso_code3', 'survey', 'year', 'indicator', 'category'),'LFS') %>% 
+  addifnew_wflag(nationalsurveys_long, c('iso_code3', 'survey', 'year', 'indicator', 'category'), 'NationalSurveys') %>%
   addifnew_wflag(newcategories_long, c('iso_code3', 'survey', 'year', 'indicator', 'category'), 'NewCategories') %>%
-  addifnew_wflag(micslearning_long, c('iso_code3', 'survey', 'year', 'indicator'), 'MICSlearning') %>%
-  addifnew_wflag(pirls21_long, c('iso_code3', 'survey', 'year', 'indicator'), 'newPIRLS') %>%
+  addifnew_wflag(micslearning_long, c('iso_code3', 'survey', 'year', 'indicator', 'category'), 'MICSlearning') %>%
+  addifnew_wflag(pirls21_long, c('iso_code3', 'survey', 'year', 'indicator', 'category'), 'newPIRLS') %>%
   select(-country) %>%
   select(-literacy_no,-comp_higher_2529_no,-comp_upsec_2024_m,-comp_lowsec_2024_m,-comp_higher_2529_m,-comp_higher_3034_m,-comp_higher_3034_no,
          -comp_lowsec_2024_no,-comp_upsec_2024_no,-isocode2, -literacy_1549_m,-literacy_1549_no, -literacy_1524) %>%
-  #select(-source)   %>% 
+  select(-source)   %>% 
   distinct() %>%
   distinct(survey, year, level, category, sex, location, wealth, region, ethnicity, disability, hh_edu_head, religion, language, iso_code3, indicator, .keep_all = TRUE)
 
-names(wide_23_long)
+#names(wide_23_long)
+#table(wide_23_long$source, useNA ='always')
+#table(wide_23_long$indicator)
 
-rm(LFS_long,LFS_wide,lis_long,lis_new,nationalsurveys,nationalsurveys_long, uis4wide, pírls21, wide_previous, wide_previous_long, widetable_2023, widetable_2023_long)
+rm(LFS_long,LFS_wide,lis_long,lis_new,nationalsurveys,nationalsurveys_long, uis4wide, pírls21_long, wide_previous, wide_previous_long, widetable_2023, widetable_2023_long)
 
 
 
@@ -267,16 +316,48 @@ wide_23_long <-
             by = 'iso_code') %>% 
     identity
 
+
+
 ###WARNING: RUN OTHER CODE BEFORE THIS
 #Now run checks.R to get the functions
 source("C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/GitHub/wide2020/wide_aggregating_code/WIDE_2023_update/checks.R")
 
 wide_23_long %>% check_countries 
 
+
+
+
 #rename categories proper 
 wide_23_long <- 
   wide_23_long %>% rename(Sex=sex) %>%  rename(Location=location) %>% rename(Wealth=wealth) %>% rename(Ethnicity=ethnicity) %>% 
   rename(Region=region) %>% rename(Religion=religion)  %>% rename(Language=language) 
+
+wide_23_long <- wide_23_long %>% mutate(category=ifelse(category=="Sex Region",'Sex & Region',category)) %>%
+  mutate(category=ifelse(category=="Region Ethnicity",'Ethnicity & Region',category)) %>%
+  mutate(category=ifelse(category=="Sex Ethnicity",'Ethnicity & Sex',category)) %>%
+  mutate(category=ifelse(category=="Sex Location",'Location & Sex',category)) %>%
+  mutate(category=ifelse(category=="Sex Region",'Region & Sex',category)) %>%
+  mutate(category=ifelse(category=="Sex Region Location",'Location & Region & Sex',category)) %>%
+  mutate(category=ifelse(category=="Sex Wealth",'Sex & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Sex Wealth Ethnicity",'Ethnicity & Sex & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Sex Wealth Location",'Location & Sex & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Sex Wealth Region",'Region & Sex & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Wealth Ethnicity",'Ethnicity & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Wealth Ethnicity",'Ethnicity & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Wealth Location",'Location & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Location Ethnicity",'Ethnicity & Location',category)) %>%
+  mutate(category=ifelse(category=="Location Sex Wealth",'Location & Sex & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Location Wealth",'Location & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Wealth Location",'Location & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Region Ethnicity",'Ethnicity & Region',category)) %>%
+  mutate(category=ifelse(category=="Sex Wealth",'Sex & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Sex Wealth Region",'Region & Sex & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Location Sex Wealth",'Location & Sex & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Wealth Ethnicity",'Ethnicity & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Wealth Region",'Region & Wealth',category)) %>%
+  mutate(category=ifelse(category=="Wealth & Region",'Region & Wealth',category)) %>%
+  mutate(category = str_to_title(gsub("_", " ", category))) %>%
+  filter(!category == "Ethnicity & Location & Sex & Wealth")
 
 
 #Impute and check_* function comes from checks.R
@@ -288,10 +369,23 @@ wide4upload_long <-
   mutate(value = round(value, 4)) %>% 
   pivot_wider(names_from = 'indicator', values_from = 'value') %>% 
   impute_prim_from_sec %>% 
-  pivot_longer(names_to = 'indicator', values_to = 'value', cols = any_of(wide_outcome_vars)) %>% 
-  group_by(iso_code, year, survey, indicator) %>% 
-  filter("Total" %in% category) %>% 
-  ungroup
+  pivot_longer(names_to = 'indicator', values_to = 'value', cols = any_of(wide_outcome_vars)) 
+  #%>% 
+  #what is this for????
+  #group_by(iso_code, year, survey, indicator) %>% 
+  #filter("Total" %in% category) %>% 
+  #ungroup
+
+
+
+#pirls <- wide4upload_long %>% filter(survey=="PIRLS")
+#table(pirls$year)
+#table(pirls$category, pirls$year)
+#table(pirls21_long$category, pirls21_long$year)
+
+
+table(wide4upload_long$category)
+
 
   #Now run aggregate.R
 source("C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/GitHub/wide2020/wide_aggregating_code/WIDE_2023_update/aggregate.R")
@@ -346,6 +440,8 @@ wide4upload <-
    rename(sex=Sex) %>%  rename(location=Location) %>% rename(wealth=Wealth) %>% rename(ethnicity=Ethnicity) %>% 
   rename(region=Region) %>% rename(religion=Religion)  %>% rename(language=Language) 
 
+
+
 #%>%   select(any_of(wide_vars)) 
 
 wide4upload_aggregates <- 
@@ -365,8 +461,6 @@ wide4upload %>%
   arrange(desc(pmax(comp_lowsec_v2_m - comp_prim_v2_m, comp_upsec_v2_m - comp_lowsec_v2_m)))
 
 wide4upload %>% summary
-
-
 
 wide4upload <- wide4upload %>% mutate(category=ifelse(category=="Sex Region",'Sex & Region',category)) %>%
   mutate(category=ifelse(category=="Region Ethnicity",'Ethnicity & Region',category)) %>%
@@ -394,6 +488,7 @@ wide4upload <- wide4upload %>% mutate(category=ifelse(category=="Sex Region",'Se
   mutate(category=ifelse(category=="Wealth & Region",'Region & Wealth',category)) %>%
   mutate(category = str_to_title(gsub("_", " ", category))) %>%
   filter(!category == "Ethnicity & Location & Sex & Wealth")
+
   
 #Here i can find weird shit 
 fixcats <- wide4upload %>% select(category) %>% distinct()
@@ -409,6 +504,10 @@ fixcats
 table(wide4upload$iso_code3, useNA = "always")
 #If not, add the wide version.
 #wide4upload <- bind_rows(wide4upload,wide4upload_aggregates)
+
+#micslea <- wide4upload %>% filter(survey=="MICS") %>% filter(indicator=='rlevel1_m') %>% filter(!is.na(value))
+#table(micslea$category)
+#table(micslea$category, micslea$Sex)
 
 
 #setwd("C:/Users/taiku/OneDrive - UNESCO/WIDE files")
@@ -446,19 +545,28 @@ wide4upload <- wide4upload %>% select(iso_code, region_group, income_group, coun
 
 wide4upload <- wide4upload %>% filter(!(iso_code=='ARG' & year==2020 & survey=='MICS'))
 
+micslea <- cleanwide %>% filter(survey=="MICS") %>% filter(!is.na('rlevel1_m')) 
+table(micslea$category)
+table(micslea$category, micslea$year)
+
+
 #wide4upload <- wide4upload %>% select(-v1)
 
-write.csv(wide4upload, 'WIDE_2023_julytest.csv', na = '')
+write.csv(wide4upload, 'WIDE_2023_july_v2.csv', na = '')
 
-write_csv(wide4upload, 'WIDE_2023_julytest.csv', na = '')
+#write_csv(wide4upload, 'WIDE_2023_julytest.csv', na = '')
 
-write_excel_csv(wide4upload, 'WIDE_2023_julytest_excel.csv', na = '')
+write_excel_csv(wide4upload, 'WIDE_2023_july_v2_excel.csv', na = '')
+
+# the stata to correct csv part   ---------------------------------------------------------------
+
 
 #take cleaned .dta 
 library(haven)
-cleanwide <- haven::read_dta(paste0(path2pieces,"WIDE_2023_julytest_cleaned.dta")) 
+cleanwide <- haven::read_dta(paste0(path2pieces,"WIDE_2023_sept.dta")) 
 #it has to be this write.csv that creates a column they need for the web upload 
-write.csv(cleanwide, 'WIDE_2023_july3.csv', na = '')
+write.csv(cleanwide, 'WIDE_2023_sept.csv', na = '')
+#overage corrections
 
   
 # write.csv(wide4upload, 'WIDE_2023_19_04_2.csv', na = '')
@@ -506,3 +614,9 @@ write.csv(cleanwide, 'WIDE_2023_july3.csv', na = '')
 # posiblemistake <- wide_previous_long %>%
 #   addifnew_wflag(newcategories_long, c('iso_code3', 'survey', 'year', 'indicator'), 'NewCategories') %>%
 #   filter((iso_code3=='SLE' & year==2017 & survey=='MICS'))
+
+library(haven)
+cleanwide2 <- haven::read_dta(paste0(path2pieces,"WIDE_2023_julytest_cleaned.dta")) 
+#it has to be this write.csv that creates a column they need for the web upload 
+write.csv(cleanwide, 'WIDE_2023_july5.csv', na = '')
+
