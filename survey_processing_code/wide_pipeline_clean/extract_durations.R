@@ -18,8 +18,8 @@ library(tidyverse)
 library(foreign)
 
 
-#march update:
-path2uisdata <- 'C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/UIS info/'
+#sept 2023 update:
+path2uisdata <- 'C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/UIS info/sep2023/'
 
 
 uis_clean <- function(uis_data) {
@@ -55,4 +55,55 @@ uis_duration_age <- uis_extract %>% #filter(year==2022) %>%
 
 
 #put today's date 
-write.dta(uis_duration_age, "C:/ado/personal/UIS_duration_age_04072023.dta")
+write.dta(uis_duration_age, "C:/ado/personal/UIS_duration_age_21122013.dta")
+
+###################
+
+#extract just one year
+
+library(tidyverse)
+
+#UPDATING Theoretical durations from UIS data
+
+# INDICATOR_ID	INDICATOR_LABEL_EN
+# 13	Theoretical duration of early childhood educational development (years)
+# 299929	Theoretical duration of pre-primary education (years)
+# 299932	Theoretical duration of primary education (years)
+# 999974	Theoretical duration of early childhood education (years)
+# 999976	Theoretical duration of lower secondary education (years)
+# 999978	Theoretical duration of upper secondary education (years)
+# 999988	Theoretical duration of post-secondary non-tertiary education (years)
+
+# INDICATOR_ID	INDICATOR_LABEL_EN
+# 10	Official entrance age to early childhood educational development (years)
+# 299902	Official entrance age to pre-primary education (years)
+# 299905	Official entrance age to primary education (years)
+# 401	Official entrance age to compulsory education (years)
+# 999973	Official entrance age to early childhood education (years)
+# 999975	Official entrance age to lower secondary education (years)
+# 999977	Official entrance age to upper secondary education (years)
+# 999987	Official entrance age to post-secondary non-tertiary education (years)
+
+
+uis_orpi_countries <- vroom::vroom('C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/UIS info/sep2023/OPRI_DATA_NATIONAL.csv')
+
+indicators2disagg <- c(
+  '299932', '999976', '999978', 
+  '299905', '999975', '999977'
+)
+
+durations <- uis_orpi_countries %>%   filter(str_detect(indicator_id, paste(indicators2disagg, collapse = '|'))) %>% 
+  filter(str_detect(year, '2022')) %>%
+  select(-magnitude, -qualifier) %>% 
+  mutate(duration_type = case_when(
+    str_detect(indicator_id, "299932") ~ 'prim_dur_uis',
+    str_detect(indicator_id, "999976") ~ 'lowsec_dur_uis',
+    str_detect(indicator_id, "999978") ~ 'upsec_dur_uis',
+    str_detect(indicator_id, "299905") ~ 'prim_age_uis',
+    str_detect(indicator_id, "999975") ~ 'lowsec_age_uis',
+    str_detect(indicator_id, "999977") ~ 'upsec_age_uis')) %>%
+  select(-indicator_id) %>%
+  rename(iso_code3 = country_id)
+
+to_append <- durations %>%   pivot_wider(names_from = 'duration_type', values_from = 'value') 
+
