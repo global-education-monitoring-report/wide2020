@@ -11,6 +11,8 @@ library(qs)
 #Set this if dealing with BGD 2019 MICS
 memory.limit(size = 45500) 
 
+#put .qs files in the path
+
 #path2calculated <- "C:/Users/taiku/UNESCO/GEM Report - 3_calculated" # enter path
 path2calculated <- "C:/Users/mm_barrios-rivera/Desktop/temporary_std" # just 3 first files to test 
 

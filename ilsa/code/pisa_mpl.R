@@ -100,26 +100,29 @@ pisa <- pisa %>%
   mutate(Wealth = cut(ESCS, breaks=quantile(ESCS, probs=seq(0,1, by=0.2), na.rm=TRUE),
                       labels = c(1:5),  include.lowest=TRUE))
 
-pisa12_r <- ilsa_sum(pvnames = "READ", 
+pisa22_r <- ilsa_sum(pvnames = "READ", 
                      cutoff = c(334.75, 407.47, 480.18, 552.89),
                      config = pisa_conf,
                      data = pisa,
-                     year = 2012,
+                     year = 2022,
                      level = "Upper secondary",
                      grade = NA,
                      survey = "PISA",
                      prefix = "r")
 
-
-pisa12_m <- ilsa_sum(pvnames = "MATH", 
+pisa22_m2 <- ilsa_sum(pvnames = "MATH", 
                      cutoff = c(357.77, 420.07, 482.38, 544.68),
                      config = pisa_conf,
                      data = pisa,
-                     year = 2012,
+                     year = 2022,
                      level = "Upper secondary",
                      grade = NA,
                      survey = "PISA",
                      prefix = "m")
+
+pisa22_m <- pisa.ben.pv(pvlabel= paste0("PV", 1:10, "MATH"),
+                        cutoff= c(357.77, 420.07, 482.38, 544.68), by=c("CNT", "Language"), data=pisa)
+
 
 pisa12_s <- ilsa_sum(pvnames = "SCIE",
                      cutoff = c(334.94, 409.54, 484.14, 558.73),

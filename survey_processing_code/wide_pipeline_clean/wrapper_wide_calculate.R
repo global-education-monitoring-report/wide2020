@@ -1,5 +1,8 @@
 ###USING WIDE_CALCULATE.R###
 
+#put the standardized folder in the path, then run this, check if errors 
+#then use the summarize wrapper
+
 #path2standardised <- "C:/Users/taiku/UNESCO/GEM Report - 2_standardised/" # enter path
 #path2standardised <- "C:/Users/taiku/Desktop/temporary_std" # testing
 path2standardised <- "C:/Users/mm_barrios-rivera/Desktop/temporary_std"

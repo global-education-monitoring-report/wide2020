@@ -32,9 +32,14 @@ data[ach_level] <- as.data.frame(sapply(1:length(cutoff), function(x)
 # % at or above levels
 
 ## by country
-total_ach <- cbind(intsvy.ben.pv(pvnames = pvnames, 
-                       cutoff= cutoff, by = "COUNTRY", 
-                       data = data, config = config), "category" = "Total")
+#this changed
+#total_ach <- cbind(intsvy.ben.pv(pvnames = pvnames, 
+#                       cutoff= cutoff, by = "COUNTRY", 
+#                       data = data, config = config), "category" = "Total")
+
+total_ach <- cbind(intsvy.ben.pv(pvnames = paste0("PV",1:10,pvnames) , 
+                                 cutoff= cutoff, by = "COUNTRY", 
+                                 data = data, config = config), "category" = "Total")
 
 total_n <- cbind(melt(id.vars= "COUNTRY", 
                 aggregate(data[ach_level], by=list(COUNTRY = data[["COUNTRY"]]), sum), 
@@ -51,7 +56,8 @@ one_ach <- lapply(vars, function(x) {
   mydata <- merge(mydata, mymiss, all.x=TRUE);
   mydata <- mydata[mydata$n>5, ]; # remove intersections with less than 5 groups (for run)
   
-  df = intsvy.ben.pv(pvnames = pvnames, 
+  #changed
+  df = intsvy.ben.pv(pvnames = paste0("PV",1:10,pvnames), 
                      cutoff = cutoff, by = c("COUNTRY", x), 
                      data = mydata, config = config);
   df$category = x;
@@ -78,7 +84,8 @@ two_ach <- lapply(two, function(x) {
   mydata <- merge(mydata, mymiss, all.x=TRUE);
   mydata <- mydata[mydata$n>5, ]; # remove intersections with less than 5 groups (for run)
   
-  ach <- intsvy.ben.pv(pvnames = pvnames, 
+  #changed
+  ach <- intsvy.ben.pv(pvnames = paste0("PV",1:10,pvnames), 
                        cutoff= cutoff, by = c("COUNTRY", x), 
                        data = mydata, config = config);
   ach$category <- paste(x, collapse = " & ")
@@ -106,7 +113,8 @@ three_ach <- lapply(three, function(x) {
   mydata <- merge(mydata, mymiss, all.x=TRUE);
   mydata <- mydata[mydata$n>5, ]; # remove intersections with less than 5 groups (for run)
   
-  ach <- intsvy.ben.pv(pvnames = pvnames, 
+  #changed
+  ach <- intsvy.ben.pv(pvnames = paste0("PV",1:10,pvnames), 
                        cutoff= cutoff, by = c("COUNTRY", x), 
                        data = mydata, config = config);
   ach$category <- paste(x, collapse = " & ")
@@ -133,6 +141,9 @@ bench_ach$levels <- factor(bench_ach$Benchmark,
 bench_ach$Wealth <- as.integer(bench_ach$Wealth)
 
 bench_n <- dplyr::bind_rows(total_n, one_n, two_n, three_n)
+#new bc an error
+bench_n$Wealth <- as.integer(bench_n$Wealth)
+
 
 bench_tot <- left_join(bench_ach, bench_n, by = c("COUNTRY", "category", vars, "levels"))
 
