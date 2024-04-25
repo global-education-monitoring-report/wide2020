@@ -34,7 +34,9 @@ disaggs_uis <-
 uis_meta <- 
   vroom::vroom(paste0(path2uisdata2, 'SDG_METADATA.csv'), na = '') %>% 
   filter(str_detect(indicator_id, paste(indicators2disagg, collapse = '|'))) %>% 
-  select(iso_code3 = country_id, year = year, meta = metadata) %>% 
+  filter(!str_detect(indicator_id, 'PIA'), !str_detect(indicator_id, fixed('1t'))) %>% 
+  filter(!str_detect(indicator_id, 'DIS'), !str_detect(indicator_id, fixed('ABL'))) %>% 
+  select(country_id, year = year, meta = metadata, indicator_id) %>% 
   mutate(survey = case_when(
     str_detect(meta, "education-estimates.org") ~ 'Ameer',
     str_detect(meta, "SILC") ~ 'EU-SILC',
@@ -51,6 +53,8 @@ uis_meta <-
     str_detect(meta, "Honduras Encuesta Permanente de Hogares de Propositos Multiples") ~ 'EPHPM',
     str_detect(meta, "Uruguay Encuesta Nacional de Hogares - Fuerza de Trabajo") ~ 'ENH-FT',
     str_detect(meta, "Encuesta Nacional de Hogares  Condiciones de Vida y Pobreza") ~ 'ENAHO',
+    str_detect(meta, "Encuesta National de Hogares  Condiciones de Vida y\nPobreza") ~ 'ENAHO',
+    str_detect(meta, "Encuesta National de Hogares  Condiciones de Vida y Pobreza") ~ 'ENAHO',
     str_detect(meta, "Encuesta Nacional de Hogares") ~ 'ENH',
     str_detect(meta, "Argentina Encuesta Permanente de Hogares") ~ 'EPH',
     str_detect(meta, "ENIGH") ~ 'ENIGH',
@@ -75,6 +79,7 @@ uis_meta <-
     str_detect(meta, "Encuesta de Mercado Laboral") ~ 'EML', 
     str_detect(meta, "Dominican Republic Encuesta de Fuerza de Trabajo") ~ 'EFT', 
     str_detect(meta, "Encuesta Nacional Continua de Fuerza de Trabajo - ENCFT") ~ 'ENCFT', 
+    str_detect(meta, "Encuesta Nacional Continua de Fuerza de Trabajo") ~ 'ENCFT', 
     str_detect(meta, "Encuesta Permanente de Hogares") ~ 'EPH',
     str_detect(meta, "Nicaragua Encuesta Nacional de Hogares sobre Medicion de Niveles de Vida ") ~ 'ENHMNV',
     str_detect(meta, "Encuesta Nacional de Hogares sobre Medicion de Niveles de Vida ") ~ 'ENHMNV',
@@ -92,6 +97,7 @@ uis_meta <-
     str_detect(meta, "Ethiopian Socioeconomic Survey ") ~ 'ESS',
     str_detect(meta, "Djibouti EnquAte Djiboutienne") ~ 'EDAM',
     str_detect(meta, "India NFHS 2019-21") ~ 'NFHS',
+    str_detect(meta, "India National Family Health Survey") ~ 'NFHS',
     str_detect(meta, "Cambodia Living Standards Measurement Study Plus") ~ 'LSMS',
     str_detect(meta, "Morocco Household and Youth Survey") ~ 'HYS',
     str_detect(meta, "Tanzania Household Budget Survey 2017-18") ~ 'HBS',
@@ -105,15 +111,17 @@ uis_meta <-
     str_detect(meta, "Afrobarometer 2017") ~ 'Afrobarometer',
     str_detect(meta, "Kenya Continuous Household Survey Programme") ~ 'KCHSP',
     str_detect(meta, "China Family Panel Studies") ~ 'CFPS',
+    #march 24 update
+    str_detect(meta, "Liberia Household Income and Expenditure Survey 2016") ~ 'KCHSP',
     #detect and drop these
     str_detect(meta, "GEMR") ~ 'GEMR',
     str_detect(meta, "Value suppressed") ~ 'Value supressed',
     str_detect(meta, "Value based") ~ 'Value based on <50',
       TRUE ~ 'other' )) %>% 
-  #select(-meta) %>% 
-  filter(!(survey=='Value supressed' | survey == 'Value based on <50' | survey == 'Already in WIDE' | survey == 'GEMR' | survey == 'EU-SILC'| survey=='Ameer' | survey=='LIS' ))
+  select(-meta) %>% 
+  filter(!(survey=='Value supressed' | survey == 'Value based on <50' | survey == 'Already in WIDE' | survey == 'GEMR' | survey == 'EU-SILC'| survey=='Ameer' | survey=='LIS' ))  %>% distinct()
 
-others <- uis_meta %>% filter(survey=='other') %>% distinct()
+#others <- uis_meta %>% filter(survey=='other') %>% distinct()
 #micsdhs <- uis_meta %>% filter(survey=='MICS' | survey == 'DHS') %>% distinct()
 #eclac <- uis_meta %>% filter(survey=='ECLAC' ) %>% distinct()
 #what <- uis_meta %>% select(iso_code3, survey) %>% distinct()
@@ -126,6 +134,12 @@ multi_year_surveys <- uis_meta %>% distinct() %>% arrange(desc(year)) %>%
   select(-meta) %>%
   filter(guion == 'multi-year')
 
+#check for more than one survey for the same country-year
+abundance <- uis_meta %>% group_by(iso_code3, year) %>% 
+  mutate(dupe = n()>1) %>% filter(dupe==TRUE) 
+#this is empty if grouping by indicator too (select line in uis_meta calculation)
+somecase_checkdupes <- uis_meta %>% filter(iso_code3=='COL' & year==2005)
+  
 #multi_mics <- multi_year_surveys %>% filter(survey=='MICS') %>% filter(year>2016)
 
 #write_excel_csv(multi_year_surveys, "C:/Users/Lenovo PC/Documents/GEM UNESCO MBR/multi_year_surveys.csv")
@@ -134,6 +148,8 @@ multi_year_surveys <- uis_meta %>% distinct() %>% arrange(desc(year)) %>%
 
 uis2wide <- function(df) {
   df %>% 
+  #moving left join to start so it also merges with INDICATOR ID, since there are country-year cases where more than one survey was used :)
+  left_join(uis_meta, by = c('country_id', 'indicator_id', 'year'))%>% 
   mutate(indicator = case_when(
     str_detect(indicator_id, 'CR') ~ 'comp',
     str_detect(indicator_id, 'ROFST') ~ 'eduout',
@@ -172,10 +188,9 @@ uis2wide <- function(df) {
   mutate(category = if_else(category == '', 'Total', category)) %>% 
   ungroup %>% 
   mutate(value = value/100) %>% 
-  select(iso_code3 = country_id, year = year, category, Sex, Location, Wealth, indicator, level, value) %>% 
-  left_join(uis_meta, by = c('iso_code3', 'year'))
+  select(iso_code3 = country_id, year = year, survey, category, Sex, Location, Wealth, indicator, level, value) 
 }
-####WARNING: it TAKES not that much to run this
+`####WARNING: it TAKES not that much to run this
 uis4wide <- uis2wide(disaggs_uis)
 
 rm(uis_meta)
@@ -194,7 +209,7 @@ select(-level) %>% distinct() %>%  arrange(iso_code3,year, survey, category, Sex
 
 ##############################
 
-setwd("C:/Users/Lenovo PC/Documents/GEM UNESCO MBR/GitHub/wide2020/wide_aggregating_code/WIDE_2023_update/WIDE_2023_files")
+setwd("C:/Users/Lenovo PC/Documents/GEM UNESCO MBR/GitHub/wide2020/wide_aggregating_code/WIDE_2024/WIDE_2024_files")
 
 write_csv(uis4wide, 'uis4wide.csv', na = '')
 

@@ -2,6 +2,7 @@
 
 # 16/01/2023: updating file UIS_duration_age_30082021.dta with UIS_duration_age_16012023.dta 
 # 2021 info added UwU
+# 25/apr/2024: 2023 info should be added now 
 
 #this update has durations only up to 2021 
 #also keep durations only since 1990
@@ -14,11 +15,11 @@ library(haven)
 # Import bulk UIS file 
 
 #the numbers
- OPRI_DATA_NATIONAL <- read_csv("C:/Users/taiku/OneDrive - UNESCO/UIS sept 2022 bulk data/OPRI_DATA_NATIONAL.csv")
+ OPRI_DATA_NATIONAL <- read_csv("C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/UIS info/feb2024/OPRI_DATA_NATIONAL.csv")
 head(OPRI_DATA_NATIONAL)
 
 #the country names
-OPRI_COUNTRY <- read_csv("C:/Users/taiku/OneDrive - UNESCO/UIS sept 2022 bulk data/OPRI_COUNTRY.csv") %>%
+OPRI_COUNTRY <- read_csv("C:/Users/mm_barrios-rivera/Documents/GEM UNESCO MBR/UIS info/feb2024/OPRI_COUNTRY.csv") %>%
   rename(iso_code3 = COUNTRY_ID) %>% rename(country=COUNTRY_NAME_EN)
 
 
@@ -59,7 +60,7 @@ duration_dtanames <- c("prim_dur_uis","lowsec_dur_uis","upsec_dur_uis", "prim_ag
  ### DONT U FORGEEEET ####
  ### TO MOVE THE FILE INTO THE PERSONAL FOLDER ###
  #setwd("C:/ado/personal")
- write_dta(duration_UIS, "UIS_duration_age_16012023.dta")
+ write_dta(duration_UIS, "UIS_duration_age_25042024.dta")
 
 
 
