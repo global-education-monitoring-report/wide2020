@@ -2,6 +2,7 @@
 ***********WIDE UPDATE**************************
 ************14-05-2021**************************
 *Latest update 21/09/2022: update system of feeding surveys with phase/rounds of DHS/MICS
+*updated repository_inventory.dta on 21/12/2022 
 
 
 ***********************************************************************
@@ -43,10 +44,13 @@ foreach filepath of local process_list_mics {
 */
 
 
-
-
 clear 
 use "C:\ado\personal\repository_inventory.dta"
+
+ keep if iso=="COM"  & year=="2022"
+ levelsof fullname, local(mics6surveys)
+
+*dec 2023 update: pick DHS phase 8 and BEN 2022 MICS
 
 /*
  drop if iso=="FJI"
@@ -54,7 +58,9 @@ use "C:\ado\personal\repository_inventory.dta"
 */
 
  *keep if inlist(roundmics, 6)
- 
+ *keep if iso=="DJI"
+
+* levelsof fullname, local(mics6surveys)
 
 /*
  keep if roundmics == 6
@@ -77,13 +83,18 @@ use "C:\ado\personal\repository_inventory.dta"
 
  *problem with CUBA 2014
 
- 
 
- levelsof fullname, local(mics6surveys)
- levelsof fullname, local(process_list_dhs)
+ *keep if survey=="DHS" & phasedhs==8
+ 
+ *these countries have some new questions on ECD so we turn off that part of the code 
+*keep if iso=="CIV" |  iso=="KEN" | iso=="TZA"
+ *levelsof fullname, local(mics6surveys)
+ *levelsof fullname, local(process_list_dhs)
+
 
 
  *whatever name of the local put the local name in the next loop 
+
 
 
 
@@ -120,7 +131,11 @@ foreach survey of local mics6surveys {
  set trace off	 
 
 
+
+
+
 ***************************************************************
+/*
 
  	 set trace on
    	 set tracedepth 1
@@ -142,6 +157,7 @@ foreach survey of local mics6surveys {
        }
    set trace off	 
 
+*/
 
 *no failure in 8, 7 DHS phase
 *prob w COL phase 6

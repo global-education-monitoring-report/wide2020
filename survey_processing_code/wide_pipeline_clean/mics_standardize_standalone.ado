@@ -80,8 +80,11 @@ program define mics_standardize_standalone
  		gen ed3 = old_ed4
 			capture confirm variable ed4a
     if !_rc {
-			   rename ed4a formal_education if country=="Nigeria" & year_folder==2021
-			   rename old_ed5a ed5a if country=="Nigeria" & year_folder==2021
+			   *rename ed4a formal_education if country=="Nigeria" & year_folder==2021
+			   *rename old_ed5a ed5a if country=="Nigeria" & year_folder==2021
+			   *for this survey country=="Comoros" & year_folder==2022   			   
+			   rename ed4a informal_education 
+			   gen ed4a = old_ed5a
     }
     else {
  		gen ed4a = old_ed5a
@@ -189,8 +192,8 @@ program define mics_standardize_standalone
 				
 		*create ids variables
 		catenate country_year  = country year_folder, p("_")
-		catenate hh_id 	       = country_year hh1 hh2, p(no) 
-		catenate individual_id = country_year hh1 hh2 hl1, p(no)
+		catenate hh_id 	       = country_year hh1 hh2, p("-") 
+		catenate individual_id = country_year hh1 hh2 hl1, p("-")
 		
 		
 		*create variables doesnt exist 
@@ -249,6 +252,8 @@ program define mics_standardize_standalone
 	findfile UIS_duration_age_04072023.dta, path("`c(sysdir_personal)'/")
 	use "`r(fn)'", clear
 	merge m:m iso_code3 year using `fixduration', keep(match master) 
+	
+	
 	*Turning this off to see if this is a mistake
  	replace prim_dur_uis   = prim_dur_replace[_n]   if _merge == 3 & prim_dur_replace   !=.
  	replace lowsec_dur_uis = lowsec_dur_replace[_n] if _merge == 3 & lowsec_dur_replace !=.
@@ -270,6 +275,7 @@ program define mics_standardize_standalone
 	replace_many `fixethnicity' ethnicity ethnicity_replace
 	replace_many `fixlocation' location location_replace
 	replace_many `fixsex' sex sex_replace
+
     * labelling
     label define sex 0 "Female" 1 "Male"
 	label define wealth 1 "Quintile 1" 2 "Quintile 2" 3 "Quintile 3" 4 "Quintile 4" 5 "Quintile 5"
@@ -352,14 +358,18 @@ program define mics_standardize_standalone
 	*merge m:1 country using "`isocode'", keep(match master) nogenerate
 	
 	* merge with information of duration of levels, school calendar, official age for primary, etc:
-	egen year = median(hh5y)
+	egen year = median(hh5y) 
+	
+	*THIS is a problem with countries with odd years (AFG, SOM)
+	replace year = year_folder if iso_code3=="AFG" & year_folder==2022
+
 	
 	*The durations for 2018 are not available, so I create a "fake year"
 	rename year year_original
 	generate year = year_original
  	replace year = 2017 if year_original >= 2018
  	merge m:1 iso_code3 year using "`fixduration_uis'", keep(match master)  nogenerate
- 	drop year
+	drop year
  	rename year_original year
 	drop lowsec_age_uis upsec_age_uis 
 	
@@ -563,6 +573,9 @@ program define mics_standardize_standalone
 	
 		
 	*NEW STUFF PARTICULAR FOR SOME COUNTRIES
+	
+	replace eduyears=ed4b if code_ed4a==70 & country_year=="Yemen_2023"
+	
 	replace eduyears=ed4b+years_prim-5 if code_ed4a==21 & country_year=="Montenegro_2018"
 	replace eduyears=ed4b if(code_ed4a==1|code_ed4a==21|code_ed4a==22|code_ed4a==3) & country_year=="Bangladesh_2019"
 	replace eduyears=ed4b+years_lowsec-3 if code_ed4a==22 & country_year=="Kiribati_2018"
@@ -639,7 +652,7 @@ program define mics_standardize_standalone
 	
 	*replace eduyears = 0 if code_ed4a == 0
 	*replace eduyears = . if eduyears >= 99
-		capture replace eduyears = eduyears - 1 if ed_completed == "no" & (eduyears <= 97)
+	capture replace eduyears = eduyears - 1 if ed_completed == "no" & (eduyears <= 97)
 	capture replace eduyears = eduyears - 1 if ed_completed == 2 & (eduyears <= 97)
 
 	replace eduyears = 30 if eduyears >= 30 & eduyears < 90
@@ -1431,7 +1444,6 @@ generate year_folder = `country_year'
 		else {
 							di "Early Childhood Development submodule is not there, but child functioning might be"
 							capture rename ln LN 
-		   *Check for EARLY CHILDHOOD DEVELOPMENT module (EC questions)
 		  					capture confirm variable LN
 								if !_rc {
 								rename LN hl1, replace
@@ -1442,7 +1454,7 @@ generate year_folder = `country_year'
 									}
 					rename HH1 hh1, replace
 					rename HH2 hh2, replace
-							capture confirm variable UCF1 
+							capture confirm variable UCF2 
 						 if !_rc {
 						     di "Early Childhood Development submodule is not there, but child functioning is"
 											keep iso_code3 year_folder hh1 hh2 hl1 UCF* CDISABILITY
